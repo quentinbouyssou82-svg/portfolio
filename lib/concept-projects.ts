@@ -49,9 +49,12 @@ export type ConceptProject = {
   highlight: string;
 };
 
-const demoBase =
-  process.env.NEXT_PUBLIC_DEMO_BASE_URL?.replace(/\/$/, "") ??
-  "http://127.0.0.1:3001";
+const demoBase = process.env.NEXT_PUBLIC_DEMO_BASE_URL?.replace(/\/$/, "");
+
+function buildDemoPath(slug: string) {
+  if (demoBase) return `${demoBase}/${slug}`;
+  return `/demos/${slug}`;
+}
 
 export const conceptProjects: ConceptProject[] = [
   {
@@ -76,7 +79,7 @@ export const conceptProjects: ConceptProject[] = [
       "Tailwind CSS",
       "Framer Motion",
     ],
-    demoPath: `${demoBase}/bella-vista`,
+    demoPath: buildDemoPath("bella-vista"),
     highlight: "Design premium + expérience utilisateur",
     caseStudy: {
       objectives: [
@@ -123,7 +126,7 @@ export const conceptProjects: ConceptProject[] = [
       "Tailwind CSS",
       "Framer Motion",
     ],
-    demoPath: `${demoBase}/titan-fitness`,
+    demoPath: buildDemoPath("titan-fitness"),
     highlight: "Marketing + conversion + design moderne",
     caseStudy: {
       objectives: [
@@ -170,7 +173,7 @@ export const conceptProjects: ConceptProject[] = [
       "Tailwind CSS",
       "Framer Motion",
     ],
-    demoPath: `${demoBase}/nova-habitat`,
+    demoPath: buildDemoPath("nova-habitat"),
     highlight: "Fonctionnalités business + IA + automatisation",
     caseStudy: {
       objectives: [
