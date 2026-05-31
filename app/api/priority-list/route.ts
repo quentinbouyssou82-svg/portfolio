@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { PriorityListSubmission } from "@/lib/priority-list";
-import { supabase } from "@/lib/supabase";
+import { insertWaitlistEmail } from "@/lib/supabase";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -37,28 +37,35 @@ export async function POST(request: Request) {
       );
     }
 
-    const { error: dbError } = await supabase
-      .from("waitlist")
-      .insert([{ email: submission.email }]);
+    const result = await insertWaitlistEmail(submission.email);
 
-    if (dbError) {
-      console.error("[priority-list] Supabase:", dbError);
+    if (!result.ok) {
       return NextResponse.json(
-        { ok: false, message: "Impossible d'enregistrer votre demande. Réessayez plus tard." },
+        { ok: false, message: result.message },
         { status: 500 },
       );
     }
 
-    console.info("[priority-list] Inscription waitlist:", submission.email);
+    console.info("[priority-list] Inscription waitlist:", submission.email, {
+      name: submission.name,
+      company: submission.company,
+    });
 
     return NextResponse.json({
       ok: true,
       message:
         "Merci pour votre intérêt. Votre demande a bien été enregistrée dans la liste prioritaire.",
     });
-  } catch {
+  } catch (err) {
+    console.error("[priority-list]", err);
     return NextResponse.json(
-      { ok: false, message: "Une erreur est survenue. Réessayez dans un instant." },
+      {
+        ok: false,
+        message:
+          err instanceof Error
+            ? err.message
+            : "Une erreur est survenue. Réessayez dans un instant.",
+      },
       { status: 500 },
     );
   }
