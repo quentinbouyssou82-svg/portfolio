@@ -52,7 +52,7 @@ function ModalShell({
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 pb-6 pt-[5.5rem] sm:items-center sm:py-8 sm:pt-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -60,25 +60,26 @@ function ModalShell({
           <button
             type="button"
             aria-label="Fermer la fenêtre"
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             className={cn(
-              "relative z-10 flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-3xl border border-[var(--border)] bg-[var(--surface-strong)] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)] sm:rounded-3xl",
+              "relative z-10 my-auto flex w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)] sm:rounded-3xl",
+              "max-h-[min(calc(100dvh-6.5rem),42rem)]",
               wide ? "max-w-5xl" : "max-w-2xl",
             )}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-[var(--border)] px-6 py-5">
-              <div>
-                <h3 id="modal-title" className="text-xl font-semibold">
+            <div className="sticky top-0 z-20 flex shrink-0 items-start justify-between gap-4 border-b border-[var(--border)] bg-[var(--surface-strong)] px-5 py-4 sm:px-6 sm:py-5">
+              <div className="min-w-0 pr-2">
+                <h3 id="modal-title" className="text-lg font-semibold sm:text-xl">
                   {title}
                 </h3>
                 {subtitle ? (
@@ -88,13 +89,15 @@ function ModalShell({
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-[var(--border)] p-2 text-[var(--muted)] transition hover:bg-[var(--surface)] hover:text-[var(--foreground)]"
+                className="shrink-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2 text-[var(--muted)] transition hover:bg-[var(--surface-strong)] hover:text-[var(--foreground)]"
                 aria-label="Fermer"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <div className="overflow-y-auto px-6 py-6">{children}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6 sm:py-5">
+              {children}
+            </div>
           </motion.div>
         </motion.div>
       ) : null}
@@ -171,7 +174,7 @@ function CodeEditor({ filename, lines }: { filename: string; lines: CodeLine[] }
           {filename}
         </div>
       </div>
-      <div className="max-h-[62vh] overflow-auto bg-[#1e1e1e] p-4 font-mono text-[13px] leading-6">
+      <div className="max-h-[min(38dvh,22rem)] overflow-auto bg-[#1e1e1e] p-4 font-mono text-[13px] leading-6 sm:max-h-[min(42dvh,24rem)]">
         <table className="w-full border-collapse">
           <tbody>
             {lines.map((line) => (
