@@ -1,35 +1,26 @@
 import { NextResponse } from "next/server";
-import { addWaitlistEmail, getWaitlistCount } from "@/lib/waitlist-store";
+import { supabase } from "@/lib/supabase";
 
-function isValidEmail(email: string) {
-  return email.includes("@") && email.length >= 3;
-}
-
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const email = typeof body?.email === "string" ? body.email.trim() : "";
+    const { email } = await req.json();
 
-    if (!email || !isValidEmail(email)) {
-      return NextResponse.json(
-        { success: false, message: "Adresse email invalide." },
-        { status: 400 },
-      );
+    if (!email || !email.includes("@")) {
+      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
 
-    const result = addWaitlistEmail(email);
+    const { error } = await supabase.from("waitlist").insert([{ email }]);
 
-    console.info("[waitlist] Inscription:", email, {
-      duplicate: result.duplicate,
-      total: getWaitlistCount(),
-    });
+    if (error) {
+      console.error(error);
+      return NextResponse.json({ error: "DB error" }, { status: 500 });
+    }
+
+    console.log("[waitlist] new signup:", email);
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("[waitlist] Erreur:", error);
-    return NextResponse.json(
-      { success: false, message: "Erreur serveur." },
-      { status: 500 },
-    );
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

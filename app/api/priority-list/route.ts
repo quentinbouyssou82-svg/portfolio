@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { PriorityListSubmission } from "@/lib/priority-list";
+import { supabase } from "@/lib/supabase";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -36,24 +37,19 @@ export async function POST(request: Request) {
       );
     }
 
-    /**
-     * Intégrations futures :
-     *
-     * Notion — créer une page dans une base via l'API Notion :
-     *   process.env.NOTION_TOKEN, process.env.NOTION_DATABASE_ID
-     *
-     * Tally — webhook ou redirect POST vers l'URL du formulaire Tally :
-     *   process.env.TALLY_WEBHOOK_URL
-     */
-    if (process.env.NODE_ENV === "development") {
-      console.info("[priority-list] Nouvelle inscription:", submission);
+    const { error: dbError } = await supabase
+      .from("waitlist")
+      .insert([{ email: submission.email }]);
+
+    if (dbError) {
+      console.error("[priority-list] Supabase:", dbError);
+      return NextResponse.json(
+        { ok: false, message: "Impossible d'enregistrer votre demande. Réessayez plus tard." },
+        { status: 500 },
+      );
     }
 
-    // Exemple Notion (à décommenter et configurer) :
-    // await fetch("https://api.notion.com/v1/pages", { ... })
-
-    // Exemple Tally webhook (à décommenter et configurer) :
-    // await fetch(process.env.TALLY_WEBHOOK_URL!, { method: "POST", body: JSON.stringify(submission) })
+    console.info("[priority-list] Inscription waitlist:", submission.email);
 
     return NextResponse.json({
       ok: true,
