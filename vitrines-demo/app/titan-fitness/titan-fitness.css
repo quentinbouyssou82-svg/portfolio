@@ -1,0 +1,182 @@
+.titan-fitness-root {
+  --titan-bg: #050505;
+  --titan-bg-elevated: #0c0c0c;
+  --titan-surface: rgba(255, 255, 255, 0.03);
+  --titan-border: rgba(182, 255, 0, 0.12);
+  --titan-accent: #b6ff00;
+  --titan-accent-dim: rgba(182, 255, 0, 0.14);
+  --titan-accent-glow: rgba(182, 255, 0, 0.35);
+  --titan-text: #f5f5f5;
+  --titan-muted: rgba(245, 245, 245, 0.58);
+  --titan-muted-soft: rgba(245, 245, 245, 0.38);
+
+  min-height: 100vh;
+  font-family: var(--font-titan-sans), system-ui, sans-serif;
+  background: var(--titan-bg);
+  color: var(--titan-text);
+}
+
+.titan-fitness-root::selection {
+  background: rgba(182, 255, 0, 0.28);
+  color: #fff;
+}
+
+.titan-grid-bg {
+  background-image:
+    linear-gradient(rgba(182, 255, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(182, 255, 0, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.titan-glow {
+  box-shadow:
+    0 0 0 1px rgba(182, 255, 0, 0.08),
+    0 0 40px rgba(182, 255, 0, 0.08);
+}
+
+.titan-glow-strong {
+  box-shadow:
+    0 0 0 1px rgba(182, 255, 0, 0.18),
+    0 0 60px rgba(182, 255, 0, 0.14);
+}
+
+.titan-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(182, 255, 0, 0.45);
+  background: linear-gradient(
+    135deg,
+    rgba(182, 255, 0, 0.18),
+    rgba(182, 255, 0, 0.06)
+  );
+  padding: 0.85rem 1.6rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--titan-text);
+  transition:
+    transform 300ms ease,
+    border-color 300ms ease,
+    background 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.titan-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(182, 255, 0, 0.75);
+  background: linear-gradient(
+    135deg,
+    rgba(182, 255, 0, 0.28),
+    rgba(182, 255, 0, 0.1)
+  );
+  box-shadow: 0 0 24px rgba(182, 255, 0, 0.18);
+}
+
+.titan-btn-solid {
+  border-color: transparent;
+  background: var(--titan-accent);
+  color: #050505;
+}
+
+.titan-btn-solid:hover {
+  background: #c8ff33;
+  box-shadow: 0 0 32px rgba(182, 255, 0, 0.35);
+}
+
+.titan-card {
+  border: 1px solid var(--titan-border);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.01)
+  );
+  backdrop-filter: blur(10px);
+}
+
+.titan-card-highlight {
+  border-color: rgba(182, 255, 0, 0.35);
+  background: linear-gradient(
+    180deg,
+    rgba(182, 255, 0, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+}
+
+.titan-section-label {
+  color: var(--titan-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.titan-input {
+  width: 100%;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.85rem 1rem;
+  color: var(--titan-text);
+  outline: none;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.titan-input:focus {
+  border-color: rgba(182, 255, 0, 0.45);
+  box-shadow: 0 0 0 3px rgba(182, 255, 0, 0.12);
+}
+
+.titan-input::placeholder {
+  color: var(--titan-muted-soft);
+}
+
+.titan-stat-bar {
+  border: 1px solid rgba(182, 255, 0, 0.14);
+  background: linear-gradient(
+    90deg,
+    rgba(182, 255, 0, 0.06),
+    rgba(255, 255, 255, 0.02),
+    rgba(182, 255, 0, 0.06)
+  );
+}
+
+.titan-nav-link {
+  position: relative;
+  color: var(--titan-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 200ms ease;
+}
+
+.titan-nav-link:hover,
+.titan-nav-link.is-active {
+  color: var(--titan-text);
+}
+
+.titan-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35rem;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--titan-accent);
+}
+
+.titan-hero-gradient {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(182, 255, 0, 0.14),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 90% 20%,
+      rgba(182, 255, 0, 0.08),
+      transparent 55%
+    );
+}

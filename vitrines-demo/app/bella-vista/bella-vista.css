@@ -1,0 +1,44 @@
+.bella-vista-root {
+  --bella-bg: #0a0908;
+  --bella-cream: #f5f0e8;
+  --bella-gold: #c9a962;
+  --bella-muted: rgba(245, 240, 232, 0.62);
+  font-family: var(--font-bella-sans), system-ui, sans-serif;
+  background: var(--bella-bg);
+  color: var(--bella-cream);
+}
+
+.bella-display {
+  font-family: var(--font-bella-display), Georgia, serif;
+}
+
+.bella-gold-line {
+  background: linear-gradient(90deg, transparent, var(--bella-gold), transparent);
+}
+
+.bella-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(201, 169, 98, 0.45);
+  background: linear-gradient(135deg, rgba(201, 169, 98, 0.18), rgba(201, 169, 98, 0.06));
+  padding: 0.85rem 1.6rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: transform 300ms ease, border-color 300ms ease, background 300ms ease;
+}
+
+.bella-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(201, 169, 98, 0.75);
+  background: linear-gradient(135deg, rgba(201, 169, 98, 0.28), rgba(201, 169, 98, 0.1));
+}
+
+.bella-card {
+  border: 1px solid rgba(201, 169, 98, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
+}
