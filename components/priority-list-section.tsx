@@ -5,6 +5,7 @@ import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { CinematicReveal } from "@/components/motion/cinematic-reveal";
 import { PriorityListHero } from "@/components/priority-list-hero";
+import { WaitlistEmailForm } from "@/components/waitlist-email-form";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,8 @@ export function PriorityListSection() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (state === "submitting") return;
+
     setState("submitting");
     setErrorMessage("");
 
@@ -64,6 +67,10 @@ export function PriorityListSection() {
 
       <CinematicReveal delay={0.06}>
         <div className="priority-list-card mx-auto max-w-2xl rounded-3xl p-5 max-md:p-5 md:p-9">
+          <div className="mb-7 border-b border-[var(--border)] pb-7">
+            <WaitlistEmailForm />
+          </div>
+
           <AnimatePresence mode="wait">
             {state === "success" ? (
               <motion.div
