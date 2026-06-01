@@ -1,0 +1,11 @@
+data.csv
+data_enriched.csv
+data_scored.csv
+leads_ranked.csv
+leads_input.csv
+cache/
+.env
+.env.local
+.venv/
+__pycache__/
+*.pyc
