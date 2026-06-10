@@ -1,0 +1,10 @@
+.lead-finder-root {
+  --lead-bg: #070b12;
+  --lead-fg: #f4f7fb;
+  --lead-muted: #94a3b8;
+  --lead-accent: #3b82f6;
+  min-height: 100dvh;
+  background: var(--lead-bg);
+  color: var(--lead-fg);
+  font-family: var(--font-lead-finder-sans), system-ui, sans-serif;
+}

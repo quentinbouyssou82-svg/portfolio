@@ -1,0 +1,18 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+.git/
+*.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+graphify-out/cache/
+graphify-out/manifest.json
+graphify-out/cost.json
+
+# Skip docs on first AST-only build (re-enable after /graphify . in Cursor with LLM)
+*.md
+*.mdx

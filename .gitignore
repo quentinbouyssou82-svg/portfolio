@@ -30,12 +30,25 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files (secrets only — .env.example is tracked)
 .env*
+!.env.example
+.streamlit/secrets.toml
+
+# IDE / agent local
+.cursor/
+.claude/
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
+
+# graphify (commit graph.json + GRAPH_REPORT.md; skip local-only artifacts)
+graphify-out/manifest.json
+graphify-out/cost.json
+graphify-out/cache/
+lead-finder/graphify-out/cache/
+lead-finder/com.graphify.watch.plist
 next-env.d.ts

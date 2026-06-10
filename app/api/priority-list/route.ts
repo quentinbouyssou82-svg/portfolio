@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type { PriorityListSubmission } from "@/lib/priority-list";
-import { insertWaitlistEmail } from "@/lib/supabase";
+import { syncWaitlistToNotion } from "@/lib/notion-waitlist";
+import { insertWaitlistEntry } from "@/lib/supabase";
+import type { WaitlistEntry } from "@/lib/waitlist-types";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -25,48 +27,72 @@ function parseBody(body: unknown): PriorityListSubmission | null {
   return { name, email, company, website, need };
 }
 
+function toWaitlistEntry(submission: PriorityListSubmission): WaitlistEntry {
+  return {
+    email: submission.email,
+    name: submission.name,
+    company: submission.company,
+    website: submission.website,
+    need: submission.need,
+    source: "priority_list",
+  };
+}
+
 export async function POST(request: Request) {
+  let rawBody: unknown;
+
   try {
-    const body = await request.json();
-    const submission = parseBody(body);
-
-    if (!submission) {
-      return NextResponse.json(
-        { ok: false, message: "Veuillez remplir tous les champs obligatoires." },
-        { status: 400 },
-      );
-    }
-
-    const result = await insertWaitlistEmail(submission.email);
-
-    if (!result.ok) {
-      return NextResponse.json(
-        { ok: false, message: result.message },
-        { status: 500 },
-      );
-    }
-
-    console.info("[priority-list] Inscription waitlist:", submission.email, {
-      name: submission.name,
-      company: submission.company,
-    });
-
-    return NextResponse.json({
-      ok: true,
-      message:
-        "Merci pour votre intérêt. Votre demande a bien été enregistrée dans la liste prioritaire.",
-    });
-  } catch (err) {
-    console.error("[priority-list]", err);
+    rawBody = await request.json();
+  } catch (parseErr) {
+    console.error("[priority-list] JSON invalide:", parseErr);
     return NextResponse.json(
-      {
-        ok: false,
-        message:
-          err instanceof Error
-            ? err.message
-            : "Une erreur est survenue. Réessayez dans un instant.",
-      },
+      { ok: false, message: "Corps de requête invalide." },
+      { status: 400 },
+    );
+  }
+
+  console.info("[priority-list] body reçu:", JSON.stringify(rawBody));
+
+  const submission = parseBody(rawBody);
+
+  if (!submission) {
+    console.warn("[priority-list] validation échouée:", JSON.stringify(rawBody));
+    return NextResponse.json(
+      { ok: false, message: "Veuillez remplir tous les champs obligatoires." },
+      { status: 400 },
+    );
+  }
+
+  const entry = toWaitlistEntry(submission);
+  console.info("[priority-list] entry:", JSON.stringify(entry));
+
+  const supabaseResult = await insertWaitlistEntry(entry);
+  console.info("[priority-list] Supabase:", JSON.stringify(supabaseResult));
+
+  if (!supabaseResult.ok) {
+    return NextResponse.json(
+      { ok: false, message: supabaseResult.message, hint: supabaseResult.hint },
       { status: 500 },
     );
   }
+
+  try {
+    const notionResult = await syncWaitlistToNotion(entry);
+    console.info("[priority-list] Notion:", JSON.stringify(notionResult));
+
+    if (!notionResult.ok && !("skipped" in notionResult)) {
+      console.warn(
+        "[priority-list] Notion échec (inscription Supabase OK):",
+        notionResult.message,
+      );
+    }
+  } catch (notionErr) {
+    console.error("[priority-list] Notion exception (Supabase OK):", notionErr);
+  }
+
+  return NextResponse.json({
+    ok: true,
+    message:
+      "Merci pour votre intérêt. Votre demande a bien été enregistrée dans la liste prioritaire.",
+  });
 }

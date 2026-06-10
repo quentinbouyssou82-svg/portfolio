@@ -12,25 +12,36 @@ export type PriorityListResponse = {
 };
 
 /**
- * Envoie une inscription à la liste prioritaire.
- * Brancher ici Notion, Tally ou un autre service via `/api/priority-list`.
+ * Envoie une inscription à la liste prioritaire (Supabase + Notion).
  */
 export async function submitPriorityList(
   data: PriorityListSubmission,
 ): Promise<PriorityListResponse> {
+  const body = {
+    name: data.name.trim(),
+    email: data.email.trim(),
+    company: data.company.trim(),
+    need: data.need.trim(),
+    ...(data.website?.trim() ? { website: data.website.trim() } : {}),
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    console.info("[priority-list] fetch payload:", JSON.stringify(body));
+  }
+
   const response = await fetch("/api/priority-list", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(body),
   });
 
-  const payload = (await response.json()) as PriorityListResponse;
+  const result = (await response.json()) as PriorityListResponse;
 
-  if (!response.ok || !payload.ok) {
-    throw new Error(payload.message ?? "Impossible d'enregistrer votre demande.");
+  if (!response.ok || !result.ok) {
+    throw new Error(result.message ?? "Impossible d'enregistrer votre demande.");
   }
 
-  return payload;
+  return result;
 }
 
 export const priorityListReassurance = [

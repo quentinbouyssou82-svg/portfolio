@@ -56,7 +56,7 @@ def load_env_local() -> None:
             os.environ[key] = value
 DATABASE_TITLE = "Lead Ranking IA"
 REQUEST_DELAY_S = float(os.environ.get("NOTION_REQUEST_DELAY", "0.35"))
-MAX_SCORE = 50.0  # score_final brut max (lead_scorer)
+# Scores v2 : déjà normalisés 0–100 dans leads_ranked.csv
 
 NIVEAU_OPTIONS = [
     {"name": "excellent", "color": "green"},
@@ -169,10 +169,9 @@ def parse_float(value: str, default: float = 0.0) -> float:
         return default
 
 
-def score_to_percent(score_final_raw: str) -> float:
-    """Convertit le score 0–50 en pourcentage 0–100 pour Notion."""
-    raw = parse_float(score_final_raw)
-    return round((raw / MAX_SCORE) * 100, 1)
+def score_for_notion(value: str) -> float:
+    """Score 0–100 (v2)."""
+    return round(min(100.0, max(0.0, parse_float(value))), 1)
 
 
 def normalize_select(value: str, allowed: set[str]) -> str | None:
@@ -188,9 +187,9 @@ def build_properties(row: dict[str, str], title_column: str = TITLE_PROPERTY) ->
     props: dict[str, Any] = {
         title_column: {"title": rich_text(name)},
         "email": {"email": email},
-        "score_prospection": {"number": parse_float(row.get("score_prospection", ""))},
-        "score_site": {"number": parse_float(row.get("score_site", ""))},
-        "score_final": {"number": score_to_percent(row.get("score_final", ""))},
+        "score_prospection": {"number": score_for_notion(row.get("score_prospection", ""))},
+        "score_site": {"number": score_for_notion(row.get("score_site", ""))},
+        "score_final": {"number": score_for_notion(row.get("score_final", ""))},
         "last_updated": {
             "date": {"start": datetime.now(timezone.utc).isoformat()}
         },
@@ -481,7 +480,7 @@ def run_sync(input_path: Path) -> int:
                 skipped += 1
                 log("SKIP", f"{index}/{total} doublon site — {name}")
                 continue
-            pct = score_to_percent(row.get("score_final", ""))
+            pct = score_for_notion(row.get("score_final", ""))
             log("OK", f"{index}/{total} {action} — {name} ({pct}%)")
         except APIResponseError as err:
             failed += 1
@@ -496,7 +495,7 @@ def run_sync(input_path: Path) -> int:
     log("DONE", f"créés={created} mis à jour={updated} ignorés={skipped} échecs={failed}")
     log(
         "VIEW",
-        "Notion : trier par score_final ↓ — filtrer par colonne business_type",
+        "Notion : trier par score_final ↓ (SS haut = site moche = priorité refonte)",
     )
     return 0 if failed == 0 else 1
 

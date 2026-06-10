@@ -1,20 +1,29 @@
--- Table waitlist (si pas encore créée)
--- create table public.waitlist (
---   id uuid primary key default gen_random_uuid(),
---   email text not null unique,
---   created_at timestamptz default now()
--- );
+-- Policies + grants pour waitlist (formulaire Next.js avec clé anon)
+-- Exécuter dans Supabase → SQL Editor (projet Nocta Agency OS)
 
--- Policy INSERT pour le rôle anon (clé publique Next.js)
-create policy "allow insert"
+alter table public.waitlist enable row level security;
+
+-- Nettoyage anciennes policies
+drop policy if exists "allow insert" on public.waitlist;
+drop policy if exists "allow update" on public.waitlist;
+drop policy if exists "waitlist_anon_insert" on public.waitlist;
+drop policy if exists "waitlist_anon_update" on public.waitlist;
+
+-- Droits SQL (en plus des policies RLS)
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on table public.waitlist to anon, authenticated;
+
+-- INSERT (nouvelle inscription)
+create policy "waitlist_anon_insert"
 on public.waitlist
 for insert
-to anon
+to anon, authenticated
 with check (true);
 
--- Optionnel : lecture pour le dashboard authentifié uniquement
--- create policy "allow read authenticated"
--- on public.waitlist
--- for select
--- to authenticated
--- using (true);
+-- UPDATE (email déjà inscrit — formulaire complet)
+create policy "waitlist_anon_update"
+on public.waitlist
+for update
+to anon, authenticated
+using (true)
+with check (true);

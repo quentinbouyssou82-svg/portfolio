@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+.palan-root {
+  --palan-navy: #0b1426;
+  --palan-gold: #c9a84c;
+  --palan-ivory: #f5f0e8;
+  --palan-gray: #6b7280;
+  --palan-line: rgba(201, 168, 76, 0.25);
+
+  font-family: var(--font-palan-sans), sans-serif;
+  font-weight: 300;
+  color: var(--palan-navy);
+  background: var(--palan-ivory);
+  -webkit-font-smoothing: antialiased;
+}
+
+.palan-root .font-display {
+  font-family: var(--font-palan-display), serif;
+}
+
+.palan-gold-line::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--palan-gold);
+}
+
+.palan-section-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--palan-gold);
+}
+
+.palan-section-tag::after {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: var(--palan-gold);
+}
+
+.palan-detail-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--palan-gold);
+  margin-bottom: 1rem;
+}
+
+.palan-detail-eyebrow::after {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: var(--palan-gold);
+}
+
+.palan-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(11, 20, 38, 0.15);
+  padding: 0.6rem 0;
+  font-family: var(--font-palan-sans), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: var(--palan-navy);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.palan-input:focus {
+  border-bottom-color: var(--palan-gold);
+}
+
+.palan-input::placeholder {
+  color: rgba(11, 20, 38, 0.35);
+}
+
+.palan-nav-open {
+  overflow: hidden;
+}
+
+.palan-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--palan-gold);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.palan-skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.palan-root :focus-visible {
+  outline: 2px solid var(--palan-gold);
+  outline-offset: 3px;
+}
+
+.palan-reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.palan-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.palan-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palan-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .palan-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

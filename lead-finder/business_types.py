@@ -116,15 +116,66 @@ def extract_category_from_maps_line(line: str) -> str:
 
 
 def pc_bonus_for_type(business_type: str) -> tuple[float, str]:
-    """Retourne (bonus PC, raison texte)."""
+    """Legacy — utiliser sector_prospection_score."""
+    score, note = sector_prospection_score(business_type)
+    return score / 10.0, note
+
+
+# Score secteur SP (0–100) — aligné sur grille prospection refonte web + IA
+_SECTOR_SP_SCORES: dict[str, int] = {
+    "sante": 100,
+    "avocat": 100,
+    "finance": 100,
+    "immobilier": 100,
+    "btp": 85,
+    "automobile": 85,
+    "hotel": 80,
+    "restaurant": 80,
+    "salle_de_sport": 80,
+    "education": 75,
+    "beaute": 70,
+    "coiffeur": 60,
+    "commerce": 40,
+    "plombier": 85,
+    "autre": 35,
+    "hobby": 20,
+}
+
+# Mots-clés nom/adresse → boost secteur premium
+_PREMIUM_KEYWORDS = (
+    "dentiste", "chirurgien", "clinique", "avocat", "notaire", "architecte",
+    "immobilier", "concession", "comptable", "expert-comptable", "kinésithérapeute",
+    "veterinaire", "vétérinaire",
+)
+_MID_KEYWORDS = (
+    "restaurant", "brasserie", "hotel", "hôtel", "fitness", "formation",
+    "boulangerie", "traiteur",
+)
+
+
+def sector_prospection_score(
+    business_type: str = "",
+    name: str = "",
+    address: str = "",
+) -> tuple[float, str]:
+    """
+    Score secteur pour SP (0–100).
+    Enrichit via business_type + mots-clés nom/adresse.
+    """
     t = (business_type or "autre").strip().lower()
-    if t in _HIGH_VALUE_TYPES:
-        return PC_BONUS_HIGH, f"Secteur à forte valeur ({t}) — bonus PC +{int(PC_BONUS_HIGH)}"
-    if t in _LOCAL_TYPES:
-        return PC_BONUS_LOCAL, f"Commerce local ({t}) — bonus PC +{int(PC_BONUS_LOCAL)}"
-    if t in _LOW_TYPES:
-        return PC_BONUS_LOW, f"Secteur faible priorité ({t}) — bonus PC {int(PC_BONUS_LOW)}"
-    return PC_BONUS_DEFAULT, ""
+    blob = _normalize_text(f"{name} {address}")
+
+    for kw in _PREMIUM_KEYWORDS:
+        if _normalize_text(kw) in blob:
+            return 100.0, f"Secteur premium détecté ({kw})"
+
+    for kw in _MID_KEYWORDS:
+        if _normalize_text(kw) in blob:
+            return 80.0, f"Secteur intermédiaire ({kw})"
+
+    base = float(_SECTOR_SP_SCORES.get(t, _SECTOR_SP_SCORES["autre"]))
+    label = t.replace("_", " ")
+    return base, f"Secteur {label} — potentiel {int(base)}/100"
 
 
 def notion_select_options() -> list[dict[str, str]]:
