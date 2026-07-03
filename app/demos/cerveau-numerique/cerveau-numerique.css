@@ -1,0 +1,161 @@
+/* Design tokens & scoped styles for the "Mon Cerveau Numérique" frontend clone.
+   Everything is scoped under .cn-root so it never leaks into the rest of the app. */
+
+.cn-root {
+  --cn-bg: #05050f;
+  --cn-bg-elev: #0a0a18;
+  --cn-fg: rgba(255, 255, 255, 0.92);
+  --cn-muted: rgba(255, 255, 255, 0.6);
+  --cn-faint: rgba(255, 255, 255, 0.4);
+  --cn-ghost: rgba(255, 255, 255, 0.3);
+
+  --cn-surface: rgba(255, 255, 255, 0.06);
+  --cn-surface-2: rgba(255, 255, 255, 0.08);
+  --cn-border: rgba(255, 255, 255, 0.12);
+  --cn-border-soft: rgba(255, 255, 255, 0.08);
+
+  --cn-primary: #4f9eff;
+  --cn-primary-2: #6db8ff;
+  --cn-secondary: #a78bfa;
+
+  --cn-primary-tint: rgba(79, 158, 255, 0.15);
+  --cn-primary-border: rgba(79, 158, 255, 0.3);
+
+  --cn-radius-sm: 12px;
+  --cn-radius: 16px;
+  --cn-radius-lg: 20px;
+  --cn-pill: 999px;
+
+  --cn-glow: 0 0 20px 0 rgba(79, 158, 255, 0.3);
+  --cn-grad-text: linear-gradient(135deg, #ffffff 0%, #4f9eff 50%, #a78bfa 100%);
+  --cn-grad-primary: linear-gradient(135deg, #4f9eff, #6db8ff);
+  --cn-grad-progress: linear-gradient(90deg, #4f9eff, #a78bfa);
+
+  background-color: var(--cn-bg);
+  color: var(--cn-fg);
+  font-family: var(--font-cn-sans), Inter, system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ambient radial glows used behind hero / auth / onboarding backdrops */
+.cn-aurora {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.cn-aurora::before,
+.cn-aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.5;
+}
+
+.cn-aurora::before {
+  top: -20%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(79, 158, 255, 0.22), transparent 70%);
+}
+
+.cn-aurora::after {
+  bottom: -25%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.18), transparent 70%);
+}
+
+.cn-gradient-text {
+  background-image: var(--cn-grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Reusable surface / glass card */
+.cn-card {
+  background-color: var(--cn-surface);
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius);
+}
+
+/* Custom scrollbar for the dark theme (legal long-form pages) */
+.cn-root ::-webkit-scrollbar {
+  width: 10px;
+}
+.cn-root ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+
+/* Focus ring consistent with the accent color */
+.cn-root :focus-visible {
+  outline: 2px solid var(--cn-primary);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Landing page — premium SaaS hero system (Cluely / 10x inspired)         */
+/* ---------------------------------------------------------------------- */
+
+.cn-landing {
+  --cn-hero-bg: #030304;
+}
+
+/* Faint technical dot-grid, masked so it fades toward the edges. */
+.cn-grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 0%, #000 40%, transparent 85%);
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 0%, #000 40%, transparent 85%);
+  opacity: 0.5;
+}
+
+/* Single controlled glow anchored behind the hero headline. */
+.cn-hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(50% 40% at 50% 0%, rgba(79, 158, 255, 0.22), transparent 70%),
+    radial-gradient(35% 30% at 82% 8%, rgba(167, 139, 250, 0.12), transparent 70%);
+}
+
+/* Hairline vignette so content edges never feel abrupt on small screens. */
+.cn-hero-fade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 30%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--cn-hero-bg));
+}
+
+.cn-mono {
+  font-family: var(--font-cn-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.08em;
+}
+
+/* Glass browser-chrome mock used by the product preview section. */
+.cn-mock-window {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--cn-border);
+  border-radius: var(--cn-radius-lg);
+  box-shadow:
+    0 40px 100px -30px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+.cn-noise-fade {
+  background: linear-gradient(180deg, transparent, var(--cn-bg) 90%);
+}

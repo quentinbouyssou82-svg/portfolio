@@ -3,6 +3,13 @@ import { ArrowUpRight } from "lucide-react";
 
 const demos = [
   {
+    href: "/demos/cerveau-numerique",
+    name: "Mon Cerveau Numérique",
+    sector: "Assistant de vie · IA",
+    accent: "from-[#4f9eff]/20 to-transparent",
+    border: "border-[#4f9eff]/25",
+  },
+  {
     href: "/demos/bella-vista",
     name: "Bella Vista",
     sector: "Restaurant gastronomique",
