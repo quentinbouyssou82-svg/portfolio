@@ -1,84 +1,57 @@
 import { NextResponse } from "next/server";
-import { CONTACT_EMAIL } from "@/lib/palan-capital/constants";
+import { CONTACT_EMAIL, PUBLIC_CONTACT_EMAIL } from "@/lib/palan-capital/constants";
+import { sendContactEmails } from "@/lib/palan-capital/email";
 
-type ContactBody = {
-  nom?: string;
-  email?: string;
-  societe?: string;
-  sujet?: string;
-  message?: string;
-  rgpd?: string;
-};
-
-export async function POST(request: Request) {
-  let body: ContactBody;
+export async function POST(req: Request) {
+  let body: unknown;
 
   try {
-    body = (await request.json()) as ContactBody;
+    body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Corps de requête invalide." }, { status: 400 });
+    return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   }
 
-  const { nom, email, societe, sujet, message } = body;
+  const data = body as Record<string, unknown>;
+  const nom = typeof data.nom === "string" ? data.nom.trim() : "";
+  const email = typeof data.email === "string" ? data.email.trim() : "";
+  const societe = typeof data.societe === "string" ? data.societe.trim() : "";
+  const sujet = typeof data.sujet === "string" ? data.sujet.trim() : "";
+  const message = typeof data.message === "string" ? data.message.trim() : "";
+  const rgpd = data.rgpd;
 
-  if (!nom?.trim() || !email?.trim()) {
-    return NextResponse.json({ error: "Nom et email sont requis." }, { status: 400 });
+  if (!nom || !email || !email.includes("@") || !sujet || !rgpd) {
+    return NextResponse.json({ error: "Veuillez remplir tous les champs obligatoires." }, { status: 400 });
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Email invalide." }, { status: 400 });
-  }
+  const payload = { nom, email, societe, sujet, message };
 
-  const recipient = process.env.PALAN_CONTACT_EMAIL ?? CONTACT_EMAIL;
-  const payload = {
-    to: recipient,
-    from: "Palan Capital Site",
-    subject: `[Palan Capital] ${sujet || "Nouvelle demande"} — ${nom}`,
-    nom: nom.trim(),
-    email: email.trim(),
-    societe: societe?.trim() || "—",
-    sujet: sujet?.trim() || "—",
-    message: message?.trim() || "—",
-    receivedAt: new Date().toISOString(),
-  };
+  console.info("[palan-capital/contact]", {
+    nom,
+    email,
+    societe: societe || "—",
+    sujet,
+    recipient: CONTACT_EMAIL,
+  });
 
-  // Log en dev / staging jusqu'à configuration email (Resend, etc.)
-  console.info("[palan-capital/contact]", JSON.stringify(payload));
+  try {
+    const result = await sendContactEmails(payload);
 
-  if (process.env.RESEND_API_KEY) {
-    try {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: process.env.PALAN_FROM_EMAIL ?? "onboarding@resend.dev",
-          to: recipient,
-          reply_to: email.trim(),
-          subject: payload.subject,
-          text: [
-            `Nom : ${payload.nom}`,
-            `Email : ${payload.email}`,
-            `Société : ${payload.societe}`,
-            `Objet : ${payload.sujet}`,
-            "",
-            payload.message,
-          ].join("\n"),
-        }),
+    if (!result.notification.ok) {
+      console.info("[palan-capital/contact] Resend non configuré — demande loggée:", payload);
+      return NextResponse.json({
+        success: true,
+        dev: true,
+        message: `Demande enregistrée (mode dev). En production : ${CONTACT_EMAIL}`,
       });
-
-      if (!res.ok) {
-        throw new Error("Échec envoi email");
-      }
-    } catch {
-      return NextResponse.json(
-        { error: "Impossible d'envoyer le message pour le moment. Écrivez à contact@palancapital.com." },
-        { status: 502 },
-      );
     }
-  }
 
-  return NextResponse.json({ ok: true });
+    if (!result.autoReply.ok) {
+      console.warn("[palan-capital/contact] Notification OK, auto-reply failed for", email);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("[palan-capital/contact]", err);
+    return NextResponse.json({ error: "Erreur lors de l'envoi. Réessayez ou écrivez à " + PUBLIC_CONTACT_EMAIL }, { status: 500 });
+  }
 }

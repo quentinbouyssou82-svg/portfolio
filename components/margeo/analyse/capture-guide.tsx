@@ -1,0 +1,87 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Camera, CheckCircle2, Clock, MapPin, Route } from "lucide-react";
+
+const TIPS = [
+  "Capture l'écran quand la course est proposée",
+  "Le gain, la distance et le temps doivent être visibles",
+  "PNG, JPG ou WebP — pas besoin de recadrer",
+];
+
+/** Exemple visuel de ce qu'il faut capturer (CSS pur, pas d'image externe). */
+function OfferScreenshotExample() {
+  return (
+    <div className="mx-auto w-full max-w-[220px] rounded-2xl border border-mg-border-strong bg-[#111113] p-2 shadow-mg-card">
+      <div className="rounded-xl border border-mg-border bg-mg-surface px-3 py-3">
+        <div className="flex items-center justify-between">
+          <span className="rounded-full bg-[#06c167]/20 px-2 py-0.5 text-[10px] font-semibold text-[#06c167]">
+            Uber Eats
+          </span>
+          <span className="text-[10px] text-mg-faint">Nouvelle course</span>
+        </div>
+
+        <p className="mt-3 text-lg font-bold text-mg-foreground">7,80 €</p>
+        <p className="text-[10px] text-mg-faint">Gain estimé</p>
+
+        <div className="mt-3 space-y-1.5 rounded-lg border border-mg-border bg-mg-card p-2.5">
+          <p className="flex items-center gap-1.5 text-[10px] text-mg-muted">
+            <MapPin className="size-3 shrink-0 text-mg-accent" />
+            McDonald&apos;s République
+          </p>
+          <p className="flex items-center gap-1.5 text-[10px] text-mg-muted">
+            <MapPin className="size-3 shrink-0 text-mg-faint" />
+            12 rue de la Paix
+          </p>
+          <div className="flex gap-3 pt-0.5 text-[10px] text-mg-faint">
+            <span className="inline-flex items-center gap-1">
+              <Route className="size-3" /> 4,1 km
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="size-3" /> 18 min
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-2.5 flex gap-2">
+          <span className="flex-1 rounded-lg bg-white/[0.06] py-1.5 text-center text-[10px] text-mg-faint">
+            Refuser
+          </span>
+          <span className="flex-1 rounded-lg bg-[#06c167] py-1.5 text-center text-[10px] font-semibold text-[#04120c]">
+            Accepter
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CaptureGuide() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.15 }}
+      className="mt-6 grid gap-6 rounded-2xl border border-mg-border bg-mg-card/50 p-5 sm:grid-cols-[1fr_auto] sm:items-center"
+    >
+      <div>
+        <p className="flex items-center gap-2 text-sm font-semibold text-mg-foreground">
+          <Camera className="size-4 text-mg-accent" />
+          Quoi envoyer ?
+        </p>
+        <ul className="mt-3 space-y-2">
+          {TIPS.map((tip) => (
+            <li
+              key={tip}
+              className="flex items-start gap-2 text-sm text-mg-muted"
+            >
+              <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-mg-go" />
+              {tip}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <OfferScreenshotExample />
+    </motion.div>
+  );
+}

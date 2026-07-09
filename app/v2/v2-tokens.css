@@ -1,0 +1,91 @@
+/**
+ * V2 Design Tokens — source unique couleurs, radius, espacements, motion.
+ */
+
+.v2-root {
+  /* ── Couleurs ── */
+  --v2-bg: #ffffff;
+  --v2-bg-subtle: #f7f7f5;
+  --v2-fg: #191919;
+  --v2-fg-secondary: #6b6b6b;
+  --v2-fg-tertiary: #9b9b9b;
+  --v2-border: rgba(0, 0, 0, 0.06);
+  --v2-border-strong: rgba(0, 0, 0, 0.1);
+  --v2-gold: #c9a962;
+  --v2-gold-muted: #b8944f;
+  --v2-gold-soft: rgba(201, 169, 98, 0.1);
+
+  /* ── Layout ── */
+  --v2-max: 680px;
+  --v2-wide: 1080px;
+
+  /* ── Radius (8pt-derived) ── */
+  --v2-radius-sm: 0.5rem;
+  --v2-radius-md: 0.75rem;
+  --v2-radius-lg: 1.25rem;
+  --v2-radius-xl: 1.5rem;
+  --v2-radius-pill: 9999px;
+
+  /* ── Spacing (8pt grid) ── */
+  --v2-space-1: 0.25rem;
+  --v2-space-2: 0.5rem;
+  --v2-space-3: 0.75rem;
+  --v2-space-4: 1rem;
+  --v2-space-5: 1.25rem;
+  --v2-space-6: 1.5rem;
+  --v2-space-8: 2rem;
+  --v2-space-10: 2.5rem;
+  --v2-space-12: 3rem;
+  --v2-space-16: 4rem;
+  --v2-section-py: clamp(4.5rem, 10vh, 7rem);
+
+  /* ── Motion ── */
+  --v2-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --v2-duration-fast: 200ms;
+  --v2-duration-normal: 320ms;
+  --v2-duration-slow: 400ms;
+  --v2-duration-reveal: 400ms;
+  --v2-stagger-step: 60ms;
+  --v2-reveal-y: 14px;
+}
+
+.portfolio-v2[data-theme="dark"] {
+  --v2-bg: #191919;
+  --v2-bg-subtle: #252525;
+  --v2-fg: #f5f5f5;
+  --v2-fg-secondary: #a3a3a3;
+  --v2-fg-tertiary: #737373;
+  --v2-border: rgba(255, 255, 255, 0.08);
+  --v2-border-strong: rgba(255, 255, 255, 0.14);
+  --v2-gold-soft: rgba(201, 169, 98, 0.14);
+}
+
+.portfolio-v2 {
+  /* Semantic aliases (pricing, motion, glow) */
+  --background: var(--v2-bg);
+  --foreground: var(--v2-fg);
+  --muted: var(--v2-fg-secondary);
+  --surface: var(--v2-bg-subtle);
+  --surface-strong: var(--v2-bg-subtle);
+  --border: var(--v2-border);
+  --ring: rgba(201, 169, 98, 0.22);
+  --accent: var(--v2-gold);
+  --accent-strong: var(--v2-gold-muted);
+  --accent-soft: var(--v2-gold-soft);
+  --accent-gradient-end: #d4bc82;
+  --pricing-gold: var(--v2-gold);
+  --pricing-gold-soft: var(--v2-gold-soft);
+  --hero-glow: rgba(201, 169, 98, 0.2);
+  --hero-glow-soft: rgba(201, 169, 98, 0.09);
+  --glow: rgba(0, 0, 0, 0.03);
+  --glow-soft: rgba(247, 247, 245, 0.95);
+  --font-display: var(--font-v2-sans);
+  --font-body: var(--font-v2-sans);
+}
+
+.portfolio-v2[data-theme="dark"] {
+  --hero-glow: rgba(201, 169, 98, 0.18);
+  --hero-glow-soft: rgba(201, 169, 98, 0.08);
+  --glow: rgba(255, 255, 255, 0.03);
+  --glow-soft: rgba(255, 255, 255, 0.04);
+}

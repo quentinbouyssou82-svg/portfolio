@@ -1,7 +1,7 @@
 "use client";
 
 import { Monitor, Smartphone, Tablet } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
 import {
   isPreviewFrame,
@@ -92,10 +92,12 @@ function PreviewFrame({ mode }: { mode: Exclude<PreviewMode, "full"> }) {
 
 function ResponsivePreviewInner({ children }: { children: React.ReactNode }) {
   const { mode, setMode, mounted } = useResponsivePreview();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const inFrame = searchParams.has("preview-frame") || isPreviewFrame();
+  const isDemoRoute = pathname?.startsWith("/demos");
 
-  if (!previewEnabled) {
+  if (!previewEnabled || isDemoRoute) {
     return <>{children}</>;
   }
 

@@ -27,7 +27,7 @@
   --cn-pill: 999px;
 
   --cn-glow: 0 0 20px 0 rgba(79, 158, 255, 0.3);
-  --cn-grad-text: linear-gradient(135deg, #ffffff 0%, #4f9eff 50%, #a78bfa 100%);
+  --cn-grad-text: linear-gradient(120deg, #dbeafe 0%, #93c5fd 45%, #a78bfa 100%);
   --cn-grad-primary: linear-gradient(135deg, #4f9eff, #6db8ff);
   --cn-grad-progress: linear-gradient(90deg, #4f9eff, #a78bfa);
 
@@ -108,6 +108,14 @@
   --cn-hero-bg: #030304;
 }
 
+/* Distinct display face for headings — sets the landing page apart from the
+   body copy and gives titles a sharper, more "product" character. */
+.cn-landing h1,
+.cn-landing h2,
+.cn-landing h3 {
+  font-family: var(--font-cn-heading), var(--font-cn-sans), sans-serif;
+}
+
 /* Faint technical dot-grid, masked so it fades toward the edges. */
 .cn-grid-bg {
   position: absolute;
@@ -146,16 +154,148 @@
   letter-spacing: 0.08em;
 }
 
-/* Glass browser-chrome mock used by the product preview section. */
+/* Glass browser-chrome mock used by the product preview section. Layered
+   shadows (tight contact shadow + large diffuse ambient shadow + a faint
+   brand-colored glow) so the card visibly detaches from the page background. */
 .cn-mock-window {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
   border: 1px solid var(--cn-border);
   border-radius: var(--cn-radius-lg);
   box-shadow:
-    0 40px 100px -30px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    0 18px 40px -18px rgba(0, 0, 0, 0.75),
+    0 60px 120px -40px rgba(0, 0, 0, 0.85),
+    0 40px 100px -30px rgba(79, 158, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 1px 0 rgba(255, 255, 255, 0.09) inset;
 }
 
 .cn-noise-fade {
   background: linear-gradient(180deg, transparent, var(--cn-bg) 90%);
+}
+
+/* Soft luminous halo behind the hero's accent headline — kept faint so it
+   reads as light rather than a heavy drop-shadow. */
+.cn-title-glow {
+  filter: drop-shadow(0 0 26px rgba(96, 165, 250, 0.3));
+}
+
+/* Glass pill wrapper for the eyebrow label. */
+.cn-pill {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--cn-pill);
+  backdrop-filter: blur(12px);
+}
+
+/* Subtle floating 3D tilt for the hero's live app preview — grounded on
+   mobile, gently angled toward the viewer on larger screens like a product
+   shot, with a lighter tilt on hover for a bit of interactivity. */
+.cn-tilt-wrap {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 1024px) {
+  .cn-tilt-wrap {
+    transform: rotateY(-7deg) rotateX(2deg);
+  }
+  .cn-tilt-wrap:hover {
+    transform: rotateY(-3deg) rotateX(1deg) scale(1.015);
+  }
+}
+
+/* Display serif reserved for the hero headline — sets it apart from every
+   other heading on the page (stand-in for STK Bureau Serif, see layout.tsx). */
+.cn-landing h1.cn-hero-title {
+  font-family: var(--font-cn-hero-serif), var(--font-cn-heading), serif;
+}
+
+/* Fine grain overlaid on the dynamic hero background so the light beams read
+   as photographed/textured rather than flat digital gradients. */
+.cn-noise-overlay {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Neon outline button — transparent surface with a thin, continuously     */
+/* rotating conic border. No blurred outer halo: the previous version bled */
+/* a rotating smear outside the pill which read as a rendering glitch.     */
+/* Depth comes from a static, subtle glow instead.                         */
+/* ---------------------------------------------------------------------- */
+
+@keyframes cn-neon-spin-offset {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.cn-neon-btn-wrap {
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--cn-pill);
+  box-shadow: 0 0 24px -6px rgba(79, 158, 255, 0.35);
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.cn-neon-btn-wrap:hover {
+  box-shadow: 0 0 34px -4px rgba(79, 158, 255, 0.55);
+  transform: translateY(-1px);
+}
+
+/* Clipped pill — the oversized rotating ring only ever shows as a thin
+   animated border around the solid content. */
+.cn-neon-btn {
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--cn-pill);
+  padding: 1.5px;
+  overflow: hidden;
+}
+
+.cn-neon-btn-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220%;
+  height: 420%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    rgba(79, 158, 255, 0.25) 0deg,
+    var(--cn-primary) 40deg,
+    #cfe6ff 70deg,
+    var(--cn-primary) 100deg,
+    rgba(79, 158, 255, 0.25) 150deg,
+    rgba(79, 158, 255, 0.12) 210deg,
+    var(--cn-secondary) 300deg,
+    rgba(79, 158, 255, 0.25) 360deg
+  );
+  animation: cn-neon-spin-offset 4s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cn-neon-btn-inner {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: calc(var(--cn-pill) - 1.5px);
+  background: rgba(5, 6, 13, 0.92);
+  padding: 0.85rem 1.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cn-fg);
+  transition: background-color 0.3s ease;
+}
+
+.cn-neon-btn-wrap:hover .cn-neon-btn-inner {
+  background: rgba(10, 12, 26, 0.82);
+}
+
+.cn-neon-btn-wrap:hover .cn-neon-btn-ring {
+  animation-duration: 1.8s;
 }

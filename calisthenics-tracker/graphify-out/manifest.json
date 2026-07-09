@@ -1,0 +1,627 @@
+{
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/package.json": {
+    "mtime": 1782485938.8139288,
+    "ast_hash": "ed02eeffb9e5a9ebc36798ac024bf09f",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/app.ts": {
+    "mtime": 1782484769.2978146,
+    "ast_hash": "28479a4bb0cb58683ea181ca0dc52a70",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/index.ts": {
+    "mtime": 1782482432.766506,
+    "ast_hash": "ef0b9d2af3b1fc56ac97c0d0a1d57974",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/lib/logger.ts": {
+    "mtime": 1782482432.5744126,
+    "ast_hash": "2969f5dd2daf2f5f7da7fb5c01492a20",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/middleware/session.ts": {
+    "mtime": 1782482432.8606434,
+    "ast_hash": "9b7fddbbbd0f21570db680754aa9bc2f",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/routes/auth.ts": {
+    "mtime": 1782482432.365248,
+    "ast_hash": "e18803b711e684cfed05e97bae5e6394",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/routes/debug.ts": {
+    "mtime": 1782484703.542626,
+    "ast_hash": "b59b29481f4513f93b434fc2a5c50670",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/routes/health.ts": {
+    "mtime": 1782482432.5915422,
+    "ast_hash": "2a63e492a06299587cb0b7fa1f0f3368",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/routes/ollama.ts": {
+    "mtime": 1782482432.3169954,
+    "ast_hash": "39b1c4ae80c4513e2021cde786fa1dc9",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/routes/workouts.ts": {
+    "mtime": 1782485927.3881636,
+    "ast_hash": "c4468da9b30a6d75d4141ddd948d57b0",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/services/ollama-generate.ts": {
+    "mtime": 1782484685.1534183,
+    "ast_hash": "0bb6ffb925e605274d65cf35de344eac",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/services/ollama-metrics.ts": {
+    "mtime": 1782484670.9076896,
+    "ast_hash": "0b1e596cd103f640569f42b1bd9872eb",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/services/ollama.test.ts": {
+    "mtime": 1782482432.3661025,
+    "ast_hash": "69371a0f593203c03eaf4ee74d8a433c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/services/ollama.ts": {
+    "mtime": 1782485487.4921985,
+    "ast_hash": "95fafa0e292b92460f49b384e5274caa",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/src/services/parse-workout.ts": {
+    "mtime": 1782490044.8813968,
+    "ast_hash": "c0216b34eb5ee654c7af4ebf299dc3c8",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/backend/tsconfig.json": {
+    "mtime": 1782482432.7660863,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/package.json": {
+    "mtime": 1782482432.5915926,
+    "ast_hash": "861728974202f670dc2d2f1ca358ee91",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/App.tsx": {
+    "mtime": 1782483817.8916483,
+    "ast_hash": "42dad969ca52aab4001f4c4591231570",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/app-shell.tsx": {
+    "mtime": 1782482432.3703394,
+    "ast_hash": "904be6403a57373ecac5f6db398a88a4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/error-boundary.tsx": {
+    "mtime": 1782482432.3660443,
+    "ast_hash": "a7a1a079776d302afa797ec02f182668",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/error-card.tsx": {
+    "mtime": 1782482432.3169029,
+    "ast_hash": "9fb57b9d1851f2b09a38199ebd75e3de",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/protected-route.tsx": {
+    "mtime": 1782483814.129795,
+    "ast_hash": "3c9a033ce8316a7f61bdaceaab437166",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/workout/live-stats-bar.tsx": {
+    "mtime": 1782482432.5753155,
+    "ast_hash": "c806ceb32a1b9e5aaca19eb8de54cb02",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/components/workout/set-log-sheet.tsx": {
+    "mtime": 1782492631.809486,
+    "ast_hash": "d403a7733ffdde79faf5cc218bdd57b1",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/hooks/use-workout-session.ts": {
+    "mtime": 1782492598.6637206,
+    "ast_hash": "2344ba32425cfd9a2ba50d16d3c86a8e",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/api.ts": {
+    "mtime": 1782482432.575315,
+    "ast_hash": "c4c17a7ca1063c00b9b7fef1f5cf5906",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/auth.tsx": {
+    "mtime": 1782483825.881797,
+    "ast_hash": "176ed22566010b0a07001abff8a166d8",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/haptic.ts": {
+    "mtime": 1782482432.591615,
+    "ast_hash": "6d461c58ec0bf75e39d4e6ec139b6bcd",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/hold-log.ts": {
+    "mtime": 1782492035.9681547,
+    "ast_hash": "eae9658c18f6af502e83e4693827d46d",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/logger.ts": {
+    "mtime": 1782482432.3176239,
+    "ast_hash": "6406318f63dfa2520543dafe439846b1",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/navigation-log.ts": {
+    "mtime": 1782483799.6595757,
+    "ast_hash": "18ceb07443b500017908e6ed118573d1",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/parse-workout-stream.ts": {
+    "mtime": 1782485960.8377948,
+    "ast_hash": "6d13e5fd5d48179fde24bb1f0fa2ffe7",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/parse-workout.ts": {
+    "mtime": 1782485963.8025074,
+    "ast_hash": "83e1cfc4d51ee6a46be95bb7ee898f7d",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/lib/warmup.ts": {
+    "mtime": 1782490047.8543448,
+    "ast_hash": "6f59d6e6b2bc7ae7787acb068817330d",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/main.tsx": {
+    "mtime": 1782482432.3653924,
+    "ast_hash": "16ce0947fc30d2685b3e4f1a176bd723",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/pages/home-page.tsx": {
+    "mtime": 1782485981.1637478,
+    "ast_hash": "b2809756a35ce9f23e5265a7246bae25",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/pages/import-page.tsx": {
+    "mtime": 1782485983.4175937,
+    "ast_hash": "9d72c64d6aa66ef295379624201423e1",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/pages/lock-screen.tsx": {
+    "mtime": 1782482432.3177001,
+    "ast_hash": "ca1cb2aa18ddf337793078a22de0ef04",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/pages/workout-live-page.tsx": {
+    "mtime": 1782492624.8426452,
+    "ast_hash": "50a640653b15e1995fa4526cd1533fd6",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/src/vite-env.d.ts": {
+    "mtime": 1782482432.3177402,
+    "ast_hash": "15b24161077fde72dde019b24a1f7292",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/tsconfig.json": {
+    "mtime": 1782482432.3177385,
+    "ast_hash": "3388f91ee1a0c27534b5ad2687b8f59c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/vite.config.ts": {
+    "mtime": 1782482432.7660825,
+    "ast_hash": "0b24b01bd4e9c92d3f6505ce748960fe",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/package.json": {
+    "mtime": 1782485941.9928343,
+    "ast_hash": "92fa131a5bcff7370632bc33142f8d94",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/package.json": {
+    "mtime": 1782482432.591414,
+    "ast_hash": "fe080a37f3ca79b012b4d934e67ff5be",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/src/index.ts": {
+    "mtime": 1782482432.7638066,
+    "ast_hash": "c76568904173512a07c94c5650daf98f",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/src/json-repair.test.ts": {
+    "mtime": 1782482432.7666323,
+    "ast_hash": "e7868e56a4d87372af60eff7e2268443",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/src/json-repair.ts": {
+    "mtime": 1782482432.3660245,
+    "ast_hash": "f688f8987cb3757d53394dd9adc6faa4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/src/parse.ts": {
+    "mtime": 1782484749.3250155,
+    "ast_hash": "4a151dfaf473a7203fba7d254beb5772",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ai-engine/tsconfig.json": {
+    "mtime": 1782482432.317803,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/database/package.json": {
+    "mtime": 1782482432.3653853,
+    "ast_hash": "8d21f728c0b48a4945dff41f15fa22cc",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/database/src/index.ts": {
+    "mtime": 1782482432.8603115,
+    "ast_hash": "489083880c16349150aece13ac8c7701",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/database/tsconfig.json": {
+    "mtime": 1782482432.3652039,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/pdf-engine/package.json": {
+    "mtime": 1782482432.5521095,
+    "ast_hash": "5bb7218edd1b8f1b4aba312dac26eec4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/pdf-engine/src/index.ts": {
+    "mtime": 1782482432.4413385,
+    "ast_hash": "6c2939a16b286dce618d4d281b63c788",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/pdf-engine/tsconfig.json": {
+    "mtime": 1782482432.5918293,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/prompts/package.json": {
+    "mtime": 1782482432.5918868,
+    "ast_hash": "792cdb879fbcdb00e7276458f162bbee",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/prompts/src/index.ts": {
+    "mtime": 1782482432.6433272,
+    "ast_hash": "53069614bcae0813eea47e9658652edd",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/prompts/src/workout.ts": {
+    "mtime": 1782485486.2756593,
+    "ast_hash": "1980e99ac9df9fb571078c6a080af619",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/prompts/tsconfig.json": {
+    "mtime": 1782482432.3660634,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/stats-engine/package.json": {
+    "mtime": 1782482432.85543,
+    "ast_hash": "aded963b6cbd0852f6a520d0362a5028",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/stats-engine/src/calculator.ts": {
+    "mtime": 1782482432.3169749,
+    "ast_hash": "6c49d26432f2b4d22261ba64418942ba",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/stats-engine/src/index.ts": {
+    "mtime": 1782482432.3660347,
+    "ast_hash": "32b3466fe203577cdafc1f9fbf905b17",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/stats-engine/tsconfig.json": {
+    "mtime": 1782482432.759185,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/timer-engine/package.json": {
+    "mtime": 1782482432.3703883,
+    "ast_hash": "c58a45ecd577ad3d1a6c59b2af1708c4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/timer-engine/src/index.ts": {
+    "mtime": 1782482432.5913963,
+    "ast_hash": "79eeac47402e071f4cdbf7df0fdb4a4b",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/timer-engine/src/timer.test.ts": {
+    "mtime": 1782482432.766552,
+    "ast_hash": "aada9bac11daaa179c1f5cf04ce55fe3",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/timer-engine/src/timer.ts": {
+    "mtime": 1782482432.5754168,
+    "ast_hash": "9e26a09c059a4f617e4f417888d16e83",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/timer-engine/tsconfig.json": {
+    "mtime": 1782482432.3661268,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/package.json": {
+    "mtime": 1782482432.8603075,
+    "ast_hash": "5c7089e361c26a6b8ddc6dcab7252b40",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/src/engine.ts": {
+    "mtime": 1782492597.0145543,
+    "ast_hash": "d62b310ca3c73c7661414fda751969ea",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/src/index.ts": {
+    "mtime": 1782482432.575449,
+    "ast_hash": "ed3d4cc42ef55703129e1a767832e04b",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/src/schemas/workout.ts": {
+    "mtime": 1782482432.4508674,
+    "ast_hash": "c383ede322c3937d23405b90d6b597b4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/src/workout.ts": {
+    "mtime": 1782482432.3626606,
+    "ast_hash": "7f392aa04d89440379577dd2334b7715",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/types/tsconfig.json": {
+    "mtime": 1782482432.5912845,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/package.json": {
+    "mtime": 1782482432.5519905,
+    "ast_hash": "07bd7d4dc21b7dd551564b48b31beee4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/app-container.tsx": {
+    "mtime": 1782482432.4501445,
+    "ast_hash": "67c1324c30062e6c90294c53f9bc0bfc",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/bottom-sheet.tsx": {
+    "mtime": 1782482432.59107,
+    "ast_hash": "04bce8ec646d6bcb80368401e675e4d9",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/button.tsx": {
+    "mtime": 1782482432.5914228,
+    "ast_hash": "097da4b6755d4c06c3b1e3ed94979ebf",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/card.tsx": {
+    "mtime": 1782482432.366051,
+    "ast_hash": "66c2e9c93f7b9aa0ef7205a6dd1f9942",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/circular-timer.tsx": {
+    "mtime": 1782482432.5917032,
+    "ast_hash": "06f7bc45ef1efe7c15c00617fd4c72e3",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/cn.ts": {
+    "mtime": 1782482432.3660471,
+    "ast_hash": "618d00bf4537ce84f9ba62c5b215fb30",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/header.tsx": {
+    "mtime": 1782482432.5748196,
+    "ast_hash": "8769e26b111ea403fdc843ea1cd326d0",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/index.ts": {
+    "mtime": 1782482432.365173,
+    "ast_hash": "704a38c58a83e72802d4e1b8f30d05e4",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/input.tsx": {
+    "mtime": 1782482432.551941,
+    "ast_hash": "e625f038343d3cbbb2c1f7ca83bf3585",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/pin-dots.tsx": {
+    "mtime": 1782482432.6466908,
+    "ast_hash": "af883f70d4c73465336ce7e347a45011",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/progress-bar.tsx": {
+    "mtime": 1782482432.3660202,
+    "ast_hash": "79d2d5593bb112c446eac0a831697845",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/screen.tsx": {
+    "mtime": 1782482432.781167,
+    "ast_hash": "af89bf254672a657158f7a2d4fb6f723",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/section.tsx": {
+    "mtime": 1782482432.3169687,
+    "ast_hash": "a5acb3effa72466ec2c58713df92519f",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/skeleton.tsx": {
+    "mtime": 1782482432.591343,
+    "ast_hash": "40c78edfb6a865302453034e9500972b",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/ui/src/text.tsx": {
+    "mtime": 1782482432.7592654,
+    "ast_hash": "44fb3cb57588c554d93892bae0c85c7a",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/package.json": {
+    "mtime": 1782490674.9445355,
+    "ast_hash": "bbd525c1273862da10dcc56fee1fd011",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/auth-server.ts": {
+    "mtime": 1782482432.5751398,
+    "ast_hash": "ab6d05ead47d97885d00ce534f69c923",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/auth.test.ts": {
+    "mtime": 1782482432.6499388,
+    "ast_hash": "38b6908299e900cb371990a88bd07e59",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/exercises.test.ts": {
+    "mtime": 1782490659.0452847,
+    "ast_hash": "d11e9510e0e23d24ff08904e42c509d5",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/exercises.ts": {
+    "mtime": 1782490693.9004722,
+    "ast_hash": "5642e3cd5ceb0cf4f5deae39dc6444e6",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/index.ts": {
+    "mtime": 1782490659.3582325,
+    "ast_hash": "8c7cc675a7ef8855c8ca428969f8ea58",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/src/session-shared.ts": {
+    "mtime": 1782482432.3659854,
+    "ast_hash": "b7abd381b92572b57ab0415fd2566003",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/utils/tsconfig.json": {
+    "mtime": 1782482432.3184457,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/package.json": {
+    "mtime": 1782482432.3178008,
+    "ast_hash": "01083a41fe860436730a6fb2357b50ba",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/base.ts": {
+    "mtime": 1782490242.7372556,
+    "ast_hash": "8a4ab2d7eeab2a72e873620667c9aa0a",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/emom.ts": {
+    "mtime": 1782482432.8605278,
+    "ast_hash": "4436f817caa3b7c1b7a5259dd59c6e5b",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/grouped.ts": {
+    "mtime": 1782482432.3701656,
+    "ast_hash": "69e2d1d3b197c1e2f75aa9c0b813d6b8",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/pyramid-ladder.ts": {
+    "mtime": 1782482432.3661005,
+    "ast_hash": "3d27d8cf1ebfd5f21335ea222e1f80b2",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/registry.ts": {
+    "mtime": 1782482432.5765162,
+    "ast_hash": "6c3c6b1a2c26f00ea3fe8ebf419f6b88",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/controllers/straight-sets.ts": {
+    "mtime": 1782482432.5915189,
+    "ast_hash": "966766d10a5d2b2afc3b4b3e8e7fda51",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/engine.ts": {
+    "mtime": 1782490253.2111442,
+    "ast_hash": "d9d2210d9af3783c4dfba2bc66dadc69",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/index.ts": {
+    "mtime": 1782490255.1897044,
+    "ast_hash": "5346bda8ae581c828de870cddb8b40a2",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/transitions.test.ts": {
+    "mtime": 1782492603.3687615,
+    "ast_hash": "6406463bd431c662d651ce3e6f2ceef1",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/transitions.ts": {
+    "mtime": 1782492610.1845853,
+    "ast_hash": "f301360cb97d72b941fd8e2daeddc958",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/src/view.ts": {
+    "mtime": 1782492597.9118516,
+    "ast_hash": "a2514fb8ae09314f919bc26935c9c294",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-engine/tsconfig.json": {
+    "mtime": 1782482432.591525,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/package.json": {
+    "mtime": 1782490659.754914,
+    "ast_hash": "b0118fe684f0b742303890d6ffd7992b",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/enrich.test.ts": {
+    "mtime": 1782490664.7832346,
+    "ast_hash": "eb7dd26ebab77c12223306d85f6f0092",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/enrich.ts": {
+    "mtime": 1782490663.1226764,
+    "ast_hash": "530b9143781aae643c51b59c0acd2f9c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/errors.ts": {
+    "mtime": 1782485814.4753585,
+    "ast_hash": "a798073f4d18480ea646d7f04be9845a",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/format.ts": {
+    "mtime": 1782485852.7285726,
+    "ast_hash": "8442bc67770701b8331ac370fcd58dc5",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/index.ts": {
+    "mtime": 1782490043.2165227,
+    "ast_hash": "51bc4442353c68e566858eef0f258370",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/normalize.test.ts": {
+    "mtime": 1782489460.3118837,
+    "ast_hash": "e37c471f3a95cb44ee69d0bc80c880dd",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/normalize.ts": {
+    "mtime": 1782490042.8817406,
+    "ast_hash": "0d179553a2e3c643755104599006793a",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/parse.test.ts": {
+    "mtime": 1782485869.574385,
+    "ast_hash": "5b3d0edb2c0bcd20a9449793e0b1ec4d",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/src/parse.ts": {
+    "mtime": 1782485906.1709187,
+    "ast_hash": "386ce716150d27508fe64c87b2dd348f",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/packages/workout-parser/tsconfig.json": {
+    "mtime": 1782485810.5435216,
+    "ast_hash": "9ba8099724ff63ac9f79c0609f551f6c",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/tsconfig.base.json": {
+    "mtime": 1782482432.3651724,
+    "ast_hash": "164a568e79ce1a38473462d17ff76889",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/index.html": {
+    "mtime": 1782482432.766474,
+    "ast_hash": "fac7980019f850b9f110c70874320631",
+    "semantic_hash": ""
+  },
+  "/Users/quentinbouyssou/portfolio/calisthenics-tracker/apps/mobile-web/public/favicon.svg": {
+    "mtime": 1782482432.7661722,
+    "ast_hash": "e812c2c933015ea0c4c6eaedd3a142ea",
+    "semantic_hash": ""
+  }
+}

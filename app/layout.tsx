@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { ResponsivePreviewShell } from "@/components/responsive-preview-shell";
+import "./premium-motion.css";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,9 +36,10 @@ export default function RootLayout({
     <html
       lang="fr"
       data-theme="dark"
+      suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ResponsivePreviewShell>{children}</ResponsivePreviewShell>
       </body>
     </html>

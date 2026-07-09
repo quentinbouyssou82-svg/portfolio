@@ -1,0 +1,60 @@
+# Uberly — Guide migrations Supabase
+
+Exécuter **dans l’ordre**, une seule fois par environnement (Supabase → SQL Editor).
+
+## Ordre obligatoire
+
+```
+1. margeo-setup.sql      → tables + triggers
+2. margeo-rls.sql        → RLS profiles, rides, analyses, feedback
+3. uberly-migrate.sql    → géoloc, vélo électrique, location_logs
+4. uberly-backend-v2.sql → storage bucket, vision metadata
+5. uberly-beta.sql       → champs nullable, beta_events, premium, vues
+6. uberly-beta-v2.sql    → funnel events, is_beta_tester, vues monitoring
+7. uberly-beta-v3.sql    → vue uberly_beta_vision_stats (geminiMs, corrections)
+```
+
+## Vérifications post-migration
+
+```sql
+-- Tables Uberly
+select tablename from pg_tables
+where schemaname = 'public' and tablename like 'margeo_%';
+
+-- RLS activé
+select tablename, rowsecurity from pg_tables
+where schemaname = 'public' and tablename like 'margeo_%';
+
+-- Bucket storage
+select id, public from storage.buckets where id = 'uberly-screenshots';
+```
+
+## RLS — qui voit quoi
+
+| Table | Lecture | Écriture client |
+|-------|---------|-----------------|
+| margeo_profiles | soi | soi |
+| margeo_rides | soi | soi |
+| margeo_analyses | soi | soi |
+| margeo_feedback | soi | soi |
+| margeo_location_logs | soi | insert soi |
+| margeo_beta_events | soi | **interdit** (API service_role) |
+
+## Idempotence
+
+Les fichiers utilisent `if not exists` / `drop policy if exists` — ré-exécutables sauf si vous modifiez manuellement le schéma.
+
+## Rollback
+
+Pas de rollback automatique. Sauvegarder le projet Supabase avant migration prod.
+
+## Activer un testeur Premium (SQL)
+
+```sql
+update public.margeo_profiles
+set premium = true,
+    premium_source = 'beta',
+    premium_until = now() + interval '30 days',
+    is_beta_tester = true
+where id = 'UUID_UTILISATEUR';
+```

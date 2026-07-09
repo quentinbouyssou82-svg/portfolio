@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mg-background: #09090b;
+  --color-mg-surface: #0e0e11;
+  --color-mg-card: #121215;
+  --color-mg-card-hover: #17171b;
+  --color-mg-border: rgba(255, 255, 255, 0.08);
+  --color-mg-border-strong: rgba(255, 255, 255, 0.14);
+
+  --color-mg-foreground: #fafafa;
+  --color-mg-muted: #a1a1aa;
+  --color-mg-faint: #6b6b74;
+
+  --color-mg-accent: #818cf8;
+  --color-mg-accent-strong: #6366f1;
+  --color-mg-accent-soft: rgba(129, 140, 248, 0.14);
+
+  --color-mg-go: #34d399;
+  --color-mg-go-soft: rgba(52, 211, 153, 0.12);
+  --color-mg-check: #fbbf24;
+  --color-mg-check-soft: rgba(251, 191, 36, 0.12);
+  --color-mg-stop: #f87171;
+  --color-mg-stop-soft: rgba(248, 113, 113, 0.12);
+
+  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-mg-glow: 0 0 0 1px rgba(129, 140, 248, 0.25),
+    0 8px 40px rgba(99, 102, 241, 0.14);
+
+  --animate-mg-fade-up: mg-fade-up 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  --animate-mg-shimmer: mg-shimmer 1.8s linear infinite;
+  --animate-mg-scan: mg-scan 2.2s ease-in-out infinite;
+
+  @keyframes mg-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes mg-scan {
+    0%,
+    100% {
+      transform: translateY(-110%);
+    }
+    50% {
+      transform: translateY(110%);
+    }
+  }
+
+  @keyframes mg-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.uberly-root,
+.margeo-root {
+  color-scheme: dark;
+  background: var(--color-mg-background);
+  color: var(--color-mg-foreground);
+  font-family: var(--font-uberly-sans), var(--font-margeo-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+.uberly-root ::selection,
+.margeo-root ::selection {
+  background: rgba(129, 140, 248, 0.35);
+}
+
+.uberly-root *,
+.margeo-root * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.uberly-root .bg-hero-glow,
+.margeo-root .bg-hero-glow {
+  min-height: 100%;
+  background-color: var(--color-mg-background);
+  background-image:
+    radial-gradient(
+      ellipse 120% 80% at 50% -20%,
+      rgba(99, 102, 241, 0.18),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 85% 5%,
+      rgba(139, 92, 246, 0.08),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 10% 30%,
+      rgba(99, 102, 241, 0.05),
+      transparent 60%
+    );
+}
+
+.uberly-root .bg-grid,
+.margeo-root .bg-grid {
+  inset: 0;
+  min-height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 100% 85% at 50% 0%,
+    black 25%,
+    transparent 100%
+  );
+}
+
+.uberly-root .text-gradient,
+.margeo-root .text-gradient {
+  background: linear-gradient(135deg, #fafafa 30%, rgba(250, 250, 250, 0.55));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.uberly-root .text-gradient-accent,
+.margeo-root .text-gradient-accent {
+  background: linear-gradient(135deg, #a5b4fc, #818cf8 45%, #c4b5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.uberly-root section[id],
+.margeo-root section[id] {
+  scroll-margin-top: 5rem;
+}

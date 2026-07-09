@@ -1,0 +1,26 @@
+{
+  "version": "v2-stability-ai",
+  "images": {
+    "canard": {
+      "foodId": "canard",
+      "fileName": "canard.svg",
+      "provider": "fallback",
+      "promptVersion": "v2-stability-ai",
+      "generatedAt": "2026-06-22T14:19:53.853Z"
+    },
+    "dinde": {
+      "foodId": "dinde",
+      "fileName": "dinde.svg",
+      "provider": "fallback",
+      "promptVersion": "v2-stability-ai",
+      "generatedAt": "2026-06-22T14:19:53.853Z"
+    },
+    "porc": {
+      "foodId": "porc",
+      "fileName": "porc.svg",
+      "provider": "fallback",
+      "promptVersion": "v2-stability-ai",
+      "generatedAt": "2026-06-22T14:19:53.853Z"
+    }
+  }
+}

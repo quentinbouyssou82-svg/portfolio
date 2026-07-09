@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+bin/ngrok
 
 # debug
 npm-debug.log*
@@ -35,8 +36,6 @@ yarn-error.log*
 !.env.example
 .streamlit/secrets.toml
 
-# IDE / agent local
-.cursor/
 .claude/
 
 # vercel

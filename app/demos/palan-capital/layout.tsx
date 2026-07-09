@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Jost } from "next/font/google";
-import { PalanCookieBanner } from "@/components/palan-capital/palan-cookie-banner";
-import { PalanFooter } from "@/components/palan-capital/palan-footer";
-import { PalanNav } from "@/components/palan-capital/palan-nav";
-import { CONTACT_EMAIL } from "@/lib/palan-capital/constants";
-import "./palan-capital.css";
+import { Cormorant_Garamond, Manrope } from "next/font/google";
 
 const display = Cormorant_Garamond({
   subsets: ["latin"],
@@ -13,65 +8,26 @@ const display = Cormorant_Garamond({
   variable: "--font-palan-display",
 });
 
-const sans = Jost({
+const sans = Manrope({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-palan-sans",
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Palan Capital — Ingénierie financière & structuration patrimoniale",
-    template: "%s · Palan Capital",
-  },
+  title: "Palan Capital — Ingénierie financière & structuration patrimoniale",
   description:
     "Cabinet indépendant d'ingénierie financière. Financement & LLD, dette privée, fiducie-sûreté, structuration patrimoniale, levée de fonds. France · Luxembourg · Émirats Arabes Unis.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-  openGraph: {
-    title: "Palan Capital",
-    description:
-      "Cabinet indépendant d'ingénierie financière et de structuration patrimoniale.",
-    type: "website",
-    locale: "fr_FR",
-  },
-};
-
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FinancialService",
-  name: "Palan Capital",
-  legalName: "SAS LIVING",
-  url: "https://palan-capital.netlify.app",
-  email: CONTACT_EMAIL,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "2 rue d'Austerlitz",
-    addressLocality: "Toulouse",
-    postalCode: "31000",
-    addressCountry: "FR",
-  },
-  areaServed: ["France", "Luxembourg", "Émirats Arabes Unis"],
-  description:
-    "Cabinet indépendant d'ingénierie financière et de structuration patrimoniale.",
+  robots: { index: false, follow: false },
 };
 
 export default function PalanCapitalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`${display.variable} ${sans.variable} palan-root min-h-screen`}>
-      <a href="#main-content" className="palan-skip-link">
-        Aller au contenu
-      </a>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-      />
-      <PalanNav />
-      <main id="main-content">{children}</main>
-      <PalanFooter />
-      <PalanCookieBanner />
+    <div
+      className={`${display.variable} ${sans.variable} palan-root min-h-screen w-full`}
+      style={{ backgroundColor: "#030304", color: "#f5f2ec" }}
+    >
+      {children}
     </div>
   );
 }

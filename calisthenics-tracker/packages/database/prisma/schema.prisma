@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Session d'authentification locale (mono-utilisateur)
+model AuthSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+/// Séance d'entraînement
+model WorkoutSession {
+  id          String   @id @default(cuid())
+  title       String?
+  status      String   @default("draft") // draft | parsed | active | paused | completed | cancelled
+  rawText     String?
+  plannedJson String?  // ParsedWorkout JSON
+  engineStateJson String?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  setLogs     SetLog[]
+  report      SessionReport?
+  aiMessages  AiMessage[]
+}
+
+/// Log d'une série réalisée (enregistrement immédiat)
+model SetLog {
+  id              String   @id @default(cuid())
+  sessionId       String
+  exerciseId      String
+  exerciseName    String
+  setNumber       Int
+  actualReps      Int?
+  actualWeight    Float?
+  rir             Int?
+  rpe             Float?
+  durationSeconds Int?
+  comments        String?
+  completedAt     DateTime @default(now())
+
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([sessionId, exerciseId])
+}
+
+/// Rapport de fin de séance
+model SessionReport {
+  id                  String   @id @default(cuid())
+  sessionId           String   @unique
+  totalDurationSeconds Int
+  activeTimeSeconds   Int
+  restTimeSeconds     Int
+  totalReps           Int
+  totalVolumeKg       Float
+  reportJson          String   // SessionReport + détails
+  aiAnalysis          String?
+  createdAt           DateTime @default(now())
+
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+/// Historique des questions IA pendant la séance
+model AiMessage {
+  id        String   @id @default(cuid())
+  sessionId String?
+  role      String   // user | assistant
+  content   String
+  createdAt DateTime @default(now())
+
+  session WorkoutSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+}
+
+/// Préférences utilisateur (mono-utilisateur)
+model UserSettings {
+  id        String   @id @default("default")
+  pinHash   String?
+  updatedAt DateTime @updatedAt
+}

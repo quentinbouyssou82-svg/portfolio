@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "@cali/ui/globals.css";
+
+@layer base {
+  * {
+    @apply border-cali-border;
+  }
+
+  html {
+    @apply antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-cali-bg text-cali-text min-h-dvh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      sans-serif;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    @apply min-h-dvh;
+  }
+}

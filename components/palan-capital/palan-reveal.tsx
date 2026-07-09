@@ -1,13 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-type PalanRevealProps = {
-  children: React.ReactNode;
-  className?: string;
-};
-
-export function PalanReveal({ children, className = "" }: PalanRevealProps) {
+export function PalanReveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -15,8 +10,8 @@ export function PalanReveal({ children, className = "" }: PalanRevealProps) {
     const el = ref.current;
     if (!el) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
       setVisible(true);
       return;
     }
@@ -38,7 +33,9 @@ export function PalanReveal({ children, className = "" }: PalanRevealProps) {
   return (
     <div
       ref={ref}
-      className={`palan-reveal ${visible ? "palan-reveal-visible" : ""} ${className}`}
+      className={`transition-all duration-700 ease-out ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+      } ${className}`}
     >
       {children}
     </div>

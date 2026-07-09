@@ -1,0 +1,171 @@
+/**
+ * Pricing V1 — tokens dorés uniquement (pas de bleu).
+ * Scoped à .v2-pricing-wrap pour ne pas affecter le reste du site V2.
+ */
+
+.portfolio-v2 .v2-pricing-wrap {
+  --pricing-gold: #c9b06a;
+  --pricing-gold-soft: rgba(201, 176, 106, 0.22);
+  --accent: var(--pricing-gold);
+  --accent-strong: #b8944f;
+  --accent-soft: rgba(201, 176, 106, 0.14);
+  --accent-gradient-start: #c9b06a;
+  --accent-gradient-end: #d4bc82;
+  --hero-glow: rgba(201, 169, 98, 0.28);
+  --hero-glow-soft: rgba(201, 169, 98, 0.14);
+  --ring: rgba(201, 169, 98, 0.38);
+  --glow-soft: rgba(201, 169, 98, 0.1);
+}
+
+.portfolio-v2[data-theme="dark"] .v2-pricing-wrap {
+  --pricing-gold: #dbc88a;
+  --pricing-gold-soft: rgba(219, 200, 138, 0.18);
+  --accent: var(--pricing-gold);
+  --accent-strong: #c9b06a;
+  --accent-soft: rgba(219, 200, 138, 0.16);
+  --accent-gradient-start: #dbc88a;
+  --accent-gradient-end: #e8d9a8;
+  --hero-glow: rgba(201, 169, 98, 0.32);
+  --hero-glow-soft: rgba(201, 169, 98, 0.16);
+  --ring: rgba(219, 200, 138, 0.42);
+  --glow-soft: rgba(201, 169, 98, 0.12);
+}
+
+/* CTA featured */
+.portfolio-v2 .v2-pricing-wrap .hero-cta-primary {
+  background: var(--foreground) !important;
+  color: var(--background) !important;
+  border-radius: 0.5rem !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .hero-cta-primary:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 24px 48px -24px color-mix(in srgb, var(--pricing-gold) 55%, transparent) !important;
+  filter: brightness(1.04);
+  transform: translateY(-2px) scale(1.015);
+}
+
+/* Hover glow — doré uniquement */
+.portfolio-v2 .v2-pricing-wrap .card-hover-glow::before {
+  background: radial-gradient(
+    520px circle at var(--glow-x, 50%) var(--glow-y, 40%),
+    color-mix(in srgb, var(--pricing-gold) 22%, transparent),
+    transparent 58%
+  );
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-bg {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--surface-strong) 90%, transparent) 0%,
+    color-mix(in srgb, var(--pricing-gold) 8%, var(--surface)) 50%,
+    color-mix(in srgb, var(--pricing-gold-soft) 35%, var(--surface)) 100%
+  );
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-bg::after {
+  background: radial-gradient(
+    420px circle at var(--glow-x, 50%) var(--glow-y, 35%),
+    color-mix(in srgb, var(--pricing-gold) 28%, transparent),
+    transparent 62%
+  );
+}
+
+.portfolio-v2 .v2-pricing-wrap .premium-interactive:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ring) 18%, transparent) inset,
+    0 22px 48px -28px color-mix(in srgb, var(--pricing-gold) 32%, transparent);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-card-secondary:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pricing-gold) 14%, transparent) inset,
+    0 28px 56px -34px color-mix(in srgb, var(--pricing-gold) 28%, transparent);
+}
+
+.portfolio-v2 .v2-pricing-wrap .page-section {
+  padding-block: 0;
+  border-top: none;
+}
+
+.portfolio-v2 .v2-pricing-wrap .hero-display {
+  font-family: var(--font-v2-sans), system-ui, sans-serif;
+  letter-spacing: -0.035em;
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-price {
+  font-family: var(--font-v2-sans), system-ui, sans-serif;
+}
+
+.portfolio-v2 .v2-pricing-wrap .text-emerald-500 {
+  color: rgb(16 185 129) !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .lucide-sparkles,
+.portfolio-v2 .v2-pricing-wrap .lucide-zap,
+.portfolio-v2 .v2-pricing-wrap .pricing-popular-badge .lucide-star {
+  color: var(--pricing-gold);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-comparison .lucide-check {
+  color: rgb(16 185 129);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-feature-icon-featured .lucide-check {
+  color: var(--foreground);
+}
+
+/* Nom du plan Pro — doré */
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-shell .text-xs.font-semibold,
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured .text-xs.font-semibold {
+  color: var(--pricing-gold) !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-cta-secondary:hover {
+  border-color: color-mix(in srgb, var(--pricing-gold) 40%, var(--border)) !important;
+  box-shadow: 0 12px 28px -20px color-mix(in srgb, var(--pricing-gold) 22%, transparent);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-shell:hover {
+  box-shadow:
+    0 0 64px -8px color-mix(in srgb, var(--pricing-gold) 52%, transparent),
+    0 32px 64px -34px color-mix(in srgb, var(--pricing-gold-soft) 64%, transparent) !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-bg .pricing-card-featured-glow,
+.portfolio-v2 .v2-pricing-wrap .pricing-card-featured-bg .pricing-card-featured-light {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    color-mix(in srgb, var(--pricing-gold) 35%, transparent),
+    transparent 72%
+  );
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-section-badge .lucide-sparkles {
+  color: var(--pricing-gold) !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-featured-note {
+  border-color: color-mix(in srgb, var(--pricing-gold) 35%, var(--border)) !important;
+  background: color-mix(in srgb, var(--pricing-gold-soft) 60%, var(--surface)) !important;
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-comparison-pro,
+.portfolio-v2 .v2-pricing-wrap .pricing-comparison-mobile .pricing-comparison-pro {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--pricing-gold-soft) 40%, transparent),
+    color-mix(in srgb, var(--pricing-gold-soft) 15%, transparent)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pricing-gold) 18%, transparent);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-comparison thead th:nth-child(3) {
+  color: var(--pricing-gold);
+}
+
+.portfolio-v2 .v2-pricing-wrap .pricing-comparison-mobile .pricing-comparison-pro > p {
+  color: var(--pricing-gold) !important;
+}

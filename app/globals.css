@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "./premium-motion.css";
 
 :root {
   --background: #ffffff;
@@ -1138,3 +1137,7 @@ html:has(body[data-preview-frame="true"]) .responsive-preview-toolbar,
 html:has(body[data-preview-frame="true"]) .responsive-preview-workbench {
   display: none !important;
 }
+
+/* Demo themes — palan first; apex last so `.apex-root` tokens win on /demos/apex-advisory */
+@import "./demos/palan-capital/palan-capital.css";
+@import "./demos/apex-advisory/apex-advisory.css";

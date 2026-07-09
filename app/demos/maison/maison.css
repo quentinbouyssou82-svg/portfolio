@@ -1,0 +1,244 @@
+.maison-root {
+  --radius: 1rem;
+
+  --cream: oklch(0.985 0.008 80);
+  --paper: oklch(1 0 0);
+  --sage: oklch(0.5 0.018 145);
+  --sage-soft: oklch(0.95 0.012 145);
+  --terracotta: oklch(0.62 0.11 45);
+  --olive: oklch(0.62 0.04 115);
+  --ink: oklch(0.18 0.005 80);
+  --ash: oklch(0.7 0.005 80);
+
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: oklch(0.98 0.005 80);
+  --secondary: oklch(0.96 0.006 80);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.96 0.006 80);
+  --muted-foreground: oklch(0.55 0.008 80);
+  --accent: var(--sage-soft);
+  --accent-foreground: var(--sage);
+  --destructive: oklch(0.58 0.18 25);
+  --destructive-foreground: oklch(0.98 0.005 80);
+  --border: oklch(0.92 0.006 80);
+  --input: oklch(0.92 0.006 80);
+  --ring: var(--sage);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-cream: var(--cream);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
+  --color-terracotta: var(--terracotta);
+  --color-ink: var(--ink);
+  --color-olive: var(--olive);
+  --color-paper: var(--paper);
+  --color-ash: var(--ash);
+
+  background-color: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-maison-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+.maison-root * {
+  border-color: var(--color-border);
+}
+
+.maison-root .font-serif {
+  font-family: var(--font-maison-serif), ui-serif, Georgia, serif;
+  font-feature-settings: "liga";
+}
+
+.maison-root .bg-cream { background-color: var(--cream); }
+.maison-root .bg-paper { background-color: var(--paper); }
+.maison-root .bg-sage { background-color: var(--sage); }
+.maison-root .bg-sage-soft { background-color: var(--sage-soft); }
+.maison-root .bg-ink { background-color: var(--ink); }
+.maison-root .bg-terracotta { background-color: var(--terracotta); }
+.maison-root .bg-olive { background-color: var(--olive); }
+.maison-root .text-cream { color: var(--cream); }
+.maison-root .text-sage { color: var(--sage); }
+.maison-root .text-terracotta { color: var(--terracotta); }
+.maison-root .text-olive { color: var(--olive); }
+.maison-root .text-ink { color: var(--ink); }
+.maison-root .text-ash { color: var(--ash); }
+.maison-root .text-muted-foreground { color: var(--muted-foreground); }
+.maison-root .ring-sage { --tw-ring-color: var(--sage); }
+.maison-root .border-border { border-color: var(--border); }
+.maison-root .divide-border > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--border);
+}
+
+@keyframes maison-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes maison-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.maison-root .animate-rise { animation: maison-rise 0.5s cubic-bezier(0.19,1,0.22,1) both; }
+.maison-root .animate-fade-in { animation: maison-fade-in 0.4s ease-out both; }
+.maison-root .delay-100 { animation-delay: 100ms; }
+.maison-root .delay-200 { animation-delay: 200ms; }
+.maison-root .delay-300 { animation-delay: 300ms; }
+
+.maison-input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--paper);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+.maison-input:focus {
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--sage) 30%, transparent);
+}
+.maison-input:disabled {
+  opacity: 0.6;
+}
+
+.maison-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+.maison-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.maison-btn-primary {
+  background: var(--ink);
+  color: var(--cream);
+}
+.maison-btn-block {
+  width: 100%;
+}
+
+.maison-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--cream);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: maison-spin 0.6s linear infinite;
+}
+@keyframes maison-food-pop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.maison-root .maison-food-card {
+  animation: maison-food-pop 0.25s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+.maison-root .maison-food-tint {
+  transition: opacity 0.25s ease;
+}
+.maison-root .maison-food-tint--like {
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--sage) 6%, transparent) 0%,
+    color-mix(in oklab, var(--sage) 14%, transparent) 55%,
+    color-mix(in oklab, var(--sage) 22%, transparent) 100%
+  );
+}
+.maison-root .maison-food-tint--dislike {
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--terracotta) 5%, transparent) 0%,
+    color-mix(in oklab, var(--terracotta) 12%, transparent) 55%,
+    color-mix(in oklab, var(--terracotta) 20%, transparent) 100%
+  );
+}
+.maison-root .scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.maison-root .scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.maison-root .maison-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.maison-root .maison-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+.maison-root .maison-scroll-x > * {
+  scroll-snap-align: start;
+}
+
+.maison-root .maison-diet-card {
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+.maison-root .maison-diet-card:active:not(:disabled),
+.maison-root .maison-provider-card:active:not(:disabled) {
+  transform: scale(0.99);
+}
+.maison-root .maison-provider-card {
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+@keyframes maison-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes maison-gen-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.92; }
+}
+.maison-gen-pulse {
+  animation: maison-gen-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes maison-gen-shimmer {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+  100% { filter: brightness(1); }
+}
+.maison-gen-shimmer {
+  animation: maison-gen-shimmer 1.4s ease-in-out infinite;
+}

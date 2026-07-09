@@ -1,75 +1,78 @@
 import Link from "next/link";
 import { PALAN_BASE } from "@/lib/palan-capital/constants";
 
-type CtaBandProps = {
-  lines: string[];
-  button: string;
-  href?: string;
-};
-
-export function PalanCtaBand({ lines, button, href = `${PALAN_BASE}/contact` }: CtaBandProps) {
-  return (
-    <section className="flex flex-col items-start justify-between gap-8 bg-[var(--palan-gold)] px-5 py-14 md:flex-row md:items-center md:px-10 md:py-20 lg:px-16">
-      <p className="font-display max-w-xl text-[clamp(1.35rem,2.5vw,2.25rem)] font-light leading-snug text-white">
-        {lines.map((line, i) => (
-          <span key={line}>
-            {i > 0 && <br />}
-            {i === lines.length - 1 && lines.length > 1 ? (
-              <em className="italic">{line}</em>
-            ) : (
-              <>
-                {line}
-                {i < lines.length - 1 && !line.endsWith(",") && ","}
-              </>
-            )}
-          </span>
-        ))}
-      </p>
-      <Link
-        href={href}
-        className="shrink-0 bg-white px-8 py-3 text-[0.68rem] font-medium uppercase tracking-[0.13em] text-[var(--palan-navy)] transition-opacity hover:opacity-80"
-      >
-        {button}
-      </Link>
-    </section>
-  );
-}
-
 export function PalanPageHero({
   eyebrow,
   title,
   intro,
+  dark = false,
 }: {
   eyebrow: string;
   title: string[];
   intro?: string;
+  dark?: boolean;
 }) {
   return (
-    <section className="bg-[var(--palan-navy)] px-5 pb-16 pt-32 md:px-10 md:pb-20 md:pt-36 lg:px-16">
-      <div className="mx-auto max-w-[90rem]">
-        <p className="mb-4 text-[0.65rem] uppercase tracking-[0.2em] text-[var(--palan-gold)]">{eyebrow}</p>
-        <h1 className="font-display max-w-3xl text-[clamp(2rem,5vw,4.5rem)] font-light leading-[1.08] text-white">
+    <header
+      className={`pt-[calc(4.25rem+3rem)] pb-16 md:pb-24 ${
+        dark ? "bg-[var(--navy)] text-[var(--ivory)]" : "bg-[var(--white)]"
+      }`}
+    >
+      <div className="palan-wrap">
+        <p className={`pc-eyebrow mb-6 ${dark ? "!text-[var(--gold)]" : ""}`}>{eyebrow}</p>
+        <h1
+          className={`pc-display max-w-3xl text-[clamp(2.25rem,5vw,3.75rem)] ${
+            dark ? "text-[var(--ivory)] [&_em]:text-[var(--gold)]" : ""
+          }`}
+        >
           {title[0]}
           {title[1] && (
             <>
               <br />
-              <em className="text-[var(--palan-gold)] italic">{title[1]}</em>
+              <em>{title[1]}</em>
             </>
           )}
         </h1>
         {intro && (
-          <p className="mt-6 max-w-lg text-[0.85rem] leading-[1.85] text-white/55">{intro}</p>
+          <p className={`pc-body mt-6 max-w-2xl ${dark ? "!text-[var(--ivory)]/75" : ""}`}>{intro}</p>
         )}
       </div>
-    </section>
+    </header>
   );
 }
 
-export function PalanSplitTitle({ parts }: { parts: string[] }) {
+export function PalanSplitTitle({ parts, light = false }: { parts: string[]; light?: boolean }) {
   return (
-    <h2 className="font-display text-[clamp(1.6rem,3vw,3rem)] font-light leading-tight text-[var(--palan-navy)]">
-      {parts[0]}{" "}
-      <em className="text-[var(--palan-gold)] italic">{parts[1]}</em>
+    <h2 className={`pc-display text-[clamp(1.5rem,2.8vw,2.25rem)] ${light ? "text-[var(--ivory)] [&_em]:text-[var(--gold)]" : ""}`}>
+      {parts[0]} <em>{parts[1]}</em>
     </h2>
+  );
+}
+
+export function PalanCtaBand({
+  lines,
+  button,
+  href = `${PALAN_BASE}/contact`,
+}: {
+  lines: string[];
+  button: string;
+  href?: string;
+}) {
+  return (
+    <section className="bg-[var(--gold)]">
+      <div className="palan-wrap flex flex-col items-start justify-between gap-8 py-14 md:flex-row md:items-center md:py-20">
+        <p className="font-serif max-w-lg text-[clamp(1.25rem,2.2vw,1.875rem)] font-light leading-snug text-[var(--navy)]">
+          {lines.map((line, i) => (
+            <span key={line}>
+              {i > 0 && <br />}
+              {line}
+            </span>
+          ))}
+        </p>
+        <Link href={href} className="pc-btn pc-btn-navy shrink-0">
+          {button}
+        </Link>
+      </div>
+    </section>
   );
 }

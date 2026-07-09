@@ -5,10 +5,10 @@ import { audiencePages } from "@/lib/palan-capital/content";
 const content = audiencePages["patrimoines-prives"];
 
 export const metadata: Metadata = {
-  title: content.meta.title.replace(" — Palan Capital", ""),
+  title: "Patrimoines privés",
   description: content.meta.description,
 };
 
-export default function PatrimoinesPage() {
+export default function PatrimoinesPrivesPage() {
   return <PalanAudiencePage content={content} />;
 }

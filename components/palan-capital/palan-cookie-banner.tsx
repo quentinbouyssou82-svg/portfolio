@@ -31,35 +31,18 @@ export function PalanCookieBanner() {
   return (
     <div
       role="dialog"
-      aria-label="Information cookies"
-      className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-2xl border border-[var(--palan-line)] bg-[var(--palan-ivory)] p-5 shadow-lg md:inset-x-6 md:p-6"
+      aria-label="Cookies"
+      className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-lg border border-[var(--line-gold)] bg-[var(--white)] p-6 shadow-[0_8px_40px_rgba(11,20,38,0.1)]"
     >
-      <p className="text-[0.8rem] leading-relaxed text-[var(--palan-gray)]">
-        Ce site utilise des cookies strictement nécessaires au fonctionnement et, avec votre accord,
-        des mesures d&apos;audience anonymisées. En continuant, vous acceptez notre utilisation des
-        cookies.{" "}
-        <Link
-          href={`${PALAN_BASE}/mentions-legales#confidentialite`}
-          className="text-[var(--palan-gold)] underline underline-offset-2"
-        >
+      <p className="text-[0.8125rem] leading-relaxed text-[var(--gray)]">
+        Ce site utilise des cookies nécessaires à son fonctionnement.{" "}
+        <Link href={`${PALAN_BASE}/mentions-legales#confidentialite`} className="text-[var(--gold)] underline">
           En savoir plus
         </Link>
       </p>
-      <div className="mt-4 flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={accept}
-          className="bg-[var(--palan-gold)] px-5 py-2.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-white transition-opacity hover:opacity-85"
-        >
-          Accepter
-        </button>
-        <Link
-          href={`${PALAN_BASE}/mentions-legales#confidentialite`}
-          className="border border-[var(--palan-line)] px-5 py-2.5 text-[0.65rem] uppercase tracking-[0.12em] text-[var(--palan-navy)] transition-colors hover:border-[var(--palan-gold)]"
-        >
-          Paramètres
-        </Link>
-      </div>
+      <button type="button" onClick={accept} className="pc-btn pc-btn-gold mt-5">
+        Accepter
+      </button>
     </div>
   );
 }

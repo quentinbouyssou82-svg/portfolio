@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { HeroHeadline } from "@/components/motion/hero-headline";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 
@@ -21,7 +22,7 @@ export function PriorityListHero() {
 
       <ScrollReveal delay={0.05}>
         <p className="priority-list-badge relative inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-4 py-1.5 text-xs font-medium tracking-[0.04em] text-[var(--muted)]">
-          <span aria-hidden>🚀</span>
+          <Sparkles className="size-3.5 text-[var(--accent)]" aria-hidden />
           Ouverture prochaine
         </p>
       </ScrollReveal>

@@ -3,11 +3,46 @@ import { ArrowUpRight } from "lucide-react";
 
 const demos = [
   {
+    href: "/demos/uberly",
+    name: "Uberly",
+    sector: "Copilote IA · Livraison",
+    accent: "from-indigo-400/20 to-transparent",
+    border: "border-indigo-400/25",
+  },
+  {
     href: "/demos/cerveau-numerique",
     name: "Mon Cerveau Numérique",
     sector: "Assistant de vie · IA",
     accent: "from-[#4f9eff]/20 to-transparent",
     border: "border-[#4f9eff]/25",
+  },
+  {
+    href: "/demos/maison",
+    name: "Maison",
+    sector: "Planification repas · Famille",
+    accent: "from-emerald-500/20 to-transparent",
+    border: "border-emerald-500/25",
+  },
+  {
+    href: "/demos/lifeos",
+    name: "LifeOS",
+    sector: "Life progression · Gamification",
+    accent: "from-violet-500/25 to-transparent",
+    border: "border-violet-500/30",
+  },
+  {
+    href: "/demos/apex-advisory",
+    name: "Palan Capital",
+    sector: "Ingénierie financière · FR",
+    accent: "from-[#d4c4a8]/20 to-transparent",
+    border: "border-[#d4c4a8]/25",
+  },
+  {
+    href: "/demos/meridian-capital",
+    name: "Meridian Capital",
+    sector: "Ingénierie financière · FR",
+    accent: "from-[#C8A24A]/15 to-transparent",
+    border: "border-[#C8A24A]/20",
   },
   {
     href: "/demos/bella-vista",
@@ -43,10 +78,10 @@ export default function HubPage() {
           Démonstrations web premium
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-white/60">
-          Trois expériences complètes conçues pour illustrer design, conversion
+          Expériences complètes conçues pour illustrer design, conversion
           et fonctionnalités avancées.
         </p>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {demos.map((demo) => (
             <Link
               key={demo.href}

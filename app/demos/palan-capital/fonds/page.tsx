@@ -5,7 +5,7 @@ import { audiencePages } from "@/lib/palan-capital/content";
 const content = audiencePages.fonds;
 
 export const metadata: Metadata = {
-  title: content.meta.title.replace(" — Palan Capital", ""),
+  title: "Fonds d'investissement",
   description: content.meta.description,
 };
 

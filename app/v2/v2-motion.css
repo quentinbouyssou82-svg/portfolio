@@ -1,0 +1,79 @@
+/**
+ * V2 Motion System — overrides scoped, easing & durées unifiés.
+ */
+
+.portfolio-v2 .reveal-on-scroll {
+  transform: translateY(var(--v2-reveal-y));
+  transition:
+    opacity var(--v2-duration-reveal) var(--v2-ease),
+    transform var(--v2-duration-reveal) var(--v2-ease);
+}
+
+.portfolio-v2 .reveal-stagger > .reveal-stagger-item {
+  transform: translateY(var(--v2-reveal-y));
+  transition:
+    opacity var(--v2-duration-slow) var(--v2-ease),
+    transform var(--v2-duration-slow) var(--v2-ease);
+  transition-delay: calc(var(--stagger-index, 0) * var(--v2-stagger-step));
+}
+
+.portfolio-v2 .reveal-words .reveal-word {
+  transform: translateY(12px);
+  transition:
+    opacity var(--v2-duration-slow) var(--v2-ease),
+    transform var(--v2-duration-slow) var(--v2-ease);
+  transition-delay: calc(var(--word-index, 0) * 50ms + 60ms);
+}
+
+.portfolio-v2 .page-section {
+  transform: translateY(8px);
+  transition:
+    opacity var(--v2-duration-reveal) var(--v2-ease),
+    transform var(--v2-duration-reveal) var(--v2-ease);
+}
+
+.portfolio-v2 .premium-interactive {
+  transition:
+    transform var(--v2-duration-normal) var(--v2-ease),
+    box-shadow var(--v2-duration-normal) var(--v2-ease),
+    border-color var(--v2-duration-fast) var(--v2-ease),
+    background-color var(--v2-duration-fast) var(--v2-ease);
+}
+
+.portfolio-v2 .premium-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -20px rgba(201, 169, 98, 0.12);
+}
+
+.portfolio-v2 .v2-project-row.premium-interactive:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.portfolio-v2 .magnetic-btn {
+  transition: transform var(--v2-duration-fast) var(--v2-ease);
+}
+
+.portfolio-v2 .card-hover-glow::before {
+  background: radial-gradient(
+    520px circle at var(--glow-x, 50%) var(--glow-y, 40%),
+    rgba(201, 169, 98, 0.07),
+    transparent 58%
+  );
+  transition: opacity var(--v2-duration-normal) var(--v2-ease);
+}
+
+.portfolio-v2 .v2-hero-badge .lucide-sparkles {
+  color: var(--v2-gold);
+}
+
+.portfolio-v2 .v2-service-icon {
+  color: var(--v2-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-v2 .premium-interactive:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

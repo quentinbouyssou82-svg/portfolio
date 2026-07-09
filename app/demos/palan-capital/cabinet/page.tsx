@@ -14,8 +14,8 @@ export default function CabinetPage() {
 
   return (
     <>
-      <div className="grid min-h-[calc(100vh-4.5rem)] lg:grid-cols-2">
-        <div className="relative min-h-[24rem] lg:min-h-0">
+      <div className="grid lg:min-h-[calc(100vh-4.25rem)] lg:grid-cols-2">
+        <div className="relative min-h-[22rem] bg-[var(--navy-light)] lg:min-h-0">
           <Image
             src="/demos/palan-capital/photo-julien.jpg"
             alt="Julien Guiraud, fondateur de Palan Capital"
@@ -26,21 +26,21 @@ export default function CabinetPage() {
           />
         </div>
 
-        <div className="flex flex-col justify-center bg-[var(--palan-ivory)] px-5 py-16 md:px-12 md:py-20 lg:px-16">
-          <div className="palan-section-tag mb-8">{c.tag}</div>
-          <h1 className="font-display mb-3 text-[clamp(2.5rem,4vw,3.5rem)] font-light leading-[1.05] text-[var(--palan-navy)]">
+        <div className="flex flex-col justify-center bg-[var(--ivory)] px-5 py-16 md:px-12 md:py-20 lg:px-16">
+          <p className="pc-eyebrow mb-8">{c.tag}</p>
+          <h1 className="pc-display text-[clamp(2.5rem,4vw,3.25rem)]">
             {c.name[0]}
             <br />
             {c.name[1]}
           </h1>
-          <p className="mb-8 text-[0.68rem] uppercase tracking-[0.18em] text-[var(--palan-gold)]">{c.role}</p>
-          <div className="mb-10 h-px w-10 bg-[var(--palan-gold)]" />
+          <p className="pc-label mt-4">{c.role}</p>
+          <hr className="pc-divider my-10 w-12" />
           {c.bios.map((bio) => (
-            <p key={bio.slice(0, 40)} className="mb-6 text-[0.875rem] leading-[2] text-[var(--palan-gray)]">
+            <p key={bio.slice(0, 40)} className="pc-body mb-6 !leading-[2]">
               {bio}
             </p>
           ))}
-          <p className="text-[0.75rem] leading-[1.85] text-[var(--palan-navy)]/40">
+          <p className="text-[0.75rem] leading-[1.9] text-[var(--gray)]">
             {c.details.map((d) => (
               <span key={d} className="block">
                 {d}

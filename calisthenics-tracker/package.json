@@ -1,0 +1,28 @@
+{
+  "name": "calisthenics-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,green \"npm run dev -w @cali/mobile-web\" \"npm run dev -w @cali/backend\"",
+    "dev:web": "npm run dev -w @cali/mobile-web",
+    "dev:api": "npm run dev -w @cali/backend",
+    "build": "npm run build -w @cali/types && npm run build -w @cali/utils && npm run build -w @cali/prompts && npm run build -w @cali/ai-engine && npm run build -w @cali/workout-parser && npm run build -w @cali/workout-engine && npm run build -w @cali/timer-engine && npm run build -w @cali/stats-engine && npm run build -w @cali/pdf-engine && npm run build -w @cali/database && npm run build -w @cali/backend && npm run build -w @cali/mobile-web",
+    "db:generate": "npm run generate -w @cali/database",
+    "db:migrate": "npm run migrate -w @cali/database",
+    "db:push": "npm run push -w @cali/database",
+    "db:studio": "npm run studio -w @cali/database",
+    "test": "npm run test -w @cali/utils && npm run test -w @cali/ai-engine && npm run test -w @cali/workout-parser && npm run test -w @cali/workout-engine && npm run test -w @cali/timer-engine && npm run test -w @cali/backend",
+    "lint": "npm run lint -w @cali/mobile-web && npm run lint -w @cali/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

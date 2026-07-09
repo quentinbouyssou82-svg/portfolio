@@ -5,7 +5,7 @@ import { audiencePages } from "@/lib/palan-capital/content";
 const content = audiencePages.dirigeants;
 
 export const metadata: Metadata = {
-  title: content.meta.title.replace(" — Palan Capital", "").replace(" · Palan Capital", ""),
+  title: "Dirigeants & cédants",
   description: content.meta.description,
 };
 
