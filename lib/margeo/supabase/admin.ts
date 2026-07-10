@@ -10,7 +10,7 @@ export function getMargeoAdminDb(): SupabaseClient {
 
   if (!url || !key) {
     throw new Error(
-      "Margeo : SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY requis côté serveur.",
+      "Margeo : SUPABASE_URL + SUPABASE_SECRET_KEY (ou SERVICE_ROLE) requis côté serveur.",
     );
   }
 

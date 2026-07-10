@@ -90,7 +90,7 @@ export default function PremiumPage() {
                 Historique 7 jours
               </li>
             </ul>
-            <Button variant="secondary" className="mt-6 w-full" disabled>
+            <Button variant="secondary" className="mt-6 w-full min-h-11" disabled>
               Ton plan actuel
             </Button>
           </Card>
@@ -131,7 +131,7 @@ export default function PremiumPage() {
               </li>
             </ul>
             <Button
-              className="mt-6 w-full"
+              className="mt-6 w-full min-h-11"
               onClick={startTrial}
               disabled={starting}
             >
@@ -146,7 +146,8 @@ export default function PremiumPage() {
 
       {/* Tableau comparatif */}
       <Reveal delay={0.15}>
-        <Card className="overflow-hidden">
+        <Card className="overflow-x-auto">
+          <div className="min-w-[28rem]">
           <div className="grid grid-cols-[1.6fr_1fr_1fr] border-b border-mg-border bg-white/[0.02] px-5 py-3.5 text-xs font-semibold tracking-wide text-mg-muted uppercase">
             <span>Fonctionnalité</span>
             <span className="text-center">Gratuit</span>
@@ -167,6 +168,7 @@ export default function PremiumPage() {
               <FeatureValue value={feature.premium} />
             </div>
           ))}
+          </div>
         </Card>
       </Reveal>
     </div>

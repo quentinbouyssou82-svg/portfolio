@@ -293,13 +293,20 @@ function computeScoreWithBreakdown(
   score += vehicleImpact;
 
   // 7. Zone dense bonus léger (+3)
-  if (isDenseZone(profile.city) && emptyRatio < 0.5) {
+  if (
+    isDenseZone(profile.city) &&
+    flags.hasDistance &&
+    offer.distanceKm != null
+  ) {
+    const emptyRatio = offer.emptyReturnKm / Math.max(offer.distanceKm, 1);
+    if (emptyRatio < 0.5) {
     score += 3;
     breakdown.push({
       label: `Zone active (${profile.city})`,
       impact: 3,
       detail: "Bonne densité de courses, retour facilité.",
     });
+    }
   }
 
   return {
@@ -324,8 +331,9 @@ function buildRecommendation(
 ): { explanation: string; insights: string[] } {
   const insights: string[] = [];
   const hourlyDelta = round2(hourlyRate - profile.targetHourly);
-  const emptyRatio = offer.emptyReturnKm / Math.max(offer.distanceKm, 1);
-  const payoutPerKm = offer.payout / Math.max(offer.distanceKm, 1);
+  const emptyRatio =
+    offer.emptyReturnKm / Math.max(offer.distanceKm ?? 1, 1);
+  const payoutPerKm = offer.payout / Math.max(offer.distanceKm ?? 1, 1);
 
   const topPositive = breakdown
     .filter((f) => f.impact > 0)
@@ -341,7 +349,7 @@ function buildRecommendation(
     } else if (hourlyDelta >= 2) {
       explanation = `Cette course dépasse ton objectif de ${formatEur(hourlyDelta)} de l'heure.`;
     } else {
-      explanation = `Gain net de ${formatEur(netGain)} en ${offer.durationMin} min — au-dessus de tes critères.`;
+      explanation = `Gain net de ${formatEur(netGain)}${offer.durationMin != null ? ` en ${offer.durationMin} min` : ""} — au-dessus de tes critères.`;
     }
   } else if (verdict === "check") {
     if (topNegative && topPositive) {
@@ -383,7 +391,7 @@ function buildRecommendation(
     );
   }
 
-  if (offer.durationMin >= 35) {
+  if (offer.durationMin != null && offer.durationMin >= 35) {
     insights.push("Course longue — vérifie l'attente au retrait.");
   }
 

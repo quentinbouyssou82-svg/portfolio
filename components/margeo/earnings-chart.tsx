@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { formatEur } from "@/lib/margeo/utils";
 
 interface EarningsChartProps {
@@ -17,31 +17,32 @@ const PAD_BOTTOM = 28;
 /** Graphique d'évolution des gains nets — SVG maison, zéro dépendance. */
 export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
   const [hovered, setHovered] = useState<number | null>(null);
+  const gradientId = useId().replace(/:/g, "");
 
   const { points, areaPath, linePath, max } = useMemo(() => {
-    const max = Math.max(...data.map((d) => d.net)) * 1.15;
+    const maxVal = Math.max(...data.map((d) => d.net), 0.01) * 1.15;
     const innerW = W - PAD_X * 2;
     const innerH = height - PAD_TOP - PAD_BOTTOM;
-    const points = data.map((d, i) => ({
-      x: PAD_X + (i / (data.length - 1)) * innerW,
-      y: PAD_TOP + innerH * (1 - d.net / max),
+    const pts = data.map((d, i) => ({
+      x: PAD_X + (i / Math.max(data.length - 1, 1)) * innerW,
+      y: PAD_TOP + innerH * (1 - d.net / maxVal),
       ...d,
     }));
 
-    const line = points
+    const line = pts
       .map((p, i) => {
         if (i === 0) return `M ${p.x} ${p.y}`;
-        const prev = points[i - 1];
+        const prev = pts[i - 1];
         const cx = (prev.x + p.x) / 2;
         return `C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`;
       })
       .join(" ");
 
-    const area = `${line} L ${points[points.length - 1].x} ${
+    const area = `${line} L ${pts[pts.length - 1].x} ${
       height - PAD_BOTTOM
-    } L ${points[0].x} ${height - PAD_BOTTOM} Z`;
+    } L ${pts[0].x} ${height - PAD_BOTTOM} Z`;
 
-    return { points, areaPath: area, linePath: line, max };
+    return { points: pts, areaPath: area, linePath: line, max: maxVal };
   }, [data, height]);
 
   const active = hovered !== null ? points[hovered] : null;
@@ -59,20 +60,21 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full touch-pan-y">
       <svg
         viewBox={`0 0 ${W} ${height}`}
         className="w-full"
+        role="img"
+        aria-label="Graphique des gains nets sur 14 jours"
         onMouseLeave={() => setHovered(null)}
       >
         <defs>
-          <linearGradient id="area-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="rgba(52,211,153,0.28)" />
             <stop offset="100%" stopColor="rgba(52,211,153,0)" />
           </linearGradient>
         </defs>
 
-        {/* Lignes de repère horizontales */}
         {[0.25, 0.5, 0.75].map((r) => (
           <line
             key={r}
@@ -87,7 +89,7 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
 
         <motion.path
           d={areaPath}
-          fill="url(#area-fill)"
+          fill={`url(#${gradientId})`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -96,7 +98,7 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
         <motion.path
           d={linePath}
           fill="none"
-          stroke="var(--color-accent)"
+          stroke="var(--color-mg-go)"
           strokeWidth={2.5}
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
@@ -106,7 +108,6 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
           style={{ filter: "drop-shadow(0 0 8px rgba(52,211,153,0.4))" }}
         />
 
-        {/* Zones interactives + labels */}
         {points.map((p, i) => (
           <g key={i}>
             <rect
@@ -116,17 +117,17 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
               height={height}
               fill="transparent"
               onMouseEnter={() => setHovered(i)}
+              onTouchStart={() => setHovered(i)}
             />
-            {i % 2 === 0 && (
-              <text
-                x={p.x}
-                y={height - 8}
-                textAnchor="middle"
-                className="fill-faint text-[11px]"
-              >
-                {p.day}
-              </text>
-            )}
+            <text
+              x={p.x}
+              y={height - 8}
+              textAnchor="middle"
+              className="fill-mg-faint text-[11px]"
+              fill="var(--color-mg-faint)"
+            >
+              {p.day}
+            </text>
           </g>
         ))}
 
@@ -143,15 +144,19 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
               cx={active.x}
               cy={active.y}
               r={5}
-              fill="var(--color-accent)"
+              fill="var(--color-mg-go)"
               stroke="#09090b"
               strokeWidth={2}
             />
           </g>
         )}
 
-        {/* Repère max */}
-        <text x={PAD_X} y={12} className="fill-faint text-[10px]">
+        <text
+          x={PAD_X}
+          y={12}
+          className="fill-mg-faint text-[10px]"
+          fill="var(--color-mg-faint)"
+        >
           {formatEur(max)}
         </text>
       </svg>

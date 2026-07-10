@@ -53,10 +53,10 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           handleFile(e.dataTransfer.files[0]);
         }}
         className={cn(
-          "group flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-12 text-center transition-all duration-300 sm:px-6 sm:py-16",
+          "group flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-12 text-center transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40 active:scale-[0.99] sm:px-6 sm:py-16",
           dragging
-            ? "scale-[1.01] border-mg-accent bg-mg-accent-soft"
-            : "border-mg-border-strong bg-mg-card hover:border-mg-accent/40 hover:bg-mg-card-hover",
+            ? "border-mg-accent bg-mg-accent-soft"
+            : "border-mg-border-strong bg-mg-card [@media(hover:hover)]:hover:border-mg-accent/40 [@media(hover:hover)]:hover:bg-mg-card-hover",
         )}
       >
         <input
@@ -71,7 +71,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         <div
           className={cn(
             "flex size-16 items-center justify-center rounded-2xl bg-mg-accent-soft transition-transform duration-300",
-            dragging ? "scale-110" : "group-hover:scale-105",
+            dragging ? "scale-110" : "[@media(hover:hover)]:group-hover:scale-105",
           )}
         >
           <Upload className="size-7 text-mg-accent" />
@@ -108,7 +108,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
               onUpload(URL.createObjectURL(file), file);
             }, "image/png");
           }}
-          className="text-mg-muted"
+          className="text-mg-muted min-h-11"
         >
           <Sparkles />
           Pas de capture ? Essayer avec un exemple

@@ -8,7 +8,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-mg-accent-strong text-[#04120c] font-semibold hover:bg-mg-accent shadow-[0_0_0_1px_rgba(52,211,153,0.4),0_4px_20px_rgba(16,185,129,0.25)] hover:shadow-[0_0_0_1px_rgba(52,211,153,0.6),0_4px_28px_rgba(16,185,129,0.4)]",
+          "bg-mg-accent-strong text-white font-semibold hover:bg-mg-accent shadow-[0_0_0_1px_rgba(129,140,248,0.35),0_4px_20px_rgba(99,102,241,0.25)] hover:shadow-[0_0_0_1px_rgba(129,140,248,0.5),0_4px_28px_rgba(99,102,241,0.35)]",
         secondary:
           "bg-white/[0.06] text-mg-foreground border border-mg-border hover:bg-white/[0.1] hover:border-mg-border-strong",
         ghost: "text-mg-muted hover:text-mg-foreground hover:bg-white/[0.06]",
@@ -18,10 +18,10 @@ const buttonVariants = cva(
           "bg-mg-stop-soft text-mg-stop border border-mg-stop/20 hover:bg-mg-stop/20",
       },
       size: {
-        sm: "h-8 px-3 text-xs",
-        md: "h-10 px-4",
-        lg: "h-12 px-6 text-base rounded-2xl",
-        icon: "h-10 w-10",
+        sm: "h-9 min-h-9 px-3 text-xs",
+        md: "h-10 min-h-10 px-4",
+        lg: "h-12 min-h-12 px-6 text-base rounded-2xl",
+        icon: "h-10 w-10 min-h-10 min-w-10",
       },
     },
     defaultVariants: {

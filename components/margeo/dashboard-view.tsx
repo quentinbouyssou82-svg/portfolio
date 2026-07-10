@@ -1,12 +1,12 @@
 "use client";
 
 import {
+  ArrowRight,
   Euro,
   Gauge,
   ScanLine,
   ShieldCheck,
   Target,
-  TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { AnalysisCard } from "@/components/margeo/analysis-card";
@@ -14,11 +14,13 @@ import { AnimatedCounter } from "@/components/margeo/animated-counter";
 import { EarningsChart } from "@/components/margeo/earnings-chart";
 import { ProgressRing } from "@/components/margeo/progress-ring";
 import { StatCard } from "@/components/margeo/stat-card";
+import { WeeklyBars } from "@/components/margeo/weekly-bars";
 import { Button } from "@/components/margeo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/margeo/ui/card";
 import { EmptyState } from "@/components/margeo/ui/empty-state";
 import type { DashboardStats, EarningsPoint } from "@/lib/margeo/services/stats";
-import type { RideAnalysis, UserProfile } from "@/lib/margeo/types";
+import type { RideAnalysis, UserProfile, Verdict } from "@/lib/margeo/types";
+import { VERDICT_META } from "@/lib/margeo/types";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 interface DashboardViewProps {
@@ -29,28 +31,63 @@ interface DashboardViewProps {
   analyses: RideAnalysis[];
 }
 
-function computeValueMetrics(analyses: RideAnalysis[]) {
+function computeMetrics(analyses: RideAnalysis[]) {
   const refused = analyses.filter((a) => a.verdict === "refuse");
   const savedEstimate = refused.reduce(
     (sum, a) => sum + Math.max(0, -a.netGain),
     0,
   );
-  const clearDecisions = analyses.filter(
-    (a) => a.verdict === "accept" || a.verdict === "refuse",
-  ).length;
-
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
   const weekCount = analyses.filter(
     (a) => new Date(a.analyzedAt) >= weekAgo,
   ).length;
 
+  const verdictCounts: Record<Verdict, number> = {
+    accept: 0,
+    check: 0,
+    refuse: 0,
+  };
+  for (const a of analyses) verdictCounts[a.verdict]++;
+
   return {
     savedEstimate: Math.round(savedEstimate * 100) / 100,
     refusedCount: refused.length,
-    clearDecisions,
     weekCount,
+    verdictCounts,
   };
+}
+
+function VerdictPill({
+  verdict,
+  count,
+  total,
+}: {
+  verdict: Verdict;
+  count: number;
+  total: number;
+}) {
+  const meta = VERDICT_META[verdict];
+  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+
+  return (
+    <div
+      className="flex items-center justify-between rounded-xl border border-mg-border bg-mg-surface/50 px-3 py-2.5"
+      style={{ borderColor: `color-mix(in srgb, ${meta.color} 20%, transparent)` }}
+    >
+      <span className="flex items-center gap-2 text-xs font-medium text-mg-foreground">
+        <span
+          className="size-2 rounded-full"
+          style={{ backgroundColor: meta.color }}
+        />
+        {meta.label}
+      </span>
+      <span className="text-xs font-semibold text-mg-muted">
+        {count}{" "}
+        <span className="text-mg-faint">({pct}%)</span>
+      </span>
+    </div>
+  );
 }
 
 export function DashboardView({
@@ -66,26 +103,30 @@ export function DashboardView({
     Math.round((stats.todayNet / profile.dailyTarget) * 100),
   );
   const firstName = profile.name.split(" ")[0] || "livreur";
-  const { savedEstimate, refusedCount, clearDecisions, weekCount } =
-    computeValueMetrics(analyses);
+  const { savedEstimate, refusedCount, weekCount, verdictCounts } =
+    computeMetrics(analyses);
 
   return (
     <div className="animate-mg-fade-up space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* En-tête */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-mg-foreground">
-            Salut {firstName} 👋
+          <p className="text-xs font-medium tracking-wide text-mg-faint uppercase">
+            Centre de pilotage
+          </p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
+            Salut {firstName}
           </h1>
           <p className="mt-1 text-sm text-mg-muted">
             {isEmpty
-              ? "Analyse ta première course pour voir tes statistiques."
-              : "Voilà l'impact d'Uberly sur tes décisions."}
+              ? "Analyse ta première course pour activer ton tableau de bord."
+              : `${weekCount} analyse${weekCount !== 1 ? "s" : ""} cette semaine`}
           </p>
         </div>
-        <Link href={margeoRoutes.analyse} className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto">
+        <Link href={margeoRoutes.analyse} className="w-full shrink-0 sm:w-auto">
+          <Button className="app-cta-primary w-full min-h-11 sm:w-auto">
             <ScanLine />
-            {isEmpty ? "Analyser ma première course" : "Analyser une course"}
+            {isEmpty ? "Première analyse" : "Analyser"}
           </Button>
         </Link>
       </div>
@@ -93,11 +134,11 @@ export function DashboardView({
       {isEmpty ? (
         <EmptyState
           icon={ScanLine}
-          title="Aucune analyse pour l'instant"
-          description="Dépose une capture de course et Uberly te dira en quelques secondes si elle vaut le coup — gain net, taux horaire et verdict."
+          title="Ton tableau de bord t'attend"
+          description="Une capture suffit. Uberly calcule ton gain net et te dit quoi faire — en quelques secondes."
           action={
             <Link href={margeoRoutes.analyse}>
-              <Button>
+              <Button className="app-cta-primary min-h-11">
                 <ScanLine />
                 Analyser ma première course
               </Button>
@@ -106,30 +147,71 @@ export function DashboardView({
         />
       ) : (
         <>
-          <Card className="border-mg-accent/20 bg-mg-accent-soft/15 p-5">
-            <p className="text-sm font-semibold text-mg-foreground">
-              Ta progression cette semaine
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-mg-muted">
-              Tu as analysé{" "}
-              <span className="font-semibold text-mg-foreground">
-                {weekCount} course{weekCount !== 1 ? "s" : ""}
-              </span>{" "}
-              cette semaine.
-              {refusedCount > 0 && (
-                <>
-                  {" "}
-                  Uberly t&apos;a aidé à éviter{" "}
-                  <span className="font-semibold text-mg-foreground">
-                    {refusedCount} course{refusedCount !== 1 ? "s" : ""}
-                  </span>{" "}
-                  peu rentable{refusedCount !== 1 ? "s" : ""}.
-                </>
-              )}
-            </p>
+          {/* Hero KPI — objectif + gain du jour */}
+          <Card className="overflow-hidden border-mg-accent/20 bg-gradient-to-br from-mg-card to-mg-accent-soft/10 p-5 sm:p-6">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-5">
+                <ProgressRing
+                  value={goalProgress}
+                  size={88}
+                  strokeWidth={7}
+                  color="var(--color-mg-go)"
+                >
+                  <span className="text-lg font-bold text-mg-foreground">
+                    {goalProgress}%
+                  </span>
+                </ProgressRing>
+                <div>
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-mg-muted">
+                    <Target className="size-3.5" />
+                    Objectif du jour
+                  </p>
+                  <p className="mt-1 text-3xl font-bold tracking-tight text-mg-foreground">
+                    <AnimatedCounter
+                      value={stats.todayNet}
+                      decimals={2}
+                      suffix=" €"
+                    />
+                  </p>
+                  <p className="mt-0.5 text-xs text-mg-faint">
+                    sur {profile.dailyTarget} € visés · objectif{" "}
+                    {profile.targetHourly} €/h
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                {[
+                  { label: "Score moy.", value: stats.avgScore, suffix: "" },
+                  {
+                    label: "Analyses",
+                    value: stats.analyzedCount,
+                    suffix: "",
+                  },
+                  {
+                    label: "Évitées",
+                    value: refusedCount,
+                    suffix: "",
+                  },
+                ].map((kpi) => (
+                  <div
+                    key={kpi.label}
+                    className="rounded-xl border border-mg-border bg-mg-background/50 px-3 py-2.5 text-center"
+                  >
+                    <p className="text-lg font-bold text-mg-foreground">
+                      {kpi.value}
+                      {kpi.suffix}
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-mg-faint">
+                      {kpi.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </Card>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {/* Stats rapides */}
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard
               label="Gain du jour"
               icon={Euro}
@@ -138,92 +220,69 @@ export function DashboardView({
                   ? `+${stats.todayDelta.toLocaleString("fr-FR")} €`
                   : `${stats.todayDelta.toLocaleString("fr-FR")} €`
               }
-              footer="vs hier (analyses)"
+              deltaPositive={stats.todayDelta >= 0}
+              footer="vs hier"
             >
               <AnimatedCounter value={stats.todayNet} decimals={2} suffix=" €" />
             </StatCard>
-
-            <StatCard
-              label="Rentabilité moyenne"
-              icon={Gauge}
-              footer="sur tes analyses"
-            >
-              <AnimatedCounter value={stats.avgScore} suffix=" / 100" />
+            <StatCard label="Rentabilité" icon={Gauge} footer="score moyen">
+              <AnimatedCounter value={stats.avgScore} suffix="/100" />
             </StatCard>
-
             <StatCard
               label="Courses analysées"
               icon={ScanLine}
-              footer={`${stats.acceptedShare} % recommandées à l'acceptation`}
+              footer={`${stats.acceptedShare}% à accepter`}
             >
               <AnimatedCounter value={stats.analyzedCount} />
             </StatCard>
-
             <StatCard
               label="Courses évitées"
               icon={ShieldCheck}
               footer={
                 savedEstimate > 0
-                  ? `~${savedEstimate.toLocaleString("fr-FR")} € préservés`
-                  : "Décisions claires prises"
+                  ? `~${savedEstimate} € préservés`
+                  : "grâce aux refus"
               }
             >
               <AnimatedCounter value={refusedCount} />
             </StatCard>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-mg-border bg-mg-card p-5 shadow-mg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-mg-border-strong hover:bg-mg-card-hover">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-mg-muted">
-                  Objectif du jour
-                </p>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-white/[0.05]">
-                  <Target className="size-4 text-mg-muted" />
-                </span>
-              </div>
-              <div className="mt-2 flex items-center gap-4">
-                <ProgressRing value={goalProgress} size={72} strokeWidth={6}>
-                  <span className="text-sm font-bold text-mg-foreground">
-                    {goalProgress}%
-                  </span>
-                </ProgressRing>
-                <div>
-                  <p className="text-xl font-bold text-mg-foreground">
-                    {stats.todayNet.toLocaleString("fr-FR")} €
-                  </p>
-                  <p className="text-xs text-mg-faint">
-                    sur {profile.dailyTarget} € visés
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Graphiques */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Semaine en cours</CardTitle>
+                <p className="text-xs text-mg-faint">Gains nets par jour</p>
+              </CardHeader>
+              <CardContent>
+                <WeeklyBars data={earnings} />
+              </CardContent>
+            </Card>
 
-            <div className="rounded-2xl border border-mg-border bg-mg-card p-5 shadow-mg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-mg-border-strong hover:bg-mg-card-hover">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-mg-muted">
-                  Meilleures décisions
-                </p>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-white/[0.05]">
-                  <TrendingUp className="size-4 text-mg-muted" />
-                </span>
-              </div>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-mg-foreground">
-                <AnimatedCounter value={clearDecisions} />
-              </p>
-              <p className="mt-1 text-xs text-mg-faint">
-                verdicts clairs (accepter ou refuser) sur{" "}
-                {stats.analyzedCount} analyse
-                {stats.analyzedCount !== 1 ? "s" : ""}
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Répartition des verdicts</CardTitle>
+                <p className="text-xs text-mg-faint">Toutes tes analyses</p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {(["accept", "check", "refuse"] as Verdict[]).map((v) => (
+                  <VerdictPill
+                    key={v}
+                    verdict={v}
+                    count={verdictCounts[v]}
+                    total={stats.analyzedCount}
+                  />
+                ))}
+              </CardContent>
+            </Card>
           </div>
 
           <Card>
             <CardHeader className="flex-row items-center justify-between">
               <div>
-                <CardTitle>Évolution des gains nets</CardTitle>
-                <p className="mt-1 text-xs text-mg-faint">14 derniers jours</p>
+                <CardTitle className="text-base">Évolution 14 jours</CardTitle>
+                <p className="text-xs text-mg-faint">Gains nets cumulés</p>
               </div>
             </CardHeader>
             <CardContent>
@@ -233,6 +292,7 @@ export function DashboardView({
         </>
       )}
 
+      {/* Historique récent */}
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-semibold text-mg-foreground">
@@ -241,9 +301,10 @@ export function DashboardView({
           {!isEmpty && (
             <Link
               href={margeoRoutes.historique}
-              className="text-sm text-mg-muted transition-colors hover:text-mg-accent"
+              className="flex items-center gap-1 text-sm text-mg-muted transition-colors hover:text-mg-accent"
             >
-              Tout voir →
+              Tout voir
+              <ArrowRight className="size-3.5" />
             </Link>
           )}
         </div>
@@ -253,7 +314,7 @@ export function DashboardView({
               <AnalysisCard key={analysis.id} analysis={analysis} />
             ))
           ) : (
-            <p className="text-center text-sm text-mg-faint">
+            <p className="py-6 text-center text-sm text-mg-faint">
               Tes analyses apparaîtront ici.
             </p>
           )}

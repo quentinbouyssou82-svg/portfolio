@@ -20,7 +20,11 @@ export function AnalysisCard({ analysis }: { analysis: RideAnalysis }) {
   const meta = VERDICT_META[analysis.verdict];
 
   return (
-    <Link href={margeoRoutes.historiqueDetail(analysis.id)} className="group block">
+    <Link
+      href={margeoRoutes.historiqueDetail(analysis.id)}
+      className="group block rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40"
+      aria-label={`Analyse ${analysis.offer.pickup} vers ${analysis.offer.dropoff}, score ${analysis.score}, ${meta.label}`}
+    >
       <Card interactive className="p-4 sm:p-5">
         <div className="flex items-center gap-4">
           {/* Score */}
@@ -58,9 +62,9 @@ export function AnalysisCard({ analysis }: { analysis: RideAnalysis }) {
           </div>
 
           {/* Verdict + flèche */}
-          <div className="flex shrink-0 items-center gap-3">
-            <VerdictBadge verdict={analysis.verdict} className="hidden sm:inline-flex" />
-            <ArrowRight className="size-4 text-mg-faint transition-transform duration-200 group-hover:translate-x-1 group-hover:text-mg-foreground" />
+          <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center">
+            <VerdictBadge verdict={analysis.verdict} />
+            <ArrowRight className="size-4 text-mg-faint transition-transform duration-200 [@media(hover:hover)]:group-hover:translate-x-1 [@media(hover:hover)]:group-hover:text-mg-foreground" />
           </div>
         </div>
       </Card>

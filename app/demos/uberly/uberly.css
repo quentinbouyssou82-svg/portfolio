@@ -10,7 +10,7 @@
 
   --color-mg-foreground: #fafafa;
   --color-mg-muted: #a1a1aa;
-  --color-mg-faint: #6b6b74;
+  --color-mg-faint: #85858e;
 
   --color-mg-accent: #818cf8;
   --color-mg-accent-strong: #6366f1;
@@ -72,6 +72,14 @@
   font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
   min-height: 100dvh;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root,
+  .margeo-root {
+    scroll-behavior: auto;
+  }
 }
 
 .uberly-root ::selection,
@@ -141,4 +149,148 @@
 .uberly-root section[id],
 .margeo-root section[id] {
   scroll-margin-top: 5rem;
+}
+
+/* ── Landing premium ── */
+
+.uberly-root .landing-page,
+.margeo-root .landing-page {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.uberly-root .landing-aurora,
+.margeo-root .landing-aurora {
+  background:
+    radial-gradient(
+      ellipse 70% 50% at 20% 20%,
+      rgba(99, 102, 241, 0.12),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 60%,
+      rgba(52, 211, 153, 0.06),
+      transparent 70%
+    );
+  pointer-events: none;
+}
+
+.uberly-root .landing-phone-glow,
+.margeo-root .landing-phone-glow {
+  background: radial-gradient(
+    circle,
+    rgba(99, 102, 241, 0.25),
+    transparent 70%
+  );
+}
+
+.uberly-root .landing-cta-primary,
+.margeo-root .landing-cta-primary {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35),
+    0 8px 32px rgba(99, 102, 241, 0.28);
+}
+
+.uberly-root .landing-cta-primary:hover,
+.margeo-root .landing-cta-primary:hover {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.5),
+    0 12px 40px rgba(99, 102, 241, 0.38);
+}
+
+.uberly-root .landing-card-hover,
+.margeo-root .landing-card-hover {
+  transition:
+    transform 0.25s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.uberly-root .landing-card-hover:hover,
+.margeo-root .landing-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: var(--shadow-mg-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root .landing-card-hover:hover,
+  .margeo-root .landing-card-hover:hover {
+    transform: none;
+  }
+}
+
+/* ── App shell premium ── */
+
+.uberly-root .app-cta-primary,
+.margeo-root .app-cta-primary {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.3),
+    0 4px 20px rgba(99, 102, 241, 0.2);
+}
+
+.uberly-root .app-cta-primary:hover,
+.margeo-root .app-cta-primary:hover {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.45),
+    0 6px 28px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Polish global ── */
+
+.uberly-root .landing-page,
+.margeo-root .landing-page {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+  .uberly-root .landing-page,
+  .margeo-root .landing-page {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.uberly-root a:focus-visible,
+.margeo-root a:focus-visible,
+.uberly-root button:focus-visible,
+.margeo-root button:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.55);
+  outline-offset: 2px;
+}
+
+.uberly-root .fill-mg-faint,
+.margeo-root .fill-mg-faint {
+  fill: var(--color-mg-faint);
+}
+
+.uberly-root .mg-scroll-x,
+.margeo-root .mg-scroll-x {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.uberly-root .card-interactive,
+.margeo-root .card-interactive {
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (hover: hover) {
+  .uberly-root .card-interactive:hover,
+  .margeo-root .card-interactive:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    background-color: var(--color-mg-card-hover);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root *,
+  .margeo-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

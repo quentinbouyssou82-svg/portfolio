@@ -1,27 +1,29 @@
 import { Faq } from "@/components/margeo/landing/faq";
-import { Features } from "@/components/margeo/landing/features";
 import { FinalCta } from "@/components/margeo/landing/final-cta";
 import { Footer } from "@/components/margeo/landing/footer";
 import { Hero } from "@/components/margeo/landing/hero";
-import { HowItWorks } from "@/components/margeo/landing/how-it-works";
+import { InteractiveDemo } from "@/components/margeo/landing/interactive-demo";
 import { LandingNav } from "@/components/margeo/landing/nav";
-import { Presentation } from "@/components/margeo/landing/presentation";
-import { Screens } from "@/components/margeo/landing/screens";
+import { SocialProof } from "@/components/margeo/landing/social-proof";
+import { StoryDecision } from "@/components/margeo/landing/story-decision";
+import { StoryProblem } from "@/components/margeo/landing/story-problem";
+import { LandingStickyCta } from "@/components/margeo/landing/sticky-cta";
 
 export default function LandingPage() {
   return (
     <>
       <LandingNav />
-      <main>
+      <main className="landing-page">
         <Hero />
-        <Presentation />
-        <HowItWorks />
-        <Features />
-        <Screens />
+        <StoryProblem />
+        <InteractiveDemo />
+        <StoryDecision />
+        <SocialProof />
         <Faq />
         <FinalCta />
       </main>
       <Footer />
+      <LandingStickyCta />
     </>
   );
 }

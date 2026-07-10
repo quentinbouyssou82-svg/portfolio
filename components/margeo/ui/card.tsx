@@ -9,9 +9,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card",
-        interactive &&
-          "transition-all duration-300 hover:border-mg-border-strong hover:bg-mg-card-hover hover:-translate-y-0.5",
+        "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-colors duration-200",
+        interactive && "card-interactive cursor-pointer",
         className
       )}
       {...props}

@@ -9,7 +9,7 @@ import {
   PUBLIC_UBERLY_PATHS,
   PROTECTED_UBERLY_PREFIXES,
 } from "@/lib/margeo/constants";
-import { getMargeoAnonKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
+import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -67,7 +67,7 @@ function isUberlyProtected(pathname: string): boolean {
 
 async function handleUberlyAuth(request: NextRequest, pathname: string) {
   const url = getMargeoSupabaseUrl();
-  const key = getMargeoAnonKey();
+  const key = getMargeoClientKey();
 
   if (!url || !key) {
     return NextResponse.next();

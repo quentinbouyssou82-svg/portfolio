@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { Check } from "lucide-react";
 import { toast } from "sonner";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
@@ -71,10 +72,17 @@ export function AuthForm({ mode }: { mode: Mode }) {
             : "Retrouve ton historique et tes analyses."}
         </p>
         {isSignup && (
-          <ul className="mt-4 space-y-1.5 text-left text-xs text-mg-faint">
-            <li>✓ Sais si une course vaut le coup avant d&apos;accepter</li>
-            <li>✓ Gain net réel, pas le montant affiché par l&apos;app</li>
-            <li>✓ Verdict clair : accepter, vérifier ou refuser</li>
+          <ul className="mt-4 space-y-2 text-left text-xs text-mg-muted">
+            {[
+              "Sais si une course vaut le coup avant d'accepter",
+              "Gain net réel, pas le montant affiché par l'app",
+              "Verdict clair : accepter, vérifier ou refuser",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <Check className="mt-0.5 size-3.5 shrink-0 text-mg-go" />
+                {item}
+              </li>
+            ))}
           </ul>
         )}
       </div>
@@ -83,7 +91,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <Button
           type="button"
           variant="secondary"
-          className="w-full"
+          className="w-full min-h-11"
           onClick={handleGoogle}
           disabled={pending}
         >
@@ -139,7 +147,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
               </Link>
             </div>
           )}
-          <Button type="submit" className="w-full" disabled={pending}>
+          <Button type="submit" className="w-full min-h-11" disabled={pending}>
             {pending
               ? "Chargement…"
               : isSignup

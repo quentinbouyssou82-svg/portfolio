@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "vitrines-demo", "calisthenics-tracker", "margeo"]
+  "exclude": ["node_modules", "vitrines-demo", "calisthenics-tracker", "margeo", "scripts"]
 }

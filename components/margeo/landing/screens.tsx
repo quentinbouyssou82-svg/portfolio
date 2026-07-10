@@ -72,7 +72,7 @@ export function Screens() {
             <Reveal
               key={scan.route}
               delay={i * 0.12}
-              className="rounded-2xl border border-mg-border bg-mg-card p-5 shadow-mg-card transition-transform duration-300 hover:-translate-y-1"
+              className="rounded-2xl border border-mg-border bg-mg-card p-5 shadow-mg-card transition-transform duration-300 [@media(hover:hover)]:hover:-translate-y-1"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-mg-muted">

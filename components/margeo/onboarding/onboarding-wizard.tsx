@@ -173,7 +173,7 @@ export function OnboardingWizard() {
                   type="button"
                   onClick={() => togglePlatform(p)}
                   className={cn(
-                    "cursor-pointer rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all",
+                    "cursor-pointer rounded-full border px-3.5 py-2.5 text-xs font-medium transition-colors min-h-11",
                     platforms.includes(p)
                       ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
                       : "border-mg-border text-mg-muted hover:border-mg-border-strong",
@@ -206,7 +206,7 @@ export function OnboardingWizard() {
                   type="button"
                   onClick={() => setVehicle(v)}
                   className={cn(
-                    "flex cursor-pointer flex-col items-center gap-2 rounded-xl border py-4 text-xs font-medium transition-all sm:text-sm",
+                    "flex cursor-pointer flex-col items-center gap-2 rounded-xl border py-4 text-xs font-medium transition-colors min-h-[72px] sm:text-sm",
                     vehicle === v
                       ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent"
                       : "border-mg-border text-mg-muted hover:border-mg-border-strong",
@@ -268,13 +268,14 @@ export function OnboardingWizard() {
               type="button"
               variant="secondary"
               onClick={() => setStep((s) => s - 1)}
+              className="min-h-11"
             >
               Retour
             </Button>
           ) : (
             <span />
           )}
-          <Button type="button" onClick={next} disabled={pending}>
+          <Button type="button" onClick={next} disabled={pending} className="min-h-11">
             {step === STEPS.length - 1 ? (
               pending ? "Enregistrement…" : "Terminer"
             ) : (

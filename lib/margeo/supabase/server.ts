@@ -1,15 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { getMargeoAnonKey, getMargeoSupabaseUrl } from "./env";
+import { getMargeoClientKey, getMargeoSupabaseUrl } from "./env";
 
 export async function createMargeoServerClient(): Promise<SupabaseClient> {
   const url = getMargeoSupabaseUrl();
-  const key = getMargeoAnonKey();
+  const key = getMargeoClientKey();
 
   if (!url || !key) {
     throw new Error(
-      "Margeo : NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY requis.",
+      "Margeo : NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY requis.",
     );
   }
 

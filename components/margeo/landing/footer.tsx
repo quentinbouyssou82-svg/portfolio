@@ -1,46 +1,46 @@
 import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
+import { margeoRoutes } from "@/lib/margeo/routes";
 
 const COLUMNS = [
   {
     title: "Produit",
     links: [
-      { label: "Analyser une course", href: "/analyse" },
-      { label: "Dashboard", href: "/dashboard" },
-      { label: "Premium", href: "/premium" },
-      { label: "FAQ", href: "/#faq" },
+      { label: "Rejoindre la beta", href: margeoRoutes.signup },
+      { label: "Se connecter", href: margeoRoutes.login },
+      { label: "Premium", href: margeoRoutes.premium },
+      { label: "FAQ", href: "#faq" },
     ],
   },
   {
     title: "Plateformes",
     links: [
-      { label: "Uber Eats", href: "/#fonctionnalites" },
-      { label: "Deliveroo", href: "/#fonctionnalites" },
-      { label: "Shopopop", href: "/#fonctionnalites" },
-      { label: "Stuart", href: "/#fonctionnalites" },
+      { label: "Uber Eats", href: "#demo" },
+      { label: "Deliveroo", href: "#demo" },
+      { label: "Stuart", href: "#demo" },
+      { label: "Amazon Flex", href: "#demo" },
     ],
   },
   {
-    title: "Entreprise",
+    title: "Ressources",
     links: [
-      { label: "À propos", href: "/" },
-      { label: "Contact", href: "/" },
-      { label: "Confidentialité", href: "/" },
-      { label: "Mentions légales", href: "/" },
+      { label: "Démo interactive", href: "#demo" },
+      { label: "Résultats beta", href: "#resultats" },
+      { label: "Le problème", href: "#probleme" },
     ],
   },
 ];
 
 export function Footer() {
   return (
-    <footer className="border-t border-mg-border bg-mg-surface/60">
+    <footer className="border-t border-mg-border bg-mg-surface/60 pb-24 lg:pb-0">
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-mg-muted">
               Le copilote IA qui dit aux livreurs indépendants si une course est
-              vraiment rentable.
+              vraiment rentable — avant qu&apos;il soit trop tard.
             </p>
           </div>
 
@@ -70,7 +70,7 @@ export function Footer() {
             © {new Date().getFullYear()} Uberly. Tous droits réservés.
           </p>
           <p className="text-xs text-mg-faint">
-            Fait avec soin pour les livreurs indépendants.
+            Fait pour les livreurs indépendants.
           </p>
         </div>
       </div>

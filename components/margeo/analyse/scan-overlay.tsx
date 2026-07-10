@@ -78,6 +78,11 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
           )}
           <div className="animate-mg-scan absolute inset-x-0 h-24 bg-gradient-to-b from-transparent via-mg-accent/25 to-transparent" />
           <div className="absolute inset-0 rounded-2xl ring-1 ring-mg-accent/20 ring-inset" />
+          <motion.div
+            className="absolute inset-0 rounded-2xl ring-2 ring-mg-accent/30"
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
         </div>
 
         <Card className="flex flex-col justify-center p-5 sm:p-6">

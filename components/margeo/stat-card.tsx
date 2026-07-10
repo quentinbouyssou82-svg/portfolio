@@ -37,12 +37,12 @@ export function StatCard({
         {children}
       </div>
       {(delta || footer) && (
-        <p className="mt-2 flex items-center gap-1.5 text-xs text-mg-faint">
+        <p className="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-mg-faint">
           {delta && (
             <span
               className={cn(
                 "inline-flex items-center gap-1 font-semibold",
-                deltaPositive ? "text-go" : "text-mg-stop"
+                deltaPositive ? "text-mg-go" : "text-mg-stop"
               )}
             >
               {deltaPositive ? (

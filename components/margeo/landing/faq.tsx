@@ -54,7 +54,7 @@ function FaqItem({
     <div className="border-b border-mg-border last:border-b-0">
       <button
         onClick={onToggle}
-        className="flex w-full cursor-pointer items-center justify-between gap-4 py-5 text-left"
+        className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none sm:py-5"
         aria-expanded={open}
       >
         <span className="font-medium text-mg-foreground">{question}</span>
@@ -86,7 +86,7 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-20 border-t border-mg-border py-24">
+    <section id="faq" className="scroll-mt-24 border-t border-mg-border py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-5">
         <Reveal className="text-center">
           <p className="text-sm font-semibold tracking-wide text-mg-accent uppercase">

@@ -70,7 +70,7 @@ export function Features() {
             <Reveal
               key={feature.title}
               delay={(i % 3) * 0.1}
-              className="group rounded-2xl border border-mg-border bg-mg-card p-6 shadow-mg-card transition-all duration-300 hover:-translate-y-1 hover:border-mg-accent/30 hover:shadow-mg-glow"
+              className="group rounded-2xl border border-mg-border bg-mg-card p-6 shadow-mg-card transition-colors duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:border-mg-accent/30 [@media(hover:hover)]:hover:shadow-mg-glow"
             >
               <div className="flex size-10 items-center justify-center rounded-xl bg-mg-accent-soft">
                 <feature.icon className="size-5 text-mg-accent" />

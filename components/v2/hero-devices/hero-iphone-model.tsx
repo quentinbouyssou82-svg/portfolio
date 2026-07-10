@@ -36,7 +36,7 @@ type HeroIPhoneModelProps = {
 };
 
 export function HeroIPhoneModel({ screen }: HeroIPhoneModelProps) {
-  const { nodes, materials } = useGLTF(MODEL_PATH) as IPhoneGLTF;
+  const { nodes, materials } = useGLTF(MODEL_PATH) as unknown as IPhoneGLTF;
   const screenTexture = useTexture(screen.src);
 
   useEffect(() => {

@@ -8,11 +8,14 @@ export async function GET() {
   const env = checkUberlyEnv();
 
   return NextResponse.json({
-    ok: env.supabase && env.gemini,
+    ok: env.supabase && env.vision,
     betaMode: isUberlyBetaMode(),
     checks: {
       supabase: env.supabase,
       serviceRole: env.serviceRole,
+      vision: env.vision,
+      visionProvider: env.visionProvider,
+      mistral: env.mistral,
       gemini: env.gemini,
       appUrl: env.appUrl,
     },
@@ -22,7 +25,7 @@ export async function GET() {
       maxImageMb: UBERLY_LIMITS.maxImageBytes / 1024 / 1024,
       freeDailyAnalyses: UBERLY_LIMITS.freeDailyAnalyses,
       rateLimitAnalyzePerMin: 20,
-      geminiKeyServerOnly: true,
+      visionKeyServerOnly: true,
     },
     readyForBeta: env.readyForBeta,
     missing: env.missing,

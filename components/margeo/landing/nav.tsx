@@ -1,79 +1,106 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
+import { margeoRoutes } from "@/lib/margeo/routes";
 
 const LINKS = [
-  { href: "#fonctionnement", label: "Comment ça marche" },
-  { href: "#fonctionnalites", label: "Fonctionnalités" },
+  { href: "#probleme", label: "Le problème" },
+  { href: "#demo", label: "Démo" },
+  { href: "#resultats", label: "Résultats" },
   { href: "#faq", label: "FAQ" },
-  { href: "/demos/uberly/premium", label: "Premium" },
 ];
 
 export function LandingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-mg-border bg-mg-background/70 backdrop-blur-xl">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link href="/demos/uberly" aria-label="Uberly — accueil">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-mg-border/80 bg-mg-background/75 backdrop-blur-xl">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 pt-[env(safe-area-inset-top)]">
+        <Link href={margeoRoutes.home} aria-label="Uberly — accueil">
           <Logo />
         </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm text-mg-muted transition-colors hover:bg-white/[0.05] hover:text-mg-foreground"
+              className="cursor-pointer rounded-lg px-3 py-2 text-sm text-mg-muted transition-colors hover:bg-white/[0.05] hover:text-mg-foreground"
             >
               {link.label}
             </Link>
           ))}
         </div>
 
-        <div className="hidden items-center gap-2.5 md:flex">
-          <Link href="/demos/uberly/dashboard">
-            <Button variant="ghost" size="sm">
+        <div className="hidden items-center gap-2.5 lg:flex">
+          <Link href={margeoRoutes.login}>
+            <Button variant="ghost" size="sm" className="min-h-10">
               Se connecter
             </Button>
           </Link>
-          <Link href="/demos/uberly/analyse">
-            <Button size="sm">Analyser une course</Button>
+          <Link href={margeoRoutes.signup}>
+            <Button size="sm" className="landing-cta-primary min-h-10">
+              Rejoindre la beta
+              <ArrowRight />
+            </Button>
           </Link>
         </div>
 
         <button
-          className="rounded-lg p-2 text-mg-muted hover:text-mg-foreground md:hidden"
+          type="button"
+          className="flex size-11 cursor-pointer items-center justify-center rounded-xl text-mg-muted transition-colors hover:bg-white/[0.05] hover:text-mg-foreground lg:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
+          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={open}
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </nav>
 
-      {open && (
-        <div className="border-t border-mg-border bg-mg-background px-5 py-4 md:hidden">
-          <div className="flex flex-col gap-1">
-            {LINKS.map((link) => (
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden border-t border-mg-border bg-mg-background lg:hidden"
+          >
+            <div className="flex flex-col gap-1 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              {LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="rounded-xl px-3 py-3 text-sm text-mg-muted transition-colors hover:bg-white/[0.05] hover:text-mg-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
-                key={link.href}
-                href={link.href}
+                href={margeoRoutes.login}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-sm text-mg-muted hover:bg-white/[0.05] hover:text-mg-foreground"
+                className="mt-2"
               >
-                {link.label}
+                <Button variant="secondary" className="w-full min-h-11">
+                  Se connecter
+                </Button>
               </Link>
-            ))}
-            <Link href="/demos/uberly/analyse" onClick={() => setOpen(false)} className="mt-2">
-              <Button className="w-full">Analyser une course</Button>
-            </Link>
-          </div>
-        </div>
-      )}
+              <Link href={margeoRoutes.signup} onClick={() => setOpen(false)}>
+                <Button className="landing-cta-primary w-full min-h-11">
+                  Rejoindre la beta
+                  <ArrowRight />
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

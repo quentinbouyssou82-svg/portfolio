@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { RotateCcw, ScanLine, Sparkles, X } from "lucide-react";
+import { RotateCcw, ScanLine, Sparkles, X, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -24,6 +24,14 @@ import type { AnalysisMeta } from "@/lib/margeo/analyse-meta";
 import { VERDICT_META, type RideAnalysis } from "@/lib/margeo/types";
 
 type Stage = "idle" | "scanning" | "result";
+
+const STAGE_LABELS: Record<Stage, string> = {
+  idle: "Capture",
+  scanning: "Analyse",
+  result: "Verdict",
+};
+
+const STAGE_ORDER: Stage[] = ["idle", "scanning", "result"];
 
 export default function AnalysePage() {
   const searchParams = useSearchParams();
@@ -156,7 +164,7 @@ export default function AnalysePage() {
             <button
               type="button"
               onClick={() => setShowWelcome(false)}
-              className="shrink-0 text-mg-faint transition-colors hover:text-mg-foreground"
+              className="flex size-11 shrink-0 items-center justify-center rounded-lg text-mg-faint transition-colors hover:text-mg-foreground"
               aria-label="Fermer"
             >
               <X className="size-4" />
@@ -170,6 +178,42 @@ export default function AnalysePage() {
           <ScanLine className="size-3.5" />
           Analyse IA · Uberly
         </span>
+
+        {stage !== "idle" && (
+          <div className="mx-auto mt-5 flex max-w-xs items-center justify-center gap-2">
+            {STAGE_ORDER.map((s, i) => {
+              const current = STAGE_ORDER.indexOf(stage);
+              const done = i < current;
+              const active = s === stage;
+              return (
+                <div key={s} className="flex items-center gap-2">
+                  <span
+                    className={`flex size-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
+                      done
+                        ? "bg-mg-go text-[#04120c]"
+                        : active
+                          ? "bg-mg-accent text-[#04120c]"
+                          : "border border-mg-border text-mg-faint"
+                    }`}
+                  >
+                    {done ? <Check className="size-3" /> : i + 1}
+                  </span>
+                  <span
+                    className={`hidden text-xs sm:inline ${
+                      active ? "font-medium text-mg-foreground" : "text-mg-faint"
+                    }`}
+                  >
+                    {STAGE_LABELS[s]}
+                  </span>
+                  {i < STAGE_ORDER.length - 1 && (
+                    <span className="h-px w-4 bg-mg-border sm:w-6" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         <h1 className="mt-4 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
           {stage === "result"
             ? "Verdict de ta course"
@@ -208,8 +252,8 @@ export default function AnalysePage() {
             <div className="mt-6">
               <FeedbackForm analysis={analysis} />
             </div>
-            <div className="mt-6 flex justify-center">
-              <Button variant="secondary" onClick={reset}>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Button variant="secondary" onClick={reset} className="min-h-11">
                 <RotateCcw />
                 Analyser une autre course
               </Button>

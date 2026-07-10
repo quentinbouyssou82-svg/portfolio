@@ -100,7 +100,15 @@ export async function POST(request: Request) {
         metadata: {
           missingFields: vision.missingFields,
           warnings: vision.warnings,
-          geminiMs: vision.geminiDurationMs ?? visionDurationMs,
+          geminiMs:
+            vision.visionDurationMs ??
+            vision.geminiDurationMs ??
+            visionDurationMs,
+          visionMs:
+            vision.visionDurationMs ??
+            vision.geminiDurationMs ??
+            visionDurationMs,
+          visionProvider: vision.visionProvider,
           storageOk,
         },
       });
@@ -167,8 +175,9 @@ export async function POST(request: Request) {
         verdict: analysis.verdict,
         missingFields: vision.missingFields,
         extractionQuality: vision.extractionQuality,
-        geminiMs: vision.geminiDurationMs,
-        visionMs: visionDurationMs,
+        geminiMs: vision.visionDurationMs ?? vision.geminiDurationMs,
+        visionMs: vision.visionDurationMs ?? visionDurationMs,
+        visionProvider: vision.visionProvider,
         storageOk,
         totalMs: durationMs,
         missingCount: vision.missingFields.length,
@@ -209,9 +218,11 @@ export async function POST(request: Request) {
         errorCode: error instanceof ApiError ? error.code : "UNKNOWN",
         metadata: {
           message: error instanceof Error ? error.message : "unknown",
-          geminiError:
+          visionError:
             error instanceof Error &&
-            error.message.includes("Gemini Vision"),
+            (error.message.includes("Mistral Vision") ||
+              error.message.includes("Gemini Vision") ||
+              error.message.includes("Vision")),
         },
       });
     }

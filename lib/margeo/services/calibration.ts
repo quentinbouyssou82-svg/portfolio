@@ -104,7 +104,10 @@ export function applyCalibrationToOffer(
 
   return {
     ...offer,
-    durationMin: Math.round(offer.durationMin * calibration.durationFactor),
+    durationMin:
+      offer.durationMin != null
+        ? Math.round(offer.durationMin * calibration.durationFactor)
+        : offer.durationMin,
     payout: Math.max(
       0,
       Math.round((offer.payout + calibration.gainBias) * 100) / 100,

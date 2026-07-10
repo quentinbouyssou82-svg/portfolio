@@ -22,18 +22,23 @@ export function Switch({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}
-      className={cn(
-        "relative h-6 w-11 shrink-0 cursor-pointer rounded-full border border-mg-border transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/50 disabled:cursor-not-allowed disabled:opacity-50",
-        checked ? "bg-mg-accent-strong" : "bg-white/[0.08]"
-      )}
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl outline-none disabled:cursor-not-allowed disabled:opacity-50"
       {...props}
     >
       <span
+        aria-hidden
         className={cn(
-          "absolute top-1/2 left-0.5 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200",
-          checked && "translate-x-[19px]"
+          "relative h-6 w-11 shrink-0 rounded-full border border-mg-border transition-colors duration-200",
+          checked ? "bg-mg-accent-strong" : "bg-white/[0.08]",
         )}
-      />
+      >
+        <span
+          className={cn(
+            "absolute top-1/2 left-0.5 size-5 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform duration-200",
+            checked && "translate-x-[19px]",
+          )}
+        />
+      </span>
     </button>
   );
 }
