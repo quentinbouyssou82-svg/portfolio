@@ -1,0 +1,36 @@
+---
+description: Déployer sur Vercel après chaque modification Uberly/portfolio frontend
+globs: app/demos/uberly/**,components/margeo/**,app/demos/uberly/uberly.css
+alwaysApply: false
+---
+
+# Déploiement Vercel automatique
+
+Après **chaque session de modifications** sur Uberly ou le portfolio frontend concerné :
+
+1. Vérifier `git status` — ne committer que les fichiers liés à la tâche (jamais `.env`, secrets, `graphify-out/` sauf demande explicite).
+2. Lancer lint/tsc sur les fichiers modifiés si pertinent.
+3. **Commit** avec un message court décrivant le pourquoi.
+4. **Push** sur `main` : `git push origin main`
+   - Vercel est connecté au repo `portfolio` → le push déclenche le déploiement production automatiquement.
+5. Confirmer à l'utilisateur que le push est fait et rappeler l’URL de preview/prod si connue.
+
+## Ne pas déployer si
+
+- L’utilisateur demande explicitement de ne pas commit/push.
+- Seuls des fichiers de config locale ou de debug ont changé sans valeur pour la prod.
+- Le push échoue (auth) → indiquer `git push origin main` à lancer manuellement après reconnexion GitHub.
+
+## URL
+
+- Prod portfolio : déploiement Vercel du projet `portfolio`
+- Demo Uberly : `/demos/uberly` sur le domaine Vercel du portfolio
+
+## Commande type
+
+```bash
+cd /Users/quentinbouyssou/portfolio
+git add <fichiers pertinents>
+git commit -m "message"
+git push origin main
+```
