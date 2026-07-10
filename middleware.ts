@@ -18,8 +18,20 @@ const MAISON_PREFIX = "/demos/maison";
 const UBERLY_PREFIX = "/demos/uberly";
 const LEGACY_MARGEO_PREFIX = "/demos/margeo";
 
+/** Domaines Vercel du projet « margeo » (pas portfolio-omega-…). */
+function isMargeoProjectHost(hostname: string): boolean {
+  if (hostname === "margeo.vercel.app") return true;
+  return hostname.startsWith("margeo-") && hostname.endsWith(".vercel.app");
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/" && isMargeoProjectHost(request.nextUrl.hostname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = UBERLY_PATHS.home;
+    return NextResponse.redirect(url, 308);
+  }
 
   if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
     const url = request.nextUrl.clone();
@@ -176,6 +188,7 @@ async function handleMaisonAuth(request: NextRequest, pathname: string) {
 
 export const config = {
   matcher: [
+    "/",
     "/control-tower/:path*",
     "/demos/maison/:path*",
     "/demos/margeo/:path*",
