@@ -151,26 +151,123 @@
   scroll-margin-top: 5rem;
 }
 
-/* ── Landing premium ── */
+/* ── Landing — fond continu ── */
 
 .uberly-root .landing-page,
 .margeo-root .landing-page {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+  .uberly-root .landing-page,
+  .margeo-root .landing-page {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.uberly-root .landing-backdrop-base,
+.margeo-root .landing-backdrop-base {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-mg-background);
+  background-image:
+    radial-gradient(
+      ellipse 120% 70% at 50% -15%,
+      rgba(99, 102, 241, 0.14),
+      transparent 65%
+    ),
+    linear-gradient(
+      180deg,
+      #09090b 0%,
+      #09090b 45%,
+      #08080a 100%
+    );
+}
+
+.uberly-root .landing-backdrop-halo,
+.margeo-root .landing-backdrop-halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.uberly-root .landing-backdrop-halo-a,
+.margeo-root .landing-backdrop-halo-a {
+  top: -8%;
+  left: -12%;
+  width: min(68vw, 720px);
+  height: min(52vw, 520px);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.16), transparent 68%);
+  animation: landing-halo-drift-a 72s ease-in-out infinite;
+}
+
+.uberly-root .landing-backdrop-halo-b,
+.margeo-root .landing-backdrop-halo-b {
+  top: 38%;
+  right: -18%;
+  width: min(58vw, 640px);
+  height: min(48vw, 480px);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
+  animation: landing-halo-drift-b 88s ease-in-out infinite;
+}
+
+.uberly-root .landing-backdrop-halo-c,
+.margeo-root .landing-backdrop-halo-c {
+  bottom: -10%;
+  left: 18%;
+  width: min(62vw, 680px);
+  height: min(44vw, 440px);
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.09), transparent 72%);
+  animation: landing-halo-drift-c 96s ease-in-out infinite;
+}
+
+.uberly-root .landing-backdrop-noise,
+.margeo-root .landing-backdrop-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.012;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes landing-halo-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4%, 3%) scale(1.04);
+  }
+}
+
+@keyframes landing-halo-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, 2%) scale(1.03);
+  }
+}
+
+@keyframes landing-halo-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.05);
+  }
 }
 
 .uberly-root .landing-aurora,
 .margeo-root .landing-aurora {
-  background:
-    radial-gradient(
-      ellipse 70% 50% at 20% 20%,
-      rgba(99, 102, 241, 0.12),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 60% 40% at 80% 60%,
-      rgba(52, 211, 153, 0.06),
-      transparent 70%
-    );
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 30%,
+    rgba(99, 102, 241, 0.1),
+    transparent 72%
+  );
   pointer-events: none;
 }
 
@@ -178,8 +275,8 @@
 .margeo-root .landing-phone-glow {
   background: radial-gradient(
     circle at 50% 45%,
-    rgba(52, 211, 153, 0.22) 0%,
-    rgba(99, 102, 241, 0.12) 35%,
+    rgba(99, 102, 241, 0.2) 0%,
+    rgba(139, 92, 246, 0.08) 40%,
     transparent 72%
   );
 }
@@ -238,18 +335,6 @@
 }
 
 /* ── Polish global ── */
-
-.uberly-root .landing-page,
-.margeo-root .landing-page {
-  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
-}
-
-@media (min-width: 1024px) {
-  .uberly-root .landing-page,
-  .margeo-root .landing-page {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
 
 .uberly-root a:focus-visible,
 .margeo-root a:focus-visible,
@@ -318,7 +403,7 @@
 .margeo-root .phone-mock-ambient-a {
   background: radial-gradient(
     ellipse 55% 45% at 50% 35%,
-    rgba(52, 211, 153, 0.16),
+    rgba(99, 102, 241, 0.14),
     transparent 72%
   );
   filter: blur(28px);
@@ -328,7 +413,7 @@
 .margeo-root .phone-mock-ambient-b {
   background: radial-gradient(
     ellipse 40% 35% at 60% 70%,
-    rgba(99, 102, 241, 0.1),
+    rgba(139, 92, 246, 0.08),
     transparent 70%
   );
   filter: blur(36px);
@@ -723,70 +808,11 @@
   }
 }
 
-/* ── Story problem section ── */
+/* ── Story problem section (composants — pas de fond local) ── */
 
 .uberly-root .problem-section,
 .margeo-root .problem-section {
-  overflow: hidden;
-  background-color: var(--color-mg-background);
-}
-
-.uberly-root .problem-section-bg,
-.margeo-root .problem-section-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-color: var(--color-mg-background);
-  background-image:
-    radial-gradient(
-      ellipse 100% 55% at 50% -5%,
-      rgba(99, 102, 241, 0.1),
-      transparent 68%
-    ),
-    radial-gradient(
-      ellipse 70% 45% at 85% 40%,
-      rgba(139, 92, 246, 0.04),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 55% 40% at 8% 65%,
-      rgba(248, 113, 113, 0.035),
-      transparent 72%
-    );
-}
-
-.uberly-root .problem-ambient-a,
-.margeo-root .problem-ambient-a,
-.uberly-root .problem-ambient-b,
-.margeo-root .problem-ambient-b {
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  filter: blur(72px);
-}
-
-.uberly-root .problem-ambient-a,
-.margeo-root .problem-ambient-a {
-  top: 12%;
-  left: -12%;
-  width: 48%;
-  height: 32%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.07), transparent 70%);
-}
-
-.uberly-root .problem-ambient-b,
-.margeo-root .problem-ambient-b {
-  right: -10%;
-  bottom: 18%;
-  width: 44%;
-  height: 36%;
-  background: radial-gradient(circle, rgba(248, 113, 113, 0.05), transparent 72%);
-}
-
-.uberly-root .problem-grain,
-.margeo-root .problem-grain {
-  opacity: 0.018;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  overflow: visible;
 }
 
 .uberly-root .problem-opener-glow,
@@ -799,7 +825,7 @@
   transform: translateX(-50%);
   background: radial-gradient(
     ellipse,
-    rgba(129, 140, 248, 0.12),
+    rgba(129, 140, 248, 0.1),
     transparent 68%
   );
   pointer-events: none;
@@ -911,9 +937,9 @@
 .margeo-root .problem-timeline-line {
   background: linear-gradient(
     180deg,
-    rgba(129, 140, 248, 0.28),
-    rgba(255, 255, 255, 0.06) 45%,
-    rgba(248, 113, 113, 0.28)
+    rgba(129, 140, 248, 0.35),
+    rgba(129, 140, 248, 0.12) 50%,
+    rgba(99, 102, 241, 0.08)
   );
 }
 
@@ -922,16 +948,11 @@
   position: absolute;
   inset: -24%;
   pointer-events: none;
-}
-
-.uberly-root .problem-comparison-glow-green,
-.margeo-root .problem-comparison-glow-green {
-  background: radial-gradient(circle at 50% 25%, rgba(52, 211, 153, 0.1), transparent 58%);
-}
-
-.uberly-root .problem-comparison-glow-red,
-.margeo-root .problem-comparison-glow-red {
-  background: radial-gradient(circle at 50% 85%, rgba(248, 113, 113, 0.08), transparent 58%);
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(99, 102, 241, 0.06),
+    transparent 58%
+  );
 }
 
 .uberly-root .problem-amount-glow,
@@ -951,7 +972,7 @@
   border-radius: inherit;
   background: radial-gradient(
     ellipse 85% 55% at 50% 0%,
-    rgba(248, 113, 113, 0.12),
+    rgba(99, 102, 241, 0.08),
     transparent 68%
   );
   pointer-events: none;

@@ -94,10 +94,8 @@ export function SocialProof() {
       eyebrow="Résultats beta"
       title="Des livreurs qui gagnent plus intelligemment"
       description="Données agrégées de la beta Uberly — mises à jour chaque semaine."
-      className="relative overflow-hidden"
+      className="relative"
     >
-      <div className="landing-aurora absolute inset-0 opacity-50" aria-hidden />
-
       <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {STATS.map((stat, i) => (
           <Reveal key={stat.label} delay={i * 0.08}>

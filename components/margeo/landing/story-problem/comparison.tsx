@@ -42,7 +42,7 @@ export function ProblemComparison() {
   return (
     <div ref={ref} className="grid gap-4 lg:grid-cols-2 lg:gap-6">
       <PremiumCard index={0} className="rounded-3xl p-6 sm:p-8">
-        <div className="problem-comparison-glow problem-comparison-glow-green" aria-hidden />
+        <div className="problem-comparison-glow" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
           Ce que voit Uber
         </p>
@@ -64,7 +64,7 @@ export function ProblemComparison() {
       </PremiumCard>
 
       <PremiumCard index={1} className="rounded-3xl p-6 sm:p-8">
-        <div className="problem-comparison-glow problem-comparison-glow-red" aria-hidden />
+        <div className="problem-comparison-glow" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
           Ce qui reste réellement
         </p>

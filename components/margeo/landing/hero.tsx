@@ -25,10 +25,7 @@ export function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-hero-glow relative pt-28 pb-16 sm:pt-36 sm:pb-24">
-      <div className="bg-grid absolute inset-0 overflow-hidden" aria-hidden />
-      <div className="landing-aurora absolute inset-0 overflow-hidden" aria-hidden />
-
+    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24">
       <div className="relative mx-auto max-w-6xl px-5">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
           <div className="text-center lg:text-left">

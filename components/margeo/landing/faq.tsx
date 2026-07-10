@@ -86,7 +86,7 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-24 border-t border-mg-border py-20 sm:py-28">
+    <section id="faq" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-5">
         <Reveal className="text-center">
           <p className="text-sm font-semibold tracking-wide text-mg-accent uppercase">

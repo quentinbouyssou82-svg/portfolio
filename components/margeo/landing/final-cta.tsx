@@ -8,17 +8,7 @@ import { margeoRoutes } from "@/lib/margeo/routes";
 
 export function FinalCta() {
   return (
-    <section className="relative overflow-hidden border-t border-mg-border py-24 sm:py-32">
-      <div className="landing-aurora absolute inset-0" aria-hidden />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(700px circle at 50% 120%, rgba(52,211,153,0.14), transparent 60%)",
-        }}
-        aria-hidden
-      />
-
+    <section className="relative py-24 sm:py-32">
       <Reveal className="relative mx-auto max-w-2xl px-5 text-center">
         <h2 className="text-gradient text-3xl font-bold tracking-tight text-balance sm:text-5xl">
           Ta prochaine course mérite un vrai calcul.

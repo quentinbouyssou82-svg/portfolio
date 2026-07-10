@@ -143,7 +143,6 @@ export function InteractiveDemo() {
       eyebrow="Démonstration"
       title="De la capture au verdict en 4 étapes"
       description="Exactement ce que tu vivras dans l'app — en moins de 10 secondes."
-      className="bg-mg-surface/40"
     >
       <Reveal>
         <div className="mx-auto max-w-3xl">

@@ -3,6 +3,7 @@ import { FinalCta } from "@/components/margeo/landing/final-cta";
 import { Footer } from "@/components/margeo/landing/footer";
 import { Hero } from "@/components/margeo/landing/hero";
 import { InteractiveDemo } from "@/components/margeo/landing/interactive-demo";
+import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
 import { LandingNav } from "@/components/margeo/landing/nav";
 import { SocialProof } from "@/components/margeo/landing/social-proof";
 import { StoryDecision } from "@/components/margeo/landing/story-decision";
@@ -12,8 +13,9 @@ import { LandingStickyCta } from "@/components/margeo/landing/sticky-cta";
 export default function LandingPage() {
   return (
     <>
+      <LandingBackdrop />
       <LandingNav />
-      <main className="landing-page">
+      <main className="landing-page relative z-[1]">
         <Hero />
         <StoryProblem />
         <InteractiveDemo />

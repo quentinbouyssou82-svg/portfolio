@@ -65,7 +65,7 @@ export function ProblemRoute() {
           </div>
         </div>
 
-        <div className="relative min-h-[220px] bg-gradient-to-br from-mg-accent/[0.06] via-transparent to-mg-stop/[0.05] p-6 lg:p-8">
+        <div className="relative min-h-[220px] bg-gradient-to-br from-mg-accent/[0.04] via-transparent to-transparent p-6 lg:p-8">
           <div className="problem-route-map relative h-full min-h-[180px] overflow-hidden rounded-2xl">
             <svg
               className="absolute inset-0 h-full w-full"

@@ -29,7 +29,7 @@ export function SectionShell({
       id={id}
       className={cn(
         "relative scroll-mt-24 py-20 sm:py-28",
-        border && "border-t border-mg-border",
+        border && "border-t border-white/[0.04]",
         className,
       )}
     >

@@ -9,17 +9,6 @@ import { ProblemTimeline } from "@/components/margeo/landing/story-problem/timel
 
 const SPRING = { type: "spring" as const, stiffness: 220, damping: 30 };
 
-function ProblemAmbient() {
-  return (
-    <>
-      <div className="problem-section-bg" aria-hidden />
-      <div className="problem-ambient-a" aria-hidden />
-      <div className="problem-ambient-b" aria-hidden />
-      <div className="problem-grain pointer-events-none absolute inset-0" aria-hidden />
-    </>
-  );
-}
-
 function ProblemOpener() {
   const reduceMotion = useReducedMotion();
 
@@ -104,10 +93,8 @@ export function StoryProblem() {
   return (
     <section
       id="probleme"
-      className="problem-section relative scroll-mt-24 border-t border-mg-border py-20 sm:py-28"
+      className="problem-section relative scroll-mt-24 py-20 sm:py-28"
     >
-      <ProblemAmbient />
-
       <div className="relative mx-auto max-w-6xl px-5">
         <ProblemOpener />
 
