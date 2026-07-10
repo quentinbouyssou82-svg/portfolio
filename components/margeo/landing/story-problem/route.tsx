@@ -1,21 +1,17 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { MapPin, UtensilsCrossed } from "lucide-react";
+import {
+  PremiumCard,
+  PremiumIconBadge,
+} from "@/components/margeo/landing/story-problem/premium-card";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 
 export function ProblemRoute() {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.65, ease: EASE }}
-      className="problem-glass-card overflow-hidden rounded-3xl"
-    >
+    <PremiumCard index={0} className="overflow-hidden rounded-3xl" tilt={false}>
       <div className="grid lg:grid-cols-[1fr_1.1fr]">
         <div className="border-b border-white/[0.06] p-6 lg:border-b-0 lg:border-r lg:p-8">
           <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
@@ -27,15 +23,13 @@ export function ProblemRoute() {
 
           <div className="relative mt-6 pl-1">
             <div
-              className="absolute top-3 bottom-3 left-[0.7rem] w-px bg-gradient-to-b from-mg-accent/50 via-mg-border to-mg-stop/50"
+              className="absolute top-3 bottom-3 left-[1.15rem] w-px bg-gradient-to-b from-mg-accent/50 via-mg-border to-mg-stop/50"
               aria-hidden
             />
 
-            <div className="relative flex gap-3 pb-5">
-              <span className="relative z-[1] flex size-7 shrink-0 items-center justify-center rounded-full border border-mg-accent/30 bg-mg-accent-soft">
-                <UtensilsCrossed className="size-3.5 text-mg-accent" aria-hidden />
-              </span>
-              <div>
+            <div className="relative flex gap-3.5 pb-5">
+              <PremiumIconBadge icon={UtensilsCrossed} tone="accent" size="sm" />
+              <div className="pt-0.5">
                 <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
                   Restaurant
                 </p>
@@ -45,11 +39,9 @@ export function ProblemRoute() {
               </div>
             </div>
 
-            <div className="relative flex gap-3 pb-5">
-              <span className="relative z-[1] flex size-7 shrink-0 items-center justify-center rounded-full border border-mg-go/30 bg-mg-go-soft">
-                <MapPin className="size-3.5 text-mg-go" aria-hidden />
-              </span>
-              <div>
+            <div className="relative flex gap-3.5 pb-5">
+              <PremiumIconBadge icon={MapPin} tone="go" size="sm" />
+              <div className="pt-0.5">
                 <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
                   Client
                 </p>
@@ -59,11 +51,9 @@ export function ProblemRoute() {
               </div>
             </div>
 
-            <div className="relative flex gap-3">
-              <span className="relative z-[1] flex size-7 shrink-0 items-center justify-center rounded-full border border-dashed border-mg-stop/40 bg-mg-stop-soft/60">
-                <MapPin className="size-3.5 text-mg-stop/70" aria-hidden />
-              </span>
-              <div>
+            <div className="relative flex gap-3.5">
+              <PremiumIconBadge icon={MapPin} tone="danger" size="sm" />
+              <div className="pt-0.5">
                 <p className="text-[10px] font-medium tracking-wide text-mg-stop/80 uppercase">
                   Retour à vide
                 </p>
@@ -75,8 +65,8 @@ export function ProblemRoute() {
           </div>
         </div>
 
-        <div className="relative min-h-[220px] bg-gradient-to-br from-mg-accent/[0.08] via-transparent to-mg-stop/[0.06] p-6 lg:p-8">
-          <div className="problem-route-map relative h-full min-h-[180px] overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0a0a0e]/80">
+        <div className="relative min-h-[220px] bg-gradient-to-br from-mg-accent/[0.06] via-transparent to-mg-stop/[0.05] p-6 lg:p-8">
+          <div className="problem-route-map relative h-full min-h-[180px] overflow-hidden rounded-2xl">
             <svg
               className="absolute inset-0 h-full w-full"
               viewBox="0 0 320 200"
@@ -84,16 +74,12 @@ export function ProblemRoute() {
               aria-hidden
             >
               <defs>
-                <pattern id="problem-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path
-                    d="M 20 0 L 0 0 0 20"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.04)"
-                    strokeWidth="0.5"
-                  />
-                </pattern>
+                <radialGradient id="problem-map-bg" cx="50%" cy="40%" r="70%">
+                  <stop offset="0%" stopColor="rgba(129,140,248,0.08)" />
+                  <stop offset="100%" stopColor="rgba(9,9,11,0.95)" />
+                </radialGradient>
               </defs>
-              <rect width="320" height="200" fill="url(#problem-grid)" />
+              <rect width="320" height="200" fill="url(#problem-map-bg)" />
               <motion.path
                 d="M 60 140 C 90 110, 120 90, 160 100 S 230 70, 260 55"
                 fill="none"
@@ -131,6 +117,6 @@ export function ProblemRoute() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </PremiumCard>
   );
 }

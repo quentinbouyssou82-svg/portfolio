@@ -2,19 +2,20 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ProblemComparison, ProblemStats } from "@/components/margeo/landing/story-problem/comparison";
+import { PremiumCard } from "@/components/margeo/landing/story-problem/premium-card";
 import { ProblemRoute } from "@/components/margeo/landing/story-problem/route";
 import { ProblemStress } from "@/components/margeo/landing/story-problem/stress";
 import { ProblemTimeline } from "@/components/margeo/landing/story-problem/timeline";
 
-const EASE = [0.21, 0.47, 0.32, 0.98] as const;
+const SPRING = { type: "spring" as const, stiffness: 220, damping: 30 };
 
 function ProblemAmbient() {
   return (
     <>
+      <div className="problem-section-bg" aria-hidden />
       <div className="problem-ambient-a" aria-hidden />
       <div className="problem-ambient-b" aria-hidden />
-      <div className="problem-light-lines" aria-hidden />
-      <div className="problem-grain absolute inset-0" aria-hidden />
+      <div className="problem-grain pointer-events-none absolute inset-0" aria-hidden />
     </>
   );
 }
@@ -23,44 +24,46 @@ function ProblemOpener() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="mx-auto max-w-4xl text-center">
+    <div className="problem-opener relative mx-auto max-w-4xl text-center">
+      <div className="problem-opener-glow" aria-hidden />
+
       <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, ease: EASE }}
-        className="text-xs font-semibold tracking-[0.22em] text-mg-accent uppercase"
+        transition={{ ...SPRING, delay: 0 }}
+        className="text-xs font-semibold tracking-[0.24em] text-mg-accent uppercase"
       >
         Le problème
       </motion.p>
 
       <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.06, ease: EASE }}
-        className="mt-4 text-sm font-medium tracking-wide text-mg-muted sm:text-base"
+        transition={{ ...SPRING, delay: 0.06 }}
+        className="mt-5 text-sm font-medium tracking-wide text-mg-muted sm:text-base"
       >
         Chaque course acceptée est un pari.
       </motion.p>
 
       <motion.h2
-        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ duration: 0.65, delay: 0.12, ease: EASE }}
-        className="text-gradient mt-5 text-[2.1rem] leading-[1.08] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+        transition={{ ...SPRING, delay: 0.1 }}
+        className="problem-title text-gradient mt-6 text-[2.15rem] leading-[1.06] font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.35rem]"
       >
         Tu crois gagner{" "}
-        <span className="text-gradient-accent">7 €.</span>
+        <span className="text-gradient-accent problem-title-accent">7 €.</span>
       </motion.h2>
 
       <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
-        className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mg-muted text-pretty sm:text-xl"
+        transition={{ ...SPRING, delay: 0.16 }}
+        className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-7 sm:text-xl"
       >
         …mais personne ne t&apos;a montré ce qu&apos;il reste vraiment.
       </motion.p>
@@ -69,16 +72,8 @@ function ProblemOpener() {
 }
 
 function ProblemHook() {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, ease: EASE }}
-      className="problem-hook relative mx-auto max-w-3xl overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-10 sm:py-14"
-    >
+    <PremiumCard index={0} className="rounded-3xl px-6 py-12 text-center sm:px-10 sm:py-14">
       <div className="problem-hook-glow" aria-hidden />
       <p className="relative text-xs font-semibold tracking-[0.2em] text-mg-faint uppercase">
         La question
@@ -89,15 +84,19 @@ function ProblemHook() {
       <p className="relative mx-auto mt-4 max-w-md text-sm leading-relaxed text-mg-muted sm:text-base">
         Tu viens de vivre une soirée type. La réponse arrive juste en dessous.
       </p>
-    </motion.div>
+    </PremiumCard>
   );
 }
 
 function SceneLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-6 text-center text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase sm:mb-8">
-      {children}
-    </p>
+    <div className="problem-scene-label mb-8 flex items-center justify-center gap-4 sm:mb-10">
+      <span className="problem-scene-line hidden h-px flex-1 sm:block" aria-hidden />
+      <p className="shrink-0 text-center text-[11px] font-semibold tracking-[0.2em] text-mg-faint uppercase">
+        {children}
+      </p>
+      <span className="problem-scene-line hidden h-px flex-1 sm:block" aria-hidden />
+    </div>
   );
 }
 

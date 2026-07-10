@@ -4,6 +4,7 @@ import { animate, motion, useInView, useReducedMotion } from "framer-motion";
 import { Clock, Fuel, MapPin, Receipt, Wrench } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
+import { PremiumCard, PremiumIconBadge } from "@/components/margeo/landing/story-problem/premium-card";
 import { cn } from "@/lib/margeo/utils";
 
 const DEDUCTIONS = [
@@ -40,40 +41,29 @@ export function ProblemComparison() {
 
   return (
     <div ref={ref} className="grid gap-4 lg:grid-cols-2 lg:gap-6">
-      <motion.div
-        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: EASE }}
-        className="problem-glass-card relative overflow-hidden rounded-3xl p-6 sm:p-8"
-      >
+      <PremiumCard index={0} className="rounded-3xl p-6 sm:p-8">
         <div className="problem-comparison-glow problem-comparison-glow-green" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
           Ce que voit Uber
         </p>
-        <p className="mt-6 text-center text-5xl font-bold tracking-tight text-mg-go sm:text-6xl">
+        <p className="problem-amount-glow mt-6 text-center text-5xl font-bold tracking-tight text-mg-go sm:text-6xl">
           7 €
         </p>
         <p className="mt-2 text-center text-sm text-mg-muted">
           Gain affiché · simple · rassurant
         </p>
-        <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+        <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/[0.06] shadow-[inset_0_1px_2px_rgba(0,0,0,0.35)]">
           <motion.div
-            className="h-full rounded-full bg-mg-go"
-            initial={{ width: "100%" }}
+            className="h-full rounded-full bg-gradient-to-r from-mg-go/80 to-mg-go"
+            initial={{ width: 0 }}
             whileInView={{ width: "100%" }}
             viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.2 }}
           />
         </div>
-      </motion.div>
+      </PremiumCard>
 
-      <motion.div
-        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-        className="problem-glass-card relative overflow-hidden rounded-3xl p-6 sm:p-8"
-      >
+      <PremiumCard index={1} className="rounded-3xl p-6 sm:p-8">
         <div className="problem-comparison-glow problem-comparison-glow-red" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
           Ce qui reste réellement
@@ -85,14 +75,19 @@ export function ProblemComparison() {
             return (
               <motion.li
                 key={item.label}
-                initial={reduceMotion ? false : { opacity: 0, x: 12 }}
+                initial={reduceMotion ? false : { opacity: 0, x: 10 }}
                 whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.2 + i * 0.12, duration: 0.45, ease: EASE }}
-                className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/20 px-3 py-2.5"
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 28,
+                  delay: 0.15 + i * 0.08,
+                }}
+                className="problem-inner-row flex items-center justify-between rounded-xl px-3 py-2.5"
               >
-                <span className="flex items-center gap-2 text-sm text-mg-muted">
-                  <Icon className="size-3.5 text-mg-stop/80" aria-hidden />
+                <span className="flex items-center gap-2.5 text-sm text-mg-muted">
+                  <PremiumIconBadge icon={Icon} tone="danger" size="sm" />
                   {item.label}
                 </span>
                 <span className="text-xs font-medium text-mg-stop">−</span>
@@ -103,15 +98,15 @@ export function ProblemComparison() {
 
         <div className="mt-6 border-t border-white/[0.08] pt-6 text-center">
           <motion.p
-            className="text-5xl font-bold tracking-tight text-mg-check sm:text-6xl"
+            className="problem-amount-glow-warn text-5xl font-bold tracking-tight text-mg-check sm:text-6xl"
             animate={
               reduceMotion
                 ? undefined
                 : inView
-                  ? { scale: [1, 1.04, 1] }
+                  ? { scale: [1, 1.03, 1] }
                   : undefined
             }
-            transition={{ duration: 0.5, delay: 2.2 }}
+            transition={{ duration: 0.55, delay: 2.2 }}
           >
             {amount.toLocaleString("fr-FR", {
               minimumFractionDigits: 2,
@@ -121,14 +116,12 @@ export function ProblemComparison() {
           </motion.p>
           <p className="mt-2 text-sm text-mg-muted">Dans ta poche. Peut-être.</p>
         </div>
-      </motion.div>
+      </PremiumCard>
     </div>
   );
 }
 
 export function ProblemStats() {
-  const reduceMotion = useReducedMotion();
-
   const stats = [
     {
       label: "Courses acceptées aujourd'hui",
@@ -147,25 +140,26 @@ export function ProblemStats() {
       value: -22,
       suffix: " €",
       tone: "text-mg-stop",
-      prefix: "",
     },
   ] as const;
 
   return (
-    <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+    <div className="grid gap-4 sm:grid-cols-3 sm:gap-5">
       {stats.map((stat, i) => (
-        <motion.div
+        <PremiumCard
           key={stat.label}
-          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ delay: i * 0.1, duration: 0.55, ease: EASE }}
-          className="problem-glass-card rounded-2xl px-4 py-5 text-center sm:px-5 sm:py-6"
+          index={i}
+          className="rounded-2xl px-4 py-6 text-center sm:px-5 sm:py-7"
         >
           <p className="text-[11px] font-medium tracking-wide text-mg-faint uppercase">
             {stat.label}
           </p>
-          <p className={cn("mt-2 text-3xl font-bold tracking-tight sm:text-4xl", stat.tone)}>
+          <p
+            className={cn(
+              "mt-3 text-3xl font-bold tracking-tight sm:text-4xl",
+              stat.tone,
+            )}
+          >
             {stat.label.includes("perdu") ? "−" : ""}
             <AnimatedCounter
               value={Math.abs(stat.value)}
@@ -173,7 +167,7 @@ export function ProblemStats() {
               duration={1.4}
             />
           </p>
-        </motion.div>
+        </PremiumCard>
       ))}
     </div>
   );

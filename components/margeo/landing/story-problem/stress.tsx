@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { Bell, Clock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { PremiumCard } from "@/components/margeo/landing/story-problem/premium-card";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 
@@ -40,13 +41,10 @@ export function ProblemStress() {
   }, [inView, reduceMotion]);
 
   return (
-    <div
-      ref={ref}
-      className="problem-stress-scene relative mx-auto max-w-lg overflow-hidden rounded-[2rem] border border-mg-border-strong p-1"
-    >
+    <PremiumCard index={0} className="mx-auto max-w-lg overflow-hidden rounded-[2rem] p-1" tilt={false}>
+      <div ref={ref} className="relative">
       <div className="problem-stress-glow" aria-hidden />
-      <div className="relative overflow-hidden rounded-[1.85rem] bg-gradient-to-b from-[#121218] to-[#09090b] px-5 py-8 sm:px-8 sm:py-10">
-        <div className="problem-grain absolute inset-0 opacity-[0.04]" aria-hidden />
+      <div className="relative overflow-hidden rounded-[1.85rem] bg-gradient-to-b from-[#101015] to-[#09090b] px-5 py-8 sm:px-8 sm:py-10">
 
         <motion.div
           animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
@@ -111,6 +109,7 @@ export function ProblemStress() {
           </div>
         </motion.div>
       </div>
-    </div>
+      </div>
+    </PremiumCard>
   );
 }

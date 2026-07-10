@@ -728,6 +728,31 @@
 .uberly-root .problem-section,
 .margeo-root .problem-section {
   overflow: hidden;
+  background-color: var(--color-mg-background);
+}
+
+.uberly-root .problem-section-bg,
+.margeo-root .problem-section-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: var(--color-mg-background);
+  background-image:
+    radial-gradient(
+      ellipse 100% 55% at 50% -5%,
+      rgba(99, 102, 241, 0.1),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 70% 45% at 85% 40%,
+      rgba(139, 92, 246, 0.04),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 8% 65%,
+      rgba(248, 113, 113, 0.035),
+      transparent 72%
+    );
 }
 
 .uberly-root .problem-ambient-a,
@@ -737,44 +762,134 @@
   position: absolute;
   pointer-events: none;
   border-radius: 50%;
-  filter: blur(60px);
+  filter: blur(72px);
 }
 
 .uberly-root .problem-ambient-a,
 .margeo-root .problem-ambient-a {
-  top: 8%;
-  left: -10%;
-  width: 55%;
-  height: 40%;
-  background: radial-gradient(circle, rgba(248, 113, 113, 0.08), transparent 70%);
+  top: 12%;
+  left: -12%;
+  width: 48%;
+  height: 32%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.07), transparent 70%);
 }
 
 .uberly-root .problem-ambient-b,
 .margeo-root .problem-ambient-b {
-  right: -8%;
-  bottom: 12%;
-  width: 50%;
-  height: 45%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.07), transparent 72%);
-}
-
-.uberly-root .problem-light-lines,
-.margeo-root .problem-light-lines {
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  background:
-    linear-gradient(90deg, transparent 49.5%, rgba(255, 255, 255, 0.03) 50%, transparent 50.5%),
-    linear-gradient(0deg, transparent 49.5%, rgba(255, 255, 255, 0.02) 50%, transparent 50.5%);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black, transparent);
-  pointer-events: none;
+  right: -10%;
+  bottom: 18%;
+  width: 44%;
+  height: 36%;
+  background: radial-gradient(circle, rgba(248, 113, 113, 0.05), transparent 72%);
 }
 
 .uberly-root .problem-grain,
 .margeo-root .problem-grain {
-  pointer-events: none;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.uberly-root .problem-opener-glow,
+.margeo-root .problem-opener-glow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: min(720px, 90vw);
+  height: 280px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.12),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.uberly-root .problem-title-accent,
+.margeo-root .problem-title-accent {
+  filter: drop-shadow(0 0 24px rgba(129, 140, 248, 0.22));
+}
+
+.uberly-root .problem-scene-line,
+.margeo-root .problem-scene-line {
+  max-width: 120px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+}
+
+.uberly-root .problem-premium-card,
+.margeo-root .problem-premium-card {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 42%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+    0 16px 48px rgba(0, 0, 0, 0.34),
+    0 4px 16px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+}
+
+@media (hover: hover) {
+  .uberly-root .problem-premium-card:hover,
+  .margeo-root .problem-premium-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+      0 1px 0 rgba(255, 255, 255, 0.09) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+      0 20px 56px rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(129, 140, 248, 0.06);
+  }
+}
+
+.uberly-root .problem-premium-card-shine,
+.margeo-root .problem-premium-card-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 58%
+  );
+  opacity: 0.45;
+}
+
+@media (hover: hover) {
+  .uberly-root .problem-premium-card:hover .problem-premium-card-shine,
+  .margeo-root .problem-premium-card:hover .problem-premium-card-shine {
+    opacity: 0.75;
+  }
+}
+
+.uberly-root .problem-inner-row,
+.margeo-root .problem-inner-row {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.22) 0%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .uberly-root .problem-glass-card,
@@ -796,57 +911,50 @@
 .margeo-root .problem-timeline-line {
   background: linear-gradient(
     180deg,
-    rgba(129, 140, 248, 0.35),
-    rgba(255, 255, 255, 0.08) 40%,
-    rgba(248, 113, 113, 0.35)
+    rgba(129, 140, 248, 0.28),
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(248, 113, 113, 0.28)
   );
 }
 
 .uberly-root .problem-comparison-glow,
 .margeo-root .problem-comparison-glow {
   position: absolute;
-  inset: -20%;
+  inset: -24%;
   pointer-events: none;
 }
 
 .uberly-root .problem-comparison-glow-green,
 .margeo-root .problem-comparison-glow-green {
-  background: radial-gradient(circle at 50% 30%, rgba(52, 211, 153, 0.12), transparent 55%);
+  background: radial-gradient(circle at 50% 25%, rgba(52, 211, 153, 0.1), transparent 58%);
 }
 
 .uberly-root .problem-comparison-glow-red,
 .margeo-root .problem-comparison-glow-red {
-  background: radial-gradient(circle at 50% 80%, rgba(248, 113, 113, 0.1), transparent 55%);
+  background: radial-gradient(circle at 50% 85%, rgba(248, 113, 113, 0.08), transparent 58%);
 }
 
-.uberly-root .problem-stress-scene,
-.margeo-root .problem-stress-scene {
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 24px 80px rgba(0, 0, 0, 0.45);
+.uberly-root .problem-amount-glow,
+.margeo-root .problem-amount-glow {
+  text-shadow: 0 0 40px rgba(52, 211, 153, 0.22);
+}
+
+.uberly-root .problem-amount-glow-warn,
+.margeo-root .problem-amount-glow-warn {
+  text-shadow: 0 0 40px rgba(251, 191, 36, 0.18);
 }
 
 .uberly-root .problem-stress-glow,
 .margeo-root .problem-stress-glow {
   position: absolute;
-  inset: -1px;
+  inset: 0;
   border-radius: inherit;
   background: radial-gradient(
-    ellipse 80% 50% at 50% 0%,
-    rgba(248, 113, 113, 0.15),
-    transparent 65%
+    ellipse 85% 55% at 50% 0%,
+    rgba(248, 113, 113, 0.12),
+    transparent 68%
   );
   pointer-events: none;
-}
-
-.uberly-root .problem-hook,
-.margeo-root .problem-hook {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.01) 100%
-  );
 }
 
 .uberly-root .problem-hook-glow,
@@ -854,14 +962,18 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 70% 60% at 50% 50%,
-    rgba(129, 140, 248, 0.1),
-    transparent 70%
+    ellipse 75% 65% at 50% 50%,
+    rgba(129, 140, 248, 0.08),
+    transparent 72%
   );
   pointer-events: none;
 }
 
 .uberly-root .problem-route-map,
 .margeo-root .problem-route-map {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 9, 11, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 12px 32px rgba(0, 0, 0, 0.32);
 }
