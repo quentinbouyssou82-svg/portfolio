@@ -25,9 +25,9 @@ export function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-hero-glow relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24">
-      <div className="bg-grid absolute inset-0" aria-hidden />
-      <div className="landing-aurora absolute inset-0" aria-hidden />
+    <section className="bg-hero-glow relative pt-28 pb-16 sm:pt-36 sm:pb-24">
+      <div className="bg-grid absolute inset-0 overflow-hidden" aria-hidden />
+      <div className="landing-aurora absolute inset-0 overflow-hidden" aria-hidden />
 
       <div className="relative mx-auto max-w-6xl px-5">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
@@ -119,12 +119,12 @@ export function Hero() {
           </div>
 
           <motion.div
+            className="relative mx-auto w-full max-w-[360px] overflow-visible lg:max-w-none"
             initial={reduceMotion ? false : { opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.2, ease }}
-            className="relative mx-auto w-full max-w-[340px] lg:max-w-none"
           >
-            <div className="landing-phone-glow absolute inset-0 -z-10 scale-110 blur-3xl" />
+            <div className="landing-phone-glow absolute inset-0 -z-10 scale-110 blur-3xl" aria-hidden />
             <PhoneMock variant="hero" />
           </motion.div>
         </div>

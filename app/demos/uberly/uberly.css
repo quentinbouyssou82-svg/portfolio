@@ -177,9 +177,10 @@
 .uberly-root .landing-phone-glow,
 .margeo-root .landing-phone-glow {
   background: radial-gradient(
-    circle,
-    rgba(99, 102, 241, 0.25),
-    transparent 70%
+    circle at 50% 45%,
+    rgba(52, 211, 153, 0.22) 0%,
+    rgba(99, 102, 241, 0.12) 35%,
+    transparent 72%
   );
 }
 
@@ -292,5 +293,432 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Premium phone mock (landing hero) ── */
+
+.uberly-root .phone-mock-stage,
+.margeo-root .phone-mock-stage {
+  position: relative;
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+  isolation: isolate;
+}
+
+.uberly-root .phone-mock-ambient,
+.margeo-root .phone-mock-ambient {
+  position: absolute;
+  inset: -18% -12%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.uberly-root .phone-mock-ambient-a,
+.margeo-root .phone-mock-ambient-a {
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 35%,
+    rgba(52, 211, 153, 0.16),
+    transparent 72%
+  );
+  filter: blur(28px);
+}
+
+.uberly-root .phone-mock-ambient-b,
+.margeo-root .phone-mock-ambient-b {
+  background: radial-gradient(
+    ellipse 40% 35% at 60% 70%,
+    rgba(99, 102, 241, 0.1),
+    transparent 70%
+  );
+  filter: blur(36px);
+}
+
+.uberly-root .phone-mock-float,
+.margeo-root .phone-mock-float {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+
+.uberly-root .phone-mock-device,
+.margeo-root .phone-mock-device {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.uberly-root .phone-mock-shadow,
+.margeo-root .phone-mock-shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -6%;
+  height: 28%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 0, 0, 0.55),
+    transparent 68%
+  );
+  filter: blur(18px);
+  transform: translateZ(-40px) scale(1.05);
+  pointer-events: none;
+}
+
+.uberly-root .phone-mock-frame,
+.margeo-root .phone-mock-frame {
+  position: relative;
+  border-radius: 2.65rem;
+  padding: 0.42rem;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 22%,
+    rgba(0, 0, 0, 0.35) 55%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45) inset,
+    0 2px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 100px rgba(0, 0, 0, 0.65),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.uberly-root .phone-mock-frame::before,
+.margeo-root .phone-mock-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.14) 48%,
+    transparent 58%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+  animation: phone-shine 7s ease-in-out infinite;
+}
+
+.uberly-root .phone-mock-frame::after,
+.margeo-root .phone-mock-frame::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(2.65rem - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.uberly-root .phone-mock-screen,
+.margeo-root .phone-mock-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2.2rem;
+  background: linear-gradient(
+    180deg,
+    #121218 0%,
+    #0a0a0e 38%,
+    #09090b 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 24px 48px rgba(0, 0, 0, 0.45) inset;
+}
+
+.uberly-root .phone-mock-screen-glow,
+.margeo-root .phone-mock-screen-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 45% at 50% -5%,
+    rgba(255, 255, 255, 0.09),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.uberly-root .phone-mock-grain,
+.margeo-root .phone-mock-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.uberly-root .phone-mock-island,
+.margeo-root .phone-mock-island {
+  position: absolute;
+  top: 0.55rem;
+  left: 50%;
+  z-index: 20;
+  height: 1.35rem;
+  width: 5.5rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.uberly-root .phone-mock-island::after,
+.margeo-root .phone-mock-island::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.55rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #1a1a22 30%, #0a0a0e 70%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.uberly-root .phone-mock-content,
+.margeo-root .phone-mock-content {
+  position: relative;
+  z-index: 2;
+  padding: 2.65rem 1rem 1.15rem;
+}
+
+.uberly-root .phone-glass-card,
+.margeo-root .phone-glass-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.uberly-root .phone-kpi-card,
+.margeo-root .phone-kpi-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 6px 16px rgba(0, 0, 0, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+@media (hover: hover) {
+  .uberly-root .phone-kpi-card:hover,
+  .margeo-root .phone-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.uberly-root .phone-accept-btn,
+.margeo-root .phone-accept-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(52, 211, 153, 0.95) 0%,
+    rgba(16, 185, 129, 0.88) 100%
+  );
+  color: #04120c;
+  font-weight: 700;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 12px 32px rgba(52, 211, 153, 0.28),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.uberly-root .phone-accept-btn::before,
+.margeo-root .phone-accept-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: phone-btn-shine 4.5s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+  .uberly-root .phone-accept-btn:hover,
+  .margeo-root .phone-accept-btn:hover {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+      0 1px 0 rgba(255, 255, 255, 0.3) inset,
+      0 16px 40px rgba(52, 211, 153, 0.38),
+      0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.uberly-root .phone-verdict-ai,
+.margeo-root .phone-verdict-ai {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.14) 0%,
+    rgba(52, 211, 153, 0.04) 55%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    0 0 24px rgba(52, 211, 153, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.uberly-root .phone-verdict-ai::after,
+.margeo-root .phone-verdict-ai::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  animation: phone-scan-line 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.uberly-root .phone-score-halo,
+.margeo-root .phone-score-halo {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(52, 211, 153, 0.22),
+    transparent 68%
+  );
+  filter: blur(8px);
+  animation: phone-pulse-glow 3.2s ease-in-out infinite;
+}
+
+.uberly-root .phone-float-stat,
+.margeo-root .phone-float-stat {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    145deg,
+    rgba(18, 18, 22, 0.92) 0%,
+    rgba(12, 12, 16, 0.88) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 16px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+}
+
+.uberly-root .phone-sparkline,
+.margeo-root .phone-sparkline {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: phone-sparkline-draw 2.4s ease forwards 0.6s;
+}
+
+@keyframes phone-shine {
+  0%,
+  100% {
+    transform: translateX(-8%) rotate(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateX(8%) rotate(0deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes phone-btn-shine {
+  0%,
+  72%,
+  100% {
+    transform: translateX(-120%);
+  }
+  88% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes phone-scan-line {
+  0%,
+  100% {
+    left: -45%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    left: 105%;
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+}
+
+@keyframes phone-pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes phone-sparkline-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root .phone-mock-frame::before,
+  .margeo-root .phone-mock-frame::before,
+  .uberly-root .phone-accept-btn::before,
+  .margeo-root .phone-accept-btn::before,
+  .uberly-root .phone-verdict-ai::after,
+  .margeo-root .phone-verdict-ai::after,
+  .uberly-root .phone-score-halo,
+  .margeo-root .phone-score-halo,
+  .uberly-root .phone-sparkline,
+  .margeo-root .phone-sparkline {
+    animation: none !important;
   }
 }
