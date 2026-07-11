@@ -1183,3 +1183,644 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ── Onboarding premium ── */
+
+.uberly-root .onboarding-page,
+.margeo-root .onboarding-page {
+  min-height: 100dvh;
+}
+
+.uberly-root .onboarding-shell,
+.margeo-root .onboarding-shell {
+  min-height: calc(100dvh - 2.5rem);
+}
+
+.uberly-root .onboarding-header,
+.margeo-root .onboarding-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.uberly-root .onboarding-progress,
+.margeo-root .onboarding-progress {
+  width: 100%;
+  max-width: 18rem;
+}
+
+.uberly-root .onboarding-progress-track,
+.margeo-root .onboarding-progress-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.uberly-root .onboarding-progress-fill,
+.margeo-root .onboarding-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.85),
+    rgba(129, 140, 248, 1)
+  );
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);
+}
+
+.uberly-root .onboarding-progress-label,
+.margeo-root .onboarding-progress-label {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .onboarding-card,
+.margeo-root .onboarding-card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.025) 42%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.09) inset,
+    0 0 72px rgba(99, 102, 241, 0.1),
+    0 28px 72px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(24px);
+}
+
+.uberly-root .onboarding-card-body,
+.margeo-root .onboarding-card-body {
+  flex: 1;
+  min-height: 0;
+  padding: 1.75rem 1.5rem 1rem;
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .uberly-root .onboarding-card-body,
+  .margeo-root .onboarding-card-body {
+    padding: 2rem 2rem 1.25rem;
+  }
+}
+
+.uberly-root .onboarding-step-header,
+.margeo-root .onboarding-step-header {
+  text-align: center;
+}
+
+.uberly-root .onboarding-step-title,
+.margeo-root .onboarding-step-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  filter: drop-shadow(0 0 32px rgba(129, 140, 248, 0.14));
+}
+
+@media (min-width: 640px) {
+  .uberly-root .onboarding-step-title,
+  .margeo-root .onboarding-step-title {
+    font-size: 1.75rem;
+  }
+}
+
+.uberly-root .onboarding-step-subtitle,
+.margeo-root .onboarding-step-subtitle {
+  margin-top: 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .onboarding-welcome-icon,
+.margeo-root .onboarding-welcome-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 32px rgba(99, 102, 241, 0.15);
+}
+
+.uberly-root .onboarding-welcome-list,
+.margeo-root .onboarding-welcome-list {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.uberly-root .onboarding-welcome-item,
+.margeo-root .onboarding-welcome-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-mg-muted);
+}
+
+.uberly-root .onboarding-welcome-dot,
+.margeo-root .onboarding-welcome-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--color-mg-accent);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.6);
+}
+
+.uberly-root .onboarding-vehicle-grid,
+.margeo-root .onboarding-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+@media (min-width: 480px) {
+  .uberly-root .onboarding-vehicle-grid,
+  .margeo-root .onboarding-vehicle-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.uberly-root .onboarding-hours-grid,
+.margeo-root .onboarding-hours-grid {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.uberly-root .onboarding-select-card,
+.margeo-root .onboarding-select-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 5.5rem;
+  padding: 1rem 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-mg-muted);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.uberly-root .onboarding-hours-card,
+.margeo-root .onboarding-hours-card {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.875rem;
+  min-height: 4.5rem;
+  padding: 1rem 1.125rem;
+  text-align: left;
+}
+
+.uberly-root .onboarding-hours-card .onboarding-select-card-icon,
+.margeo-root .onboarding-hours-card .onboarding-select-card-icon {
+  margin-top: 0.125rem;
+}
+
+.uberly-root .onboarding-hours-card .onboarding-select-card-label,
+.margeo-root .onboarding-hours-card .onboarding-select-card-label {
+  font-size: 0.9375rem;
+}
+
+.uberly-root .onboarding-hours-card .onboarding-select-card-text,
+.margeo-root .onboarding-hours-card .onboarding-select-card-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.uberly-root .onboarding-select-card-icon,
+.margeo-root .onboarding-select-card-icon {
+  color: var(--color-mg-faint);
+  transition: color 0.25s ease;
+}
+
+.uberly-root .onboarding-select-card-label,
+.margeo-root .onboarding-select-card-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.uberly-root .onboarding-select-card-desc,
+.margeo-root .onboarding-select-card-desc {
+  font-size: 0.75rem;
+  color: var(--color-mg-faint);
+  line-height: 1.35;
+}
+
+.uberly-root .onboarding-select-card-check,
+.margeo-root .onboarding-select-card-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  background: var(--color-mg-accent);
+  color: white;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+}
+
+.uberly-root .onboarding-hours-card .onboarding-select-card-check,
+.margeo-root .onboarding-hours-card .onboarding-select-card-check {
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}
+
+@media (hover: hover) {
+  .uberly-root .onboarding-select-card:hover:not(.onboarding-select-card-selected),
+  .margeo-root .onboarding-select-card:hover:not(.onboarding-select-card-selected) {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.uberly-root .onboarding-select-card-selected,
+.margeo-root .onboarding-select-card-selected {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-mg-foreground);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.2) inset,
+    0 0 28px rgba(99, 102, 241, 0.12);
+}
+
+.uberly-root .onboarding-select-card-selected .onboarding-select-card-icon,
+.margeo-root .onboarding-select-card-selected .onboarding-select-card-icon {
+  color: var(--color-mg-accent);
+}
+
+.uberly-root .onboarding-slider,
+.margeo-root .onboarding-slider {
+  padding: 0 0.25rem;
+}
+
+.uberly-root .onboarding-slider-value-wrap,
+.margeo-root .onboarding-slider-value-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.uberly-root .onboarding-slider-value,
+.margeo-root .onboarding-slider-value {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fafafa 20%, #a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(129, 140, 248, 0.2));
+}
+
+.uberly-root .onboarding-slider-track-wrap,
+.margeo-root .onboarding-slider-track-wrap {
+  position: relative;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.uberly-root .onboarding-slider-fill,
+.margeo-root .onboarding-slider-fill {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.7), rgba(129, 140, 248, 1));
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+  pointer-events: none;
+  transition: width 0.15s ease;
+}
+
+.uberly-root .onboarding-slider-input,
+.margeo-root .onboarding-slider-input {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 2rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.uberly-root .onboarding-slider-input::-webkit-slider-runnable-track,
+.margeo-root .onboarding-slider-input::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.uberly-root .onboarding-slider-input::-webkit-slider-thumb,
+.margeo-root .onboarding-slider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: -0.5rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, #a5b4fc, #6366f1);
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.uberly-root .onboarding-slider-input:active::-webkit-slider-thumb,
+.margeo-root .onboarding-slider-input:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 6px rgba(99, 102, 241, 0.25),
+    0 4px 20px rgba(99, 102, 241, 0.35);
+}
+
+.uberly-root .onboarding-slider-input::-moz-range-track,
+.margeo-root .onboarding-slider-input::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.uberly-root .onboarding-slider-input::-moz-range-thumb,
+.margeo-root .onboarding-slider-input::-moz-range-thumb {
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, #a5b4fc, #6366f1);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+.uberly-root .onboarding-slider-bounds,
+.margeo-root .onboarding-slider-bounds {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .onboarding-segment,
+.margeo-root .onboarding-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (min-width: 480px) {
+  .uberly-root .onboarding-segment,
+  .margeo-root .onboarding-segment {
+    flex-direction: row;
+  }
+}
+
+.uberly-root .onboarding-segment-item,
+.margeo-root .onboarding-segment-item {
+  flex: 1;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-mg-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .uberly-root .onboarding-segment-item:hover:not(.onboarding-segment-item-selected),
+  .margeo-root .onboarding-segment-item:hover:not(.onboarding-segment-item-selected) {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-mg-foreground);
+  }
+}
+
+.uberly-root .onboarding-segment-item-selected,
+.margeo-root .onboarding-segment-item-selected {
+  border-color: rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--color-mg-foreground);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.uberly-root .onboarding-summary,
+.margeo-root .onboarding-summary {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.uberly-root .onboarding-summary-row,
+.margeo-root .onboarding-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.uberly-root .onboarding-summary-row:last-child,
+.margeo-root .onboarding-summary-row:last-child {
+  border-bottom: none;
+}
+
+.uberly-root .onboarding-summary-label,
+.margeo-root .onboarding-summary-label {
+  font-size: 0.8125rem;
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .onboarding-summary-value,
+.margeo-root .onboarding-summary-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-mg-foreground);
+  text-align: right;
+}
+
+.uberly-root .onboarding-summary-chip,
+.margeo-root .onboarding-summary-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.6875rem;
+  color: var(--color-mg-muted);
+}
+
+.uberly-root .onboarding-footer,
+.margeo-root .onboarding-footer {
+  flex-shrink: 0;
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 11, 0) 0%,
+    rgba(9, 9, 11, 0.55) 100%
+  );
+}
+
+.uberly-root .onboarding-footer-inner,
+.margeo-root .onboarding-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+}
+
+.uberly-root .onboarding-nav-btn,
+.margeo-root .onboarding-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border-radius: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.uberly-root .onboarding-nav-btn:disabled,
+.margeo-root .onboarding-nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.uberly-root .onboarding-nav-btn-ghost,
+.margeo-root .onboarding-nav-btn-ghost {
+  justify-self: start;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-mg-muted);
+}
+
+@media (hover: hover) {
+  .uberly-root .onboarding-nav-btn-ghost:hover:not(:disabled),
+  .margeo-root .onboarding-nav-btn-ghost:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--color-mg-foreground);
+  }
+}
+
+.uberly-root .onboarding-nav-btn-skip,
+.margeo-root .onboarding-nav-btn-skip {
+  justify-self: center;
+  border: none;
+  background: transparent;
+  color: var(--color-mg-faint);
+  font-weight: 500;
+}
+
+@media (hover: hover) {
+  .uberly-root .onboarding-nav-btn-skip:hover,
+  .margeo-root .onboarding-nav-btn-skip:hover {
+    color: var(--color-mg-muted);
+  }
+}
+
+.uberly-root .onboarding-nav-btn-primary,
+.margeo-root .onboarding-nav-btn-primary {
+  justify-self: end;
+  border: none;
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.98) 0%,
+    rgba(79, 70, 229, 0.92) 100%
+  );
+  color: white;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 28px rgba(99, 102, 241, 0.28);
+}
+
+.uberly-root .onboarding-nav-btn-finish,
+.margeo-root .onboarding-nav-btn-finish {
+  max-width: 100%;
+  padding-inline: 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
+}
+
+@media (min-width: 400px) {
+  .uberly-root .onboarding-nav-btn-finish,
+  .margeo-root .onboarding-nav-btn-finish {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+}
+
+@media (hover: hover) {
+  .uberly-root .onboarding-nav-btn-primary:hover:not(:disabled),
+  .margeo-root .onboarding-nav-btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.45) inset,
+      0 1px 0 rgba(255, 255, 255, 0.16) inset,
+      0 12px 36px rgba(99, 102, 241, 0.38);
+  }
+}
