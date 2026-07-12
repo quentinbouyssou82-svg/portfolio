@@ -34,14 +34,8 @@ export function AuthForm({
   >(authAction, undefined);
 
   useEffect(() => {
-    if (!state) return;
-    if (!state.ok) {
+    if (state && !state.ok) {
       toast.error(state.message);
-      return;
-    }
-    if (state.redirectTo) {
-      // Navigation complète pour garantir la persistance des cookies Supabase.
-      window.location.assign(state.redirectTo);
     }
   }, [state]);
 

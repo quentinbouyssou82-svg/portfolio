@@ -1,16 +1,195 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
+import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
+import { getMargeoServiceKey } from "@/lib/margeo/supabase/env";
 import { logBetaEvent } from "@/lib/margeo/services/beta-events";
 import { markBetaTester } from "@/lib/margeo/services/beta-user";
+import { resolveAuthError, type AuthErrorLike } from "./errors";
+import { getPostAuthPath } from "./post-auth";
 
 export type MargeoActionResult<T = void> =
-  | { ok: true; data?: T }
+  | { ok: true; data?: T; redirectTo?: string }
   | { ok: false; message: string };
 
-export async function signUpAction(formData: FormData): Promise<MargeoActionResult> {
+/** Bêta : confirme l'email via service role si Supabase exige encore la confirmation. */
+async function confirmUserEmail(userId: string): Promise<boolean> {
+  try {
+    const admin = getMargeoAdminDb();
+    const { error } = await admin.auth.admin.updateUserById(userId, {
+      email_confirm: true,
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+/** Répare un compte créé lors d'une tentative précédente (non confirmé / jamais connecté). */
+async function repairUserForSignup(
+  userId: string,
+  password: string,
+  name: string,
+): Promise<void> {
+  try {
+    const admin = getMargeoAdminDb();
+    const { data, error } = await admin.auth.admin.getUserById(userId);
+    if (error || !data.user) return;
+
+    const user = data.user;
+    const needsPasswordSync =
+      !user.email_confirmed_at || !user.last_sign_in_at;
+
+    await admin.auth.admin.updateUserById(userId, {
+      email_confirm: true,
+      ...(needsPasswordSync ? { password } : {}),
+      user_metadata: {
+        ...(typeof user.user_metadata === "object" && user.user_metadata
+          ? user.user_metadata
+          : {}),
+        name: name || (user.user_metadata as { name?: string })?.name || "",
+      },
+    });
+  } catch {
+    // best-effort
+  }
+}
+
+async function establishSessionAfterSignUp(
+  supabase: SupabaseClient,
+  email: string,
+  password: string,
+  userId: string,
+  name = "",
+): Promise<User | null> {
+  await repairUserForSignup(userId, password, name);
+  await confirmUserEmail(userId);
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (data.user && data.session) {
+      return data.user;
+    }
+
+    if (error?.message?.toLowerCase().includes("invalid login credentials")) {
+      break;
+    }
+
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+      await confirmUserEmail(userId);
+    }
+  }
+
+  return null;
+}
+
+function isSignupRateLimit(error: AuthErrorLike): boolean {
+  const code = error.code?.toLowerCase();
+  if (code === "over_email_send_rate_limit" || code === "over_request_rate_limit") {
+    return true;
+  }
+  return (
+    error.status === 429 ||
+    Boolean(error.message?.toLowerCase().includes("rate limit"))
+  );
+}
+
+/** Bêta : création admin si le signup public est bloqué (rate limit email Supabase). */
+async function adminCreateUser(
+  email: string,
+  password: string,
+  name: string,
+): Promise<string> {
+  const admin = getMargeoAdminDb();
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { name },
+  });
+  if (error) throw error;
+  if (!data.user?.id) throw new Error("admin_create_user_failed");
+  await repairUserForSignup(data.user.id, password, name);
+  return data.user.id;
+}
+
+async function finalizeSignUpAndRedirect(
+  user: User,
+  name: string,
+): Promise<never> {
+  await markBetaTester(user.id);
+  await logBetaEvent({
+    userId: user.id,
+    eventType: "account_created",
+    metadata: { method: "email", emailDomain: (user.email ?? "").split("@")[1] },
+  });
+  redirect(await getPostAuthPath(user.id, name));
+}
+
+/** Bêta : création via admin API (pas d'email envoyé → pas de rate limit). */
+async function signUpWithAdminApi(
+  supabase: SupabaseClient,
+  email: string,
+  password: string,
+  name: string,
+): Promise<MargeoActionResult> {
+  let userId: string;
+  try {
+    userId = await adminCreateUser(email, password, name);
+  } catch (adminErr) {
+    const msg = adminErr instanceof Error ? adminErr.message.toLowerCase() : "";
+    if (msg.includes("already") || msg.includes("exists")) {
+      const existingId = await findUserIdByEmail(email);
+      if (!existingId) {
+        return { ok: false, message: "Un compte existe déjà avec cet email." };
+      }
+      userId = existingId;
+      await repairUserForSignup(existingId, password, name);
+    } else {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[uberly/auth] admin signup failed:", adminErr);
+      }
+      return {
+        ok: false,
+        message: "Inscription temporairement indisponible. Réessaie dans quelques minutes.",
+      };
+    }
+  }
+
+  const user = await establishSessionAfterSignUp(supabase, email, password, userId, name);
+  if (!user) {
+    const existing = await findUserIdByEmail(email);
+    if (existing) {
+      return {
+        ok: false,
+        message:
+          "Un compte existe déjà avec cet email. Connecte-toi ou utilise « Mot de passe oublié ».",
+      };
+    }
+    return {
+      ok: false,
+      message: "Compte créé mais connexion impossible. Réessaie de te connecter.",
+    };
+  }
+
+  await finalizeSignUpAndRedirect(user, name);
+  throw new Error("unreachable");
+}
+
+export async function signUpAction(
+  _prev: MargeoActionResult | undefined,
+  formData: FormData,
+): Promise<MargeoActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "").trim();
@@ -24,6 +203,12 @@ export async function signUpAction(formData: FormData): Promise<MargeoActionResu
 
   try {
     const supabase = await createMargeoServerClient();
+
+    // Bêta : priorité admin API (évite rate limit email Supabase ~2/h sans SMTP custom).
+    if (getMargeoServiceKey()) {
+      return await signUpWithAdminApi(supabase, email, password, name);
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -31,28 +216,75 @@ export async function signUpAction(formData: FormData): Promise<MargeoActionResu
     });
 
     if (error) {
-      return { ok: false, message: error.message };
+      const authError: AuthErrorLike = {
+        message: error.message,
+        code: "code" in error ? String(error.code) : undefined,
+        status: "status" in error ? Number(error.status) : undefined,
+      };
+
+      if (isSignupRateLimit(authError)) {
+        return {
+          ok: false,
+          message:
+            "Inscriptions temporairement limitées. Contacte l'équipe ou réessaie plus tard.",
+        };
+      }
+
+      return {
+        ok: false,
+        message: resolveAuthError(authError),
+      };
     }
 
-    if (data.user?.id) {
-      await markBetaTester(data.user.id);
-      await logBetaEvent({
-        userId: data.user.id,
-        eventType: "account_created",
-        metadata: { method: "email", emailDomain: email.split("@")[1] },
-      });
+    let user = data.user;
+
+    if (!data.session && user) {
+      user = await establishSessionAfterSignUp(supabase, email, password, user.id, name);
+    } else if (data.session) {
+      user = data.user;
     }
 
-    return { ok: true };
+    if (!user) {
+      return {
+        ok: false,
+        message: "Compte créé mais connexion impossible. Réessaie de te connecter.",
+      };
+    }
+
+    await finalizeSignUpAndRedirect(user, name);
+    throw new Error("unreachable");
   } catch (e) {
+    if (isRedirectError(e)) throw e;
     return {
       ok: false,
-      message: e instanceof Error ? e.message : "Impossible de créer le compte.",
+      message: resolveAuthError(
+        e instanceof Error ? e.message : "Impossible de créer le compte.",
+      ),
     };
   }
 }
 
-export async function signInAction(formData: FormData): Promise<MargeoActionResult> {
+async function findUserIdByEmail(email: string): Promise<string | null> {
+  try {
+    const admin = getMargeoAdminDb();
+    for (let page = 1; page <= 5; page++) {
+      const { data } = await admin.auth.admin.listUsers({ page, perPage: 200 });
+      const match = data.users.find(
+        (u) => u.email?.toLowerCase() === email.toLowerCase(),
+      );
+      if (match) return match.id;
+      if (data.users.length < 200) break;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+export async function signInAction(
+  _prev: MargeoActionResult | undefined,
+  formData: FormData,
+): Promise<MargeoActionResult> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
@@ -62,23 +294,58 @@ export async function signInAction(formData: FormData): Promise<MargeoActionResu
 
   try {
     const supabase = await createMargeoServerClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      return { ok: false, message: error.message };
+      const isUnconfirmed = error.message?.toLowerCase().includes("email not confirmed");
+      if (isUnconfirmed) {
+        const userId = await findUserIdByEmail(email);
+        if (userId && (await confirmUserEmail(userId))) {
+          const retry = await supabase.auth.signInWithPassword({ email, password });
+          if (retry.data.user && retry.data.session) {
+            const redirectTo = await getPostAuthPath(
+              retry.data.user.id,
+              retry.data.user.user_metadata?.name as string | undefined,
+            );
+            redirect(redirectTo);
+          }
+        }
+      }
+
+      return {
+        ok: false,
+        message: resolveAuthError({
+          message: error.message,
+          code: "code" in error ? String(error.code) : undefined,
+          status: "status" in error ? Number(error.status) : undefined,
+        }),
+      };
     }
 
-    return { ok: true };
+    if (!data.user) {
+      return { ok: false, message: "Connexion impossible." };
+    }
+
+    const name = data.user.user_metadata?.name as string | undefined;
+    const redirectTo = await getPostAuthPath(data.user.id, name);
+    redirect(redirectTo);
   } catch (e) {
+    if (isRedirectError(e)) throw e;
     return {
       ok: false,
-      message: e instanceof Error ? e.message : "Connexion impossible.",
+      message: resolveAuthError(
+        e instanceof Error ? e.message : "Connexion impossible.",
+      ),
     };
   }
 }
 
 export async function signOutAction(): Promise<void> {
-  const supabase = await createMargeoServerClient();
-  await supabase.auth.signOut();
-  redirect(UBERLY_PATHS.home);
+  try {
+    const supabase = await createMargeoServerClient();
+    await supabase.auth.signOut();
+  } catch {
+    // Déjà déconnecté
+  }
+  redirect(UBERLY_PATHS.login);
 }

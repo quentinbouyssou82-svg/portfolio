@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import {
   DEFAULT_VEHICLE_COSTS,
   UBERLY_PATHS,
@@ -11,6 +10,48 @@ import type { OnboardingInput } from "@/lib/margeo/supabase/schema";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { logBetaEvent } from "@/lib/margeo/services/beta-events";
 import { markBetaTester } from "@/lib/margeo/services/beta-user";
+
+function draftToPatch(input: Partial<OnboardingInput>): Record<string, unknown> {
+  const patch: Record<string, unknown> = {};
+
+  if (input.vehicle) {
+    patch.vehicle = input.vehicle;
+    patch.cost_per_km = DEFAULT_VEHICLE_COSTS[input.vehicle] ?? 0.24;
+  }
+  if (input.targetHourly != null) patch.target_hourly = input.targetHourly;
+  if (input.minBenefit != null) patch.min_benefit = input.minBenefit;
+  if (input.maxDistanceKm != null) patch.max_distance_km = input.maxDistanceKm;
+  if (input.emptyReturns) patch.empty_returns = input.emptyReturns;
+  if (input.weeklyHours) patch.weekly_hours = input.weeklyHours;
+
+  return patch;
+}
+
+/** Sauvegarde partielle des réponses onboarding (sans marquer terminé). */
+export async function saveOnboardingProgressAction(
+  input: Partial<OnboardingInput>,
+): Promise<MargeoActionResult> {
+  const supabase = await createMargeoServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, message: "Non authentifié." };
+  }
+
+  const patch = draftToPatch(input);
+  if (Object.keys(patch).length === 0) {
+    return { ok: true };
+  }
+
+  const profile = await updateProfile(user.id, patch);
+  if (!profile) {
+    return { ok: false, message: "Impossible de sauvegarder." };
+  }
+
+  return { ok: true };
+}
 
 export async function completeOnboardingAction(
   input: OnboardingInput,
@@ -24,31 +65,21 @@ export async function completeOnboardingAction(
     return { ok: false, message: "Non authentifié." };
   }
 
-  if (!input.name?.trim()) {
-    return { ok: false, message: "Le prénom est requis." };
-  }
-  if (!input.city?.trim()) {
-    return { ok: false, message: "La ville est requise." };
-  }
-  if (!input.platforms?.length) {
-    return { ok: false, message: "Sélectionne au moins une plateforme." };
+  if (!input.vehicle) {
+    return { ok: false, message: "Choisis ton véhicule." };
   }
   if (!input.targetHourly || input.targetHourly < 5) {
     return { ok: false, message: "Objectif €/h invalide." };
   }
-
-  const costPerKm =
-    input.costPerKm ?? DEFAULT_VEHICLE_COSTS[input.vehicle] ?? 0.24;
+  if (!input.emptyReturns) {
+    return { ok: false, message: "Indique ta préférence pour les retours à vide." };
+  }
+  if (!input.weeklyHours) {
+    return { ok: false, message: "Indique ton volume horaire hebdomadaire." };
+  }
 
   const profile = await updateProfile(user.id, {
-    name: input.name.trim(),
-    city: input.city.trim(),
-    vehicle: input.vehicle,
-    platforms: input.platforms,
-    other_platform: input.otherPlatform?.trim() || null,
-    target_hourly: input.targetHourly,
-    daily_target: input.dailyTarget ?? 90,
-    cost_per_km: costPerKm,
+    ...draftToPatch(input),
     onboarding_completed: true,
   });
 
@@ -61,21 +92,20 @@ export async function completeOnboardingAction(
     userId: user.id,
     eventType: "onboarding_completed",
     metadata: {
-      city: input.city,
       vehicle: input.vehicle,
-      platforms: input.platforms.join(","),
+      targetHourly: input.targetHourly,
+      minBenefit: input.minBenefit,
+      maxDistanceKm: input.maxDistanceKm,
+      emptyReturns: input.emptyReturns,
+      weeklyHours: input.weeklyHours,
     },
   });
 
-  return { ok: true };
+  return { ok: true, redirectTo: UBERLY_PATHS.dashboard };
 }
 
 export async function completeOnboardingAndRedirect(
   input: OnboardingInput,
 ): Promise<MargeoActionResult> {
-  const result = await completeOnboardingAction(input);
-  if (result.ok) {
-    redirect(UBERLY_PATHS.dashboard);
-  }
-  return result;
+  return completeOnboardingAction(input);
 }

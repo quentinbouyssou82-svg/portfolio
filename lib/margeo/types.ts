@@ -5,7 +5,7 @@ export type Platform =
   | "Amazon Flex"
   | "Autre";
 
-export type Vehicle = "velo" | "velo_electrique" | "scooter" | "voiture";
+export type Vehicle = "velo" | "velo_electrique" | "scooter" | "moto" | "voiture";
 
 export type Verdict = "accept" | "check" | "refuse";
 
@@ -72,6 +72,10 @@ export interface UserProfile {
   premiumSource?: "manual" | "beta" | "stripe" | "trial";
   isBetaTester?: boolean;
   onboardingCompleted?: boolean;
+  minBenefit?: number;
+  maxDistanceKm?: number;
+  emptyReturns?: "yes" | "no" | "short_only";
+  weeklyHours?: "under_10" | "10_20" | "20_30" | "30_40" | "over_40";
   lastLat?: number;
   lastLng?: number;
   locationPermission?: "granted" | "denied" | "unknown";
@@ -113,5 +117,6 @@ export const VEHICLE_LABELS: Record<Vehicle, string> = {
   velo: "Vélo",
   velo_electrique: "Vélo électrique",
   scooter: "Scooter / Moto",
+  moto: "Moto",
   voiture: "Voiture",
 };

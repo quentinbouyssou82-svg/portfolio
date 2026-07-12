@@ -13,6 +13,7 @@ const TIME_COST_PER_MIN: Record<UserProfile["vehicle"], number> = {
   velo: 0.01,
   velo_electrique: 0.015,
   scooter: 0.02,
+  moto: 0.022,
   voiture: 0.03,
 };
 

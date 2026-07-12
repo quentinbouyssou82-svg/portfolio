@@ -6,9 +6,10 @@ export const MARGEO_PREFIX = UBERLY_BASE;
 export const UBERLY_PATHS = {
   home: UBERLY_BASE,
   login: `${UBERLY_BASE}/login`,
-  signup: `${UBERLY_BASE}/signup`,
+  signup: `${UBERLY_BASE}/login?mode=signup`,
   onboarding: `${UBERLY_BASE}/onboarding`,
   forgotPassword: `${UBERLY_BASE}/forgot-password`,
+  deconnexion: `${UBERLY_BASE}/deconnexion`,
   dashboard: `${UBERLY_BASE}/dashboard`,
   analyse: `${UBERLY_BASE}/analyse`,
   historique: `${UBERLY_BASE}/historique`,
@@ -21,8 +22,9 @@ export const MARGEO_PATHS = UBERLY_PATHS;
 export const PUBLIC_UBERLY_PATHS = new Set<string>([
   UBERLY_PATHS.home,
   UBERLY_PATHS.login,
-  UBERLY_PATHS.signup,
+  `${UBERLY_BASE}/signup`,
   UBERLY_PATHS.forgotPassword,
+  UBERLY_PATHS.deconnexion,
 ]);
 
 export const PUBLIC_MARGEO_PATHS = PUBLIC_UBERLY_PATHS;
@@ -41,6 +43,7 @@ export const DEFAULT_VEHICLE_COSTS = {
   velo: 0.05,
   velo_electrique: 0.08,
   scooter: 0.24,
+  moto: 0.22,
   voiture: 0.35,
 } as const;
 

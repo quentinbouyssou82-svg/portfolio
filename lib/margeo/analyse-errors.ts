@@ -85,6 +85,18 @@ export function getAnalysisErrorMessage(
     };
   }
 
+  if (
+    lower.includes("mistral") ||
+    lower.includes("vision") ||
+    lower.includes("api key") ||
+    lower.includes("openai")
+  ) {
+    return {
+      title: "Analyse temporairement indisponible",
+      description: "Réessaie dans quelques instants avec une capture nette.",
+    };
+  }
+
   if (lower.includes("réseau") || lower.includes("network") || lower.includes("fetch")) {
     return {
       title: "Connexion perdue",
@@ -94,7 +106,7 @@ export function getAnalysisErrorMessage(
 
   return {
     title: "Analyse impossible",
-    description: message || "Réessaie avec une autre capture.",
+    description: "Réessaie avec une autre capture.",
   };
 }
 

@@ -41,6 +41,7 @@ const MIGRATIONS = [
   "uberly-beta.sql",
   "uberly-beta-v2.sql",
   "uberly-beta-v3.sql",
+  "uberly-onboarding-v3.sql",
 ];
 
 if (!DB_URL) {

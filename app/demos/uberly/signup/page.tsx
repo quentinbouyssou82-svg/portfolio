@@ -1,9 +1,7 @@
-import { AuthForm } from "@/components/margeo/auth/auth-form";
+import { redirect } from "next/navigation";
+import { UBERLY_PATHS } from "@/lib/margeo/constants";
 
+/** Inscription — redirige vers la page auth unique (/login?mode=signup). */
 export default function MargeoSignupPage() {
-  return (
-    <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-      <AuthForm mode="signup" />
-    </div>
-  );
+  redirect(`${UBERLY_PATHS.login}?mode=signup`);
 }

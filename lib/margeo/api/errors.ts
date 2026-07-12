@@ -19,9 +19,14 @@ export function jsonError(error: unknown): NextResponse {
     );
   }
 
-  const message = error instanceof Error ? error.message : "Erreur serveur";
-  console.error("[uberly/api]", message, error);
-  return NextResponse.json({ error: message }, { status: 500 });
+  console.error("[uberly/api]", error);
+  return NextResponse.json(
+    {
+      error: "Une erreur est survenue. Réessaie dans quelques instants.",
+      code: "INTERNAL_ERROR",
+    },
+    { status: 500 },
+  );
 }
 
 export function logApi(event: string, meta?: Record<string, unknown>) {

@@ -18,6 +18,10 @@ export function rowToUserProfile(row: MargeoProfileRow): UserProfile {
     premiumSource: row.premium_source ?? undefined,
     isBetaTester: row.is_beta_tester,
     onboardingCompleted: row.onboarding_completed,
+    minBenefit: Number(row.min_benefit ?? 6),
+    maxDistanceKm: Number(row.max_distance_km ?? 8),
+    emptyReturns: row.empty_returns ?? undefined,
+    weeklyHours: row.weekly_hours ?? undefined,
     lastLat: row.last_lat != null ? Number(row.last_lat) : undefined,
     lastLng: row.last_lng != null ? Number(row.last_lng) : undefined,
     locationPermission: row.location_permission,
@@ -63,15 +67,19 @@ export async function ensureProfileForUser(
 }
 
 export async function getCurrentProfile(): Promise<UserProfile | null> {
-  const supabase = await createMargeoServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-  return ensureProfileForUser(
-    user.id,
-    user.user_metadata?.name as string | undefined,
-  );
+  try {
+    const supabase = await createMargeoServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return null;
+    return ensureProfileForUser(
+      user.id,
+      user.user_metadata?.name as string | undefined,
+    );
+  } catch {
+    return null;
+  }
 }
 
 export async function updateProfile(
@@ -86,6 +94,11 @@ export async function updateProfile(
     .select("*")
     .single();
 
-  if (error || !data) return null;
+  if (error || !data) {
+    if (process.env.NODE_ENV === "development" && error) {
+      console.error("[uberly/profile] update failed:", error.message);
+    }
+    return null;
+  }
   return rowToUserProfile(data as MargeoProfileRow);
 }

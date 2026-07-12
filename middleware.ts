@@ -85,6 +85,13 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
     return NextResponse.next();
   }
 
+  if (pathname === `${UBERLY_PREFIX}/signup`) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = UBERLY_PATHS.login;
+    redirectUrl.searchParams.set("mode", "signup");
+    return NextResponse.redirect(redirectUrl, 308);
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(url, key, {
@@ -106,8 +113,7 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
   } = await supabase.auth.getUser();
 
   const isPublic = PUBLIC_UBERLY_PATHS.has(pathname);
-  const isAuthPage =
-    pathname === UBERLY_PATHS.login || pathname === UBERLY_PATHS.signup;
+  const isAuthPage = pathname === UBERLY_PATHS.login;
   const isOnboarding = pathname === UBERLY_PATHS.onboarding;
   const isProtected = isUberlyProtected(pathname);
 
@@ -118,8 +124,17 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
   }
 
   if (user && isAuthPage) {
+    const { data: profile } = await supabase
+      .from("margeo_profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .maybeSingle();
+
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = UBERLY_PATHS.dashboard;
+    redirectUrl.pathname =
+      profile?.onboarding_completed === true
+        ? UBERLY_PATHS.dashboard
+        : UBERLY_PATHS.onboarding;
     return NextResponse.redirect(redirectUrl);
   }
 

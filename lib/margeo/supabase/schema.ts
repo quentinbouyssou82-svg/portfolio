@@ -15,6 +15,10 @@ export interface MargeoProfileRow {
   premium_source: "manual" | "beta" | "stripe" | "trial" | null;
   is_beta_tester: boolean;
   onboarding_completed: boolean;
+  min_benefit: number;
+  max_distance_km: number;
+  empty_returns: "yes" | "no" | "short_only" | null;
+  weekly_hours: "under_10" | "10_20" | "20_30" | "30_40" | "over_40" | null;
   last_lat: number | null;
   last_lng: number | null;
   location_permission: "granted" | "denied" | "unknown";
@@ -95,6 +99,10 @@ export type ProfileUpdateInput = Partial<
     | "platforms"
     | "other_platform"
     | "onboarding_completed"
+    | "min_benefit"
+    | "max_distance_km"
+    | "empty_returns"
+    | "weekly_hours"
     | "last_lat"
     | "last_lng"
     | "location_permission"
@@ -103,12 +111,10 @@ export type ProfileUpdateInput = Partial<
 >;
 
 export type OnboardingInput = {
-  name: string;
-  city: string;
   vehicle: Vehicle;
-  platforms: Platform[];
-  otherPlatform?: string;
   targetHourly: number;
-  dailyTarget: number;
-  costPerKm?: number;
+  minBenefit: number;
+  emptyReturns: "yes" | "no" | "short_only";
+  maxDistanceKm: number;
+  weeklyHours: "under_10" | "10_20" | "20_30" | "30_40" | "over_40";
 };
