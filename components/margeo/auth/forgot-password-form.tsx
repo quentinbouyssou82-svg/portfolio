@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
 import { Input } from "@/components/margeo/ui/input";
-import { resetPasswordAction } from "@/lib/margeo/auth/oauth";
+import { resetPasswordAction } from "@/lib/margeo/auth/password";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
 
 export function ForgotPasswordForm() {
@@ -14,7 +14,7 @@ export function ForgotPasswordForm() {
 
   const handleSubmit = (formData: FormData) => {
     startTransition(async () => {
-      const result = await resetPasswordAction(formData);
+      const result = await resetPasswordAction(undefined, formData);
       if (!result.ok) {
         toast.error(result.message);
         return;

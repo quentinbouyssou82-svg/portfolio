@@ -1,11 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/margeo/utils";
-
-const SPRING = { type: "spring" as const, stiffness: 320, damping: 32 };
 
 export function OnboardingProgressBar({
   step,
@@ -19,11 +16,9 @@ export function OnboardingProgressBar({
   return (
     <div className="onboarding-progress" aria-hidden>
       <div className="onboarding-progress-track">
-        <motion.div
-          className="onboarding-progress-fill"
-          initial={false}
-          animate={{ width: `${progress}%` }}
-          transition={{ type: "spring", stiffness: 280, damping: 30 }}
+        <div
+          className="onboarding-progress-fill transition-[width] duration-300 ease-out"
+          style={{ width: `${progress}%` }}
         />
       </div>
       <p className="onboarding-progress-label">
@@ -65,15 +60,10 @@ export function OnboardingSelectCard({
   description?: string;
   className?: string;
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <motion.button
+    <button
       type="button"
       onClick={onSelect}
-      whileHover={reduceMotion ? undefined : { scale: 1.02 }}
-      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-      transition={SPRING}
       className={cn(
         "onboarding-select-card",
         selected && "onboarding-select-card-selected",
@@ -94,16 +84,11 @@ export function OnboardingSelectCard({
         ) : null}
       </div>
       {selected ? (
-        <motion.span
-          className="onboarding-select-card-check"
-          initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={SPRING}
-        >
+        <span className="onboarding-select-card-check">
           <Check className="size-3.5" strokeWidth={2.5} />
-        </motion.span>
+        </span>
       ) : null}
-    </motion.button>
+    </button>
   );
 }
 
@@ -131,15 +116,7 @@ export function OnboardingSlider({
   return (
     <div className="onboarding-slider">
       <div className="onboarding-slider-value-wrap">
-        <motion.output
-          key={value}
-          className="onboarding-slider-value"
-          initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={SPRING}
-        >
-          {formatValue(value)}
-        </motion.output>
+        <output className="onboarding-slider-value">{formatValue(value)}</output>
       </div>
 
       <div className="onboarding-slider-track-wrap">
@@ -180,19 +157,15 @@ export function OnboardingSegmentControl<T extends string>({
   onChange: (value: T) => void;
   options: { id: T; label: string }[];
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <div className="onboarding-segment" role="group">
       {options.map((option) => {
         const selected = value === option.id;
         return (
-          <motion.button
+          <button
             key={option.id}
             type="button"
             onClick={() => onChange(option.id)}
-            whileTap={reduceMotion ? undefined : { scale: 0.98 }}
-            transition={SPRING}
             className={cn(
               "onboarding-segment-item",
               selected && "onboarding-segment-item-selected",
@@ -200,7 +173,7 @@ export function OnboardingSegmentControl<T extends string>({
             aria-pressed={selected}
           >
             {option.label}
-          </motion.button>
+          </button>
         );
       })}
     </div>

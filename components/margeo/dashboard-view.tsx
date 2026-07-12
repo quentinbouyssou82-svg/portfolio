@@ -107,24 +107,19 @@ export function DashboardView({
     computeMetrics(analyses);
 
   return (
-    <div className="animate-mg-fade-up space-y-6">
-      {/* En-tête */}
+    <div className="app-page">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-medium tracking-wide text-mg-faint uppercase">
-            Centre de pilotage
-          </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
-            Salut {firstName}
-          </h1>
-          <p className="mt-1 text-sm text-mg-muted">
+        <header className="app-page-header">
+          <p className="app-page-eyebrow">Centre de pilotage</p>
+          <h1 className="app-page-title">Salut {firstName}</h1>
+          <p className="app-page-desc">
             {isEmpty
               ? "Analyse ta première course pour activer ton tableau de bord."
               : `${weekCount} analyse${weekCount !== 1 ? "s" : ""} cette semaine`}
           </p>
-        </div>
+        </header>
         <Link href={margeoRoutes.analyse} className="w-full shrink-0 sm:w-auto">
-          <Button className="app-cta-primary w-full min-h-11 sm:w-auto">
+          <Button size="lg" className="w-full sm:w-auto">
             <ScanLine />
             {isEmpty ? "Première analyse" : "Analyser"}
           </Button>
@@ -138,7 +133,7 @@ export function DashboardView({
           description="Une capture suffit. Uberly calcule ton gain net et te dit quoi faire — en quelques secondes."
           action={
             <Link href={margeoRoutes.analyse}>
-              <Button className="app-cta-primary min-h-11">
+              <Button size="lg">
                 <ScanLine />
                 Analyser ma première course
               </Button>
@@ -148,7 +143,7 @@ export function DashboardView({
       ) : (
         <>
           {/* Hero KPI — objectif + gain du jour */}
-          <Card className="overflow-hidden border-mg-accent/20 bg-gradient-to-br from-mg-card to-mg-accent-soft/10 p-5 sm:p-6">
+          <Card className="app-glass-surface overflow-hidden border-mg-accent/20 p-5 sm:p-6">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-5">
                 <ProgressRing
@@ -176,6 +171,13 @@ export function DashboardView({
                   <p className="mt-0.5 text-xs text-mg-faint">
                     sur {profile.dailyTarget} € visés · objectif{" "}
                     {profile.targetHourly} €/h
+                    {profile.minBenefit != null && (
+                      <>
+                        {" "}
+                        · min. {profile.minBenefit} €/course · max.{" "}
+                        {profile.maxDistanceKm ?? 8} km
+                      </>
+                    )}
                   </p>
                 </div>
               </div>

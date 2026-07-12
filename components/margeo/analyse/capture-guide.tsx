@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Camera, CheckCircle2, Clock, MapPin, Route } from "lucide-react";
 
 const TIPS = [
@@ -9,7 +8,6 @@ const TIPS = [
   "PNG, JPG ou WebP — pas besoin de recadrer",
 ];
 
-/** Exemple visuel de ce qu'il faut capturer (CSS pur, pas d'image externe). */
 function OfferScreenshotExample() {
   return (
     <div className="mx-auto w-full max-w-[220px] rounded-2xl border border-mg-border-strong bg-[#111113] p-2 shadow-mg-card">
@@ -58,12 +56,7 @@ function OfferScreenshotExample() {
 
 export function CaptureGuide() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.15 }}
-      className="mt-6 grid gap-6 rounded-2xl border border-mg-border bg-mg-card/50 p-5 sm:grid-cols-[1fr_auto] sm:items-center"
-    >
+    <div className="app-glass-surface mt-5 grid gap-5 rounded-2xl p-4 sm:grid-cols-[1fr_auto] sm:items-center sm:p-5">
       <div>
         <p className="flex items-center gap-2 text-sm font-semibold text-mg-foreground">
           <Camera className="size-4 text-mg-accent" />
@@ -73,7 +66,7 @@ export function CaptureGuide() {
           {TIPS.map((tip) => (
             <li
               key={tip}
-              className="flex items-start gap-2 text-sm text-mg-muted"
+              className="flex items-start gap-2 text-sm leading-relaxed text-mg-muted"
             >
               <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-mg-go" />
               {tip}
@@ -82,6 +75,6 @@ export function CaptureGuide() {
         </ul>
       </div>
       <OfferScreenshotExample />
-    </motion.div>
+    </div>
   );
 }

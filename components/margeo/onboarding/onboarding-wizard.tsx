@@ -1,18 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Clock,
-  MapPin,
-  Sparkles,
-  Target,
-  TrendingUp,
-} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/margeo/logo";
 import {
@@ -38,40 +28,26 @@ import {
   type WeeklyHoursId,
 } from "@/components/margeo/onboarding/onboarding-types";
 import { OnboardingVehicleIcon } from "@/components/margeo/onboarding/onboarding-vehicle-icon";
+import { Button } from "@/components/margeo/ui/button";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
 import { cn } from "@/lib/margeo/utils";
+import {
+  completeOnboardingAndRedirect,
+  saveOnboardingProgressAction,
+} from "@/lib/margeo/actions/onboarding";
+import type { OnboardingInput } from "@/lib/margeo/supabase/schema";
+import type { Vehicle } from "@/lib/margeo/types";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Clock,
+  MapPin,
+  Sparkles,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 
 const TOTAL_STEPS = 8;
-const SPRING = { type: "spring" as const, stiffness: 280, damping: 32 };
-
-type Direction = 1 | -1;
-
-function stepVariants(direction: Direction, reduceMotion: boolean | null) {
-  if (reduceMotion) {
-    return {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
-    };
-  }
-  return {
-    initial: {
-      opacity: 0,
-      x: direction * 28,
-      filter: "blur(8px)",
-    },
-    animate: {
-      opacity: 1,
-      x: 0,
-      filter: "blur(0px)",
-    },
-    exit: {
-      opacity: 0,
-      x: direction * -28,
-      filter: "blur(8px)",
-    },
-  };
-}
 
 function validateStep(step: number, draft: OnboardingDraft): string | null {
   switch (step) {
@@ -114,13 +90,19 @@ function applySkipDefaults(step: number, draft: OnboardingDraft): OnboardingDraf
   }
 }
 
-export function OnboardingWizard() {
+export function OnboardingWizard({
+  initial,
+}: {
+  initial?: Partial<OnboardingDraft>;
+}) {
   const router = useRouter();
-  const reduceMotion = useReducedMotion();
   const [step, setStep] = useState(0);
-  const [direction, setDirection] = useState<Direction>(1);
-  const [draft, setDraft] = useState<OnboardingDraft>(DEFAULT_ONBOARDING_DRAFT);
+  const [draft, setDraft] = useState<OnboardingDraft>({
+    ...DEFAULT_ONBOARDING_DRAFT,
+    ...initial,
+  });
   const [finishing, setFinishing] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   const updateDraft = useCallback(
     (patch: Partial<OnboardingDraft>) => {
@@ -129,15 +111,27 @@ export function OnboardingWizard() {
     [],
   );
 
-  const goTo = (next: number, dir: Direction) => {
-    setDirection(dir);
+  const goTo = (next: number) => {
     setStep(next);
   };
 
   const handleBack = () => {
     if (step === 0) return;
-    goTo(step - 1, -1);
+    goTo(step - 1);
   };
+
+  const persistDraft = useCallback(async (nextDraft: OnboardingDraft) => {
+    const patch: Partial<OnboardingInput> = {};
+    if (nextDraft.vehicle) patch.vehicle = nextDraft.vehicle as Vehicle;
+    if (nextDraft.targetHourly) patch.targetHourly = nextDraft.targetHourly;
+    if (nextDraft.minBenefit) patch.minBenefit = nextDraft.minBenefit;
+    if (nextDraft.maxDistanceKm) patch.maxDistanceKm = nextDraft.maxDistanceKm;
+    if (nextDraft.emptyReturns) patch.emptyReturns = nextDraft.emptyReturns;
+    if (nextDraft.weeklyHours) patch.weeklyHours = nextDraft.weeklyHours;
+
+    if (Object.keys(patch).length === 0) return;
+    await saveOnboardingProgressAction(patch);
+  }, []);
 
   const handleContinue = () => {
     const error = validateStep(step, draft);
@@ -147,20 +141,39 @@ export function OnboardingWizard() {
     }
 
     if (step === TOTAL_STEPS - 1) {
+      const input = draftToInput(draft);
+      if (!input) {
+        toast.error("Complète toutes les étapes avant de continuer.");
+        return;
+      }
+
       setFinishing(true);
-      saveOnboardingDraft(draft);
-      router.push(`${UBERLY_PATHS.analyse}?welcome=1`);
+      startTransition(async () => {
+        const result = await completeOnboardingAndRedirect(input);
+        if (!result.ok) {
+          setFinishing(false);
+          toast.error(result.message);
+          return;
+        }
+        if (result.redirectTo) {
+          window.location.assign(result.redirectTo);
+          return;
+        }
+        router.refresh();
+      });
       return;
     }
 
-    goTo(step + 1, 1);
+    const nextDraft = draft;
+    void persistDraft(nextDraft);
+    goTo(step + 1);
   };
 
   const handleSkip = () => {
     if (step === 0 || step === TOTAL_STEPS - 1) return;
     const nextDraft = applySkipDefaults(step, draft);
     setDraft(nextDraft);
-    goTo(step + 1, 1);
+    goTo(step + 1);
   };
 
   const isWelcome = step === 0;
@@ -169,125 +182,108 @@ export function OnboardingWizard() {
 
   return (
     <div className="onboarding-shell mx-auto flex w-full max-w-lg flex-col">
-      <motion.header
-        className="onboarding-header shrink-0"
-        initial={reduceMotion ? false : { opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={SPRING}
-      >
+      <header className="onboarding-header shrink-0 app-fade-in">
         <Link href={UBERLY_PATHS.home} className="inline-flex">
           <Logo size="sm" />
         </Link>
         {!isWelcome && (
           <OnboardingProgressBar step={step} total={TOTAL_STEPS} />
         )}
-      </motion.header>
+      </header>
 
       <div className="onboarding-card relative flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="auth-card-shine" aria-hidden />
 
         <div className="onboarding-card-body relative z-[1] flex flex-1 flex-col">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={step}
-              custom={direction}
-              variants={stepVariants(direction, reduceMotion)}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={SPRING}
-              className="flex flex-1 flex-col"
-            >
-              {step === 0 && <WelcomeStep />}
-              {step === 1 && (
-                <VehicleStep
-                  value={draft.vehicle}
-                  onChange={(vehicle) => updateDraft({ vehicle })}
-                />
-              )}
-              {step === 2 && (
-                <HourlyStep
-                  value={draft.targetHourly}
-                  onChange={(targetHourly) => updateDraft({ targetHourly })}
-                />
-              )}
-              {step === 3 && (
-                <MinBenefitStep
-                  value={draft.minBenefit}
-                  onChange={(minBenefit) => updateDraft({ minBenefit })}
-                />
-              )}
-              {step === 4 && (
-                <EmptyReturnsStep
-                  value={draft.emptyReturns}
-                  onChange={(emptyReturns) => updateDraft({ emptyReturns })}
-                />
-              )}
-              {step === 5 && (
-                <MaxDistanceStep
-                  value={draft.maxDistanceKm}
-                  onChange={(maxDistanceKm) => updateDraft({ maxDistanceKm })}
-                />
-              )}
-              {step === 6 && (
-                <WeeklyHoursStep
-                  value={draft.weeklyHours}
-                  onChange={(weeklyHours) => updateDraft({ weeklyHours })}
-                />
-              )}
-              {step === 7 && <SummaryStep draft={draft} />}
-            </motion.div>
-          </AnimatePresence>
+          <div key={step} className="app-fade-in flex flex-1 flex-col">
+            {step === 0 && <WelcomeStep />}
+            {step === 1 && (
+              <VehicleStep
+                value={draft.vehicle}
+                onChange={(vehicle) => updateDraft({ vehicle })}
+              />
+            )}
+            {step === 2 && (
+              <HourlyStep
+                value={draft.targetHourly}
+                onChange={(targetHourly) => updateDraft({ targetHourly })}
+              />
+            )}
+            {step === 3 && (
+              <MinBenefitStep
+                value={draft.minBenefit}
+                onChange={(minBenefit) => updateDraft({ minBenefit })}
+              />
+            )}
+            {step === 4 && (
+              <EmptyReturnsStep
+                value={draft.emptyReturns}
+                onChange={(emptyReturns) => updateDraft({ emptyReturns })}
+              />
+            )}
+            {step === 5 && (
+              <MaxDistanceStep
+                value={draft.maxDistanceKm}
+                onChange={(maxDistanceKm) => updateDraft({ maxDistanceKm })}
+              />
+            )}
+            {step === 6 && (
+              <WeeklyHoursStep
+                value={draft.weeklyHours}
+                onChange={(weeklyHours) => updateDraft({ weeklyHours })}
+              />
+            )}
+            {step === 7 && <SummaryStep draft={draft} />}
+          </div>
         </div>
 
         <footer className="onboarding-footer relative z-[1] shrink-0">
           <div className="onboarding-footer-inner">
             {!isWelcome ? (
-              <motion.button
+              <Button
                 type="button"
+                variant="secondary"
+                size="sm"
                 onClick={handleBack}
-                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                transition={SPRING}
-                className="onboarding-nav-btn onboarding-nav-btn-ghost"
+                className="justify-self-start px-3"
               >
                 <ArrowLeft className="size-4" aria-hidden />
                 Retour
-              </motion.button>
+              </Button>
             ) : (
               <span className="w-[88px]" aria-hidden />
             )}
 
             {showSkip ? (
-              <motion.button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={handleSkip}
-                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
-                transition={SPRING}
-                className="onboarding-nav-btn onboarding-nav-btn-skip"
+                className="justify-self-center px-2"
               >
                 Passer
-              </motion.button>
+              </Button>
             ) : (
               <span className="w-[72px]" aria-hidden />
             )}
 
-            <motion.button
+            <Button
               type="button"
               onClick={handleContinue}
-              disabled={finishing}
-              whileHover={finishing || reduceMotion ? undefined : { scale: 1.02 }}
-              whileTap={finishing || reduceMotion ? undefined : { scale: 0.98 }}
-              transition={SPRING}
+              disabled={finishing || pending}
+              loading={finishing || pending}
+              size="sm"
               className={cn(
-                "onboarding-nav-btn onboarding-nav-btn-primary",
-                isSummary && "onboarding-nav-btn-finish",
+                "justify-self-end",
+                isSummary && "onboarding-nav-btn-finish max-w-[11rem] px-3 text-xs sm:max-w-none sm:text-sm",
               )}
             >
               {isSummary ? (
-                finishing ? (
-                  "Chargement…"
+                finishing || pending ? (
+                  "Enregistrement…"
                 ) : (
-                  "Commencer à analyser mes courses"
+                  "Accéder au dashboard"
                 )
               ) : (
                 <>
@@ -295,7 +291,7 @@ export function OnboardingWizard() {
                   <ArrowRight className="size-4" aria-hidden />
                 </>
               )}
-            </motion.button>
+            </Button>
           </div>
         </footer>
       </div>
@@ -303,17 +299,27 @@ export function OnboardingWizard() {
   );
 }
 
+function draftToInput(draft: OnboardingDraft): OnboardingInput | null {
+  if (!draft.vehicle || !draft.emptyReturns || !draft.weeklyHours) {
+    return null;
+  }
+
+  return {
+    vehicle: draft.vehicle as Vehicle,
+    targetHourly: draft.targetHourly,
+    minBenefit: draft.minBenefit,
+    emptyReturns: draft.emptyReturns,
+    maxDistanceKm: draft.maxDistanceKm,
+    weeklyHours: draft.weeklyHours,
+  };
+}
+
 function WelcomeStep() {
   return (
     <div className="onboarding-welcome flex flex-1 flex-col items-center justify-center text-center">
-      <motion.div
-        className="onboarding-welcome-icon"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ ...SPRING, delay: 0.05 }}
-      >
+      <div className="onboarding-welcome-icon">
         <Sparkles className="size-7 text-mg-accent" strokeWidth={1.75} />
-      </motion.div>
+      </div>
       <OnboardingStepHeader
         title="Bienvenue sur Uberly"
         subtitle="Quelques questions pour calibrer tes analyses et te donner des verdicts adaptés à ta réalité de livreur."
@@ -323,17 +329,11 @@ function WelcomeStep() {
           "Verdict clair avant chaque course",
           "Gain net réel, pas le montant affiché",
           "Objectifs personnalisés à ton rythme",
-        ].map((item, i) => (
-          <motion.li
-            key={item}
-            className="onboarding-welcome-item"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ ...SPRING, delay: 0.12 + i * 0.06 }}
-          >
+        ].map((item) => (
+          <li key={item} className="onboarding-welcome-item">
             <span className="onboarding-welcome-dot" aria-hidden />
             {item}
-          </motion.li>
+          </li>
         ))}
       </ul>
     </div>

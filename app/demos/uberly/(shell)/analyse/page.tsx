@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { RotateCcw, ScanLine, Sparkles, X, Check } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,6 +13,7 @@ import {
 import { UploadZone } from "@/components/margeo/analyse/upload-zone";
 import { LocationBanner } from "@/components/margeo/location-banner";
 import { Button } from "@/components/margeo/ui/button";
+import { ErrorState } from "@/components/margeo/ui/error-state";
 import { useGeolocation } from "@/hooks/margeo/use-geolocation";
 import {
   maybeMarkActiveUser,
@@ -22,6 +22,7 @@ import {
 import { getAnalysisErrorMessage } from "@/lib/margeo/analyse-errors";
 import type { AnalysisMeta } from "@/lib/margeo/analyse-meta";
 import { VERDICT_META, type RideAnalysis } from "@/lib/margeo/types";
+import { cn } from "@/lib/margeo/utils";
 
 type Stage = "idle" | "scanning" | "result";
 
@@ -42,6 +43,10 @@ export default function AnalysePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<RideAnalysis | null>(null);
   const [analysisMeta, setAnalysisMeta] = useState<AnalysisMeta | null>(null);
+  const [uploadError, setUploadError] = useState<{
+    title: string;
+    description?: string;
+  } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const geo = useGeolocation();
 
@@ -54,6 +59,7 @@ export default function AnalysePage() {
 
   const runAnalysis = useCallback(
     async (file: File, url: string | null) => {
+      setUploadError(null);
       setPreviewUrl(url);
       setStage("scanning");
 
@@ -112,6 +118,7 @@ export default function AnalysePage() {
         if (url) URL.revokeObjectURL(url);
         setPreviewUrl(null);
         const err = getAnalysisErrorMessage(e);
+        setUploadError({ title: err.title, description: err.description });
         toast.error(err.title, { description: err.description });
       }
     },
@@ -131,11 +138,14 @@ export default function AnalysePage() {
     setPreviewUrl(null);
     setAnalysis(null);
     setAnalysisMeta(null);
+    setUploadError(null);
     setStage("idle");
   }, [previewUrl]);
 
+  const currentStageIndex = STAGE_ORDER.indexOf(stage);
+
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="app-page mx-auto max-w-3xl">
       <LocationBanner
         permission={geo.permission}
         loading={geo.loading}
@@ -143,70 +153,62 @@ export default function AnalysePage() {
         onRequest={geo.requestLocation}
       />
 
-      <AnimatePresence>
-        {showWelcome && stage === "idle" && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="mb-6 flex items-start gap-3 rounded-2xl border border-mg-go/30 bg-mg-go-soft p-4"
+      {showWelcome && stage === "idle" && (
+        <div className="app-fade-in flex items-start gap-3 rounded-2xl border border-mg-go/25 bg-mg-go-soft p-4">
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-mg-go" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-mg-foreground">
+              Profil prêt — analyse ta première course !
+            </p>
+            <p className="mt-0.5 text-xs leading-relaxed text-mg-muted">
+              Dépose une capture et reçois ton verdict en moins de 10
+              secondes.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowWelcome(false)}
+            className="flex size-11 shrink-0 items-center justify-center rounded-xl text-mg-faint transition-colors hover:text-mg-foreground"
+            aria-label="Fermer"
           >
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-mg-go" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-mg-foreground">
-                Profil prêt — analyse ta première course !
-              </p>
-              <p className="mt-0.5 text-xs text-mg-muted">
-                Dépose une capture et reçois ton verdict en moins de 10
-                secondes.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowWelcome(false)}
-              className="flex size-11 shrink-0 items-center justify-center rounded-lg text-mg-faint transition-colors hover:text-mg-foreground"
-              aria-label="Fermer"
-            >
-              <X className="size-4" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
 
-      <div className="mb-8 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-mg-accent/25 bg-mg-accent-soft px-3 py-1 text-xs font-medium text-mg-accent">
+      <header className="app-page-header text-center">
+        <span className="app-page-eyebrow mx-auto inline-flex items-center gap-2 rounded-full border border-mg-accent/20 bg-mg-accent-soft px-3 py-1 normal-case tracking-normal text-mg-accent">
           <ScanLine className="size-3.5" />
           Analyse IA · Uberly
         </span>
 
         {stage !== "idle" && (
-          <div className="mx-auto mt-5 flex max-w-xs items-center justify-center gap-2">
+          <div className="app-stage-steps mx-auto mt-4 max-w-xs">
             {STAGE_ORDER.map((s, i) => {
-              const current = STAGE_ORDER.indexOf(stage);
-              const done = i < current;
+              const done = i < currentStageIndex;
               const active = s === stage;
               return (
                 <div key={s} className="flex items-center gap-2">
                   <span
-                    className={`flex size-6 items-center justify-center rounded-full text-[10px] font-bold transition-colors ${
-                      done
-                        ? "bg-mg-go text-[#04120c]"
-                        : active
-                          ? "bg-mg-accent text-[#04120c]"
-                          : "border border-mg-border text-mg-faint"
-                    }`}
+                    className={cn(
+                      "app-stage-dot",
+                      done && "app-stage-dot-done",
+                      active && "app-stage-dot-active",
+                      !done && !active && "app-stage-dot-idle",
+                    )}
                   >
                     {done ? <Check className="size-3" /> : i + 1}
                   </span>
                   <span
-                    className={`hidden text-xs sm:inline ${
-                      active ? "font-medium text-mg-foreground" : "text-mg-faint"
-                    }`}
+                    className={cn(
+                      "hidden text-xs sm:inline",
+                      active ? "font-medium text-mg-foreground" : "text-mg-faint",
+                    )}
                   >
                     {STAGE_LABELS[s]}
                   </span>
                   {i < STAGE_ORDER.length - 1 && (
-                    <span className="h-px w-4 bg-mg-border sm:w-6" />
+                    <span className="app-stage-line hidden sm:block" />
                   )}
                 </div>
               );
@@ -214,53 +216,48 @@ export default function AnalysePage() {
           </div>
         )}
 
-        <h1 className="mt-4 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
+        <h1 className="app-page-title mt-4">
           {stage === "result"
             ? "Verdict de ta course"
             : "Analyse une proposition de course"}
         </h1>
         {stage === "idle" && (
-          <p className="mx-auto mt-2 max-w-md text-sm text-mg-muted">
+          <p className="app-page-desc mx-auto mt-2 max-w-md">
             Dépose la capture d&apos;écran. Uberly extrait les données, calcule
             ta rentabilité réelle et te recommande quoi faire.
           </p>
         )}
-      </div>
+      </header>
 
-      <AnimatePresence mode="wait">
-        {stage === "idle" && (
-          <motion.div key="idle" exit={{ opacity: 0, y: -12 }}>
-            <UploadZone onUpload={handleUpload} />
-          </motion.div>
-        )}
+      {stage === "idle" && uploadError && (
+        <ErrorState
+          title={uploadError.title}
+          description={uploadError.description}
+          onRetry={() => setUploadError(null)}
+        />
+      )}
 
-        {stage === "scanning" && (
-          <ScanOverlay key="scanning" previewUrl={previewUrl} />
-        )}
+      {stage === "idle" && <UploadZone onUpload={handleUpload} />}
 
-        {stage === "result" && analysis && (
-          <motion.div
-            key="result"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
-          >
-            <AnalysisResult
-              analysis={analysis}
-              meta={analysisMeta ?? undefined}
-            />
-            <div className="mt-6">
-              <FeedbackForm analysis={analysis} />
-            </div>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <Button variant="secondary" onClick={reset} className="min-h-11">
-                <RotateCcw />
-                Analyser une autre course
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {stage === "scanning" && (
+        <ScanOverlay previewUrl={previewUrl} />
+      )}
+
+      {stage === "result" && analysis && (
+        <div className="space-y-5">
+          <AnalysisResult
+            analysis={analysis}
+            meta={analysisMeta ?? undefined}
+          />
+          <FeedbackForm analysis={analysis} />
+          <div className="flex justify-center pb-2">
+            <Button variant="secondary" size="lg" onClick={reset}>
+              <RotateCcw />
+              Analyser une autre course
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

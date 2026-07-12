@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ImageIcon, Sparkles, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -31,11 +30,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
-    >
+    <div className="app-fade-in">
       <div
         role="button"
         tabIndex={0}
@@ -53,38 +48,31 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           handleFile(e.dataTransfer.files[0]);
         }}
         className={cn(
-          "group flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed px-5 py-12 text-center transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40 active:scale-[0.99] sm:px-6 sm:py-16",
-          dragging
-            ? "border-mg-accent bg-mg-accent-soft"
-            : "border-mg-border-strong bg-mg-card [@media(hover:hover)]:hover:border-mg-accent/40 [@media(hover:hover)]:hover:bg-mg-card-hover",
+          "app-upload-zone",
+          dragging && "app-upload-zone-active",
         )}
       >
         <input
           ref={inputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
           capture="environment"
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
 
-        <div
-          className={cn(
-            "flex size-16 items-center justify-center rounded-2xl bg-mg-accent-soft transition-transform duration-300",
-            dragging ? "scale-110" : "[@media(hover:hover)]:group-hover:scale-105",
-          )}
-        >
-          <Upload className="size-7 text-mg-accent" />
+        <div className="app-upload-icon">
+          <Upload className="size-6" strokeWidth={1.75} />
         </div>
 
-        <p className="mt-5 text-base font-semibold text-mg-foreground sm:text-lg">
+        <p className="mt-4 text-base font-semibold text-mg-foreground">
           {dragging ? "Lâche ta capture ici" : "Dépose ta capture d'écran"}
         </p>
-        <p className="mt-1.5 max-w-sm text-sm text-mg-muted">
-          Appuie pour choisir une photo ou glisse l&apos;image ici.
+        <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-mg-muted">
+          Appuie pour choisir une photo depuis ta galerie.
         </p>
 
-        <div className="mt-6 flex items-center gap-2 text-xs text-mg-faint">
+        <div className="mt-5 flex items-center gap-2 text-xs text-mg-faint">
           <ImageIcon className="size-3.5" />
           Uber Eats · Deliveroo · Stuart · Amazon Flex
         </div>
@@ -108,12 +96,11 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
               onUpload(URL.createObjectURL(file), file);
             }, "image/png");
           }}
-          className="text-mg-muted min-h-11"
         >
           <Sparkles />
           Pas de capture ? Essayer avec un exemple
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }

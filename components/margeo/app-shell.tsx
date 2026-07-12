@@ -120,15 +120,15 @@ export function AppShell({
       </header>
 
       {/* Contenu */}
-      <main className="flex-1 pt-[calc(3.5rem+env(safe-area-inset-top))] pb-24 lg:ml-60 lg:pt-0 lg:pb-0">
-        <div className="mx-auto max-w-5xl p-5 sm:p-8">
+      <main className="flex-1 pt-[calc(3.5rem+env(safe-area-inset-top))] pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:ml-60 lg:pt-0 lg:pb-0">
+        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-7">
           <PageTransition>{children}</PageTransition>
         </div>
       </main>
 
       {/* Tab bar mobile */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/85 backdrop-blur-xl lg:hidden">
-        <div className="mx-auto flex max-w-md items-center justify-around px-1 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/90 backdrop-blur-xl lg:hidden">
+        <div className="mx-auto flex max-w-md items-stretch justify-around px-0.5 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           {NAV_ITEMS.map((item) => {
             const active = isActive(item.href);
             return (
@@ -138,20 +138,20 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 aria-label={item.label}
                 className={cn(
-                  "relative flex min-h-[52px] min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1.5 text-[10px] font-medium transition-colors outline-none",
+                  "relative flex min-h-[52px] min-w-[3.25rem] flex-1 max-w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors outline-none",
                   active
                     ? "text-mg-accent"
-                    : "text-mg-faint hover:text-mg-muted",
+                    : "text-mg-faint",
                   item.href === margeoRoutes.analyse &&
                     !active &&
-                    "ring-1 ring-mg-accent/20",
+                    "text-mg-muted",
                 )}
               >
                 {active && (
-                  <span className="absolute top-1 size-1 rounded-full bg-mg-accent" />
+                  <span className="absolute top-0.5 size-1 rounded-full bg-mg-accent" />
                 )}
-                <item.icon className="size-5" />
-                {item.label}
+                <item.icon className="size-[1.35rem]" strokeWidth={active ? 2.25 : 1.75} />
+                <span className="truncate">{item.label}</span>
               </Link>
             );
           })}

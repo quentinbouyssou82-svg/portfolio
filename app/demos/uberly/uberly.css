@@ -334,6 +334,289 @@
     0 6px 28px rgba(99, 102, 241, 0.3);
 }
 
+/* ── App UI system (mobile-first) ── */
+
+@keyframes mg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.uberly-root .mg-spinner,
+.margeo-root .mg-spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-mg-accent);
+  border-radius: 50%;
+  animation: mg-spin 0.65s linear infinite;
+}
+
+.uberly-root .mg-spinner-sm,
+.margeo-root .mg-spinner-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-width: 1.5px;
+}
+
+.uberly-root .mg-spinner-lg,
+.margeo-root .mg-spinner-lg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.uberly-root .app-btn-primary,
+.margeo-root .app-btn-primary {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 6px 20px rgba(99, 102, 241, 0.22);
+}
+
+@media (hover: hover) {
+  .uberly-root .app-btn-primary:hover:not(:disabled),
+  .margeo-root .app-btn-primary:hover:not(:disabled) {
+    background: var(--color-mg-accent);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.45) inset,
+      0 1px 0 rgba(255, 255, 255, 0.14) inset,
+      0 8px 28px rgba(99, 102, 241, 0.32);
+  }
+
+  .uberly-root .app-btn-secondary:hover:not(:disabled),
+  .margeo-root .app-btn-secondary:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.09);
+  }
+}
+
+.uberly-root .app-page,
+.margeo-root .app-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.uberly-root .app-page-header,
+.margeo-root .app-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.uberly-root .app-page-eyebrow,
+.margeo-root .app-page-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .app-page-title,
+.margeo-root .app-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-mg-foreground);
+}
+
+@media (min-width: 640px) {
+  .uberly-root .app-page-title,
+  .margeo-root .app-page-title {
+    font-size: 1.75rem;
+  }
+}
+
+.uberly-root .app-page-desc,
+.margeo-root .app-page-desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-mg-muted);
+}
+
+.uberly-root .app-glass-surface,
+.margeo-root .app-glass-surface {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 12px 32px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+}
+
+.uberly-root .app-upload-zone,
+.margeo-root .app-upload-zone {
+  display: flex;
+  min-height: 11.5rem;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem;
+  border: 1.5px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  outline: none;
+}
+
+.uberly-root .app-upload-zone:focus-visible,
+.margeo-root .app-upload-zone:focus-visible {
+  border-color: rgba(129, 140, 248, 0.45);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.uberly-root .app-upload-zone-active,
+.margeo-root .app-upload-zone-active {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.uberly-root .app-upload-icon,
+.margeo-root .app-upload-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--color-mg-accent);
+}
+
+.uberly-root .app-stage-steps,
+.margeo-root .app-stage-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.uberly-root .app-stage-dot,
+.margeo-root .app-stage-dot {
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.uberly-root .app-stage-dot-done,
+.margeo-root .app-stage-dot-done {
+  background: var(--color-mg-go);
+  color: #04120c;
+}
+
+.uberly-root .app-stage-dot-active,
+.margeo-root .app-stage-dot-active {
+  background: var(--color-mg-accent);
+  color: #04120c;
+}
+
+.uberly-root .app-stage-dot-idle,
+.margeo-root .app-stage-dot-idle {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-mg-faint);
+}
+
+.uberly-root .app-stage-line,
+.margeo-root .app-stage-line {
+  width: 1rem;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.uberly-root .app-scan-progress,
+.margeo-root .app-scan-progress {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.uberly-root .app-scan-progress-fill,
+.margeo-root .app-scan-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transition: width 0.15s linear;
+}
+
+.uberly-root .app-error-state,
+.margeo-root .app-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  background: rgba(248, 113, 113, 0.06);
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.uberly-root .app-error-state-icon,
+.margeo-root .app-error-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.875rem;
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--color-mg-stop);
+}
+
+.uberly-root .app-error-state-title,
+.margeo-root .app-error-state-title {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-mg-foreground);
+}
+
+.uberly-root .app-error-state-desc,
+.margeo-root .app-error-state-desc {
+  margin-top: 0.375rem;
+  max-width: 20rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-mg-muted);
+}
+
+.uberly-root .app-error-state-action,
+.margeo-root .app-error-state-action {
+  margin-top: 1rem;
+}
+
+.uberly-root .app-fade-in,
+.margeo-root .app-fade-in {
+  animation: app-fade-in 0.24s ease both;
+}
+
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ── Polish global ── */
 
 .uberly-root a:focus-visible,
