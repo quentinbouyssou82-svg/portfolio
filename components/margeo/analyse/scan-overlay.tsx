@@ -9,10 +9,10 @@ import { Spinner } from "@/components/margeo/ui/spinner";
 import { cn } from "@/lib/margeo/utils";
 
 const STEPS = [
-  "Lecture de la capture d'écran…",
-  "Extraction du gain, de la distance et du temps…",
-  "Application de tes coûts réels…",
-  "Génération de la recommandation…",
+  "Lecture de la capture…",
+  "Extraction gain, distance, temps…",
+  "Application de tes coûts…",
+  "Calcul du verdict…",
 ];
 
 export const SCAN_DURATION_MS = 3200;
@@ -52,7 +52,7 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
         />
       </div>
       <p className="text-center text-xs text-mg-faint">
-        Analyse en cours · {progress} %
+        Analyse · {progress} %
       </p>
 
       <div className="flex flex-col gap-4">
@@ -75,7 +75,7 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
         <Card className="app-glass-surface p-5">
           <p className="mb-4 flex items-center gap-2.5 text-sm font-semibold text-mg-foreground">
             <Spinner size="sm" />
-            Uberly analyse ta course
+            Calcul en cours…
           </p>
           <ul className="space-y-3">
             {STEPS.map((label, i) => (

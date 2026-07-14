@@ -13,7 +13,7 @@ export function ScoreBreakdown({ factors }: { factors: ScoreFactor[] }) {
   return (
     <Card className="p-5 sm:p-6">
       <p className="text-sm font-semibold text-mg-foreground">
-        Ce qui influence ton score
+        Pourquoi ce score
       </p>
 
       <div className="mt-4 grid gap-5 sm:grid-cols-2">
@@ -21,7 +21,7 @@ export function ScoreBreakdown({ factors }: { factors: ScoreFactor[] }) {
           <div>
             <p className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold tracking-wide text-mg-go uppercase">
               <Plus className="size-3" />
-              Points positifs
+              En plus
             </p>
             <ul className="space-y-2.5">
               {positives.map((factor) => (
@@ -35,7 +35,7 @@ export function ScoreBreakdown({ factors }: { factors: ScoreFactor[] }) {
           <div>
             <p className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold tracking-wide text-mg-stop uppercase">
               <Minus className="size-3" />
-              Points négatifs
+              En moins
             </p>
             <ul className="space-y-2.5">
               {negatives.map((factor) => (

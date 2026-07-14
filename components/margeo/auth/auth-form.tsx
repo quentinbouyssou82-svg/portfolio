@@ -56,7 +56,7 @@ export function AuthForm({
               : "mt-6 text-2xl font-bold text-mg-foreground",
           )}
         >
-          {isSignup ? "Créer un compte" : "Connexion"}
+          {isSignup ? "Créer un compte" : "Bon retour"}
         </h1>
         <p
           className={cn(
@@ -66,15 +66,15 @@ export function AuthForm({
           )}
         >
           {isSignup
-            ? "Crée ton compte en 30 secondes. Première analyse gratuite."
-            : "Retrouve ton historique et tes analyses."}
+            ? "30 secondes. Première analyse offerte."
+            : "Reprends là où tu t'es arrêté."}
         </p>
         {isSignup && (
           <ul className="mt-4 space-y-2 text-left text-xs text-mg-muted">
             {[
-              "Sais si une course vaut le coup avant d'accepter",
-              "Gain net réel, pas le montant affiché par l'app",
-              "Verdict clair : accepter, vérifier ou refuser",
+              "Sais si ça vaut le coup avant d'accepter",
+              "Gain net réel, pas le montant affiché",
+              "Verdict clair en 8 secondes",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <Check className="mt-0.5 size-3.5 shrink-0 text-mg-go" />
@@ -178,7 +178,7 @@ export function AuthForm({
             loading={pending}
           >
             {pending
-              ? "Chargement…"
+              ? "Un instant…"
               : isSignup
                 ? "Créer mon compte"
                 : "Se connecter"}

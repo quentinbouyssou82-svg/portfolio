@@ -61,7 +61,7 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
             Historique
           </p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
-            Tes analyses
+            Historique
           </h1>
           <p className="mt-1 text-sm text-mg-muted">
             {analyses.length} course{analyses.length !== 1 ? "s" : ""}{" "}
@@ -83,7 +83,7 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher plateforme, lieu, score…"
+              placeholder="Plateforme, lieu, score…"
               className="min-h-11 pl-10"
             />
             {search && (
@@ -126,8 +126,8 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
       {analyses.length === 0 ? (
         <EmptyState
           icon={ScanLine}
-          title="Aucune analyse enregistrée"
-          description="Chaque course analysée apparaît ici avec son verdict, son score et ton gain net."
+          title="Aucune analyse"
+          description="Chaque course analysée apparaît ici avec verdict, score et gain net."
           action={
             <Link href={margeoRoutes.analyse}>
               <Button className="app-cta-primary min-h-11">
@@ -141,7 +141,7 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
         <EmptyState
           icon={Search}
           title="Aucun résultat"
-          description="Essaie un autre mot-clé ou change de filtre."
+          description="Autre mot-clé ou filtre."
         />
       ) : (
         <div className="space-y-8">

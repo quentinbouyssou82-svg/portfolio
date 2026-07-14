@@ -12,14 +12,14 @@ const STATS = [
     value: 2400,
     suffix: "+",
     label: "Courses analysées",
-    detail: "en beta",
+    detail: "beta",
   },
   {
     icon: Clock,
     value: 8,
-    suffix: " sec",
-    label: "Temps moyen",
-    detail: "capture → verdict",
+    suffix: " s",
+    label: "Capture → verdict",
+    detail: "en moyenne",
   },
   {
     icon: TrendingUp,
@@ -27,15 +27,15 @@ const STATS = [
     suffix: " €",
     prefix: "+",
     decimals: 1,
-    label: "Gain net moyen",
-    detail: "détecté par analyse",
+    label: "Gain net détecté",
+    detail: "par analyse",
   },
   {
     icon: ShieldCheck,
     value: 92,
     suffix: "%",
-    label: "Recommandent",
-    detail: "après 1 semaine d'usage",
+    label: "Satisfaits",
+    detail: "après 1 semaine",
   },
 ];
 
@@ -92,8 +92,8 @@ export function SocialProof() {
     <SectionShell
       id="resultats"
       eyebrow="Résultats beta"
-      title="Des livreurs qui gagnent plus intelligemment"
-      description="Données agrégées de la beta Uberly — mises à jour chaque semaine."
+      title="Des livreurs qui décident mieux"
+      description="Chiffres beta Uberly — mis à jour chaque semaine."
       className="relative"
     >
       <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -124,8 +124,7 @@ export function SocialProof() {
 
       <Reveal delay={0.2} className="mt-8 text-center">
         <p className="text-xs text-mg-faint">
-          * Chiffres beta basés sur les analyses agrégées des premiers testeurs.
-          Résultats individuels variables selon véhicule et zone.
+          * Chiffres beta. Résultats variables selon véhicule et zone.
         </p>
       </Reveal>
     </SectionShell>

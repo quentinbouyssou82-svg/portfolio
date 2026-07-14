@@ -53,7 +53,7 @@ export const EMPTY_RETURN_OPTIONS: {
 }[] = [
   { id: "yes", label: "Oui" },
   { id: "no", label: "Non" },
-  { id: "short_only", label: "Seulement faibles distances" },
+  { id: "short_only", label: "Courtes distances seulement" },
 ];
 
 export const WEEKLY_HOURS_OPTIONS: {
@@ -61,10 +61,10 @@ export const WEEKLY_HOURS_OPTIONS: {
   label: string;
   description: string;
 }[] = [
-  { id: "under_10", label: "Moins de 10 h", description: "Activité occasionnelle" },
-  { id: "10_20", label: "10 – 20 h", description: "Quelques soirs / week-ends" },
-  { id: "20_30", label: "20 – 30 h", description: "Temps partiel régulier" },
-  { id: "30_40", label: "30 – 40 h", description: "Activité soutenue" },
+  { id: "under_10", label: "Moins de 10 h", description: "Occasionnel" },
+  { id: "10_20", label: "10 – 20 h", description: "Soirs & week-ends" },
+  { id: "20_30", label: "20 – 30 h", description: "Temps partiel" },
+  { id: "30_40", label: "30 – 40 h", description: "Régulier" },
   { id: "over_40", label: "Plus de 40 h", description: "Temps plein" },
 ];
 

@@ -98,12 +98,12 @@ export function ProblemStress() {
                     className="text-center text-lg font-semibold tracking-tight text-mg-foreground sm:text-xl"
                   >
                     Tu acceptes{" "}
-                    <span className="text-mg-stop">sans savoir.</span>
+                    <span className="text-mg-stop">à l&apos;aveugle.</span>
                   </motion.p>
                 )}
               </AnimatePresence>
               {phase === "countdown" && (
-                <p className="mt-3 text-xs text-mg-faint">secondes pour décider</p>
+                <p className="mt-3 text-xs text-mg-faint">pour décider</p>
               )}
             </div>
           </div>

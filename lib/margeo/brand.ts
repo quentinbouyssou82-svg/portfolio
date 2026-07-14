@@ -1,6 +1,6 @@
 /** Identité produit Uberly (ex-Margeo). */
 export const PRODUCT_NAME = "Uberly";
 export const PRODUCT_TAGLINE =
-  "Le copilote IA des livreurs indépendants";
+  "Sais si une course vaut le coup — avant d'accepter.";
 export const PRODUCT_DESCRIPTION =
-  "Uberly analyse tes propositions de course et te dit si elles valent vraiment le coup.";
+  "Capture ta proposition. Uberly calcule ton gain net et te dit quoi faire en 8 secondes.";

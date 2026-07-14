@@ -45,7 +45,7 @@ export function LandingNav() {
           </Link>
           <Link href={margeoRoutes.signup}>
             <Button size="sm" className="landing-cta-primary min-h-10">
-              Rejoindre la beta
+              Commencer gratuitement
               <ArrowRight />
             </Button>
           </Link>
@@ -93,7 +93,7 @@ export function LandingNav() {
               </Link>
               <Link href={margeoRoutes.signup} onClick={() => setOpen(false)}>
                 <Button className="landing-cta-primary w-full min-h-11">
-                  Rejoindre la beta
+                  Commencer gratuitement
                   <ArrowRight />
                 </Button>
               </Link>

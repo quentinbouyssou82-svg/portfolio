@@ -70,8 +70,8 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
       });
 
       setStep("done");
-      toast.success("Merci !", {
-        description: "Ton retour améliore tes prochaines recommandations.",
+      toast.success("Merci", {
+        description: "Ton retour améliore tes prochains verdicts.",
       });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Erreur");
@@ -84,10 +84,10 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
     return (
       <Card className="border-mg-accent/20 bg-mg-accent-soft/30 p-5 text-center">
         <p className="text-sm font-medium text-mg-foreground">
-          Feedback enregistré ✓
+          Feedback enregistré
         </p>
         <p className="mt-1 text-xs text-mg-muted">
-          Ces données calibrent tes prochaines recommandations.
+          Tes prochains verdicts seront plus précis.
         </p>
       </Card>
     );
@@ -97,10 +97,10 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
     return (
       <Card className="p-5 sm:p-6">
         <p className="text-sm font-semibold text-mg-foreground">
-          As-tu accepté cette course ?
+          Tu l&apos;as acceptée ?
         </p>
         <p className="mt-1 text-xs text-mg-muted">
-          Ton retour aide Uberly à mieux te conseiller.
+          Optionnel — ça affine tes stats.
         </p>
         <div className="mt-4 flex gap-3">
           <Button
@@ -132,7 +132,7 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
     return (
       <Card className="p-5 sm:p-6">
         <p className="text-sm font-semibold text-mg-foreground">Pourquoi ?</p>
-        <p className="mt-1 text-xs text-mg-muted">Optionnel — un tap suffit.</p>
+        <p className="mt-1 text-xs text-mg-muted">Un tap suffit.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {reasons.map((r) => (
             <button
@@ -186,10 +186,10 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
   return (
     <Card className="p-5 sm:p-6">
       <p className="text-sm font-semibold text-mg-foreground">
-        Quel résultat réel ?
+        Quel était le résultat ?
       </p>
       <p className="mt-1 text-xs text-mg-muted">
-        Optionnel — affine tes stats pour les prochaines courses.
+        Optionnel — affine tes stats.
       </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <label className="block text-xs text-mg-muted">
@@ -231,7 +231,7 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
           onClick={() => void submit(true, reason)}
           disabled={loading}
         >
-          {loading ? "Envoi…" : "Envoyer le feedback"}
+          {loading ? "Envoi…" : "Envoyer"}
         </Button>
         <Button
           className="min-h-11"

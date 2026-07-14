@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${PRODUCT_NAME} — Sache si ta course vaut le coup`,
+    default: `${PRODUCT_NAME} — Gain net avant d'accepter`,
     template: `%s · ${PRODUCT_NAME}`,
   },
   description: PRODUCT_DESCRIPTION,

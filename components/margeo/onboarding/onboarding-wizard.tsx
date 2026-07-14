@@ -54,7 +54,7 @@ function validateStep(step: number, draft: OnboardingDraft): string | null {
     case 0:
       return null;
     case 1:
-      return draft.vehicle ? null : "Choisis ton véhicule pour continuer.";
+      return draft.vehicle ? null : "Choisis ton véhicule.";
     case 2:
     case 3:
     case 5:
@@ -62,11 +62,11 @@ function validateStep(step: number, draft: OnboardingDraft): string | null {
     case 4:
       return draft.emptyReturns
         ? null
-        : "Indique si tu acceptes les retours à vide.";
+        : "Retours à vide : oui ou non ?";
     case 6:
       return draft.weeklyHours
         ? null
-        : "Indique combien d'heures tu travailles par semaine.";
+        : "Combien d'heures par semaine ?";
     case 7:
       if (!draft.vehicle) return "Choisis ton véhicule pour continuer.";
       if (!draft.emptyReturns) return "Indique si tu acceptes les retours à vide.";
@@ -283,7 +283,7 @@ export function OnboardingWizard({
                 finishing || pending ? (
                   "Enregistrement…"
                 ) : (
-                  "Accéder au dashboard"
+                  "Lancer ma première analyse"
                 )
               ) : (
                 <>
@@ -321,14 +321,14 @@ function WelcomeStep() {
         <Sparkles className="size-7 text-mg-accent" strokeWidth={1.75} />
       </div>
       <OnboardingStepHeader
-        title="Bienvenue sur Uberly"
-        subtitle="Quelques questions pour calibrer tes analyses et te donner des verdicts adaptés à ta réalité de livreur."
+        title="Bienvenue"
+        subtitle="4 questions pour calibrer tes verdicts."
       />
       <ul className="onboarding-welcome-list mt-8 space-y-3 text-left">
         {[
-          "Verdict clair avant chaque course",
-          "Gain net réel, pas le montant affiché",
-          "Objectifs personnalisés à ton rythme",
+          "Verdict en 8 secondes",
+          "Gain net, pas le montant affiché",
+          "Adapté à ton rythme",
         ].map((item) => (
           <li key={item} className="onboarding-welcome-item">
             <span className="onboarding-welcome-dot" aria-hidden />
@@ -351,7 +351,7 @@ function VehicleStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Quel véhicule utilises-tu ?"
-        subtitle="On ajuste les coûts et la rentabilité selon ton mode de transport."
+        subtitle="On ajuste tes coûts selon ton véhicule."
       />
       <div className="onboarding-vehicle-grid mt-8">
         {VEHICLE_OPTIONS.map((option) => (
@@ -384,7 +384,7 @@ function HourlyStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Quel est ton objectif horaire ?"
-        subtitle="Le taux net visé pour juger si une course vaut le coup."
+        subtitle="Ton €/h net cible pour juger chaque course."
       />
       <div className="mt-10 flex flex-1 flex-col justify-center">
         <OnboardingSlider
@@ -413,7 +413,7 @@ function MinBenefitStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Quel bénéfice minimum souhaites-tu ?"
-        subtitle="Le gain net minimum acceptable par course, après tes coûts."
+        subtitle="Le gain net minimum acceptable par course."
       />
       <div className="mt-10 flex flex-1 flex-col justify-center">
         <OnboardingSlider
@@ -442,7 +442,7 @@ function EmptyReturnsStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Acceptes-tu les retours à vide ?"
-        subtitle="Les km sans client après une livraison impactent fortement ta rentabilité."
+        subtitle="Les km à vide impactent fortement ta marge."
       />
       <div className="mt-10 flex flex-1 flex-col justify-center">
         <OnboardingSegmentControl
@@ -466,7 +466,7 @@ function MaxDistanceStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Distance maximale souhaitée"
-        subtitle="Au-delà, on te signalera que la course mérite une vérification."
+        subtitle="Au-delà, on te signale de vérifier."
       />
       <div className="mt-10 flex flex-1 flex-col justify-center">
         <OnboardingSlider
@@ -495,7 +495,7 @@ function WeeklyHoursStep({
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Combien d'heures travailles-tu par semaine ?"
-        subtitle="Pour contextualiser tes objectifs et ton rythme de livraison."
+        subtitle="Pour calibrer tes objectifs."
       />
       <div className="onboarding-hours-grid mt-8">
         {WEEKLY_HOURS_OPTIONS.map((option) => (
@@ -519,7 +519,7 @@ function SummaryStep({ draft }: { draft: OnboardingDraft }) {
     <div className="flex flex-1 flex-col">
       <OnboardingStepHeader
         title="Résumé"
-        subtitle="Vérifie tes préférences avant de lancer ta première analyse."
+        subtitle="Vérifie avant de lancer ta première analyse."
       />
       <div className="onboarding-summary mt-8 space-y-1">
         <OnboardingSummaryRow
@@ -551,7 +551,7 @@ function SummaryStep({ draft }: { draft: OnboardingDraft }) {
         {[
           { icon: Target, text: "Verdicts calibrés" },
           { icon: TrendingUp, text: "Objectifs clairs" },
-          { icon: MapPin, text: "Courses adaptées" },
+          { icon: MapPin, text: "Courses filtrées" },
         ].map(({ icon: Icon, text }) => (
           <div key={text} className="onboarding-summary-chip">
             <Icon className="size-3.5 text-mg-accent" strokeWidth={2} />

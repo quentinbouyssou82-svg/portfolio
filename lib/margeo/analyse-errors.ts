@@ -15,9 +15,9 @@ export function getAnalysisErrorMessage(
 
   if (code === "EXTRACTION_FAILED" || lower.includes("montant non détecté")) {
     return {
-      title: "Information manquante",
+      title: "Gain non détecté",
       description:
-        "Le montant de la course n'a pas été détecté. Reprends une capture où le gain est bien visible.",
+        "Le montant n'est pas visible. Reprends une capture où le gain est bien lisible.",
     };
   }
 
@@ -26,8 +26,8 @@ export function getAnalysisErrorMessage(
     lower.includes("image requise")
   ) {
     return {
-      title: "Image manquante",
-      description: "Sélectionne une capture d'écran de la proposition de course.",
+      title: "Aucune image",
+      description: "Sélectionne la capture de la proposition de course.",
     };
   }
 
@@ -38,37 +38,37 @@ export function getAnalysisErrorMessage(
     lower.includes("extraction")
   ) {
     return {
-      title: "Capture difficile à lire",
+      title: "Capture illisible",
       description:
-        "Cette capture est difficile à lire. Essaie une image plus nette avec le gain, la distance et le temps visibles.",
+        "Image trop floue ou recadrée. Montre le gain, la distance et le temps.",
     };
   }
 
   if (lower.includes("format") || code === "INVALID_IMAGE") {
     return {
       title: "Format non supporté",
-      description: "Envoie une capture PNG, JPG ou WebP.",
+      description: "PNG, JPG ou WebP uniquement.",
     };
   }
 
   if (lower.includes("trop") && (lower.includes("grand") || lower.includes("lourd"))) {
     return {
       title: "Image trop lourde",
-      description: "Réduis la taille de l'image ou refais une capture.",
+      description: "Refais une capture ou réduis la taille.",
     };
   }
 
   if (code === "RATE_LIMITED" || lower.includes("trop de requêtes")) {
     return {
-      title: "Patiente un instant",
-      description: "Tu as fait beaucoup d'analyses. Réessaie dans quelques secondes.",
+      title: "Trop d'analyses",
+      description: "Réessaie dans quelques secondes.",
     };
   }
 
   if (code === "ONBOARDING_REQUIRED") {
     return {
       title: "Profil incomplet",
-      description: "Termine la configuration de ton profil avant d'analyser.",
+      description: "Termine la configuration avant d'analyser.",
     };
   }
 
@@ -81,7 +81,7 @@ export function getAnalysisErrorMessage(
     return {
       title: "Erreur temporaire",
       description:
-        "Uberly n'a pas pu analyser cette course. Réessaie dans quelques instants.",
+        "Uberly n'a pas pu analyser. Réessaie dans un instant.",
     };
   }
 
@@ -92,21 +92,21 @@ export function getAnalysisErrorMessage(
     lower.includes("openai")
   ) {
     return {
-      title: "Analyse temporairement indisponible",
-      description: "Réessaie dans quelques instants avec une capture nette.",
+      title: "Service indisponible",
+      description: "Réessaie avec une capture nette.",
     };
   }
 
   if (lower.includes("réseau") || lower.includes("network") || lower.includes("fetch")) {
     return {
-      title: "Connexion perdue",
+      title: "Pas de connexion",
       description: "Vérifie ton réseau et réessaie.",
     };
   }
 
   return {
     title: "Analyse impossible",
-    description: "Réessaie avec une autre capture.",
+    description: "Essaie une autre capture.",
   };
 }
 

@@ -130,7 +130,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
               {scoreLabel}
             </p>
             <p className="mt-1 text-sm text-mg-muted">
-              Score de rentabilité basé sur ton profil
+              Score basé sur ton profil
             </p>
             <p
               className="mt-3 text-xl font-bold tracking-tight"
@@ -159,8 +159,8 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
       <Card className="border-mg-accent/20 p-5 sm:p-6">
         <p className="flex items-center gap-2 text-sm font-semibold text-mg-accent">
           <Sparkles className="size-4" />
-          Pourquoi cette recommandation ?
-        </p>
+            Pourquoi ?
+          </p>
         <p className="mt-3 text-base leading-relaxed text-mg-foreground">
           {analysis.explanation}
         </p>
@@ -185,7 +185,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
 
       <div>
         <p className="mb-3 text-xs font-semibold tracking-wide text-mg-faint uppercase">
-          Détails financiers
+          Détails
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <Metric

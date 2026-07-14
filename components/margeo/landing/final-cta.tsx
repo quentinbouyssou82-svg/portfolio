@@ -11,10 +11,10 @@ export function FinalCta() {
     <section className="relative py-24 sm:py-32">
       <Reveal className="relative mx-auto max-w-2xl px-5 text-center">
         <h2 className="text-gradient text-3xl font-bold tracking-tight text-balance sm:text-5xl">
-          Ta prochaine course mérite un vrai calcul.
+          Arrête de deviner. Sais combien tu gagnes.
         </h2>
         <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mg-muted sm:text-lg">
-          Rejoins la beta gratuitement. Première analyse en moins de 2 minutes.
+          Compte gratuit. Première analyse en 30 secondes.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href={margeoRoutes.signup}>

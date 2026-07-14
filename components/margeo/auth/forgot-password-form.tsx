@@ -20,7 +20,7 @@ export function ForgotPasswordForm() {
         return;
       }
       toast.success("Email envoyé", {
-        description: "Vérifie ta boîte mail pour réinitialiser ton mot de passe.",
+        description: "Vérifie ta boîte mail.",
       });
     });
   };
@@ -35,7 +35,7 @@ export function ForgotPasswordForm() {
           Mot de passe oublié
         </h1>
         <p className="mt-2 text-sm text-mg-muted">
-          On t&apos;envoie un lien de réinitialisation par email.
+          Lien de réinitialisation par email.
         </p>
       </div>
 

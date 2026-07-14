@@ -44,19 +44,19 @@ export function AnalysisConfidence({ meta }: AnalysisConfidenceProps) {
         <div className="min-w-0">
           <p className="text-sm font-medium text-mg-foreground">
             {isHigh
-              ? `Analyse fiable à ${pct} %`
+              ? `Fiable à ${pct} %`
               : isPartial
-                ? "Certaines informations sont estimées"
-                : `Analyse correcte · ${pct} % de confiance`}
+                ? "Données partiellement estimées"
+                : `Confiance ${pct} %`}
           </p>
           {missingText && (
             <p className="mt-1 text-xs leading-relaxed text-mg-muted">
-              {missingText} Le calcul reste valable avec les données disponibles.
+              {missingText} Calcul valable avec les données disponibles.
             </p>
           )}
           {!missingText && !isHigh && (
             <p className="mt-1 text-xs text-mg-muted">
-              Vérifie le gain et la distance affichés ci-dessous.
+              Vérifie le gain et la distance ci-dessous.
             </p>
           )}
           {meta.warnings && meta.warnings.length > 0 && (

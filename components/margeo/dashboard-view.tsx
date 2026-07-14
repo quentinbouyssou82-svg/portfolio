@@ -110,11 +110,11 @@ export function DashboardView({
     <div className="app-page">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <header className="app-page-header">
-          <p className="app-page-eyebrow">Centre de pilotage</p>
+          <p className="app-page-eyebrow">Tableau de bord</p>
           <h1 className="app-page-title">Salut {firstName}</h1>
           <p className="app-page-desc">
             {isEmpty
-              ? "Analyse ta première course pour activer ton tableau de bord."
+              ? "Une capture suffit pour démarrer."
               : `${weekCount} analyse${weekCount !== 1 ? "s" : ""} cette semaine`}
           </p>
         </header>
@@ -129,8 +129,8 @@ export function DashboardView({
       {isEmpty ? (
         <EmptyState
           icon={ScanLine}
-          title="Ton tableau de bord t'attend"
-          description="Une capture suffit. Uberly calcule ton gain net et te dit quoi faire — en quelques secondes."
+          title="Prêt à analyser"
+          description="Dépose une capture. Uberly calcule ton gain net et te dit quoi faire — en 8 secondes."
           action={
             <Link href={margeoRoutes.analyse}>
               <Button size="lg">
@@ -227,22 +227,22 @@ export function DashboardView({
             >
               <AnimatedCounter value={stats.todayNet} decimals={2} suffix=" €" />
             </StatCard>
-            <StatCard label="Rentabilité" icon={Gauge} footer="score moyen">
+            <StatCard label="Score moyen" icon={Gauge} footer="rentabilité">
               <AnimatedCounter value={stats.avgScore} suffix="/100" />
             </StatCard>
             <StatCard
-              label="Courses analysées"
+              label="Analysées"
               icon={ScanLine}
               footer={`${stats.acceptedShare}% à accepter`}
             >
               <AnimatedCounter value={stats.analyzedCount} />
             </StatCard>
             <StatCard
-              label="Courses évitées"
+              label="Évitées"
               icon={ShieldCheck}
               footer={
                 savedEstimate > 0
-                  ? `~${savedEstimate} € préservés`
+                  ? `~${savedEstimate} € économisés`
                   : "grâce aux refus"
               }
             >
@@ -254,8 +254,8 @@ export function DashboardView({
           <div className="grid gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Semaine en cours</CardTitle>
-                <p className="text-xs text-mg-faint">Gains nets par jour</p>
+                <CardTitle className="text-base">Cette semaine</CardTitle>
+                <p className="text-xs text-mg-faint">Gain net / jour</p>
               </CardHeader>
               <CardContent>
                 <WeeklyBars data={earnings} />
@@ -264,8 +264,8 @@ export function DashboardView({
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Répartition des verdicts</CardTitle>
-                <p className="text-xs text-mg-faint">Toutes tes analyses</p>
+                <CardTitle className="text-base">Tes verdicts</CardTitle>
+                <p className="text-xs text-mg-faint">Toutes les analyses</p>
               </CardHeader>
               <CardContent className="space-y-2">
                 {(["accept", "check", "refuse"] as Verdict[]).map((v) => (
@@ -283,8 +283,8 @@ export function DashboardView({
           <Card>
             <CardHeader className="flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base">Évolution 14 jours</CardTitle>
-                <p className="text-xs text-mg-faint">Gains nets cumulés</p>
+                <CardTitle className="text-base">14 derniers jours</CardTitle>
+                <p className="text-xs text-mg-faint">Gain net cumulé</p>
               </div>
             </CardHeader>
             <CardContent>
@@ -317,7 +317,7 @@ export function DashboardView({
             ))
           ) : (
             <p className="py-6 text-center text-sm text-mg-faint">
-              Tes analyses apparaîtront ici.
+              Tes analyses s&apos;afficheront ici.
             </p>
           )}
         </div>

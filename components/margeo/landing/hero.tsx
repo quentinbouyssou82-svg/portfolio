@@ -14,9 +14,9 @@ import { Button } from "@/components/margeo/ui/button";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 const BENEFITS = [
-  { icon: TrendingUp, label: "Gagne plus d'argent" },
-  { icon: Ban, label: "Évite les mauvaises courses" },
-  { icon: Zap, label: "L'IA décide à ta place" },
+  { icon: TrendingUp, label: "Plus de €/h net" },
+  { icon: Ban, label: "Moins de mauvaises courses" },
+  { icon: Zap, label: "Verdict en 8 secondes" },
 ];
 
 const ease = [0.21, 0.47, 0.32, 0.98] as const;
@@ -46,9 +46,8 @@ export function Hero() {
               transition={{ duration: 0.65, delay: 0.08, ease }}
               className="text-gradient mt-6 text-[2.35rem] leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]"
             >
-              Gagne plus.{" "}
-              <span className="text-gradient-accent">Refuse</span> les courses
-              qui te font perdre.
+              Accepte les bonnes courses.{" "}
+              <span className="text-gradient-accent">Refuse</span> le reste.
             </motion.h1>
 
             <motion.p
@@ -57,9 +56,8 @@ export function Hero() {
               transition={{ duration: 0.65, delay: 0.16, ease }}
               className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:text-lg lg:mx-0"
             >
-              Uberly lit ta capture, calcule ton gain net réel et te dit en 2
-              secondes : accepter, vérifier ou refuser — avant la fin du compte
-              à rebours.
+              Capture ta proposition. Uberly calcule ton gain net réel et te dit
+              quoi faire — avant la fin du compte à rebours.
             </motion.p>
 
             <motion.ul
@@ -90,7 +88,7 @@ export function Hero() {
                   size="lg"
                   className="landing-cta-primary w-full min-h-12 px-7"
                 >
-                  Rejoindre la beta
+                  Commencer gratuitement
                   <ArrowRight />
                 </Button>
               </Link>
@@ -111,7 +109,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.38 }}
               className="mt-4 text-xs text-mg-faint"
             >
-              Gratuit · Sans carte bancaire · 5 analyses/jour
+              Gratuit · 5 analyses/jour · Sans carte bancaire
             </motion.p>
           </div>
 

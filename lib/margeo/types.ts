@@ -95,14 +95,14 @@ export const VERDICT_META: Record<Verdict, VerdictMeta> = {
     emoji: "🟢",
     color: "var(--color-mg-go)",
     softColor: "var(--color-mg-go-soft)",
-    description: "Course rentable, fonce.",
+    description: "Course rentable. Fonce.",
   },
   check: {
     label: "À vérifier",
     emoji: "🟠",
     color: "var(--color-mg-check)",
     softColor: "var(--color-mg-check-soft)",
-    description: "Rentabilité limite, à toi de juger.",
+    description: "Limite. À toi de juger.",
   },
   refuse: {
     label: "Refuser",

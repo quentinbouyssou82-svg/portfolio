@@ -29,11 +29,10 @@ export function LocationBanner({
           </span>
           <div>
             <p className="text-sm font-medium text-mg-foreground">
-              Autoriser Uberly à utiliser votre position
+              Active ta position
             </p>
             <p className="mt-0.5 text-xs text-mg-muted">
-              Pour calculer la distance jusqu&apos;au restaurant et affiner le
-              score de rentabilité.
+              Pour affiner la distance et le score de rentabilité.
             </p>
             {error && (
               <p className="mt-1 text-xs text-mg-stop">{error}</p>
@@ -47,7 +46,7 @@ export function LocationBanner({
           disabled={loading}
           className="shrink-0"
         >
-          {loading ? "Localisation…" : "Autoriser"}
+          {loading ? "Localisation…" : "Activer"}
         </Button>
       </div>
     </Card>

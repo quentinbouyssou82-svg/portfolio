@@ -13,39 +13,39 @@ import { Reveal } from "@/components/margeo/reveal";
 const FEATURES = [
   {
     icon: BrainCircuit,
-    title: "Extraction automatique",
+    title: "Lecture automatique",
     description:
-      "Dépose la capture d'écran, Uberly lit le gain, la distance et le temps. Zéro saisie, zéro friction.",
+      "Dépose ta capture. Uberly lit le gain, la distance et le temps. Zéro saisie.",
   },
   {
     icon: Fuel,
-    title: "Coûts réels intégrés",
+    title: "Tes vrais coûts",
     description:
-      "Carburant, usure, assurance : ton coût au kilomètre est appliqué à chaque analyse selon ton véhicule.",
+      "Essence, usure, assurance — déduits à chaque course selon ton véhicule.",
   },
   {
     icon: RotateCcw,
-    title: "Retour à vide détecté",
+    title: "Retour à vide",
     description:
-      "Une dépose en zone morte ? Uberly estime les kilomètres de retour et les déduit de ta marge.",
+      "Zone morte après la livraison ? Uberly le compte dans ta marge.",
   },
   {
     icon: Gauge,
-    title: "Score de rentabilité",
+    title: "Score 0–100",
     description:
-      "Un score de 0 à 100 calibré sur tes objectifs, pour décider d'un coup d'œil, même en roulant.",
+      "Un chiffre clair, calibré sur tes objectifs. Décide d'un coup d'œil.",
   },
   {
     icon: Target,
-    title: "Objectifs personnalisés",
+    title: "Tes objectifs",
     description:
-      "Fixe ton taux horaire cible et ton objectif journalier. Chaque verdict est calculé pour toi, pas pour la moyenne.",
+      "€/h cible, gain minimum, distance max. Chaque verdict est pour toi.",
   },
   {
     icon: LineChart,
-    title: "Suivi de tes gains",
+    title: "Suivi des gains",
     description:
-      "Dashboard, historique, évolution : visualise ce que Uberly te fait gagner semaine après semaine.",
+      "Dashboard et historique. Vois ce que tu gagnes — et ce que tu évites.",
   },
 ];
 
@@ -58,10 +58,10 @@ export function Features() {
       <div className="mx-auto max-w-6xl px-5">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold tracking-wide text-mg-accent uppercase">
-            Fonctionnalités
+            La solution
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
-            Pensé pour la route, pas pour les tableurs
+            Tout ce qu&apos;il te faut, sur la route
           </h2>
         </Reveal>
 

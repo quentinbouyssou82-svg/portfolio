@@ -4,9 +4,9 @@ import { Reveal } from "@/components/margeo/reveal";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
 
 const STATS = [
-  { value: 38, suffix: " %", label: "des courses proposées font perdre de l'argent une fois les frais déduits" },
-  { value: 2, suffix: " s", label: "pour obtenir un verdict clair, avant la fin du compte à rebours" },
-  { value: 214, prefix: "+", suffix: " €", label: "de gain net moyen récupéré par mois par nos livreurs actifs" },
+  { value: 38, suffix: " %", label: "des courses proposées te font perdre de l'argent après frais" },
+  { value: 8, suffix: " s", label: "pour obtenir un verdict avant la fin du compte à rebours" },
+  { value: 214, prefix: "+", suffix: " €", label: "de gain net récupéré en moyenne par mois (beta)" },
 ];
 
 export function Presentation() {
@@ -19,10 +19,9 @@ export function Presentation() {
             <span className="text-mg-muted">Pas toi.</span>
           </h2>
           <p className="mt-4 leading-relaxed text-mg-muted">
-            Entre le retour à vide, l&apos;usure du véhicule et l&apos;attente au
-            retrait, une course « bien payée » peut te coûter de l&apos;argent.
-            Uberly fait le calcul que tu n&apos;as pas le temps de faire, à
-            chaque proposition.
+            Retour à vide, usure, attente au restaurant — une course « bien payée »
+            peut te coûter de l&apos;argent. Uberly fait le calcul à chaque
+            proposition.
           </p>
         </Reveal>
 

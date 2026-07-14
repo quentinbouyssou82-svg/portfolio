@@ -17,11 +17,11 @@ interface PlanFeature {
 const FEATURES: PlanFeature[] = [
   { label: "Analyses de courses", free: "5 / jour", premium: "Illimitées" },
   { label: "Score de rentabilité", free: true, premium: true },
-  { label: "Recommandation IA", free: true, premium: true },
+  { label: "Verdict IA", free: true, premium: true },
   { label: "Historique", free: "7 jours", premium: "Illimité" },
   { label: "Statistiques avancées", free: false, premium: true },
   { label: "Multi-plateformes simultané", free: false, premium: true },
-  { label: "Recommandations de zones", free: false, premium: true },
+  { label: "Zones rentables", free: false, premium: true },
   { label: "Export comptable (CSV)", free: false, premium: true },
   { label: "Support prioritaire", free: false, premium: true },
 ];
@@ -39,9 +39,9 @@ export default function PremiumPage() {
     setStarting(true);
     setTimeout(() => {
       setStarting(false);
-      toast.success("Essai Premium activé 🎉", {
+      toast.success("Essai Premium activé", {
         description:
-          "14 jours d'analyses illimitées. Aucun prélèvement avant la fin de l'essai.",
+          "14 jours d'analyses illimitées. Aucun prélèvement avant la fin.",
       });
     }, 1200);
   };
@@ -55,12 +55,11 @@ export default function PremiumPage() {
           Uberly Premium
         </span>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-mg-foreground">
-          Chaque course refusée au bon moment{" "}
-          <span className="text-gradient-accent">te rapporte</span>.
+          Refuse au bon moment.{" "}
+          <span className="text-gradient-accent">Garde plus.</span>
         </h1>
         <p className="mx-auto mt-3 max-w-md text-mg-muted">
-          Nos livreurs Premium récupèrent en moyenne 214 € de gain net par mois.
-          L&apos;abonnement se rembourse en deux soirées.
+          +214 € de gain net/mois en moyenne. Remboursé en deux soirées.
         </p>
       </Reveal>
 
@@ -83,7 +82,7 @@ export default function PremiumPage() {
               </li>
               <li className="flex gap-2.5">
                 <Check className="mt-0.5 size-4 shrink-0 text-mg-muted" />
-                Score et recommandation IA
+                Score et verdict IA
               </li>
               <li className="flex gap-2.5">
                 <Check className="mt-0.5 size-4 shrink-0 text-mg-muted" />
@@ -135,7 +134,7 @@ export default function PremiumPage() {
               onClick={startTrial}
               disabled={starting}
             >
-              {starting ? "Activation…" : "Commencer l'essai — 14 jours offerts"}
+              {starting ? "Activation…" : "Essai 14 jours — gratuit"}
             </Button>
             <p className="mt-2.5 text-center text-xs text-mg-faint">
               Sans engagement. Annulable en un clic.

@@ -78,7 +78,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
       if (result.data) setProfile(result.data);
       trackMargeoEvent("margeo_profile_updated");
       toast.success("Profil enregistré", {
-        description: "Tes prochaines analyses utiliseront ces paramètres.",
+        description: "Pris en compte pour tes prochains verdicts.",
       });
     });
   };
@@ -93,7 +93,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
           Tes paramètres
         </h1>
         <p className="mt-1 text-sm text-mg-muted">
-          Plus c&apos;est précis, plus les verdicts Uberly sont fiables.
+          Plus c&apos;est précis, plus tes verdicts sont fiables.
         </p>
       </div>
 
@@ -286,12 +286,12 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
               </span>
               <div>
                 <p className="text-sm font-semibold text-mg-foreground">
-                  {profile.premium ? "Compte Premium" : "Beta gratuite"}
+                  {profile.premium ? "Compte Premium" : "Plan gratuit"}
                 </p>
                 <p className="text-xs text-mg-muted">
                   {profile.premium
-                    ? "Analyses illimitées activées."
-                    : "Analyses illimitées pendant la beta."}
+                    ? "Analyses illimitées."
+                    : "5 analyses/jour pendant la beta."}
                 </p>
               </div>
             </div>
@@ -322,7 +322,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
           className="app-cta-primary w-full min-h-11"
         >
           <Save />
-          {pending ? "Enregistrement…" : "Enregistrer les modifications"}
+          {pending ? "Enregistrement…" : "Enregistrer"}
         </Button>
       </div>
     </div>

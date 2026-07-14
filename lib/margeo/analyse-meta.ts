@@ -3,13 +3,13 @@ import type { Verdict } from "./types";
 /** Libellé qualitatif du score pour rassurer le livreur. */
 export function getScoreLabel(score: number, verdict: Verdict): string {
   if (verdict === "refuse") {
-    return score < 35 ? "Course à éviter" : "Peu rentable";
+    return score < 35 ? "À éviter" : "Peu rentable";
   }
   if (verdict === "check") {
-    return "Course limite";
+    return "Limite";
   }
-  if (score >= 85) return "Excellente course";
-  if (score >= 70) return "Bonne course";
+  if (score >= 85) return "Excellente";
+  if (score >= 70) return "Bonne";
   return "Correcte";
 }
 

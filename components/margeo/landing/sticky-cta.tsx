@@ -11,7 +11,7 @@ export function LandingStickyCta() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/90 p-3 backdrop-blur-xl lg:hidden pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <Link href={margeoRoutes.signup}>
         <Button className="landing-cta-primary w-full min-h-12">
-          Rejoindre la beta
+          Commencer gratuitement
           <ArrowRight />
         </Button>
       </Link>

@@ -20,7 +20,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
       if (!file) return;
       if (!file.type.startsWith("image/")) {
         toast.error("Format non supporté", {
-          description: "Envoie une capture PNG, JPG ou WebP.",
+          description: "PNG, JPG ou WebP.",
         });
         return;
       }
@@ -66,10 +66,10 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         </div>
 
         <p className="mt-4 text-base font-semibold text-mg-foreground">
-          {dragging ? "Lâche ta capture ici" : "Dépose ta capture d'écran"}
+          {dragging ? "Lâche ici" : "Dépose ta capture"}
         </p>
         <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-mg-muted">
-          Appuie pour choisir une photo depuis ta galerie.
+          Appuie pour choisir depuis ta galerie.
         </p>
 
         <div className="mt-5 flex items-center gap-2 text-xs text-mg-faint">
@@ -98,7 +98,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           }}
         >
           <Sparkles />
-          Pas de capture ? Essayer avec un exemple
+          Pas de capture ? Essayer l&apos;exemple
         </Button>
       </div>
     </div>

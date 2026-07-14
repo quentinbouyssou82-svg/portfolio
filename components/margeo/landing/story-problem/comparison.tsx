@@ -50,7 +50,7 @@ export function ProblemComparison() {
           7 €
         </p>
         <p className="mt-2 text-center text-sm text-mg-muted">
-          Gain affiché · simple · rassurant
+          Gain affiché
         </p>
         <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/[0.06] shadow-[inset_0_1px_2px_rgba(0,0,0,0.35)]">
           <motion.div
@@ -114,7 +114,7 @@ export function ProblemComparison() {
             })}{" "}
             €
           </motion.p>
-          <p className="mt-2 text-sm text-mg-muted">Dans ta poche. Peut-être.</p>
+          <p className="mt-2 text-sm text-mg-muted">Dans ta poche. Si tu as de la chance.</p>
         </div>
       </PremiumCard>
     </div>
@@ -124,13 +124,13 @@ export function ProblemComparison() {
 export function ProblemStats() {
   const stats = [
     {
-      label: "Courses acceptées aujourd'hui",
+      label: "Courses acceptées",
       value: 18,
       suffix: "",
       tone: "text-mg-foreground",
     },
     {
-      label: "Courses réellement rentables",
+      label: "Vraiment rentables",
       value: 9,
       suffix: "",
       tone: "text-mg-go",

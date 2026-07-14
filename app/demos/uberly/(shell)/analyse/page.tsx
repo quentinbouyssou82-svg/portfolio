@@ -158,11 +158,10 @@ export default function AnalysePage() {
           <Sparkles className="mt-0.5 size-4 shrink-0 text-mg-go" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-mg-foreground">
-              Profil prêt — analyse ta première course !
+              Profil prêt
             </p>
             <p className="mt-0.5 text-xs leading-relaxed text-mg-muted">
-              Dépose une capture et reçois ton verdict en moins de 10
-              secondes.
+              Dépose ta première capture. Verdict en 8 secondes.
             </p>
           </div>
           <button
@@ -218,13 +217,12 @@ export default function AnalysePage() {
 
         <h1 className="app-page-title mt-4">
           {stage === "result"
-            ? "Verdict de ta course"
-            : "Analyse une proposition de course"}
+            ? "Ton verdict"
+            : "Analyser une course"}
         </h1>
         {stage === "idle" && (
           <p className="app-page-desc mx-auto mt-2 max-w-md">
-            Dépose la capture d&apos;écran. Uberly extrait les données, calcule
-            ta rentabilité réelle et te recommande quoi faire.
+            Capture → gain net → verdict. Avant la fin du compte à rebours.
           </p>
         )}
       </header>
@@ -253,7 +251,7 @@ export default function AnalysePage() {
           <div className="flex justify-center pb-2">
             <Button variant="secondary" size="lg" onClick={reset}>
               <RotateCcw />
-              Analyser une autre course
+              Analyser une autre
             </Button>
           </div>
         </div>

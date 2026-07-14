@@ -3,8 +3,8 @@
 import { Camera, CheckCircle2, Clock, MapPin, Route } from "lucide-react";
 
 const TIPS = [
-  "Capture l'écran quand la course est proposée",
-  "Le gain, la distance et le temps doivent être visibles",
+  "Capture quand la course est proposée",
+  "Gain, distance et temps visibles",
   "PNG, JPG ou WebP — pas besoin de recadrer",
 ];
 
@@ -60,7 +60,7 @@ export function CaptureGuide() {
       <div>
         <p className="flex items-center gap-2 text-sm font-semibold text-mg-foreground">
           <Camera className="size-4 text-mg-accent" />
-          Quoi envoyer ?
+          Quoi capturer ?
         </p>
         <ul className="mt-3 space-y-2">
           {TIPS.map((tip) => (

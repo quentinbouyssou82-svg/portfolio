@@ -6,7 +6,7 @@ const COLUMNS = [
   {
     title: "Produit",
     links: [
-      { label: "Rejoindre la beta", href: margeoRoutes.signup },
+      { label: "Commencer gratuitement", href: margeoRoutes.signup },
       { label: "Se connecter", href: margeoRoutes.login },
       { label: "Premium", href: margeoRoutes.premium },
       { label: "FAQ", href: "#faq" },
@@ -39,8 +39,8 @@ export function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-mg-muted">
-              Le copilote IA qui dit aux livreurs indépendants si une course est
-              vraiment rentable — avant qu&apos;il soit trop tard.
+              Le gain net, avant d&apos;accepter. Pour les livreurs Uber Eats,
+              Deliveroo et Stuart.
             </p>
           </div>
 
@@ -70,7 +70,7 @@ export function Footer() {
             © {new Date().getFullYear()} Uberly. Tous droits réservés.
           </p>
           <p className="text-xs text-mg-faint">
-            Fait pour les livreurs indépendants.
+            Conçu pour les livreurs indépendants.
           </p>
         </div>
       </div>

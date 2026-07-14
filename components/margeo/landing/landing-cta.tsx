@@ -27,7 +27,7 @@ export function LandingCta({
           size={size}
           className="landing-cta-primary w-full min-h-12 sm:min-w-[220px]"
         >
-          Rejoindre la beta
+          Commencer gratuitement
           <ArrowRight />
         </Button>
       </Link>
@@ -38,7 +38,7 @@ export function LandingCta({
             size={size}
             className="w-full min-h-12 sm:min-w-[200px]"
           >
-            Commencer gratuitement
+            Créer mon compte
           </Button>
         </Link>
       )}

@@ -8,34 +8,34 @@ import { cn } from "@/lib/margeo/utils";
 
 const FAQ_ITEMS = [
   {
-    question: "Comment Uberly lit-il mes captures d'écran ?",
+    question: "Comment Uberly lit ma capture ?",
     answer:
-      "Notre moteur d'analyse extrait automatiquement le gain proposé, la distance, le temps estimé et les adresses depuis la capture. Tu n'as rien à saisir : tu déposes l'image, le verdict arrive en quelques secondes.",
+      "L'IA extrait le gain, la distance, le temps et les adresses. Tu déposes l'image, le verdict arrive en quelques secondes. Aucune saisie.",
   },
   {
     question: "Quelles plateformes sont compatibles ?",
     answer:
-      "Uber Eats, Deliveroo, Shopopop, Stuart et Amazon Flex sont supportés. Nous ajoutons régulièrement de nouvelles plateformes en fonction des demandes de la communauté.",
+      "Uber Eats, Deliveroo, Stuart et Amazon Flex. D'autres arrivent selon les retours de la communauté.",
   },
   {
-    question: "Comment le gain net est-il calculé ?",
+    question: "Comment le gain net est calculé ?",
     answer:
-      "Uberly applique ton coût au kilomètre (carburant, usure, assurance) sur la distance totale — retour à vide inclus — et ajoute un coût du temps immobilisé. Le résultat, c'est ce qui reste vraiment dans ta poche.",
+      "Uberly déduit tes coûts au km (essence, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Ce qui reste, c'est ton vrai gain.",
   },
   {
-    question: "Est-ce que ça marche pendant le compte à rebours ?",
+    question: "Ça marche pendant le compte à rebours ?",
     answer:
-      "Oui, c'est tout l'intérêt. L'analyse prend environ 2 secondes, ce qui te laisse le temps de décider avant l'expiration de la proposition.",
+      "Oui. L'analyse prend ~8 secondes. Tu décides avant l'expiration de la proposition.",
   },
   {
-    question: "Mes données sont-elles partagées avec les plateformes ?",
+    question: "Mes données sont partagées avec les plateformes ?",
     answer:
-      "Jamais. Tes captures et tes statistiques restent privées. Uberly travaille pour toi, pas pour les plateformes.",
+      "Non. Tes captures et tes stats restent privées. Uberly travaille pour toi.",
   },
   {
-    question: "Uberly est-il vraiment gratuit ?",
+    question: "C'est gratuit ?",
     answer:
-      "L'analyse de course est gratuite avec 5 analyses par jour. Le plan Premium débloque les analyses illimitées, les statistiques avancées et les recommandations de zones.",
+      "5 analyses par jour, gratuites. Premium : analyses illimitées, stats avancées et zones recommandées.",
   },
 ];
 

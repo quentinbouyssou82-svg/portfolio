@@ -6,21 +6,21 @@ import { Reveal } from "@/components/margeo/reveal";
 const STEPS = [
   {
     icon: Camera,
-    title: "Capture la proposition",
+    title: "Capture",
     description:
-      "Une course arrive sur Uber Eats, Deliveroo ou Stuart ? Prends simplement une capture d'écran, comme d'habitude.",
+      "Course Uber Eats, Deliveroo ou Stuart ? Screenshot, comme d'habitude.",
   },
   {
     icon: ScanLine,
-    title: "Dépose-la dans Uberly",
+    title: "Analyse",
     description:
-      "L'IA lit la capture : gain proposé, distance, temps estimé, zone de dépose. Aucune saisie manuelle.",
+      "Uberly lit gain, distance, temps et zone. Rien à taper.",
   },
   {
     icon: CircleCheckBig,
-    title: "Reçois le verdict",
+    title: "Verdict",
     description:
-      "Gain net réel, taux horaire, score de rentabilité et une recommandation claire : accepter, vérifier ou refuser.",
+      "Gain net, €/h, score. Accepter, vérifier ou refuser — en 8 secondes.",
   },
 ];
 
@@ -33,12 +33,11 @@ export function HowItWorks() {
             Comment ça marche
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
-            De la capture au verdict en 3 gestes
+            3 gestes. 8 secondes.
           </h2>
         </Reveal>
 
         <div className="relative mt-14 grid gap-6 md:grid-cols-3">
-          {/* Ligne de connexion */}
           <div
             className="absolute top-9 right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-transparent via-mg-border-strong to-transparent md:block"
             aria-hidden

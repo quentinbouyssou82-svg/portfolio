@@ -11,21 +11,21 @@ const STEPS = [
     step: "01",
     title: "Uberly analyse",
     description:
-      "L'IA lit ta capture : gain, distance, temps, zone. Elle applique tes coûts réels (essence, usure, retour à vide).",
+      "L'IA lit ta capture : gain, distance, temps, zone. Tes coûts réels inclus.",
   },
   {
     icon: CircleCheckBig,
     step: "02",
-    title: "Tu prends la bonne décision",
+    title: "Tu décides",
     description:
-      "Verdict clair : accepter, vérifier ou refuser. Avec un score, un gain net et une explication que tu comprends.",
+      "Accepter, vérifier ou refuser. Score, gain net, explication claire.",
   },
   {
     icon: Wallet,
     step: "03",
-    title: "Tu gardes plus dans ta poche",
+    title: "Tu gardes plus",
     description:
-      "Moins de courses à perte, plus de courses rentables. Ton dashboard suit ta progression jour après jour.",
+      "Moins de courses à perte. Ton dashboard suit ta progression.",
   },
 ];
 
@@ -34,8 +34,8 @@ export function StoryDecision() {
     <SectionShell
       id="solution"
       eyebrow="La solution"
-      title="L'IA décide. Toi, tu gagnes."
-      description="Uberly transforme une capture floue en une décision claire — avant que le compte à rebours expire."
+      title="Un verdict clair. Avant le countdown."
+      description="Uberly transforme une capture en décision — avant l'expiration."
       border
     >
       <div className="relative">

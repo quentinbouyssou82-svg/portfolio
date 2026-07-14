@@ -93,7 +93,7 @@ function ResultMock() {
           <span className="text-lg font-bold text-mg-foreground">84</span>
         </ProgressRing>
         <div>
-          <p className="text-sm font-semibold text-mg-go">Bonne course</p>
+          <p className="mt-3 text-sm font-semibold text-mg-go">Bonne</p>
           <p className="mt-0.5 text-xl font-bold text-mg-foreground">
             6,10 € <span className="text-sm font-medium text-mg-muted">net</span>
           </p>
@@ -101,7 +101,7 @@ function ResultMock() {
         </div>
       </div>
       <p className="mt-3 rounded-lg border border-mg-accent/20 bg-mg-accent-soft/50 p-2.5 text-[11px] leading-relaxed text-mg-muted">
-        Dépasse ton objectif horaire. Course proche, retour facile.
+        Dépasse ton objectif. Retour facile.
       </p>
     </div>
   );
@@ -117,7 +117,7 @@ function DecisionMock() {
         className="flex w-full items-center justify-center gap-2 rounded-xl bg-mg-go px-4 py-3 text-sm font-semibold text-[#04120c] shadow-[0_0_24px_rgba(52,211,153,0.35)]"
       >
         <Check className="size-4" />
-        Accepter — bonne décision
+        Accepter
         <ArrowRight className="size-4" />
       </motion.div>
     </div>
@@ -141,7 +141,7 @@ export function InteractiveDemo() {
     <SectionShell
       id="demo"
       eyebrow="Démonstration"
-      title="De la capture au verdict en 4 étapes"
+      title="De la capture au verdict"
       description="Exactement ce que tu vivras dans l'app — en moins de 10 secondes."
     >
       <Reveal>

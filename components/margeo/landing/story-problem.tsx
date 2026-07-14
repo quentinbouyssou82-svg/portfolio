@@ -33,7 +33,7 @@ function ProblemOpener() {
         transition={{ ...SPRING, delay: 0.06 }}
         className="mt-5 text-sm font-medium tracking-wide text-mg-muted sm:text-base"
       >
-        Chaque course acceptée est un pari.
+        Chaque course, un pari à l'aveugle.
       </motion.p>
 
       <motion.h2
@@ -54,7 +54,7 @@ function ProblemOpener() {
         transition={{ ...SPRING, delay: 0.16 }}
         className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-7 sm:text-xl"
       >
-        …mais personne ne t&apos;a montré ce qu&apos;il reste vraiment.
+        …mais personne ne te montre ce qu&apos;il reste vraiment.
       </motion.p>
     </div>
   );
@@ -68,10 +68,10 @@ function ProblemHook() {
         La question
       </p>
       <p className="relative mt-4 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
-        Comment éviter ça ?
+        Et si tu savais avant d&apos;accepter ?
       </p>
       <p className="relative mx-auto mt-4 max-w-md text-sm leading-relaxed text-mg-muted sm:text-base">
-        Tu viens de vivre une soirée type. La réponse arrive juste en dessous.
+        La réponse est juste en dessous.
       </p>
     </PremiumCard>
   );
