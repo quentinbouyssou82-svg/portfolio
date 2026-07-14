@@ -493,6 +493,40 @@
   color: var(--color-mg-accent);
 }
 
+.uberly-root .landing-demo-dropzone,
+.margeo-root .landing-demo-dropzone {
+  min-height: 15rem;
+  padding: 2.5rem 1.5rem;
+}
+
+.uberly-root .landing-demo-panel,
+.margeo-root .landing-demo-panel {
+  min-height: 18rem;
+}
+
+.uberly-root .landing-demo-result,
+.margeo-root .landing-demo-result {
+  position: relative;
+}
+
+.uberly-root .landing-demo-badge,
+.margeo-root .landing-demo-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 140, 248, 0.28);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.25rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mg-accent);
+  backdrop-filter: blur(8px);
+}
+
 .uberly-root .app-stage-steps,
 .margeo-root .app-stage-steps {
   display: flex;

@@ -1,212 +1,341 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowRight,
-  Check,
-  Clock,
-  Loader2,
-  MapPin,
-  Route,
-  ScanLine,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { ProgressRing } from "@/components/margeo/progress-ring";
+import { ArrowRight, Check, RotateCcw, Upload } from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnalysisResult } from "@/components/margeo/analyse/analysis-result";
 import { Reveal } from "@/components/margeo/reveal";
 import { SectionShell } from "@/components/margeo/landing/section-shell";
-import { VerdictBadge } from "@/components/margeo/verdict-badge";
-import { LandingCta } from "@/components/margeo/landing/landing-cta";
+import { Button } from "@/components/margeo/ui/button";
+import { Card } from "@/components/margeo/ui/card";
+import { Spinner } from "@/components/margeo/ui/spinner";
+import { margeoRoutes } from "@/lib/margeo/routes";
+import type { RideAnalysis } from "@/lib/margeo/types";
+import { cn } from "@/lib/margeo/utils";
 
-const STAGES = [
-  { id: "capture", label: "Capture" },
-  { id: "scan", label: "Scan IA" },
-  { id: "result", label: "Verdict" },
-  { id: "decision", label: "Décision" },
+const SCAN_STEPS = [
+  "Lecture de l'image",
+  "Analyse de la course",
+  "Calcul de la rentabilité",
+  "Génération du verdict",
 ] as const;
 
-type StageId = (typeof STAGES)[number]["id"];
+const SCAN_DURATION_MS = 2600;
 
-const STAGE_MS = 2800;
+const DEMO_ANALYSIS: RideAnalysis = {
+  id: "landing-demo",
+  offer: {
+    id: "landing-demo-offer",
+    platform: "Uber Eats",
+    pickup: "McDonald's République",
+    dropoff: "12 rue de la Paix",
+    payout: 7.8,
+    distanceKm: 4.1,
+    durationMin: 18,
+    emptyReturnKm: 0.8,
+  },
+  analyzedAt: new Date().toISOString(),
+  grossGain: 7.8,
+  estimatedCost: 1.7,
+  netGain: 6.1,
+  hourlyRate: 22.9,
+  score: 84,
+  verdict: "accept",
+  explanation: "Cette course dépasse ton objectif horaire.",
+  insights: [
+    "Excellent €/km",
+    "Distance courte",
+    "Zone rentable",
+    "Peu d'attente",
+  ],
+  scoreBreakdown: [],
+};
 
-function CaptureMock() {
+type DemoStage = "idle" | "scanning" | "result";
+
+const EASE = [0.21, 0.47, 0.32, 0.98] as const;
+
+function DemoScanner({ previewUrl }: { previewUrl: string | null }) {
+  const reduceMotion = useReducedMotion();
+  const [step, setStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setStep(SCAN_STEPS.length - 1);
+      setProgress(100);
+      return;
+    }
+
+    const stepInterval = setInterval(
+      () => setStep((s) => Math.min(s + 1, SCAN_STEPS.length - 1)),
+      SCAN_DURATION_MS / SCAN_STEPS.length,
+    );
+
+    const start = Date.now();
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - start;
+      setProgress(Math.min(100, Math.round((elapsed / SCAN_DURATION_MS) * 100)));
+    }, 40);
+
+    return () => {
+      clearInterval(stepInterval);
+      clearInterval(progressInterval);
+    };
+  }, [reduceMotion]);
+
   return (
-    <div className="mx-auto w-full max-w-[240px] rounded-2xl border border-mg-border-strong bg-[#0c0c0e] p-2 shadow-mg-card">
-      <div className="rounded-xl border border-mg-border bg-mg-surface px-3 py-3">
-        <div className="flex items-center justify-between">
-          <span className="rounded-full bg-[#06c167]/20 px-2 py-0.5 text-[10px] font-semibold text-[#06c167]">
-            Uber Eats
-          </span>
-          <span className="text-[10px] text-mg-faint">Nouvelle course</span>
-        </div>
-        <p className="mt-3 text-2xl font-bold text-mg-foreground">7,80 €</p>
-        <p className="text-[10px] text-mg-faint">Gain estimé</p>
-        <div className="mt-3 space-y-1.5 rounded-lg border border-mg-border bg-mg-card p-2.5">
-          <p className="flex items-center gap-1.5 text-[10px] text-mg-muted">
-            <MapPin className="size-3 text-mg-accent" />
-            McDonald&apos;s République
-          </p>
-          <p className="flex items-center gap-1.5 text-[10px] text-mg-muted">
-            <MapPin className="size-3 text-mg-faint" />
-            12 rue de la Paix
-          </p>
-          <div className="flex gap-3 text-[10px] text-mg-faint">
-            <span className="inline-flex items-center gap-1">
-              <Route className="size-3" /> 4,1 km
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <Clock className="size-3" /> 18 min
-            </span>
-          </div>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.35, ease: EASE }}
+      className="mx-auto max-w-xl space-y-5"
+    >
+      <div className="app-scan-progress">
+        <div
+          className="app-scan-progress-fill"
+          style={{ width: `${progress}%` }}
+        />
       </div>
-    </div>
-  );
-}
-
-function ScanMock() {
-  return (
-    <div className="relative mx-auto w-full max-w-[240px] overflow-hidden rounded-2xl border border-mg-accent/40 bg-[#0c0c0e] p-2">
-      <div className="rounded-xl border border-mg-border bg-mg-surface px-3 py-3 opacity-60">
-        <p className="text-2xl font-bold text-mg-foreground">7,80 €</p>
-        <p className="mt-2 text-[10px] text-mg-faint">McDonald&apos;s → 12 rue de la Paix</p>
-      </div>
-      <div className="animate-mg-scan absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-mg-accent/30 to-transparent" />
-      <div className="absolute inset-0 flex items-center justify-center bg-mg-background/50 backdrop-blur-[2px]">
-        <div className="flex items-center gap-2 rounded-full border border-mg-accent/30 bg-mg-background/90 px-3 py-1.5 text-xs font-medium text-mg-accent">
-          <Loader2 className="size-3.5 animate-spin" />
-          Analyse en cours…
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ResultMock() {
-  return (
-    <div className="mx-auto w-full max-w-[280px] rounded-2xl border border-mg-go/30 bg-mg-card p-4 shadow-mg-glow">
-      <div className="flex items-center justify-between">
-        <VerdictBadge verdict="accept" size="md" />
-        <span className="text-[10px] text-mg-faint">Uberly</span>
-      </div>
-      <div className="mt-4 flex items-center gap-4">
-        <ProgressRing value={84} size={80} strokeWidth={7}>
-          <span className="text-lg font-bold text-mg-foreground">84</span>
-        </ProgressRing>
-        <div>
-          <p className="mt-3 text-sm font-semibold text-mg-go">Bonne</p>
-          <p className="mt-0.5 text-xl font-bold text-mg-foreground">
-            6,10 € <span className="text-sm font-medium text-mg-muted">net</span>
-          </p>
-          <p className="text-xs text-mg-faint">22,9 €/h · coût 1,80 €</p>
-        </div>
-      </div>
-      <p className="mt-3 rounded-lg border border-mg-accent/20 bg-mg-accent-soft/50 p-2.5 text-[11px] leading-relaxed text-mg-muted">
-        Dépasse ton objectif. Retour facile.
+      <p className="text-center text-xs text-mg-faint">
+        Analyse · {progress} %
       </p>
-    </div>
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <div className="relative mx-auto aspect-[9/16] w-full max-w-[200px] shrink-0 overflow-hidden rounded-2xl border border-mg-accent/25 bg-mg-card sm:mx-0">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Capture en cours d'analyse"
+              className="h-full w-full object-cover opacity-90"
+            />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-2 bg-mg-surface/80 p-4 text-center">
+              <span className="rounded-full bg-[#06c167]/15 px-2 py-0.5 text-[10px] font-bold text-[#06c167]">
+                Uber Eats
+              </span>
+              <p className="text-2xl font-bold text-mg-foreground">7,80 €</p>
+              <p className="text-[10px] text-mg-faint">Capture exemple</p>
+            </div>
+          )}
+          <div className="animate-mg-scan absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-mg-accent/25 to-transparent" />
+        </div>
+
+        <Card className="app-glass-surface min-w-0 flex-1 p-5">
+          <p className="mb-4 flex items-center gap-2.5 text-sm font-semibold text-mg-foreground">
+            <Spinner size="sm" />
+            Calcul en cours…
+          </p>
+          <ul className="space-y-3">
+            {SCAN_STEPS.map((label, i) => (
+              <li
+                key={label}
+                className={cn(
+                  "flex items-center gap-3 text-sm transition-opacity duration-200",
+                  i <= step
+                    ? "text-mg-foreground opacity-100"
+                    : "text-mg-faint opacity-45",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex size-5 shrink-0 items-center justify-center rounded-full",
+                    i < step
+                      ? "bg-mg-accent-soft"
+                      : "border border-mg-border",
+                  )}
+                >
+                  {i < step ? (
+                    <Check className="size-3 text-mg-accent" />
+                  ) : i === step ? (
+                    <span className="size-1.5 rounded-full bg-mg-accent" />
+                  ) : null}
+                </span>
+                {label}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+    </motion.div>
   );
 }
 
-function DecisionMock() {
+function DemoDropzone({
+  onStart,
+  dragging,
+  setDragging,
+}: {
+  onStart: (previewUrl: string | null) => void;
+  dragging: boolean;
+  setDragging: (v: boolean) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = useCallback(
+    (file: File | undefined) => {
+      if (!file?.type.startsWith("image/")) return;
+      onStart(URL.createObjectURL(file));
+    },
+    [onStart],
+  );
+
   return (
-    <div className="mx-auto flex w-full max-w-[280px] flex-col items-center gap-3">
-      <ResultMock />
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-mg-go px-4 py-3 text-sm font-semibold text-[#04120c] shadow-[0_0_24px_rgba(52,211,153,0.35)]"
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.35, ease: EASE }}
+      className="mx-auto max-w-2xl"
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Déposer une capture ou lancer la démo"
+        onClick={() => onStart(null)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onStart(null);
+          }
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          handleFile(e.dataTransfer.files[0]);
+        }}
+        className={cn(
+          "app-upload-zone landing-demo-dropzone",
+          dragging && "app-upload-zone-active",
+        )}
       >
-        <Check className="size-4" />
-        Accepter
-        <ArrowRight className="size-4" />
-      </motion.div>
-    </div>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => handleFile(e.target.files?.[0])}
+        />
+
+        <div className="app-upload-icon">
+          <Upload className="size-7" strokeWidth={1.75} />
+        </div>
+
+        <p className="mt-5 text-lg font-semibold text-mg-foreground sm:text-xl">
+          {dragging ? "Lâche ici" : "Glisse une capture Uber Eats ici"}
+        </p>
+        <p className="mt-2 text-sm text-mg-muted">
+          ou clique pour essayer
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+function DemoResult({ onReset }: { onReset: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.45, ease: EASE }}
+      className="mx-auto max-w-2xl"
+    >
+      <div className="landing-demo-result relative">
+        <span className="landing-demo-badge">Démonstration</span>
+        <AnalysisResult analysis={DEMO_ANALYSIS} />
+      </div>
+
+      <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <Link href={margeoRoutes.signup} className="w-full sm:w-auto">
+          <Button size="lg" className="landing-cta-primary w-full min-h-12">
+            Essayer avec une vraie capture
+            <ArrowRight />
+          </Button>
+        </Link>
+        <Button
+          variant="ghost"
+          size="lg"
+          className="w-full min-h-12 sm:w-auto"
+          onClick={onReset}
+        >
+          <RotateCcw />
+          Rejouer la démo
+        </Button>
+      </div>
+    </motion.div>
   );
 }
 
 export function InteractiveDemo() {
   const reduceMotion = useReducedMotion();
-  const [stageIndex, setStageIndex] = useState(0);
-  const stage = STAGES[stageIndex].id;
+  const [stage, setStage] = useState<DemoStage>("idle");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (reduceMotion) return;
-    const timer = setInterval(() => {
-      setStageIndex((i) => (i + 1) % STAGES.length);
-    }, STAGE_MS);
-    return () => clearInterval(timer);
-  }, [reduceMotion]);
+  const reset = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setStage("idle");
+  }, [previewUrl]);
+
+  const startDemo = useCallback(
+    (url: string | null) => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (previewUrl && previewUrl !== url) URL.revokeObjectURL(previewUrl);
+
+      setPreviewUrl(url);
+      setStage("scanning");
+
+      const delay = reduceMotion ? 0 : SCAN_DURATION_MS;
+      timerRef.current = setTimeout(() => {
+        setStage("result");
+      }, delay);
+    },
+    [previewUrl, reduceMotion],
+  );
+
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
 
   return (
     <SectionShell
       id="demo"
-      eyebrow="Démonstration"
-      title="De la capture au verdict"
-      description="Exactement ce que tu vivras dans l'app — en moins de 10 secondes."
+      eyebrow="Démo interactive"
+      title="Teste Uberly en 15 secondes"
+      description="Dépose une capture ou clique — le verdict s'affiche comme dans l'app."
     >
       <Reveal>
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-8 flex justify-center gap-2 overflow-x-auto pb-1 sm:gap-3">
-            {STAGES.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setStageIndex(i)}
-                className={`flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-medium transition-all sm:text-sm ${
-                  stageIndex === i
-                    ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
-                    : "border-mg-border text-mg-muted hover:border-mg-border-strong"
-                }`}
-              >
-                <span
-                  className={`flex size-5 items-center justify-center rounded-full text-[10px] font-bold ${
-                    stageIndex >= i
-                      ? "bg-mg-accent text-[#04120c]"
-                      : "bg-mg-border text-mg-faint"
-                  }`}
-                >
-                  {i + 1}
-                </span>
-                {s.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative min-h-[320px] rounded-3xl border border-mg-border bg-mg-card/60 p-8 backdrop-blur-sm sm:min-h-[360px] sm:p-12">
-            <div className="absolute top-4 right-4 hidden items-center gap-1.5 text-xs text-mg-faint sm:flex">
-              <ScanLine className="size-3.5 text-mg-accent" />
-              Démo interactive
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={stage}
-                initial={{ opacity: 0, y: 16, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -12, scale: 0.98 }}
-                transition={{ duration: 0.45, ease: [0.21, 0.47, 0.32, 0.98] }}
-                className="flex min-h-[240px] items-center justify-center"
-              >
-                {stage === "capture" && <CaptureMock />}
-                {stage === "scan" && <ScanMock />}
-                {stage === "result" && <ResultMock />}
-                {stage === "decision" && <DecisionMock />}
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="mt-6 h-1 overflow-hidden rounded-full bg-mg-border">
-              <motion.div
-                className="h-full bg-gradient-to-r from-mg-accent-strong to-mg-accent"
-                initial={{ width: "0%" }}
-                animate={{ width: `${((stageIndex + 1) / STAGES.length) * 100}%` }}
-                transition={{ duration: 0.4 }}
+        <div className="landing-demo-panel relative rounded-3xl border border-mg-border bg-mg-card/50 p-5 backdrop-blur-sm sm:p-8 lg:p-10">
+          <AnimatePresence mode="wait">
+            {stage === "idle" && (
+              <DemoDropzone
+                key="dropzone"
+                onStart={startDemo}
+                dragging={dragging}
+                setDragging={setDragging}
               />
-            </div>
-          </div>
-
-          <div className="mt-10 flex justify-center">
-            <LandingCta primaryOnly className="justify-center" />
-          </div>
+            )}
+            {stage === "scanning" && (
+              <DemoScanner key="scanning" previewUrl={previewUrl} />
+            )}
+            {stage === "result" && (
+              <DemoResult key="result" onReset={reset} />
+            )}
+          </AnimatePresence>
         </div>
       </Reveal>
     </SectionShell>
