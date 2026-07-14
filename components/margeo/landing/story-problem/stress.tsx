@@ -71,7 +71,7 @@ export function ProblemStress() {
                 </span>
               </div>
               <p className="mt-3 text-3xl font-bold tracking-tight text-mg-go">7,00 €</p>
-              <p className="text-[11px] text-mg-muted">Nouvelle course · 3,2 km</p>
+              <p className="text-[11px] text-mg-muted">3,2 km · 15 s</p>
             </motion.div>
 
             <div className="mt-6 flex flex-col items-center">

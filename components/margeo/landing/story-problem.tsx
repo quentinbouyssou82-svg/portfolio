@@ -33,7 +33,7 @@ function ProblemOpener() {
         transition={{ ...SPRING, delay: 0.06 }}
         className="mt-5 text-sm font-medium tracking-wide text-mg-muted sm:text-base"
       >
-        Chaque course, un pari à l'aveugle.
+        Chaque course, un pari.
       </motion.p>
 
       <motion.h2
@@ -54,7 +54,7 @@ function ProblemOpener() {
         transition={{ ...SPRING, delay: 0.16 }}
         className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-7 sm:text-xl"
       >
-        …mais personne ne te montre ce qu&apos;il reste vraiment.
+        …le vrai gain reste caché.
       </motion.p>
     </div>
   );
@@ -68,10 +68,7 @@ function ProblemHook() {
         La question
       </p>
       <p className="relative mt-4 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
-        Et si tu savais avant d&apos;accepter ?
-      </p>
-      <p className="relative mx-auto mt-4 max-w-md text-sm leading-relaxed text-mg-muted sm:text-base">
-        La réponse est juste en dessous.
+        Et si tu savais avant ?
       </p>
     </PremiumCard>
   );
@@ -100,17 +97,17 @@ export function StoryProblem() {
 
         <div className="mt-16 space-y-20 sm:mt-24 sm:space-y-28">
           <div>
-            <SceneLabel>La soirée d&apos;un livreur</SceneLabel>
+            <SceneLabel>Une soirée</SceneLabel>
             <ProblemTimeline />
           </div>
 
           <div>
-            <SceneLabel>Ce qu&apos;on te montre vs la réalité</SceneLabel>
+            <SceneLabel>Affiché vs réel</SceneLabel>
             <ProblemComparison />
           </div>
 
           <div>
-            <SceneLabel>Le trajet que personne ne calcule</SceneLabel>
+            <SceneLabel>Le trajet invisible</SceneLabel>
             <ProblemRoute />
           </div>
 

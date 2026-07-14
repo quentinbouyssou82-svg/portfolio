@@ -18,7 +18,7 @@ export function ProblemRoute() {
             Le trajet invisible
           </p>
           <p className="mt-2 text-lg font-semibold tracking-tight text-mg-foreground sm:text-xl">
-            Uber ne compte que la moitié du trajet.
+            La moitié du trajet, ignorée.
           </p>
 
           <div className="relative mt-6 pl-1">
@@ -58,7 +58,7 @@ export function ProblemRoute() {
                   Retour à vide
                 </p>
                 <p className="text-sm font-semibold text-mg-muted">
-                  2,4 km · non payés · non affichés
+                  2,4 km · invisible
                 </p>
               </div>
             </div>

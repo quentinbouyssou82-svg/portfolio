@@ -44,7 +44,7 @@ export function ProblemComparison() {
       <PremiumCard index={0} className="rounded-3xl p-6 sm:p-8">
         <div className="problem-comparison-glow" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
-          Ce que voit Uber
+          Uber affiche
         </p>
         <p className="problem-amount-glow mt-6 text-center text-5xl font-bold tracking-tight text-mg-go sm:text-6xl">
           7 €
@@ -66,7 +66,7 @@ export function ProblemComparison() {
       <PremiumCard index={1} className="rounded-3xl p-6 sm:p-8">
         <div className="problem-comparison-glow" aria-hidden />
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
-          Ce qui reste réellement
+          Ce qui reste
         </p>
 
         <ul className="mt-5 space-y-2.5">
@@ -114,7 +114,7 @@ export function ProblemComparison() {
             })}{" "}
             €
           </motion.p>
-          <p className="mt-2 text-sm text-mg-muted">Dans ta poche. Si tu as de la chance.</p>
+          <p className="mt-2 text-sm text-mg-muted">Peut-être.</p>
         </div>
       </PremiumCard>
     </div>
@@ -124,13 +124,13 @@ export function ProblemComparison() {
 export function ProblemStats() {
   const stats = [
     {
-      label: "Courses acceptées",
+      label: "Acceptées",
       value: 18,
       suffix: "",
       tone: "text-mg-foreground",
     },
     {
-      label: "Vraiment rentables",
+      label: "Rentables",
       value: 9,
       suffix: "",
       tone: "text-mg-go",
