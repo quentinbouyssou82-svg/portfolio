@@ -408,7 +408,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
                     reduceMotion={reduceMotion}
                   />
                   <p className="-mt-1 text-center text-sm font-semibold tracking-tight text-mg-go">
-                    Bonne course
+                    Bonne
                   </p>
                 </motion.div>
 
@@ -537,11 +537,11 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
                     </span>
                     <div>
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-mg-go/25 bg-mg-go-soft/80 px-2 py-0.5 text-[9px] font-bold tracking-wide text-mg-go uppercase">
-                        IA · Recommandation
+                        IA · Verdict
                       </span>
                       <p className="mt-2 text-[11px] leading-relaxed text-mg-foreground/92">
                         <span className="font-semibold text-mg-go">Accepter · </span>
-                        Dépasse ton objectif horaire. Course proche, retour facile.
+                        Dépasse ton objectif. Retour facile.
                       </p>
                     </div>
                   </div>
