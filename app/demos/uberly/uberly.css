@@ -10,7 +10,7 @@
 
   --color-mg-foreground: #fafafa;
   --color-mg-muted: #a1a1aa;
-  --color-mg-faint: #85858e;
+  --color-mg-faint: #8b8b94;
 
   --color-mg-accent: #818cf8;
   --color-mg-accent-strong: #6366f1;
@@ -22,6 +22,12 @@
   --color-mg-check-soft: rgba(251, 191, 36, 0.12);
   --color-mg-stop: #f87171;
   --color-mg-stop-soft: rgba(248, 113, 113, 0.12);
+
+  --radius-mg-sm: 0.5rem;
+  --radius-mg-md: 0.75rem;
+  --radius-mg-lg: 1rem;
+  --radius-mg-xl: 1.25rem;
+  --radius-mg-2xl: 1.5rem;
 
   --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
     0 8px 24px rgba(0, 0, 0, 0.35);
@@ -71,8 +77,11 @@
   font-family: var(--font-uberly-sans), var(--font-margeo-sans), ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   min-height: 100dvh;
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -352,6 +361,16 @@
   animation: mg-spin 0.65s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root .mg-spinner,
+  .margeo-root .mg-spinner {
+    animation: none;
+    border-color: rgba(129, 140, 248, 0.35);
+    border-top-color: var(--color-mg-accent);
+    opacity: 0.85;
+  }
+}
+
 .uberly-root .mg-spinner-sm,
 .margeo-root .mg-spinner-sm {
   width: 0.875rem;
@@ -402,6 +421,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
+  min-width: 0;
 }
 
 .uberly-root .app-page-eyebrow,
@@ -417,9 +437,11 @@
 .margeo-root .app-page-title {
   font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
   color: var(--color-mg-foreground);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 @media (min-width: 640px) {
@@ -432,13 +454,15 @@
 .uberly-root .app-page-desc,
 .margeo-root .app-page-desc {
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--color-mg-muted);
+  text-wrap: pretty;
 }
 
 .uberly-root .app-glass-surface,
 .margeo-root .app-glass-surface {
   border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-mg-2xl);
   background: linear-gradient(
     160deg,
     rgba(255, 255, 255, 0.05) 0%,
@@ -458,21 +482,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 1.25rem;
+  border-radius: var(--radius-mg-xl);
   border: 1.5px dashed rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.02);
   padding: 1.5rem 1.25rem;
   text-align: center;
   transition:
     border-color 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   outline: none;
 }
 
 .uberly-root .app-upload-zone:focus-visible,
 .margeo-root .app-upload-zone:focus-visible {
   border-color: rgba(129, 140, 248, 0.45);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
 }
 
 .uberly-root .app-upload-zone-active,
@@ -488,7 +513,7 @@
   justify-content: center;
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 1rem;
+  border-radius: var(--radius-mg-lg);
   background: rgba(99, 102, 241, 0.12);
   color: var(--color-mg-accent);
 }
@@ -594,10 +619,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 1.25rem;
+  border-radius: var(--radius-mg-2xl);
   border: 1px solid rgba(248, 113, 113, 0.22);
   background: rgba(248, 113, 113, 0.06);
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1.25rem;
   text-align: center;
 }
 
@@ -606,18 +631,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.875rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-mg-lg);
   background: rgba(248, 113, 113, 0.12);
   color: var(--color-mg-stop);
 }
 
 .uberly-root .app-error-state-title,
 .margeo-root .app-error-state-title {
-  margin-top: 0.75rem;
+  margin-top: 0.875rem;
   font-size: 0.9375rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-mg-foreground);
 }
 
@@ -626,8 +652,9 @@
   margin-top: 0.375rem;
   max-width: 20rem;
   font-size: 0.8125rem;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--color-mg-muted);
+  text-wrap: pretty;
 }
 
 .uberly-root .app-error-state-action,
@@ -1429,7 +1456,7 @@
   height: 3rem;
   min-height: 3rem;
   width: 100%;
-  border-radius: 0.875rem;
+  border-radius: var(--radius-mg-lg);
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   padding-left: 2.625rem;
@@ -1446,7 +1473,13 @@
 
 .uberly-root .auth-field-input::placeholder,
 .margeo-root .auth-field-input::placeholder {
-  color: rgba(133, 133, 142, 0.75);
+  color: rgba(139, 139, 148, 0.85);
+}
+
+.uberly-root .auth-field-input:hover:not(:disabled):not(:focus),
+.margeo-root .auth-field-input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .uberly-root .auth-field-input:focus,

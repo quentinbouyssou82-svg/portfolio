@@ -152,9 +152,9 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                     type="button"
                     onClick={() => update("vehicle", v)}
                     className={cn(
-                      "flex min-h-[88px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border py-3 text-xs font-medium transition-all sm:text-sm",
+                      "flex min-h-[88px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border py-3 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40 sm:text-sm",
                       profile.vehicle === v
-                        ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent shadow-[0_0_0_1px_rgba(129,140,248,0.2)]"
+                        ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent shadow-mg-glow"
                         : "border-mg-border text-mg-muted hover:border-mg-border-strong hover:text-mg-foreground",
                     )}
                   >
@@ -174,7 +174,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                     type="button"
                     onClick={() => togglePlatform(p)}
                     className={cn(
-                      "min-h-9 cursor-pointer rounded-full border px-3.5 py-2 text-xs font-medium transition-all",
+                      "min-h-9 cursor-pointer rounded-full border px-3.5 py-2 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
                       profile.platforms?.includes(p)
                         ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
                         : "border-mg-border text-mg-muted hover:border-mg-border-strong",
@@ -252,7 +252,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
         <CardContent className="space-y-5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-white/[0.05]">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-white/[0.05]">
                 <Moon className="size-4 text-mg-muted" />
               </span>
               <div>

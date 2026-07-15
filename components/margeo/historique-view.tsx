@@ -105,7 +105,7 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
                 type="button"
                 onClick={() => setFilter(f.value)}
                 className={cn(
-                  "shrink-0 cursor-pointer rounded-full border px-3.5 py-2.5 text-xs font-medium transition-colors min-h-11",
+                  "shrink-0 cursor-pointer rounded-full border px-3.5 py-2.5 text-xs font-medium transition-colors min-h-11 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
                   filter === f.value
                     ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
                     : "border-mg-border text-mg-muted hover:border-mg-border-strong",

@@ -41,11 +41,20 @@ export default function UberlyLayout({
       <Toaster
         theme="dark"
         position="bottom-right"
+        offset={{ bottom: "1.25rem", right: "1.25rem" }}
+        mobileOffset={{
+          bottom: "calc(5.75rem + env(safe-area-inset-bottom))",
+          right: "0.75rem",
+          left: "0.75rem",
+        }}
         toastOptions={{
+          className: "uberly-toast",
           style: {
             background: "var(--color-mg-card)",
             border: "1px solid var(--color-mg-border-strong)",
             color: "var(--color-mg-foreground)",
+            borderRadius: "1rem",
+            boxShadow: "0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 32px rgba(0,0,0,0.35)",
           },
         }}
       />

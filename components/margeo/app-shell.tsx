@@ -39,7 +39,7 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors duration-200 outline-none",
+        "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors duration-200 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
         active
           ? "bg-mg-accent-soft text-mg-accent"
           : "text-mg-muted hover:bg-white/[0.05] hover:text-mg-foreground",
@@ -90,7 +90,7 @@ export function AppShell({
             href={margeoRoutes.profil}
             className="flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/[0.05]"
           >
-            <span className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-mg-accent/30 to-sky-500/20 text-sm font-semibold text-mg-accent">
+            <span className="flex size-9 items-center justify-center rounded-full bg-mg-accent-soft text-sm font-semibold text-mg-accent">
               {profile.name.charAt(0)}
             </span>
             <span className="min-w-0">
@@ -121,7 +121,7 @@ export function AppShell({
 
       {/* Contenu */}
       <main className="flex-1 pt-[calc(3.5rem+env(safe-area-inset-top))] pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:ml-60 lg:pt-0 lg:pb-0">
-        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-7">
+        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-8">
           <PageTransition>{children}</PageTransition>
         </div>
       </main>
@@ -138,7 +138,7 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 aria-label={item.label}
                 className={cn(
-                  "relative flex min-h-[52px] min-w-[3.25rem] flex-1 max-w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors outline-none",
+                  "relative flex min-h-[52px] min-w-[3.25rem] flex-1 max-w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
                   active
                     ? "text-mg-accent"
                     : "text-mg-faint",

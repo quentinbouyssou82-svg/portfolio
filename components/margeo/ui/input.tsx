@@ -8,8 +8,12 @@ export const Input = forwardRef<
   <input
     ref={ref}
     className={cn(
-      "h-11 min-h-11 w-full rounded-xl border border-mg-border bg-white/[0.04] px-3.5 text-base text-mg-foreground placeholder:text-mg-faint outline-none transition-colors focus:border-mg-accent/50 focus:ring-2 focus:ring-mg-accent/20 sm:h-10 sm:min-h-10 sm:text-sm",
-      className
+      "h-11 min-h-11 w-full rounded-xl border border-mg-border bg-white/[0.04] px-3.5 text-base text-mg-foreground placeholder:text-mg-faint outline-none transition-[border-color,box-shadow,background-color] duration-200",
+      "hover:border-mg-border-strong hover:bg-white/[0.05]",
+      "focus:border-mg-accent/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-mg-accent/20",
+      "disabled:cursor-not-allowed disabled:opacity-50",
+      "sm:h-10 sm:min-h-10 sm:text-sm",
+      className,
     )}
     {...props}
   />

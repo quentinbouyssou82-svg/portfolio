@@ -74,7 +74,7 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
         description: "Ton retour améliore tes prochains verdicts.",
       });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Erreur");
+      toast.error(e instanceof Error ? e.message : "Impossible d'enregistrer");
     } finally {
       setLoading(false);
     }
@@ -140,7 +140,7 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
               type="button"
               onClick={() => setReason(r.id)}
               className={cn(
-                "cursor-pointer rounded-full border px-3.5 py-2 text-xs font-medium transition-all",
+                "cursor-pointer rounded-full border px-3.5 py-2 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
                 reason === r.id
                   ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
                   : "border-mg-border text-mg-muted hover:border-mg-border-strong",

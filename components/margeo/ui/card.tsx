@@ -9,9 +9,9 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-colors duration-200",
+        "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-[border-color,background-color,transform,box-shadow] duration-200",
         interactive && "card-interactive cursor-pointer",
-        className
+        className,
       )}
       {...props}
     />
@@ -36,7 +36,7 @@ export function CardTitle({
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-sm font-medium text-mg-muted", className)}
+      className={cn("text-sm font-medium tracking-tight text-mg-muted", className)}
       {...props}
     />
   );

@@ -29,7 +29,7 @@ export function StatCard({
     <Card interactive className={cn("p-5", className)}>
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-mg-muted">{label}</p>
-        <span className="flex size-8 items-center justify-center rounded-lg bg-white/[0.05]">
+        <span className="flex size-8 items-center justify-center rounded-xl bg-white/[0.05]">
           <Icon className="size-4 text-mg-muted" />
         </span>
       </div>

@@ -24,7 +24,7 @@ export function LocationBanner({
     <Card className="mb-6 border-mg-accent/20 bg-mg-accent-soft/20 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-mg-accent-soft">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-mg-accent-soft">
             <MapPin className="size-4 text-mg-accent" />
           </span>
           <div>

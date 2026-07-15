@@ -8,7 +8,6 @@ import { AnalysisResult } from "@/components/margeo/analyse/analysis-result";
 import { FeedbackForm } from "@/components/margeo/analyse/feedback-form";
 import {
   ScanOverlay,
-  SCAN_DURATION_MS,
 } from "@/components/margeo/analyse/scan-overlay";
 import { UploadZone } from "@/components/margeo/analyse/upload-zone";
 import { LocationBanner } from "@/components/margeo/location-banner";
@@ -63,8 +62,7 @@ export default function AnalysePage() {
       setPreviewUrl(url);
       setStage("scanning");
 
-      const minDelay = new Promise((r) => setTimeout(r, SCAN_DURATION_MS));
-
+      // Pas d'attente artificielle : le verdict s'affiche dès la réponse API.
       try {
         const formData = new FormData();
         formData.append("image", file);
@@ -73,10 +71,10 @@ export default function AnalysePage() {
           formData.append("courierLng", String(geo.position.lng));
         }
 
-        const [res] = await Promise.all([
-          fetch("/api/uberly/analyze", { method: "POST", body: formData }),
-          minDelay,
-        ]);
+        const res = await fetch("/api/uberly/analyze", {
+          method: "POST",
+          body: formData,
+        });
 
         const data = await res.json();
 
@@ -110,7 +108,7 @@ export default function AnalysePage() {
         maybeMarkActiveUser(data.analysisCount ?? 1, data.analysis.id);
 
         const meta = VERDICT_META[data.analysis.verdict as keyof typeof VERDICT_META];
-        toast(`${meta.emoji} ${meta.label} — score ${data.analysis.score}/100`, {
+        toast(`${meta.label} — ${data.analysis.score}/100`, {
           description: meta.description,
         });
       } catch (e) {

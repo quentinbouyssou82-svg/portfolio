@@ -130,7 +130,7 @@ export function DashboardView({
         <EmptyState
           icon={ScanLine}
           title="Prêt à analyser"
-          description="Dépose une capture. Uberly calcule ton gain net et te dit quoi faire — en 8 secondes."
+          description="Dépose une capture. Verdict et gain net en 8 secondes."
           action={
             <Link href={margeoRoutes.analyse}>
               <Button size="lg">

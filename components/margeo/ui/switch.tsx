@@ -22,14 +22,16 @@ export function Switch({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl outline-none disabled:cursor-not-allowed disabled:opacity-50"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl outline-none transition-opacity focus-visible:ring-2 focus-visible:ring-mg-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-mg-background disabled:cursor-not-allowed disabled:opacity-50"
       {...props}
     >
       <span
         aria-hidden
         className={cn(
-          "relative h-6 w-11 shrink-0 rounded-full border border-mg-border transition-colors duration-200",
-          checked ? "bg-mg-accent-strong" : "bg-white/[0.08]",
+          "relative h-6 w-11 shrink-0 rounded-full border transition-colors duration-200",
+          checked
+            ? "border-mg-accent/40 bg-mg-accent-strong"
+            : "border-mg-border bg-white/[0.08]",
         )}
       >
         <span
