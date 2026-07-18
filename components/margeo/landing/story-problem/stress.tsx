@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { Bell, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { PremiumCard } from "@/components/margeo/landing/story-problem/premium-card";
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
@@ -61,9 +62,8 @@ export function ProblemStress() {
               className="mt-4 rounded-2xl border border-mg-go/30 bg-mg-go-soft/40 p-4"
             >
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#06c167]/15 px-2 py-0.5 text-[10px] font-bold text-[#06c167]">
-                  <Bell className="size-3" aria-hidden />
-                  Uber Eats
+                <span className="inline-flex items-center gap-1.5">
+                  <PlatformLogo platform="Uber Eats" size="xs" showLabel />
                 </span>
                 <span className="inline-flex items-center gap-1 text-[10px] text-mg-faint">
                   <Clock className="size-3" aria-hidden />

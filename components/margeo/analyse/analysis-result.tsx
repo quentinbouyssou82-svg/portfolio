@@ -41,11 +41,11 @@ function Metric({
   highlight,
 }: MetricProps) {
   return (
-    <Card
+    <div
       className={
         highlight
-          ? "border-mg-accent/30 bg-mg-accent-soft/30 p-4"
-          : "p-4"
+          ? "analysis-metric analysis-metric-highlight p-4"
+          : "analysis-metric p-4"
       }
     >
       <p className="flex items-center gap-1.5 text-xs font-medium text-mg-muted">
@@ -60,7 +60,7 @@ function Metric({
           duration={0.6}
         />
       </p>
-    </Card>
+    </div>
   );
 }
 
@@ -76,15 +76,23 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
   return (
     <div className="app-fade-in space-y-4">
       <Card
-        className="relative overflow-hidden p-5 text-center sm:p-7"
+        className="analysis-hero-card relative overflow-hidden p-5 text-center sm:p-7"
         style={{
           borderColor: `color-mix(in srgb, ${verdictMeta.color} 35%, transparent)`,
         }}
       >
         <div
-          className="absolute inset-0 opacity-60"
+          className="absolute inset-0 opacity-70"
           style={{
-            background: `radial-gradient(520px circle at 50% 0%, color-mix(in srgb, ${verdictMeta.color} 12%, transparent), transparent 70%)`,
+            background: `radial-gradient(520px circle at 50% 0%, color-mix(in srgb, ${verdictMeta.color} 16%, transparent), transparent 70%)`,
+          }}
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           }}
           aria-hidden
         />
@@ -101,7 +109,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <PlatformBadge platform={analysis.offer.platform} />
-            <span className="inline-flex items-center gap-1.5 text-xs text-mg-faint">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-mg-faint">
               <MapPin className="size-3" />
               {analysis.offer.pickup} → {analysis.offer.dropoff}
             </span>
@@ -109,8 +117,15 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
         </div>
       </Card>
 
-      <Card className="p-5 sm:p-6">
-        <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
+      <Card className="app-glass-surface relative overflow-hidden p-5 sm:p-6">
+        <div
+          className="pointer-events-none absolute -top-16 left-1/2 h-40 w-64 -translate-x-1/2 rounded-full opacity-40 blur-3xl"
+          style={{
+            background: `radial-gradient(circle, color-mix(in srgb, ${verdictMeta.color} 35%, transparent), transparent 70%)`,
+          }}
+          aria-hidden
+        />
+        <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
           <ProgressRing
             value={analysis.score}
             size={112}
@@ -156,7 +171,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
 
       {meta && <AnalysisConfidence meta={meta} />}
 
-      <Card className="border-mg-accent/20 p-5 sm:p-6">
+      <Card className="app-glass-surface border-mg-accent/20 p-5 sm:p-6">
         <p className="flex items-center gap-2 text-sm font-semibold text-mg-accent">
           <Sparkles className="size-4" />
             Pourquoi ?

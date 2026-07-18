@@ -10,6 +10,7 @@ export function Card({
     <div
       className={cn(
         "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-[border-color,background-color,transform,box-shadow] duration-200",
+        "bg-gradient-to-br from-white/[0.035] to-transparent",
         interactive && "card-interactive cursor-pointer",
         className,
       )}

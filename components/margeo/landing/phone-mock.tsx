@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useCallback, useId, useRef } from "react";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { VerdictBadge } from "@/components/margeo/verdict-badge";
 import { cn } from "@/lib/margeo/utils";
 
@@ -341,6 +342,8 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
     >
       <div className="phone-mock-ambient phone-mock-ambient-a" aria-hidden />
       <div className="phone-mock-ambient phone-mock-ambient-b" aria-hidden />
+      <div className="phone-mock-ambient phone-mock-ambient-c" aria-hidden />
+      <div className="phone-mock-reflection" aria-hidden />
 
       <motion.div
         className="phone-mock-float"
@@ -384,8 +387,9 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
                   className="flex items-start justify-between gap-3"
                 >
                   <div>
-                    <p className="text-[11px] font-medium text-mg-faint">
-                      Uber Eats · à l&apos;instant
+                    <p className="flex items-center gap-1.5 text-[11px] font-medium text-mg-faint">
+                      <PlatformLogo platform="Uber Eats" size="xs" />
+                      à l&apos;instant
                     </p>
                     <p className="mt-0.5 text-[15px] font-semibold tracking-tight text-mg-foreground">
                       Verdict prêt
@@ -576,6 +580,38 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
             sparkColor="rgba(248,113,113,0.75)"
             reduceMotion={reduceMotion}
           />
+          {isHero && (
+            <motion.div
+              className="phone-float-stat phone-float-stat-mid absolute hidden lg:block"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.7 }}
+            >
+              <motion.div
+                animate={reduceMotion ? undefined : { y: [0, -7, 0] }}
+                transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+              >
+                <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[9px] font-semibold text-mg-accent">
+                  <Clock className="size-2.5" />
+                  8 s
+                </span>
+                <p className="text-[10px] text-mg-faint">Temps moyen</p>
+                <p className="mt-0.5 text-sm font-bold text-mg-foreground">
+                  Capture → verdict
+                </p>
+                <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                  <motion.div
+                    className="h-full rounded-full bg-gradient-to-r from-mg-accent to-mg-go"
+                    initial={{ width: "0%" }}
+                    whileInView={{ width: "88%" }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.4, delay: 0.9, ease: [0.21, 0.47, 0.32, 0.98] }}
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </div>

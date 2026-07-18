@@ -16,7 +16,7 @@ export function VerdictBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border font-semibold leading-none",
+        "inline-flex items-center gap-1.5 rounded-full border font-semibold leading-none app-fade-in",
         size === "sm" ? "px-2.5 py-1 text-xs" : "px-3.5 py-1.5 text-sm",
         className
       )}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 const COLUMNS = [
@@ -15,25 +16,25 @@ const COLUMNS = [
   {
     title: "Plateformes",
     links: [
-      { label: "Uber Eats", href: "#demo" },
-      { label: "Deliveroo", href: "#demo" },
-      { label: "Stuart", href: "#demo" },
-      { label: "Amazon Flex", href: "#demo" },
+      { label: "Uber Eats", href: margeoRoutes.signup },
+      { label: "Deliveroo", href: margeoRoutes.signup },
+      { label: "Stuart", href: margeoRoutes.signup },
+      { label: "Amazon Flex", href: margeoRoutes.signup },
     ],
   },
   {
     title: "Ressources",
     links: [
-      { label: "Démo interactive", href: "#demo" },
       { label: "Résultats beta", href: "#resultats" },
       { label: "Le problème", href: "#probleme" },
+      { label: "FAQ", href: "#faq" },
     ],
   },
 ];
 
 export function Footer() {
   return (
-    <footer className="relative z-[1] border-t border-white/[0.04] pb-24 lg:pb-0">
+    <footer className="relative z-[1] border-t border-mg-border pb-24 lg:pb-0">
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
@@ -42,6 +43,11 @@ export function Footer() {
               Le gain net, avant d&apos;accepter. Pour les livreurs Uber Eats,
               Deliveroo et Stuart.
             </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {(["Uber Eats", "Deliveroo", "Stuart"] as const).map((p) => (
+                <PlatformLogo key={p} platform={p} size="xs" />
+              ))}
+            </div>
           </div>
 
           {COLUMNS.map((column) => (

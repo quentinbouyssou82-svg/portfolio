@@ -54,16 +54,23 @@ function FaqItem({
     <div className="border-b border-mg-border last:border-b-0">
       <button
         onClick={onToggle}
-        className="flex min-h-11 w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none sm:py-5"
+        className="faq-item-btn flex min-h-11 w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none sm:py-5"
         aria-expanded={open}
       >
         <span className="font-medium text-mg-foreground">{question}</span>
-        <Plus
+        <span
           className={cn(
-            "size-4 shrink-0 text-mg-muted transition-transform duration-300",
-            open && "rotate-45 text-mg-accent"
+            "flex size-7 shrink-0 items-center justify-center rounded-full border border-mg-border bg-white/[0.03] transition-all duration-300",
+            open && "border-mg-accent/40 bg-mg-accent-soft rotate-45",
           )}
-        />
+        >
+          <Plus
+            className={cn(
+              "size-3.5 text-mg-muted transition-colors duration-300",
+              open && "text-mg-accent",
+            )}
+          />
+        </span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -74,7 +81,9 @@ function FaqItem({
             transition={{ duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-sm leading-relaxed text-mg-muted">{answer}</p>
+            <p className="pb-5 pr-10 text-sm leading-relaxed text-mg-muted">
+              {answer}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -86,21 +95,19 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="faq" className="relative scroll-mt-24 py-16 sm:py-24 lg:py-28">
+      <div className="section-bridge mb-12 sm:mb-16" aria-hidden />
       <div className="mx-auto max-w-3xl px-5">
         <Reveal className="text-center">
-          <p className="text-sm font-semibold tracking-wide text-mg-accent uppercase">
+          <p className="text-xs font-semibold tracking-[0.2em] text-mg-accent uppercase">
             FAQ
           </p>
-          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
+          <h2 className="text-gradient mt-3 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
             Questions fréquentes
           </h2>
         </Reveal>
 
-        <Reveal
-          delay={0.1}
-          className="mt-12 rounded-2xl border border-mg-border bg-mg-card px-6 shadow-mg-card"
-        >
+        <Reveal delay={0.1} className="faq-panel mt-10 px-5 sm:mt-14 sm:px-7">
           {FAQ_ITEMS.map((item, i) => (
             <FaqItem
               key={item.question}

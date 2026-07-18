@@ -29,13 +29,14 @@ export function SectionShell({
       id={id}
       className={cn(
         "relative scroll-mt-24 py-20 sm:py-28",
-        border && "border-t border-white/[0.04]",
+        border && "border-t border-mg-border/60",
         className,
       )}
     >
+      <div className="section-shell-glow" aria-hidden />
       <div className="mx-auto max-w-6xl px-5 pb-[env(safe-area-inset-bottom)]">
         <Reveal
-          className={cn("max-w-3xl", centered ? "mx-auto text-center" : "")}
+          className={cn("relative max-w-3xl", centered ? "mx-auto text-center" : "")}
         >
           {eyebrow && (
             <p className="text-xs font-semibold tracking-[0.2em] text-mg-accent uppercase">

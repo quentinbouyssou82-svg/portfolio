@@ -106,7 +106,7 @@ function DemoScanner({ previewUrl }: { previewUrl: string | null }) {
       </p>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-        <div className="relative mx-auto aspect-[9/16] w-full max-w-[200px] shrink-0 overflow-hidden rounded-2xl border border-mg-accent/25 bg-mg-card sm:mx-0">
+        <div className="scan-preview-frame relative mx-auto aspect-[9/16] w-full max-w-[200px] shrink-0 bg-mg-card sm:mx-0">
           {previewUrl ? (
             <img
               src={previewUrl}
@@ -114,15 +114,17 @@ function DemoScanner({ previewUrl }: { previewUrl: string | null }) {
               className="h-full w-full object-cover opacity-90"
             />
           ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 bg-mg-surface/80 p-4 text-center">
-              <span className="rounded-full bg-[#06c167]/15 px-2 py-0.5 text-[10px] font-bold text-[#06c167]">
+            <div className="flex h-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-mg-accent/10 to-mg-surface/90 p-4 text-center">
+              <span className="rounded-full border border-[#06c167]/30 bg-[#06c167]/15 px-2 py-0.5 text-[10px] font-bold text-[#06c167] shadow-[0_0_16px_rgba(6,193,103,0.2)]">
                 Uber Eats
               </span>
               <p className="text-2xl font-bold text-mg-foreground">7,80 €</p>
               <p className="text-[10px] text-mg-faint">Capture exemple</p>
             </div>
           )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-mg-accent/10" />
           <div className="animate-mg-scan absolute inset-x-0 h-16 bg-gradient-to-b from-transparent via-mg-accent/25 to-transparent" />
+          <div className="pointer-events-none absolute inset-2.5 rounded-xl border border-mg-accent/20" />
         </div>
 
         <Card className="app-glass-surface min-w-0 flex-1 p-5">
@@ -135,24 +137,27 @@ function DemoScanner({ previewUrl }: { previewUrl: string | null }) {
               <li
                 key={label}
                 className={cn(
-                  "flex items-center gap-3 text-sm transition-opacity duration-200",
+                  "flex items-center gap-3 text-sm transition-all duration-300",
                   i <= step
                     ? "text-mg-foreground opacity-100"
                     : "text-mg-faint opacity-45",
+                  i === step && "translate-x-0.5",
                 )}
               >
                 <span
                   className={cn(
-                    "flex size-5 shrink-0 items-center justify-center rounded-full",
+                    "flex size-5 shrink-0 items-center justify-center rounded-full transition-all duration-300",
                     i < step
-                      ? "bg-mg-accent-soft"
-                      : "border border-mg-border",
+                      ? "bg-mg-accent-soft shadow-[0_0_12px_rgba(99,102,241,0.35)]"
+                      : i === step
+                        ? "border border-mg-accent/50 bg-mg-accent-soft/40"
+                        : "border border-mg-border",
                   )}
                 >
                   {i < step ? (
                     <Check className="size-3 text-mg-accent" />
                   ) : i === step ? (
-                    <span className="size-1.5 rounded-full bg-mg-accent" />
+                    <span className="size-1.5 animate-pulse rounded-full bg-mg-accent" />
                   ) : null}
                 </span>
                 {label}
@@ -317,9 +322,14 @@ export function InteractiveDemo() {
       eyebrow="Démo interactive"
       title="Teste Uberly en 15 secondes"
       description="Dépose une capture ou clique — le verdict s'affiche comme dans l'app."
+      className="py-16 sm:py-24"
     >
       <Reveal>
-        <div className="landing-demo-panel relative rounded-3xl border border-mg-border bg-mg-card/50 p-5 backdrop-blur-sm sm:p-8 lg:p-10">
+        <div className="landing-demo-panel relative p-5 sm:p-8 lg:p-10">
+          <div
+            className="pointer-events-none absolute -top-20 left-1/2 h-40 w-80 -translate-x-1/2 rounded-full bg-mg-accent/15 blur-3xl"
+            aria-hidden
+          />
           <AnimatePresence mode="wait">
             {stage === "idle" && (
               <DemoDropzone

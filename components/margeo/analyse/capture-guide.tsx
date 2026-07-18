@@ -1,6 +1,7 @@
 "use client";
 
 import { Camera, CheckCircle2, Clock, MapPin, Route } from "lucide-react";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 
 const TIPS = [
   "Capture quand la course est proposée",
@@ -10,12 +11,10 @@ const TIPS = [
 
 function OfferScreenshotExample() {
   return (
-    <div className="mx-auto w-full max-w-[220px] rounded-2xl border border-mg-border-strong bg-[#111113] p-2 shadow-mg-card">
+    <div className="mx-auto w-full max-w-[220px] rounded-2xl border border-mg-border-strong bg-mg-card p-2 shadow-mg-card">
       <div className="rounded-xl border border-mg-border bg-mg-surface px-3 py-3">
-        <div className="flex items-center justify-between">
-          <span className="rounded-full bg-[#06c167]/20 px-2 py-0.5 text-[10px] font-semibold text-[#06c167]">
-            Uber Eats
-          </span>
+        <div className="flex items-center justify-between gap-2">
+          <PlatformLogo platform="Uber Eats" size="xs" showLabel />
           <span className="text-[10px] text-mg-faint">Nouvelle course</span>
         </div>
 
@@ -42,7 +41,7 @@ function OfferScreenshotExample() {
         </div>
 
         <div className="mt-2.5 flex gap-2">
-          <span className="flex-1 rounded-lg bg-white/[0.06] py-1.5 text-center text-[10px] text-mg-faint">
+          <span className="flex-1 rounded-lg bg-[var(--mg-surface-muted)] py-1.5 text-center text-[10px] text-mg-faint">
             Refuser
           </span>
           <span className="flex-1 rounded-lg bg-[#06c167] py-1.5 text-center text-[10px] font-semibold text-[#04120c]">

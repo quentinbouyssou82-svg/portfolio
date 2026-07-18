@@ -31,7 +31,7 @@ export function Switch({
           "relative h-6 w-11 shrink-0 rounded-full border transition-colors duration-200",
           checked
             ? "border-mg-accent/40 bg-mg-accent-strong"
-            : "border-mg-border bg-white/[0.08]",
+            : "border-mg-border bg-[var(--mg-surface-muted)]",
         )}
       >
         <span

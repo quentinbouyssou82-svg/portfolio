@@ -1,11 +1,19 @@
 "use client";
 
-import { ImageIcon, Sparkles, Upload } from "lucide-react";
+import { Sparkles, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { CaptureGuide } from "@/components/margeo/analyse/capture-guide";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { Button } from "@/components/margeo/ui/button";
 import { cn } from "@/lib/margeo/utils";
+
+const UPLOAD_PLATFORMS = [
+  "Uber Eats",
+  "Deliveroo",
+  "Stuart",
+  "Amazon Flex",
+] as const;
 
 interface UploadZoneProps {
   onUpload: (previewUrl: string | null, file?: File) => void;
@@ -72,9 +80,10 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           Appuie pour choisir depuis ta galerie.
         </p>
 
-        <div className="mt-5 flex items-center gap-2 text-xs text-mg-faint">
-          <ImageIcon className="size-3.5" />
-          Uber Eats · Deliveroo · Stuart · Amazon Flex
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+          {UPLOAD_PLATFORMS.map((platform) => (
+            <PlatformLogo key={platform} platform={platform} size="xs" showLabel />
+          ))}
         </div>
       </div>
 

@@ -90,33 +90,34 @@ export function StoryProblem() {
   return (
     <section
       id="probleme"
-      className="problem-section relative scroll-mt-24 py-20 sm:py-28"
+      className="problem-section relative scroll-mt-24 py-24 sm:py-36"
     >
+      <div className="section-bridge mb-16 sm:mb-20" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-5">
         <ProblemOpener />
 
-        <div className="mt-16 space-y-20 sm:mt-24 sm:space-y-28">
-          <div>
+        <div className="mt-16 space-y-16 sm:mt-28 sm:space-y-0">
+          <div className="sm:mb-24">
             <SceneLabel>Une soirée</SceneLabel>
             <ProblemTimeline />
           </div>
 
-          <div>
+          <div className="sm:mb-32 sm:ml-auto sm:max-w-5xl">
             <SceneLabel>Affiché vs réel</SceneLabel>
             <ProblemComparison />
           </div>
 
-          <div>
+          <div className="sm:mb-20 sm:mr-auto sm:max-w-5xl">
             <SceneLabel>Le trajet invisible</SceneLabel>
             <ProblemRoute />
           </div>
 
-          <div>
+          <div className="sm:mb-28">
             <SceneLabel>En une soirée</SceneLabel>
             <ProblemStats />
           </div>
 
-          <div>
+          <div className="sm:mb-24 sm:ml-[4%]">
             <SceneLabel>Sous pression</SceneLabel>
             <ProblemStress />
           </div>

@@ -56,7 +56,7 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
       </p>
 
       <div className="flex flex-col gap-4">
-        <div className="relative mx-auto aspect-[9/16] w-full max-w-[220px] overflow-hidden rounded-2xl border border-mg-accent/25 bg-mg-card">
+        <div className="scan-preview-frame relative mx-auto aspect-[9/16] w-full max-w-[220px] bg-mg-card">
           {previewUrl ? (
             <img
               src={previewUrl}
@@ -69,7 +69,9 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
               <span className="text-xs">Capture d&apos;exemple</span>
             </div>
           )}
-          <div className="animate-mg-scan absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-mg-accent/20 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-mg-accent/10" />
+          <div className="animate-mg-scan absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-mg-accent/25 to-transparent" />
+          <div className="pointer-events-none absolute inset-3 rounded-xl border border-mg-accent/20" />
         </div>
 
         <Card className="app-glass-surface p-5">
@@ -82,22 +84,25 @@ export function ScanOverlay({ previewUrl }: ScanOverlayProps) {
               <li
                 key={label}
                 className={cn(
-                  "flex items-center gap-3 text-sm transition-opacity duration-200",
+                  "flex items-center gap-3 text-sm transition-all duration-300",
                   i <= step ? "text-mg-foreground opacity-100" : "text-mg-faint opacity-45",
+                  i === step && "translate-x-0.5",
                 )}
               >
                 <span
                   className={cn(
-                    "flex size-5 shrink-0 items-center justify-center rounded-full",
+                    "flex size-5 shrink-0 items-center justify-center rounded-full transition-all duration-300",
                     i < step
-                      ? "bg-mg-accent-soft"
-                      : "border border-mg-border",
+                      ? "bg-mg-accent-soft shadow-[0_0_12px_rgba(99,102,241,0.35)]"
+                      : i === step
+                        ? "border border-mg-accent/50 bg-mg-accent-soft/40"
+                        : "border border-mg-border",
                   )}
                 >
                   {i < step ? (
                     <Check className="size-3 text-mg-accent" />
                   ) : i === step ? (
-                    <span className="size-1.5 rounded-full bg-mg-accent" />
+                    <span className="size-1.5 animate-pulse rounded-full bg-mg-accent" />
                   ) : null}
                 </span>
                 {label}
