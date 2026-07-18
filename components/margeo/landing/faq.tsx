@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Reveal } from "@/components/margeo/reveal";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { cn } from "@/lib/margeo/utils";
 
 const FAQ_ITEMS = [
@@ -15,7 +16,7 @@ const FAQ_ITEMS = [
   {
     question: "Quelles plateformes sont compatibles ?",
     answer:
-      "Uber Eats, Deliveroo, Stuart et Amazon Flex. D'autres arrivent selon les retours de la communauté.",
+      "Uber Eats, Deliveroo, Stuart et Amazon Flex dès aujourd'hui. Just Eat et Glovo sont sur la feuille de route selon la demande beta.",
   },
   {
     question: "Comment le gain net est calculé ?",
@@ -105,6 +106,18 @@ export function Faq() {
           <h2 className="text-gradient mt-3 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
             Questions fréquentes
           </h2>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 opacity-90">
+            {(["Uber Eats", "Deliveroo", "Stuart", "Amazon Flex"] as const).map(
+              (p) => (
+                <span
+                  key={p}
+                  className="inline-flex items-center rounded-full border border-mg-border bg-mg-card/70 px-2.5 py-1"
+                >
+                  <PlatformLogo platform={p} size="xs" showLabel />
+                </span>
+              ),
+            )}
+          </div>
         </Reveal>
 
         <Reveal delay={0.1} className="faq-panel mt-10 px-5 sm:mt-14 sm:px-7">

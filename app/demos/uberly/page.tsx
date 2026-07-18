@@ -5,6 +5,7 @@ import { Hero } from "@/components/margeo/landing/hero";
 import { InteractiveDemo } from "@/components/margeo/landing/interactive-demo";
 import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
 import { LandingNav } from "@/components/margeo/landing/nav";
+import { PlatformMarquee } from "@/components/margeo/landing/platform-marquee";
 import { SocialProof } from "@/components/margeo/landing/social-proof";
 import { StoryDecision } from "@/components/margeo/landing/story-decision";
 import { StoryProblem } from "@/components/margeo/landing/story-problem";
@@ -17,6 +18,7 @@ export default function LandingPage() {
       <LandingNav />
       <main className="landing-page relative z-[1]">
         <Hero />
+        <PlatformMarquee />
         <StoryProblem />
         <InteractiveDemo />
         <StoryDecision />

@@ -32,7 +32,7 @@ export function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="hero-section relative overflow-visible pt-[calc(7rem+env(safe-area-inset-top,0px))] pb-20 sm:pt-[calc(9rem+env(safe-area-inset-top,0px))] sm:pb-32">
+    <section className="hero-section relative overflow-visible pt-[calc(6.5rem+env(safe-area-inset-top,0px))] pb-14 sm:pt-[calc(9rem+env(safe-area-inset-top,0px))] sm:pb-28 lg:pb-32">
       <div className="hero-section-bloom" aria-hidden />
       <div className="hero-section-ring hero-section-ring-a" aria-hidden />
       <div className="hero-section-ring hero-section-ring-b" aria-hidden />

@@ -18,7 +18,7 @@ import {
   Sparkles,
   UtensilsCrossed,
 } from "lucide-react";
-import { useCallback, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef } from "react";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { VerdictBadge } from "@/components/margeo/verdict-badge";
@@ -53,22 +53,18 @@ const FLOAT_RIGHT = { y: [0, 9, 0] };
 
 function PhoneStatusBar() {
   return (
-    <div
-      className="relative z-10 flex items-center justify-between px-5 pt-3.5 pb-1 text-[10px] font-medium tracking-wide text-mg-faint"
-      aria-hidden
-    >
-      <span>19:04</span>
-      <span className="sr-only">Dynamic Island</span>
-      <div className="flex items-center gap-1.5">
-        <svg width="14" height="10" viewBox="0 0 14 10" aria-hidden>
+    <div className="phone-status-bar" aria-hidden>
+      <span className="phone-status-time">19:04</span>
+      <div className="phone-status-right">
+        <svg className="phone-status-signal" width="15" height="11" viewBox="0 0 14 10">
           <rect x="0" y="6" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.35" />
           <rect x="3" y="4" width="2" height="6" rx="0.5" fill="currentColor" opacity="0.55" />
           <rect x="6" y="2" width="2" height="8" rx="0.5" fill="currentColor" opacity="0.75" />
           <rect x="9" y="0" width="2" height="10" rx="0.5" fill="currentColor" />
         </svg>
-        <span>5G</span>
-        <span className="inline-flex items-center gap-0.5">
-          <svg width="18" height="9" viewBox="0 0 18 9" aria-hidden>
+        <span className="phone-status-net">5G</span>
+        <span className="phone-status-battery">
+          <svg width="20" height="10" viewBox="0 0 18 9">
             <rect
               x="0.5"
               y="0.5"
@@ -76,13 +72,13 @@ function PhoneStatusBar() {
               height="8"
               rx="1.5"
               stroke="currentColor"
-              strokeOpacity="0.45"
+              strokeOpacity="0.5"
               fill="none"
             />
             <rect x="2" y="2" width="10" height="5" rx="0.75" fill="currentColor" />
-            <rect x="15.5" y="2.5" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.45" />
+            <rect x="15.5" y="2.5" width="2" height="4" rx="0.5" fill="currentColor" opacity="0.5" />
           </svg>
-          84%
+          <span>84%</span>
         </span>
       </div>
     </div>
@@ -258,13 +254,16 @@ function FloatingStatCard({
   return (
     <motion.div
       className={cn(
-        "phone-float-stat absolute hidden w-[9.5rem] px-3.5 py-3 lg:block",
-        side === "left" ? "-left-[5.5rem] top-[18%]" : "-right-[5.5rem] bottom-[26%]",
+        "phone-float-stat w-[9.5rem] shrink-0 px-3.5 py-3",
+        "lg:absolute",
+        side === "left"
+          ? "lg:-left-[5.5rem] lg:top-[18%]"
+          : "lg:-right-[5.5rem] lg:bottom-[26%]",
       )}
-      initial={{ opacity: 0, x: side === "left" ? -12 : 12 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.5 }}
+      transition={{ duration: 0.6, delay: 0.45 }}
     >
       <motion.div
         animate={reduceMotion ? undefined : side === "left" ? FLOAT_LEFT : FLOAT_RIGHT}
@@ -291,24 +290,27 @@ function FloatingStatCard({
 
 /**
  * Maquette produit premium — HTML/CSS + Framer Motion.
+ * Desktop : parallax pointeur. Mobile : idle + gyroscope si disponible.
  */
 export function PhoneMock({ variant = "default" }: PhoneMockProps) {
   const isHero = variant === "hero";
   const reduceMotion = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
+  const gyroActive = useRef(false);
+  const pointerActive = useRef(false);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), {
-    stiffness: 140,
-    damping: 22,
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
+    stiffness: 120,
+    damping: 20,
   });
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
-    stiffness: 140,
-    damping: 22,
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), {
+    stiffness: 120,
+    damping: 20,
   });
-  const tiltGlowX = useTransform(mouseX, [-0.5, 0.5], ["42%", "58%"]);
+  const tiltGlowX = useTransform(mouseX, [-0.5, 0.5], ["40%", "60%"]);
   const tiltGlowBackground = useTransform(
     tiltGlowX,
     (x) =>
@@ -317,7 +319,9 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (reduceMotion || !stageRef.current) return;
+      if (reduceMotion || !stageRef.current || gyroActive.current) return;
+      if (event.pointerType === "touch") return;
+      pointerActive.current = true;
       const rect = stageRef.current.getBoundingClientRect();
       mouseX.set((event.clientX - rect.left) / rect.width - 0.5);
       mouseY.set((event.clientY - rect.top) / rect.height - 0.5);
@@ -326,16 +330,79 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
   );
 
   const resetTilt = useCallback(() => {
-    mouseX.set(0);
-    mouseY.set(0);
-  }, [mouseX, mouseY]);
+    if (gyroActive.current) return;
+    pointerActive.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion || typeof window === "undefined") return;
+
+    const onOrientation = (event: DeviceOrientationEvent) => {
+      const gamma = event.gamma; // -90..90 left-right
+      const beta = event.beta; // -180..180 front-back
+      if (gamma == null || beta == null) return;
+      gyroActive.current = true;
+      const x = Math.max(-0.5, Math.min(0.5, gamma / 50));
+      const y = Math.max(-0.5, Math.min(0.5, (beta - 45) / 55));
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+
+    const attach = () => {
+      window.addEventListener("deviceorientation", onOrientation, true);
+    };
+
+    // iOS 13+ permission
+    const DOE = DeviceOrientationEvent as unknown as {
+      requestPermission?: () => Promise<"granted" | "denied">;
+    };
+
+    if (typeof DOE.requestPermission === "function") {
+      // Soft attach without forcing prompt; idle covers until granted via interaction
+      const unlock = () => {
+        DOE.requestPermission?.()
+          .then((state) => {
+            if (state === "granted") attach();
+          })
+          .catch(() => {});
+        window.removeEventListener("touchend", unlock);
+        window.removeEventListener("click", unlock);
+      };
+      window.addEventListener("touchend", unlock, { once: true });
+      window.addEventListener("click", unlock, { once: true });
+    } else {
+      attach();
+    }
+
+    return () => {
+      window.removeEventListener("deviceorientation", onOrientation, true);
+    };
+  }, [mouseX, mouseY, reduceMotion]);
+
+  // Idle « respiration » permanente (complète le gyro / pointeur)
+  useEffect(() => {
+    if (reduceMotion) return;
+    let frame = 0;
+    let raf = 0;
+    const tick = () => {
+      if (!gyroActive.current && !pointerActive.current) {
+        frame += 1;
+        const t = frame / 90;
+        mouseX.set(Math.sin(t * 0.55) * 0.14);
+        mouseY.set(Math.cos(t * 0.4) * 0.1);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [mouseX, mouseY, reduceMotion]);
 
   return (
     <div
       ref={stageRef}
       className={cn(
         "phone-mock-stage mx-auto",
-        isHero ? "w-full max-w-[340px] sm:max-w-[360px]" : "w-[300px]",
+        isHero ? "w-full max-w-[300px] sm:max-w-[360px]" : "w-[280px] sm:w-[300px]",
       )}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetTilt}
@@ -347,7 +414,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
 
       <motion.div
         className="phone-mock-float"
-        animate={reduceMotion ? undefined : { y: [0, -12, 0] }}
+        animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
         transition={{ duration: 5.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <motion.div
@@ -553,67 +620,69 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
               </div>
             </div>
           </div>
-
-          <FloatingStatCard
-            side="left"
-            title="Gain du jour"
-            badge="+ aujourd'hui"
-            value={
-              <span className="text-mg-go">
-                +<AnimatedCounter value={68.4} decimals={2} suffix=" €" duration={1.6} />
-              </span>
-            }
-            sparkColor="rgba(52,211,153,0.85)"
-            reduceMotion={reduceMotion}
-          />
-          <FloatingStatCard
-            side="right"
-            title="Courses évitées"
-            value={
-              <>
-                <AnimatedCounter value={9} duration={1.4} />{" "}
-                <span className="text-[10px] font-normal text-mg-stop">
-                  non rentables
-                </span>
-              </>
-            }
-            sparkColor="rgba(248,113,113,0.75)"
-            reduceMotion={reduceMotion}
-          />
-          {isHero && (
-            <motion.div
-              className="phone-float-stat phone-float-stat-mid absolute hidden lg:block"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: 0.7 }}
-            >
-              <motion.div
-                animate={reduceMotion ? undefined : { y: [0, -7, 0] }}
-                transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-              >
-                <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[9px] font-semibold text-mg-accent">
-                  <Clock className="size-2.5" />
-                  8 s
-                </span>
-                <p className="text-[10px] text-mg-faint">Temps moyen</p>
-                <p className="mt-0.5 text-sm font-bold text-mg-foreground">
-                  Capture → verdict
-                </p>
-                <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-mg-accent to-mg-go"
-                    initial={{ width: "0%" }}
-                    whileInView={{ width: "88%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.4, delay: 0.9, ease: [0.21, 0.47, 0.32, 0.98] }}
-                  />
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
         </motion.div>
       </motion.div>
+
+      <div className="phone-float-rail" aria-hidden={false}>
+        <FloatingStatCard
+          side="left"
+          title="Gain du jour"
+          badge="+ aujourd'hui"
+          value={
+            <span className="text-mg-go">
+              +<AnimatedCounter value={68.4} decimals={2} suffix=" €" duration={1.6} />
+            </span>
+          }
+          sparkColor="rgba(52,211,153,0.85)"
+          reduceMotion={reduceMotion}
+        />
+        {isHero && (
+          <motion.div
+            className="phone-float-stat phone-float-stat-mid w-[8.75rem] shrink-0 px-3.5 py-3"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, delay: 0.7 }}
+          >
+            <motion.div
+              animate={reduceMotion ? undefined : { y: [0, -7, 0] }}
+              transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+            >
+              <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[9px] font-semibold text-mg-accent">
+                <Clock className="size-2.5" />
+                8 s
+              </span>
+              <p className="text-[10px] text-mg-faint">Temps moyen</p>
+              <p className="mt-0.5 text-sm font-bold text-mg-foreground">
+                Capture → verdict
+              </p>
+              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-mg-accent to-mg-go"
+                  initial={{ width: "0%" }}
+                  whileInView={{ width: "88%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.4, delay: 0.9, ease: [0.21, 0.47, 0.32, 0.98] }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+        <FloatingStatCard
+          side="right"
+          title="Courses évitées"
+          value={
+            <>
+              <AnimatedCounter value={9} duration={1.4} />{" "}
+              <span className="text-[10px] font-normal text-mg-stop">
+                non rentables
+              </span>
+            </>
+          }
+          sparkColor="rgba(248,113,113,0.75)"
+          reduceMotion={reduceMotion}
+        />
+      </div>
     </div>
   );
 }

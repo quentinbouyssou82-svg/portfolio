@@ -4,6 +4,8 @@ import { Brain, CircleCheckBig, Wallet } from "lucide-react";
 import { Reveal } from "@/components/margeo/reveal";
 import { LandingCta } from "@/components/margeo/landing/landing-cta";
 import { SectionShell } from "@/components/margeo/landing/section-shell";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
+import { VerdictBadge } from "@/components/margeo/verdict-badge";
 
 const STEPS = [
   {
@@ -13,6 +15,7 @@ const STEPS = [
     description:
       "L'IA lit ta capture : gain, distance, temps, zone. Tes coûts réels inclus.",
     accent: "from-mg-accent/20 via-transparent to-transparent",
+    visual: "scan" as const,
   },
   {
     icon: CircleCheckBig,
@@ -21,6 +24,7 @@ const STEPS = [
     description:
       "Accepter, vérifier ou refuser. Score, gain net, explication claire.",
     accent: "from-mg-go/15 via-transparent to-transparent",
+    visual: "verdict" as const,
   },
   {
     icon: Wallet,
@@ -29,8 +33,72 @@ const STEPS = [
     description:
       "Moins de courses à perte. Ton dashboard suit ta progression.",
     accent: "from-violet-500/15 via-transparent to-transparent",
+    visual: "chart" as const,
   },
 ];
+
+function StepVisual({ kind }: { kind: "scan" | "verdict" | "chart" }) {
+  if (kind === "scan") {
+    return (
+      <div className="decision-mini mt-6 overflow-hidden rounded-xl border border-mg-border bg-mg-surface/80 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <PlatformLogo platform="Uber Eats" size="xs" showLabel />
+          <span className="text-[9px] font-medium text-mg-faint">Capture</span>
+        </div>
+        <div className="relative mt-3 h-16 overflow-hidden rounded-lg bg-gradient-to-br from-mg-accent/15 to-transparent">
+          <div className="decision-mini-scan absolute inset-x-0 h-8 bg-gradient-to-b from-transparent via-mg-accent/30 to-transparent" />
+          <p className="absolute inset-0 flex items-center justify-center text-lg font-bold text-mg-foreground">
+            7,80 €
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (kind === "verdict") {
+    return (
+      <div className="decision-mini mt-6 overflow-hidden rounded-xl border border-mg-border bg-mg-surface/80 p-3">
+        <div className="flex items-center justify-between">
+          <VerdictBadge verdict="accept" />
+          <span className="text-lg font-bold text-mg-go">84</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-1.5">
+          {[
+            ["Net", "6,10 €"],
+            ["€/h", "22,9"],
+            ["Coût", "1,80"],
+          ].map(([l, v]) => (
+            <div
+              key={l}
+              className="rounded-lg border border-mg-border/80 bg-mg-card/60 px-1.5 py-2 text-center"
+            >
+              <p className="text-[8px] text-mg-faint uppercase">{l}</p>
+              <p className="mt-0.5 text-[11px] font-bold text-mg-foreground">{v}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="decision-mini mt-6 overflow-hidden rounded-xl border border-mg-border bg-mg-surface/80 p-3">
+      <div className="flex items-end justify-between gap-1">
+        <p className="text-[10px] text-mg-faint">Gain net / soirée</p>
+        <p className="text-sm font-bold text-mg-go">+42 €</p>
+      </div>
+      <div className="mt-3 flex h-12 items-end gap-1">
+        {[35, 48, 42, 62, 55, 78, 70].map((h, i) => (
+          <span
+            key={i}
+            className="flex-1 rounded-t-sm bg-gradient-to-t from-mg-accent/30 to-mg-accent/80"
+            style={{ height: `${h}%` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function StoryDecision() {
   return (
@@ -40,7 +108,7 @@ export function StoryDecision() {
       title="Un verdict clair. Avant le countdown."
       description="Uberly transforme une capture en décision — avant l'expiration."
       border
-      className="py-24 sm:py-36"
+      className="py-20 sm:py-28 lg:py-36"
     >
       <div className="relative">
         <div className="decision-connector hidden md:block" aria-hidden />
@@ -48,8 +116,12 @@ export function StoryDecision() {
           {STEPS.map((item, i) => (
             <Reveal key={item.title} delay={i * 0.12}>
               <article
-                className={`decision-step landing-card-hover relative p-6 sm:p-7 ${
-                  i === 1 ? "md:-translate-y-3 md:scale-[1.02]" : i === 2 ? "md:translate-y-2" : ""
+                className={`decision-step landing-card-hover relative p-5 sm:p-7 ${
+                  i === 1
+                    ? "md:-translate-y-3 md:scale-[1.02]"
+                    : i === 2
+                      ? "md:translate-y-2"
+                      : ""
                 }`}
               >
                 <div
@@ -61,7 +133,7 @@ export function StoryDecision() {
                     <span className="text-xs font-bold tracking-[0.2em] text-mg-accent">
                       {item.step}
                     </span>
-                    <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[9px] font-semibold tracking-wide text-mg-faint uppercase">
+                    <span className="rounded-full border border-mg-border bg-mg-surface/60 px-2 py-0.5 text-[9px] font-semibold tracking-wide text-mg-faint uppercase">
                       Étape
                     </span>
                   </div>
@@ -74,21 +146,7 @@ export function StoryDecision() {
                   <p className="mt-2.5 text-sm leading-relaxed text-mg-muted">
                     {item.description}
                   </p>
-                  <div className="mt-5 flex gap-1.5" aria-hidden>
-                    {[0, 1, 2, 3, 4].map((bar) => (
-                      <span
-                        key={bar}
-                        className="h-1 flex-1 rounded-full bg-mg-accent/20"
-                        style={{
-                          opacity: bar <= i + 1 ? 1 : 0.35,
-                          background:
-                            bar <= i + 1
-                              ? "linear-gradient(90deg, rgba(129,140,248,0.7), rgba(52,211,153,0.45))"
-                              : undefined,
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <StepVisual kind={item.visual} />
                 </div>
               </article>
             </Reveal>
@@ -96,7 +154,7 @@ export function StoryDecision() {
         </div>
       </div>
 
-      <Reveal delay={0.2} className="mt-16 flex justify-center sm:mt-20">
+      <Reveal delay={0.2} className="mt-14 flex justify-center sm:mt-20">
         <LandingCta className="justify-center" />
       </Reveal>
     </SectionShell>
