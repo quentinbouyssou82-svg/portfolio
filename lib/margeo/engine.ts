@@ -11,10 +11,17 @@ import { formatEur } from "./utils";
 /** Coût du temps immobilisé (usure, opportunité) par minute selon le véhicule. */
 const TIME_COST_PER_MIN: Record<UserProfile["vehicle"], number> = {
   velo: 0.01,
-  velo_electrique: 0.015,
-  scooter: 0.02,
+  velo_electrique: 0.012,
+  trottinette_electrique: 0.012,
+  scooter: 0.018,
+  scooter_thermique: 0.018,
+  scooter_electrique: 0.014,
   moto: 0.022,
   voiture: 0.03,
+  voiture_essence: 0.03,
+  voiture_diesel: 0.028,
+  voiture_hybride: 0.025,
+  voiture_electrique: 0.02,
 };
 
 const PLATFORM_ADJUSTMENT: Record<Platform, number> = {

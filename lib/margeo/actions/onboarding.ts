@@ -16,7 +16,7 @@ function draftToPatch(input: Partial<OnboardingInput>): Record<string, unknown> 
 
   if (input.vehicle) {
     patch.vehicle = input.vehicle;
-    patch.cost_per_km = DEFAULT_VEHICLE_COSTS[input.vehicle] ?? 0.24;
+    patch.cost_per_km = DEFAULT_VEHICLE_COSTS[input.vehicle as keyof typeof DEFAULT_VEHICLE_COSTS] ?? 0.18;
   }
   if (input.targetHourly != null) patch.target_hourly = input.targetHourly;
   if (input.minBenefit != null) patch.min_benefit = input.minBenefit;

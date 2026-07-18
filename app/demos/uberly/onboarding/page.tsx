@@ -1,10 +1,20 @@
 import { OnboardingWizard } from "@/components/margeo/onboarding/onboarding-wizard";
-import type { OnboardingDraft } from "@/components/margeo/onboarding/onboarding-types";
+import type {
+  OnboardingDraft,
+  OnboardingVehicleId,
+} from "@/components/margeo/onboarding/onboarding-types";
 import { getAuthUser } from "@/lib/margeo/auth/session";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 import type { Vehicle } from "@/lib/margeo/types";
+import { normalizeVehicle } from "@/lib/margeo/vehicle-costs";
 import { redirect } from "next/navigation";
+
+function toOnboardingVehicle(vehicle: Vehicle): OnboardingVehicleId {
+  const id = normalizeVehicle(vehicle);
+  // normalizeVehicle never returns legacy aliases
+  return id as OnboardingVehicleId;
+}
 
 function profileToDraft(profile: {
   vehicle: Vehicle;
@@ -15,7 +25,7 @@ function profileToDraft(profile: {
   weeklyHours?: "under_10" | "10_20" | "20_30" | "30_40" | "over_40";
 }): Partial<OnboardingDraft> {
   return {
-    vehicle: profile.vehicle,
+    vehicle: toOnboardingVehicle(profile.vehicle),
     targetHourly: profile.targetHourly,
     minBenefit: profile.minBenefit ?? 6,
     maxDistanceKm: profile.maxDistanceKm ?? 8,

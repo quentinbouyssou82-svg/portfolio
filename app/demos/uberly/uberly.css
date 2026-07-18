@@ -99,6 +99,9 @@
   --mg-grid-line: rgba(255, 255, 255, 0.035);
   --mg-hero-glow-a: rgba(99, 102, 241, 0.18);
   --mg-hero-glow-b: rgba(139, 92, 246, 0.08);
+  --mg-glass-border: rgba(255, 255, 255, 0.1);
+  --mg-glass-highlight: rgba(255, 255, 255, 0.06);
+  --mg-inset-light: rgba(255, 255, 255, 0.04);
 
   background: var(--color-mg-background);
   color: var(--color-mg-foreground);
@@ -122,29 +125,33 @@
   --color-mg-surface: #ffffff;
   --color-mg-card: #ffffff;
   --color-mg-card-hover: #fafafa;
-  --color-mg-border: rgba(24, 24, 27, 0.08);
-  --color-mg-border-strong: rgba(24, 24, 27, 0.14);
+  --color-mg-border: rgba(24, 24, 27, 0.1);
+  --color-mg-border-strong: rgba(24, 24, 27, 0.18);
   --color-mg-foreground: #18181b;
-  --color-mg-muted: #52525b;
+  --color-mg-muted: #3f3f46;
   --color-mg-faint: #71717a;
   --color-mg-accent: #4f46e5;
   --color-mg-accent-strong: #4338ca;
   --color-mg-accent-soft: rgba(79, 70, 229, 0.1);
-  --color-mg-go: #059669;
-  --color-mg-go-soft: rgba(5, 150, 105, 0.1);
-  --color-mg-check: #d97706;
-  --color-mg-check-soft: rgba(217, 119, 6, 0.1);
+  --color-mg-go: #047857;
+  --color-mg-go-soft: rgba(4, 120, 87, 0.1);
+  --color-mg-check: #b45309;
+  --color-mg-check-soft: rgba(180, 83, 9, 0.1);
   --color-mg-stop: #dc2626;
   --color-mg-stop-soft: rgba(220, 38, 38, 0.1);
-  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 0.8) inset,
+  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 1px 2px rgba(24, 24, 27, 0.04),
     0 8px 24px rgba(24, 24, 27, 0.06);
-  --shadow-mg-glow: 0 0 0 1px rgba(79, 70, 229, 0.2),
-    0 8px 28px rgba(79, 70, 229, 0.1);
-  --mg-nav-hover: rgba(24, 24, 27, 0.04);
-  --mg-surface-muted: rgba(24, 24, 27, 0.03);
-  --mg-grid-line: rgba(24, 24, 27, 0.06);
-  --mg-hero-glow-a: rgba(79, 70, 229, 0.1);
-  --mg-hero-glow-b: rgba(99, 102, 241, 0.06);
+  --shadow-mg-glow: 0 0 0 1px rgba(79, 70, 229, 0.22),
+    0 8px 28px rgba(79, 70, 229, 0.12);
+  --mg-nav-hover: rgba(24, 24, 27, 0.05);
+  --mg-surface-muted: rgba(24, 24, 27, 0.04);
+  --mg-grid-line: rgba(24, 24, 27, 0.07);
+  --mg-hero-glow-a: rgba(79, 70, 229, 0.12);
+  --mg-hero-glow-b: rgba(99, 102, 241, 0.08);
+  --mg-glass-border: rgba(24, 24, 27, 0.1);
+  --mg-glass-highlight: rgba(255, 255, 255, 0.9);
+  --mg-inset-light: rgba(24, 24, 27, 0.04);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2029,6 +2036,13 @@
   }
 }
 
+@media (min-width: 768px) {
+  .uberly-root .onboarding-vehicle-grid,
+  .margeo-root .onboarding-vehicle-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
 .uberly-root .onboarding-hours-grid,
 .margeo-root .onboarding-hours-grid {
   display: grid;
@@ -3326,6 +3340,244 @@
   .margeo-root .final-cta-glow,
   .uberly-root .app-scan-progress-fill,
   .margeo-root .app-scan-progress-fill {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Pricing — 3 offres (Pro mis en avant)
+   ═══════════════════════════════════════════ */
+
+.uberly-root .pricing-plan-card,
+.margeo-root .pricing-plan-card {
+  transition:
+    transform 0.3s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.uberly-root .pricing-plan-card-featured,
+.margeo-root .pricing-plan-card-featured {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 45%, transparent);
+  box-shadow: var(--shadow-mg-glow);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-mg-accent) 8%, var(--color-mg-card)) 0%,
+    var(--color-mg-card) 55%
+  );
+  transform: scale(1.02);
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .uberly-root .pricing-plan-card-featured,
+  .margeo-root .pricing-plan-card-featured {
+    transform: scale(1.05);
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+  }
+}
+
+.uberly-root .pricing-plan-badge-featured,
+.margeo-root .pricing-plan-badge-featured {
+  background: linear-gradient(135deg, var(--color-mg-accent-strong), #7c3aed);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+  animation: pricing-badge-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pricing-badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(79, 70, 229, 0.5);
+  }
+}
+
+.uberly-root .pricing-plan-card-elite,
+.margeo-root .pricing-plan-card-elite {
+  border-color: color-mix(in srgb, var(--color-mg-foreground) 12%, transparent);
+}
+
+.uberly-root .pricing-compare-head,
+.margeo-root .pricing-compare-head {
+  background: var(--mg-surface-muted);
+}
+
+/* ═══════════════════════════════════════════
+   Light theme — finition premium (audit complet)
+   ═══════════════════════════════════════════ */
+
+.uberly-root[data-theme="light"] .text-gradient-accent,
+.margeo-root[data-theme="light"] .text-gradient-accent {
+  background: linear-gradient(
+    135deg,
+    #6366f1 0%,
+    var(--color-mg-accent) 45%,
+    #7c3aed 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-halo-a,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-a {
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 68%);
+  opacity: 0.7;
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-halo-b,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-b {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1), transparent 70%);
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-halo-c,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-c,
+.uberly-root[data-theme="light"] .landing-backdrop-halo-d,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-d {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent 72%);
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-grid,
+.margeo-root[data-theme="light"] .landing-backdrop-grid {
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(24, 24, 27, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 24, 27, 0.45) 1px, transparent 1px);
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-particle,
+.margeo-root[data-theme="light"] .landing-backdrop-particle {
+  background: rgba(79, 70, 229, 0.45);
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.25);
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-vignette,
+.margeo-root[data-theme="light"] .landing-backdrop-vignette {
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 40%, transparent 45%, rgba(244, 244, 245, 0.85) 100%),
+    linear-gradient(180deg, rgba(244, 244, 245, 0.4) 0%, transparent 18%, transparent 82%, rgba(244, 244, 245, 0.6) 100%);
+}
+
+.uberly-root[data-theme="light"] .landing-backdrop-noise,
+.margeo-root[data-theme="light"] .landing-backdrop-noise {
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+}
+
+.uberly-root[data-theme="light"] .landing-cta-secondary,
+.margeo-root[data-theme="light"] .landing-cta-secondary {
+  border-color: rgba(24, 24, 27, 0.12);
+  background: linear-gradient(160deg, #fff, #fafafa);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 4px 12px rgba(24, 24, 27, 0.04);
+}
+
+.uberly-root[data-theme="light"] .landing-card-hover:hover,
+.margeo-root[data-theme="light"] .landing-card-hover:hover {
+  border-color: rgba(24, 24, 27, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 16px 40px rgba(24, 24, 27, 0.08),
+    0 0 24px rgba(79, 70, 229, 0.06);
+}
+
+.uberly-root[data-theme="light"] .problem-premium-card,
+.margeo-root[data-theme="light"] .problem-premium-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
+.uberly-root[data-theme="light"] .decision-step,
+.margeo-root[data-theme="light"] .decision-step,
+.uberly-root[data-theme="light"] .proof-card,
+.margeo-root[data-theme="light"] .proof-card,
+.uberly-root[data-theme="light"] .faq-panel,
+.margeo-root[data-theme="light"] .faq-panel,
+.uberly-root[data-theme="light"] .final-cta-stage,
+.margeo-root[data-theme="light"] .final-cta-stage,
+.uberly-root[data-theme="light"] .landing-demo-panel,
+.margeo-root[data-theme="light"] .landing-demo-panel {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff, #fafafa);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
+.uberly-root[data-theme="light"] .app-glass-surface,
+.margeo-root[data-theme="light"] .app-glass-surface {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff, #f8f8f9);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 8px 24px rgba(24, 24, 27, 0.05);
+}
+
+.uberly-root[data-theme="light"] .mg-spinner,
+.margeo-root[data-theme="light"] .mg-spinner {
+  border-color: rgba(24, 24, 27, 0.12);
+  border-top-color: var(--color-mg-accent);
+}
+
+.uberly-root[data-theme="light"] .app-upload-zone,
+.margeo-root[data-theme="light"] .app-upload-zone {
+  border-color: rgba(24, 24, 27, 0.16);
+  background: linear-gradient(160deg, #fafafa, #f4f4f5);
+}
+
+.uberly-root[data-theme="light"] .app-scan-progress,
+.margeo-root[data-theme="light"] .app-scan-progress {
+  background: rgba(24, 24, 27, 0.08);
+}
+
+.uberly-root[data-theme="light"] .analysis-metric,
+.margeo-root[data-theme="light"] .analysis-metric {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff, #fafafa);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset;
+}
+
+.uberly-root[data-theme="light"] .card-interactive:hover,
+.margeo-root[data-theme="light"] .card-interactive:hover {
+  border-color: rgba(24, 24, 27, 0.16);
+  box-shadow: 0 12px 28px rgba(24, 24, 27, 0.08);
+}
+
+.uberly-root[data-theme="light"] .section-bridge,
+.margeo-root[data-theme="light"] .section-bridge {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(79, 70, 229, 0.35),
+    transparent
+  );
+}
+
+.uberly-root[data-theme="light"] .section-bridge::before,
+.margeo-root[data-theme="light"] .section-bridge::before {
+  border-color: rgba(79, 70, 229, 0.4);
+  background: rgba(79, 70, 229, 0.12);
+}
+
+.uberly-root[data-theme="light"] .uberly-toast,
+.margeo-root[data-theme="light"] .uberly-toast {
+  background: #ffffff !important;
+  border: 1px solid rgba(24, 24, 27, 0.12) !important;
+  color: #18181b !important;
+  box-shadow: 0 12px 32px rgba(24, 24, 27, 0.1) !important;
+}
+
+/* Phone mock reste dark (device) — OK en light */
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root .pricing-plan-badge-featured,
+  .margeo-root .pricing-plan-badge-featured {
     animation: none !important;
   }
 }

@@ -39,13 +39,7 @@ export const PROTECTED_UBERLY_PREFIXES = [
 
 export const PROTECTED_MARGEO_PREFIXES = PROTECTED_UBERLY_PREFIXES;
 
-export const DEFAULT_VEHICLE_COSTS = {
-  velo: 0.05,
-  velo_electrique: 0.08,
-  scooter: 0.24,
-  moto: 0.22,
-  voiture: 0.35,
-} as const;
+export { DEFAULT_VEHICLE_COSTS } from "./vehicle-costs";
 
 export const ONBOARDING_PLATFORMS = [
   "Uber Eats",

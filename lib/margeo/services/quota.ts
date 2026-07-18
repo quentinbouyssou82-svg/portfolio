@@ -62,7 +62,7 @@ export async function assertAnalysisQuota(userId: string): Promise<QuotaStatus> 
     )
   ) {
     throw new ApiError(
-      `Limite atteinte : ${quota.dailyLimit} analyses par jour. Passe en Premium pour des analyses illimitées.`,
+      `Limite Découverte atteinte : ${quota.dailyLimit} analyses / jour. Passe en Pro pour des analyses illimitées.`,
       429,
       "DAILY_LIMIT_REACHED",
     );

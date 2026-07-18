@@ -132,7 +132,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.38 }}
               className="mt-5 text-xs text-mg-faint"
             >
-              Gratuit · 5 analyses/jour · Sans carte bancaire
+              Gratuit · 2 analyses/jour · Sans carte bancaire
             </motion.p>
           </div>
 

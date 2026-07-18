@@ -35,7 +35,7 @@ const FAQ_ITEMS = [
   {
     question: "C'est gratuit ?",
     answer:
-      "5 analyses par jour, gratuites. Premium : analyses illimitées, stats avancées et zones recommandées.",
+      "Oui. Le plan Découverte offre 2 analyses/jour pour tester. Le plan Pro (4,99 €/mois) débloque analyses illimitées, dashboard et zones rentables — c'est l'offre faite pour livrer au quotidien. Elite ajoute export et stats avancées.",
   },
 ];
 

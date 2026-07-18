@@ -3,6 +3,7 @@ import type { UserProfile } from "../types";
 import { createMargeoServerClient } from "../supabase/server";
 import { buildDisplayName } from "../profile-display";
 import { getMargeoAdminDb } from "../supabase/admin";
+import { normalizeVehicle } from "../vehicle-costs";
 
 export { buildDisplayName, getProfileInitials } from "../profile-display";
 
@@ -45,7 +46,7 @@ export function rowToUserProfile(
     lastName,
     avatarUrl: avatarUrl || undefined,
     city: row.city,
-    vehicle: row.vehicle,
+    vehicle: normalizeVehicle(row.vehicle),
     costPerKm: Number(row.cost_per_km),
     targetHourly: Number(row.target_hourly),
     dailyTarget: Number(row.daily_target),

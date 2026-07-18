@@ -1,172 +1,233 @@
 "use client";
 
-import { Check, Crown, Minus, Zap } from "lucide-react";
+import { Check, Crown, Minus, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Reveal } from "@/components/margeo/reveal";
 import { Button } from "@/components/margeo/ui/button";
 import { Card } from "@/components/margeo/ui/card";
+import {
+  UBERLY_PLAN_ORDER,
+  UBERLY_PLANS,
+  UBERLY_PRICING_COPY,
+  formatPlanPrice,
+  type UberlyPlanId,
+} from "@/lib/margeo/plans";
 import { cn } from "@/lib/margeo/utils";
 
-interface PlanFeature {
+interface CompareRow {
   label: string;
-  free: string | boolean;
-  premium: string | boolean;
+  discovery: string | boolean;
+  pro: string | boolean;
+  elite: string | boolean;
 }
 
-const FEATURES: PlanFeature[] = [
-  { label: "Analyses de courses", free: "5 / jour", premium: "Illimitées" },
-  { label: "Score de rentabilité", free: true, premium: true },
-  { label: "Verdict IA", free: true, premium: true },
-  { label: "Historique", free: "7 jours", premium: "Illimité" },
-  { label: "Statistiques avancées", free: false, premium: true },
-  { label: "Multi-plateformes simultané", free: false, premium: true },
-  { label: "Zones rentables", free: false, premium: true },
-  { label: "Export comptable (CSV)", free: false, premium: true },
-  { label: "Support prioritaire", free: false, premium: true },
+const COMPARE: CompareRow[] = [
+  {
+    label: "Analyses / jour",
+    discovery: "2",
+    pro: "Illimitées",
+    elite: "Illimitées",
+  },
+  { label: "Score & verdict IA", discovery: true, pro: true, elite: true },
+  {
+    label: "Historique",
+    discovery: "3 jours",
+    pro: "Complet",
+    elite: "Complet",
+  },
+  { label: "Dashboard & objectifs", discovery: false, pro: true, elite: true },
+  { label: "Zones rentables", discovery: false, pro: true, elite: true },
+  {
+    label: "Sync multi-appareils",
+    discovery: false,
+    pro: true,
+    elite: true,
+  },
+  { label: "Export CSV", discovery: false, pro: false, elite: true },
+  { label: "Rapports avancés", discovery: false, pro: false, elite: true },
+  { label: "Insights IA avancés", discovery: false, pro: false, elite: true },
+  {
+    label: "Support",
+    discovery: "Communauté",
+    pro: "Standard",
+    elite: "Prioritaire",
+  },
+  { label: "Accès beta anticipé", discovery: false, pro: false, elite: true },
 ];
 
 function FeatureValue({ value }: { value: string | boolean }) {
   if (value === true) return <Check className="mx-auto size-4 text-mg-accent" />;
-  if (value === false) return <Minus className="mx-auto size-4 text-mg-faint/50" />;
+  if (value === false)
+    return <Minus className="mx-auto size-4 text-mg-faint/50" />;
   return <span className="text-sm text-mg-foreground">{value}</span>;
 }
 
 export default function PremiumPage() {
-  const [starting, setStarting] = useState(false);
+  const [loading, setLoading] = useState<UberlyPlanId | null>(null);
 
-  const startTrial = () => {
-    setStarting(true);
+  const startTrial = (plan: "pro" | "elite") => {
+    setLoading(plan);
     setTimeout(() => {
-      setStarting(false);
-      toast.success("Essai Premium activé", {
-        description:
-          "14 jours d'analyses illimitées. Aucun prélèvement avant la fin.",
-      });
-    }, 1200);
+      setLoading(null);
+      if (plan === "pro") {
+        toast.success(UBERLY_PRICING_COPY.trialToastTitle, {
+          description: UBERLY_PRICING_COPY.trialToastDesc,
+        });
+      } else {
+        toast.success(UBERLY_PRICING_COPY.eliteToastTitle, {
+          description: UBERLY_PRICING_COPY.eliteToastDesc,
+        });
+      }
+    }, 1100);
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-10">
-      {/* En-tête */}
+    <div className="mx-auto max-w-5xl space-y-12 pb-8">
       <Reveal className="text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-mg-accent/25 bg-mg-accent-soft px-3.5 py-1.5 text-xs font-medium text-mg-accent">
           <Crown className="size-3.5" />
-          Uberly Premium
+          {UBERLY_PRICING_COPY.eyebrow}
         </span>
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-mg-foreground">
-          Refuse au bon moment.{" "}
-          <span className="text-gradient-accent">Garde plus.</span>
+        <h1 className="text-gradient mt-4 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+          {UBERLY_PRICING_COPY.title}
         </h1>
-        <p className="mx-auto mt-3 max-w-md text-mg-muted">
-          +214 € de gain net/mois en moyenne. Remboursé en deux soirées.
+        <p className="mx-auto mt-3 max-w-lg text-mg-muted text-pretty">
+          {UBERLY_PRICING_COPY.subtitle}
         </p>
       </Reveal>
 
-      {/* Cartes de prix */}
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Reveal>
-          <Card className="flex h-full flex-col p-6">
-            <p className="font-semibold text-mg-foreground">Gratuit</p>
-            <p className="mt-1 text-sm text-mg-muted">
-              Pour tester Uberly sur tes premières courses.
-            </p>
-            <p className="mt-5 text-4xl font-bold tracking-tight text-mg-foreground">
-              0 €
-              <span className="text-base font-normal text-mg-faint"> / mois</span>
-            </p>
-            <ul className="mt-6 flex-1 space-y-2.5 text-sm text-mg-muted">
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-muted" />5 analyses
-                par jour
-              </li>
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-muted" />
-                Score et verdict IA
-              </li>
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-muted" />
-                Historique 7 jours
-              </li>
-            </ul>
-            <Button variant="secondary" className="mt-6 w-full min-h-11" disabled>
-              Ton plan actuel
-            </Button>
-          </Card>
-        </Reveal>
+      <div className="grid items-stretch gap-5 lg:grid-cols-3 lg:gap-4 lg:pt-4">
+        {UBERLY_PLAN_ORDER.map((id, i) => {
+          const plan = UBERLY_PLANS[id];
+          const isPro = plan.featured;
 
-        <Reveal delay={0.1}>
-          <Card className="relative flex h-full flex-col border-mg-accent/40 p-6 shadow-mg-glow">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-mg-accent-strong px-3 py-1 text-xs font-bold text-[#04120c]">
-              Recommandé
-            </span>
-            <p className="flex items-center gap-2 font-semibold text-mg-foreground">
-              Premium
-              <Zap className="size-4 text-mg-accent" />
-            </p>
-            <p className="mt-1 text-sm text-mg-muted">
-              Pour ceux qui livrent tous les jours.
-            </p>
-            <p className="mt-5 text-4xl font-bold tracking-tight text-mg-foreground">
-              6,99 €
-              <span className="text-base font-normal text-mg-faint"> / mois</span>
-            </p>
-            <ul className="mt-6 flex-1 space-y-2.5 text-sm text-mg-foreground/90">
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-accent" />
-                Analyses illimitées
-              </li>
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-accent" />
-                Statistiques et zones rentables
-              </li>
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-accent" />
-                Historique illimité + export CSV
-              </li>
-              <li className="flex gap-2.5">
-                <Check className="mt-0.5 size-4 shrink-0 text-mg-accent" />
-                Support prioritaire
-              </li>
-            </ul>
-            <Button
-              className="mt-6 w-full min-h-11"
-              onClick={startTrial}
-              disabled={starting}
-            >
-              {starting ? "Activation…" : "Essai 14 jours — gratuit"}
-            </Button>
-            <p className="mt-2.5 text-center text-xs text-mg-faint">
-              Sans engagement. Annulable en un clic.
-            </p>
-          </Card>
-        </Reveal>
+          return (
+            <Reveal key={id} delay={i * 0.08}>
+              <Card
+                className={cn(
+                  "pricing-plan-card relative flex h-full flex-col p-6",
+                  isPro && "pricing-plan-card-featured",
+                  id === "elite" && "pricing-plan-card-elite",
+                )}
+              >
+                {plan.badge && (
+                  <span
+                    className={cn(
+                      "absolute -top-3 left-1/2 z-[1] -translate-x-1/2 rounded-full px-3 py-1 text-[11px] font-bold tracking-wide whitespace-nowrap",
+                      isPro
+                        ? "pricing-plan-badge-featured"
+                        : "border border-mg-border bg-mg-card text-mg-muted",
+                    )}
+                  >
+                    {isPro && <Sparkles className="mr-1 inline size-3" />}
+                    {plan.badge}
+                  </span>
+                )}
+
+                <div className={cn(isPro && "pt-2")}>
+                  <p className="flex items-center gap-2 text-lg font-semibold text-mg-foreground">
+                    {plan.name}
+                    {isPro && <Zap className="size-4 text-mg-accent" />}
+                  </p>
+                  <p className="mt-1 text-sm text-mg-muted">{plan.tagline}</p>
+                  <p className="mt-5 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold tracking-tight text-mg-foreground">
+                      {formatPlanPrice(plan.priceMonthly)}
+                    </span>
+                    <span className="text-sm text-mg-faint">/ mois</span>
+                  </p>
+                </div>
+
+                <ul className="mt-6 flex-1 space-y-2.5 text-sm">
+                  {plan.features.map((f) => (
+                    <li
+                      key={f}
+                      className="flex gap-2.5 text-mg-foreground/90"
+                    >
+                      <Check
+                        className={cn(
+                          "mt-0.5 size-4 shrink-0",
+                          isPro ? "text-mg-accent" : "text-mg-muted",
+                        )}
+                      />
+                      {f}
+                    </li>
+                  ))}
+                  {plan.missing?.map((f) => (
+                    <li
+                      key={f}
+                      className="flex gap-2.5 text-mg-faint line-through decoration-mg-faint/40"
+                    >
+                      <Minus className="mt-0.5 size-4 shrink-0 opacity-50" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                {id === "discovery" ? (
+                  <Button
+                    variant="secondary"
+                    className="mt-7 w-full min-h-11"
+                    disabled
+                  >
+                    {plan.cta}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      className={cn(
+                        "mt-7 w-full min-h-11",
+                        isPro && "landing-cta-primary",
+                      )}
+                      variant={isPro ? "primary" : "outline"}
+                      onClick={() => startTrial(id)}
+                      disabled={loading !== null}
+                      loading={loading === id}
+                    >
+                      {plan.cta}
+                    </Button>
+                    {plan.ctaSecondary && (
+                      <p className="mt-2.5 text-center text-xs text-mg-faint">
+                        {plan.ctaSecondary}
+                      </p>
+                    )}
+                  </>
+                )}
+              </Card>
+            </Reveal>
+          );
+        })}
       </div>
 
-      {/* Tableau comparatif */}
       <Reveal delay={0.15}>
+        <p className="mb-4 text-center text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
+          {UBERLY_PRICING_COPY.comparisonTitle}
+        </p>
         <Card className="overflow-x-auto">
-          <div className="min-w-[28rem]">
-          <div className="grid grid-cols-[1.6fr_1fr_1fr] border-b border-mg-border bg-white/[0.02] px-5 py-3.5 text-xs font-semibold tracking-wide text-mg-muted uppercase">
-            <span>Fonctionnalité</span>
-            <span className="text-center">Gratuit</span>
-            <span className="text-center text-mg-accent">Premium</span>
-          </div>
-          {FEATURES.map((feature, i) => (
-            <div
-              key={feature.label}
-              className={cn(
-                "grid grid-cols-[1.6fr_1fr_1fr] items-center px-5 py-3.5 text-center transition-colors hover:bg-white/[0.02]",
-                i < FEATURES.length - 1 && "border-b border-mg-border"
-              )}
-            >
-              <span className="text-left text-sm text-mg-foreground">
-                {feature.label}
-              </span>
-              <FeatureValue value={feature.free} />
-              <FeatureValue value={feature.premium} />
+          <div className="min-w-[36rem]">
+            <div className="pricing-compare-head grid grid-cols-[1.5fr_1fr_1fr_1fr] border-b border-mg-border px-5 py-3.5 text-xs font-semibold tracking-wide text-mg-muted uppercase">
+              <span>Fonctionnalité</span>
+              <span className="text-center">Découverte</span>
+              <span className="text-center text-mg-accent">Pro</span>
+              <span className="text-center">Elite</span>
             </div>
-          ))}
+            {COMPARE.map((row, i) => (
+              <div
+                key={row.label}
+                className={cn(
+                  "grid grid-cols-[1.5fr_1fr_1fr_1fr] items-center px-5 py-3.5 text-center transition-colors hover:bg-[var(--mg-nav-hover)]",
+                  i < COMPARE.length - 1 && "border-b border-mg-border",
+                )}
+              >
+                <span className="text-left text-sm text-mg-foreground">
+                  {row.label}
+                </span>
+                <FeatureValue value={row.discovery} />
+                <FeatureValue value={row.pro} />
+                <FeatureValue value={row.elite} />
+              </div>
+            ))}
           </div>
         </Card>
       </Reveal>

@@ -2,9 +2,14 @@
 export type OnboardingVehicleId =
   | "velo"
   | "velo_electrique"
-  | "scooter"
+  | "trottinette_electrique"
+  | "scooter_thermique"
+  | "scooter_electrique"
   | "moto"
-  | "voiture";
+  | "voiture_essence"
+  | "voiture_diesel"
+  | "voiture_hybride"
+  | "voiture_electrique";
 
 export type EmptyReturnPreference = "yes" | "no" | "short_only";
 
@@ -42,9 +47,14 @@ export const VEHICLE_OPTIONS: {
 }[] = [
   { id: "velo", label: "Vélo" },
   { id: "velo_electrique", label: "Vélo électrique" },
-  { id: "scooter", label: "Scooter" },
+  { id: "trottinette_electrique", label: "Trottinette élec." },
+  { id: "scooter_thermique", label: "Scooter thermique" },
+  { id: "scooter_electrique", label: "Scooter électrique" },
   { id: "moto", label: "Moto" },
-  { id: "voiture", label: "Voiture" },
+  { id: "voiture_essence", label: "Voiture essence" },
+  { id: "voiture_diesel", label: "Voiture diesel" },
+  { id: "voiture_hybride", label: "Voiture hybride" },
+  { id: "voiture_electrique", label: "Voiture électrique" },
 ];
 
 export const EMPTY_RETURN_OPTIONS: {

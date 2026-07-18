@@ -18,6 +18,9 @@ import {
 } from "@/lib/margeo/actions/profile";
 import { getProfileInitials } from "@/lib/margeo/profile-display";
 import { ONBOARDING_PLATFORMS, UBERLY_PATHS } from "@/lib/margeo/constants";
+import { UBERLY_LIMITS } from "@/lib/margeo/constants/limits";
+import { UBERLY_PLANS } from "@/lib/margeo/plans";
+import { VEHICLE_OPTIONS, defaultCostForVehicle } from "@/lib/margeo/vehicle-costs";
 import { trackMargeoEvent } from "@/lib/margeo/analytics";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import {
@@ -27,14 +30,6 @@ import {
   type Vehicle,
 } from "@/lib/margeo/types";
 import { cn } from "@/lib/margeo/utils";
-
-const VEHICLE_OPTIONS: Vehicle[] = [
-  "velo",
-  "velo_electrique",
-  "scooter",
-  "moto",
-  "voiture",
-];
 
 function Field({
   label,
@@ -68,6 +63,13 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
     value: UserProfile[K],
   ) => setProfile((p) => ({ ...p, [key]: value }));
 
+  const selectVehicle = (v: Vehicle) => {
+    setProfile((p) => ({
+      ...p,
+      vehicle: v,
+      costPerKm: defaultCostForVehicle(v),
+    }));
+  };
   const togglePlatform = (p: Platform) => {
     const current = profile.platforms ?? [];
     update(
@@ -258,22 +260,22 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
               placeholder="Lyon"
             />
           </Field>
-          <Field label="Véhicule" hint="Détermine ton coût au kilomètre.">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <Field label="Véhicule" hint="Détermine ton coût au kilomètre (carburant, entretien, usure).">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
               {VEHICLE_OPTIONS.map((v) => (
                 <button
                   key={v}
                   type="button"
-                  onClick={() => update("vehicle", v)}
+                  onClick={() => selectVehicle(v)}
                   className={cn(
-                    "flex min-h-[84px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border py-3 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
+                    "flex min-h-[84px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border px-1.5 py-3 text-[11px] font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40 sm:text-xs",
                     profile.vehicle === v
                       ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent shadow-mg-glow"
                       : "border-mg-border text-mg-muted hover:border-mg-border-strong hover:text-mg-foreground",
                   )}
                 >
                   <VehicleIcon vehicle={v} selected={profile.vehicle === v} />
-                  {VEHICLE_LABELS[v]}
+                  <span className="text-center leading-tight">{VEHICLE_LABELS[v]}</span>
                 </button>
               ))}
             </div>
@@ -377,12 +379,14 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
               </span>
               <div>
                 <p className="text-sm font-semibold text-mg-foreground">
-                  {profile.premium ? "Compte Premium" : "Plan gratuit"}
+                  {profile.premium
+                    ? "Compte Pro"
+                    : `Plan ${UBERLY_PLANS.discovery.name}`}
                 </p>
                 <p className="text-xs text-mg-muted">
                   {profile.premium
                     ? "Analyses illimitées."
-                    : "5 analyses/jour pendant la beta."}
+                    : `${UBERLY_LIMITS.freeDailyAnalyses} analyses/jour — passe en Pro pour lever la limite.`}
                 </p>
               </div>
             </div>
@@ -393,11 +397,10 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                   size="sm"
                   className="min-h-10 w-full sm:w-auto"
                 >
-                  Découvrir Premium
+                  Voir l&apos;offre Pro
                 </Button>
               </Link>
-            )}
-          </div>
+            )}          </div>
 
           <a
             href={UBERLY_PATHS.deconnexion}

@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
   { href: margeoRoutes.historique, label: "Historique", icon: History },
   { href: margeoRoutes.profil, label: "Profil", icon: User },
-  { href: margeoRoutes.premium, label: "Premium", icon: Crown },
+  { href: margeoRoutes.premium, label: "Offres", icon: Crown },
 ];
 
 function AvatarBubble({
@@ -76,7 +76,7 @@ function NavLink({
       {label}
       {href === margeoRoutes.premium && !active && (
         <span className="ml-auto rounded-full bg-mg-accent-soft px-2 py-0.5 text-[10px] font-semibold text-mg-accent">
-          Essai
+          Pro
         </span>
       )}
     </Link>
@@ -127,7 +127,7 @@ export function AppShell({
                 {displayName}
               </span>
               <span className="block text-xs text-mg-faint">
-                Plan {profile.premium ? "Premium" : "gratuit"}
+                Plan {profile.premium ? "Pro" : "Découverte"}
                 {profile.city ? ` · ${profile.city}` : ""}
               </span>
             </span>

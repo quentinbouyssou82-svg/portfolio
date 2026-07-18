@@ -5,7 +5,19 @@ export type Platform =
   | "Amazon Flex"
   | "Autre";
 
-export type Vehicle = "velo" | "velo_electrique" | "scooter" | "moto" | "voiture";
+export type Vehicle =
+  | "velo"
+  | "velo_electrique"
+  | "trottinette_electrique"
+  | "scooter"
+  | "scooter_thermique"
+  | "scooter_electrique"
+  | "moto"
+  | "voiture"
+  | "voiture_essence"
+  | "voiture_diesel"
+  | "voiture_hybride"
+  | "voiture_electrique";
 
 export type Verdict = "accept" | "check" | "refuse";
 
@@ -120,7 +132,14 @@ export const VERDICT_META: Record<Verdict, VerdictMeta> = {
 export const VEHICLE_LABELS: Record<Vehicle, string> = {
   velo: "Vélo",
   velo_electrique: "Vélo électrique",
-  scooter: "Scooter / Moto",
+  trottinette_electrique: "Trottinette électrique",
+  scooter: "Scooter thermique",
+  scooter_thermique: "Scooter thermique",
+  scooter_electrique: "Scooter électrique",
   moto: "Moto",
-  voiture: "Voiture",
+  voiture: "Voiture essence",
+  voiture_essence: "Voiture essence",
+  voiture_diesel: "Voiture diesel",
+  voiture_hybride: "Voiture hybride",
+  voiture_electrique: "Voiture électrique",
 };

@@ -80,7 +80,7 @@ function validateStep(step: number, draft: OnboardingDraft): string | null {
 function applySkipDefaults(step: number, draft: OnboardingDraft): OnboardingDraft {
   switch (step) {
     case 1:
-      return { ...draft, vehicle: draft.vehicle ?? "scooter" };
+      return { ...draft, vehicle: draft.vehicle ?? "scooter_thermique" };
     case 4:
       return { ...draft, emptyReturns: draft.emptyReturns ?? "short_only" };
     case 6:

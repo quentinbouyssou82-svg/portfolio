@@ -9,7 +9,7 @@ const COLUMNS = [
     links: [
       { label: "Commencer gratuitement", href: margeoRoutes.signup },
       { label: "Se connecter", href: margeoRoutes.login },
-      { label: "Premium", href: margeoRoutes.premium },
+      { label: "Offres", href: margeoRoutes.premium },
       { label: "FAQ", href: "#faq" },
     ],
   },

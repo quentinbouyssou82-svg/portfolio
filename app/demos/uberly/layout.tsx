@@ -78,8 +78,7 @@ export default function UberlyLayout({
               border: "1px solid var(--color-mg-border-strong)",
               color: "var(--color-mg-foreground)",
               borderRadius: "1rem",
-              boxShadow:
-                "0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 32px rgba(0,0,0,0.2)",
+              boxShadow: "var(--shadow-mg-card)",
             },
           }}
         />
