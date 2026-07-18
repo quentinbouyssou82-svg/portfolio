@@ -9,6 +9,7 @@ export const uberlyRoutes = {
   signup: `${UBERLY_BASE}/login?mode=signup`,
   onboarding: `${UBERLY_BASE}/onboarding`,
   forgotPassword: `${UBERLY_BASE}/forgot-password`,
+  deconnexion: `${UBERLY_BASE}/deconnexion`,
   dashboard: `${UBERLY_BASE}/dashboard`,
   analyse: `${UBERLY_BASE}/analyse`,
   historique: `${UBERLY_BASE}/historique`,

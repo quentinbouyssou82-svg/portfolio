@@ -3,6 +3,9 @@ import type { Platform, Vehicle, Verdict } from "../types";
 export interface MargeoProfileRow {
   id: string;
   name: string;
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
   city: string;
   vehicle: Vehicle;
   cost_per_km: number;
@@ -91,6 +94,9 @@ export type ProfileUpdateInput = Partial<
   Pick<
     MargeoProfileRow,
     | "name"
+    | "first_name"
+    | "last_name"
+    | "avatar_url"
     | "city"
     | "vehicle"
     | "cost_per_km"

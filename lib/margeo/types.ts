@@ -59,7 +59,11 @@ export interface RideAnalysis {
 
 export interface UserProfile {
   id?: string;
+  /** Nom d'affichage synchronisé (Prénom + Nom). */
   name: string;
+  firstName: string;
+  lastName: string;
+  avatarUrl?: string;
   city: string;
   vehicle: Vehicle;
   costPerKm: number;

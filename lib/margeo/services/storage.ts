@@ -1,6 +1,7 @@
 import { getMargeoAdminDb } from "../supabase/admin";
 
-const BUCKET = "uberly-screenshots";
+const SCREENSHOT_BUCKET = "uberly-screenshots";
+const AVATAR_BUCKET = "uberly-avatars";
 
 export interface UploadScreenshotResult {
   path: string;
@@ -21,17 +22,19 @@ export async function uploadScreenshot(
     const path = `${userId}/${crypto.randomUUID()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error } = await admin.storage.from(BUCKET).upload(path, buffer, {
-      contentType: file.type || "image/jpeg",
-      upsert: false,
-    });
+    const { error } = await admin.storage
+      .from(SCREENSHOT_BUCKET)
+      .upload(path, buffer, {
+        contentType: file.type || "image/jpeg",
+        upsert: false,
+      });
 
     if (error) {
       console.warn("[uberly/storage] upload failed:", error.message);
       return null;
     }
 
-    return { path, bucket: BUCKET };
+    return { path, bucket: SCREENSHOT_BUCKET };
   } catch (e) {
     console.warn("[uberly/storage] upload skipped:", e);
     return null;
@@ -46,12 +49,53 @@ export async function getScreenshotSignedUrl(
   try {
     const admin = getMargeoAdminDb();
     const { data, error } = await admin.storage
-      .from(BUCKET)
+      .from(SCREENSHOT_BUCKET)
       .createSignedUrl(path, expiresInSeconds);
 
     if (error || !data?.signedUrl) return null;
     return data.signedUrl;
   } catch {
+    return null;
+  }
+}
+
+export interface UploadAvatarResult {
+  path: string;
+  publicUrl: string;
+}
+
+/**
+ * Upload avatar profil (bucket public uberly-avatars).
+ * Chemin stable `{userId}/avatar.{ext}` — upsert pour remplacer l'ancienne photo.
+ */
+export async function uploadAvatar(
+  userId: string,
+  file: File,
+  ext: string,
+): Promise<UploadAvatarResult | null> {
+  try {
+    const admin = getMargeoAdminDb();
+    const path = `${userId}/avatar.${ext}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const { error } = await admin.storage.from(AVATAR_BUCKET).upload(path, buffer, {
+      contentType: file.type || "image/jpeg",
+      upsert: true,
+      cacheControl: "3600",
+    });
+
+    if (error) {
+      console.warn("[uberly/storage] avatar upload failed:", error.message);
+      return null;
+    }
+
+    const { data } = admin.storage.from(AVATAR_BUCKET).getPublicUrl(path);
+    if (!data?.publicUrl) return null;
+
+    const publicUrl = `${data.publicUrl}?v=${Date.now()}`;
+    return { path, publicUrl };
+  } catch (e) {
+    console.warn("[uberly/storage] avatar upload skipped:", e);
     return null;
   }
 }

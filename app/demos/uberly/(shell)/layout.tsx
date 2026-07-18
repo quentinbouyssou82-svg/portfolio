@@ -13,6 +13,20 @@ export default async function MargeoShellLayout({
   const profile = await ensureProfileForUser(
     user.id,
     user.user_metadata?.name as string | undefined,
+    {
+      first_name:
+        typeof user.user_metadata?.first_name === "string"
+          ? user.user_metadata.first_name
+          : undefined,
+      last_name:
+        typeof user.user_metadata?.last_name === "string"
+          ? user.user_metadata.last_name
+          : undefined,
+      avatar_url:
+        typeof user.user_metadata?.avatar_url === "string"
+          ? user.user_metadata.avatar_url
+          : undefined,
+    },
   );
   if (!profile) redirect(UBERLY_PATHS.login);
   if (!profile.onboardingCompleted) redirect(UBERLY_PATHS.onboarding);

@@ -1,16 +1,23 @@
 "use client";
 
-import { Crown, Moon, Save, Target } from "lucide-react";
+import { Camera, Crown, LogOut, Moon, Save, Sun, Target } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/margeo/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/margeo/ui/card";
 import { Input } from "@/components/margeo/ui/input";
 import { Switch } from "@/components/margeo/ui/switch";
-import { updateProfileAction } from "@/lib/margeo/actions/profile";
+import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { VehicleIcon } from "@/components/margeo/vehicle-icon";
-import { ONBOARDING_PLATFORMS } from "@/lib/margeo/constants";
+import { useUberlyTheme } from "@/components/margeo/theme-provider";
+import {
+  removeAvatarAction,
+  updateProfileAction,
+  uploadAvatarAction,
+} from "@/lib/margeo/actions/profile";
+import { getProfileInitials } from "@/lib/margeo/profile-display";
+import { ONBOARDING_PLATFORMS, UBERLY_PATHS } from "@/lib/margeo/constants";
 import { trackMargeoEvent } from "@/lib/margeo/analytics";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import {
@@ -25,6 +32,7 @@ const VEHICLE_OPTIONS: Vehicle[] = [
   "velo",
   "velo_electrique",
   "scooter",
+  "moto",
   "voiture",
 ];
 
@@ -49,9 +57,11 @@ function Field({
 }
 
 export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) {
+  const { theme, setTheme } = useUberlyTheme();
   const [profile, setProfile] = useState(initialProfile);
-  const [darkMode, setDarkMode] = useState(true);
   const [pending, startTransition] = useTransition();
+  const [avatarPending, setAvatarPending] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof UserProfile>(
     key: K,
@@ -68,7 +78,42 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
     );
   };
 
+  const onAvatarChange = (file: File | undefined) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.set("avatar", file);
+    setAvatarPending(true);
+    startTransition(async () => {
+      const result = await uploadAvatarAction(formData);
+      setAvatarPending(false);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      if (result.data) setProfile(result.data);
+      toast.success("Photo mise à jour");
+    });
+  };
+
+  const onRemoveAvatar = () => {
+    setAvatarPending(true);
+    startTransition(async () => {
+      const result = await removeAvatarAction();
+      setAvatarPending(false);
+      if (!result.ok) {
+        toast.error(result.message);
+        return;
+      }
+      if (result.data) setProfile(result.data);
+      toast.success("Photo retirée");
+    });
+  };
+
   const save = () => {
+    if (!profile.firstName.trim()) {
+      toast.error("Indique au moins ton prénom.");
+      return;
+    }
     startTransition(async () => {
       const result = await updateProfileAction(profile);
       if (!result.ok) {
@@ -83,39 +128,115 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
     });
   };
 
-  return (
-    <div className="animate-mg-fade-up mx-auto max-w-2xl space-y-6 pb-24 lg:pb-6">
-      <div>
-        <p className="text-xs font-medium tracking-wide text-mg-faint uppercase">
-          Profil
-        </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
-          Tes paramètres
-        </h1>
-        <p className="mt-1 text-sm text-mg-muted">
-          Plus c&apos;est précis, plus tes verdicts sont fiables.
-        </p>
-      </div>
+  const initials = getProfileInitials(profile);
+  const busy = pending || avatarPending;
 
-      {/* Aperçu objectifs */}
+  return (
+    <div className="app-page mx-auto max-w-2xl space-y-5 pb-28 lg:pb-6">
+      <header className="app-page-header">
+        <p className="app-page-eyebrow">Profil</p>
+        <h1 className="app-page-title">Ton compte</h1>
+        <p className="app-page-desc">
+          Photo, identité et préférences pour des verdicts plus précis.
+        </p>
+      </header>
+
+      <Card className="overflow-hidden">
+        <CardContent className="flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-start">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={busy}
+              className="group relative flex size-24 items-center justify-center overflow-hidden rounded-full border border-mg-border bg-mg-accent-soft text-2xl font-semibold text-mg-accent outline-none transition-transform focus-visible:ring-2 focus-visible:ring-mg-accent/40 active:scale-[0.98] disabled:opacity-60"
+              aria-label="Changer la photo de profil"
+            >
+              {profile.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatarUrl}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              ) : (
+                initials
+              )}
+              <span className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Camera className="size-5 text-white" />
+              </span>
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              onChange={(e) => {
+                void onAvatarChange(e.target.files?.[0]);
+                e.target.value = "";
+              }}
+            />
+          </div>
+          <div className="w-full flex-1 space-y-3 text-center sm:text-left">
+            <p className="text-sm font-medium text-mg-foreground">
+              Photo de profil
+            </p>
+            <p className="text-xs text-mg-faint">
+              JPG, PNG ou WebP · max 5 Mo · synchronisée sur ton compte.
+            </p>
+            {profile.avatarUrl ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={busy}
+                onClick={onRemoveAvatar}
+                className="mx-auto sm:mx-0"
+              >
+                Retirer la photo
+              </Button>
+            ) : null}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Prénom">
+                <Input
+                  value={profile.firstName}
+                  onChange={(e) => update("firstName", e.target.value)}
+                  className="min-h-11"
+                  autoComplete="given-name"
+                  placeholder="Karim"
+                />
+              </Field>
+              <Field label="Nom">
+                <Input
+                  value={profile.lastName}
+                  onChange={(e) => update("lastName", e.target.value)}
+                  className="min-h-11"
+                  autoComplete="family-name"
+                  placeholder="Benali"
+                />
+              </Field>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="border-mg-accent/20 bg-mg-accent-soft/10 p-5">
         <div className="flex items-center gap-4">
-          <span className="flex size-14 items-center justify-center rounded-2xl border border-mg-accent/25 bg-mg-accent-soft">
-            <Target className="size-6 text-mg-accent" />
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-mg-accent/25 bg-mg-accent-soft">
+            <Target className="size-5 text-mg-accent" />
           </span>
-          <div>
+          <div className="min-w-0">
             <p className="text-sm font-semibold text-mg-foreground">
-              Tes objectifs actuels
+              Objectifs actuels
             </p>
             <p className="mt-1 text-sm text-mg-muted">
               <span className="font-semibold text-mg-foreground">
                 {profile.targetHourly} €/h
               </span>{" "}
-              net minimum ·{" "}
+              ·{" "}
               <span className="font-semibold text-mg-foreground">
                 {profile.dailyTarget} €
-              </span>{" "}
-              / jour
+              </span>
+              /jour
             </p>
             <p className="mt-0.5 text-xs text-mg-faint">
               {VEHICLE_LABELS[profile.vehicle]} · {profile.costPerKm} €/km
@@ -126,76 +247,59 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Informations</CardTitle>
+          <CardTitle className="text-base">Préférences de base</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-2">
-          <Field label="Prénom">
-            <Input
-              value={profile.name}
-              onChange={(e) => update("name", e.target.value)}
-              className="min-h-11"
-            />
-          </Field>
+        <CardContent className="grid gap-5">
           <Field label="Ville">
             <Input
               value={profile.city}
               onChange={(e) => update("city", e.target.value)}
               className="min-h-11"
+              placeholder="Lyon"
             />
           </Field>
-          <div className="sm:col-span-2">
-            <Field label="Véhicule" hint="Détermine ton coût au kilomètre.">
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {VEHICLE_OPTIONS.map((v) => (
-                  <button
-                    key={v}
-                    type="button"
-                    onClick={() => update("vehicle", v)}
-                    className={cn(
-                      "flex min-h-[88px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border py-3 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40 sm:text-sm",
-                      profile.vehicle === v
-                        ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent shadow-mg-glow"
-                        : "border-mg-border text-mg-muted hover:border-mg-border-strong hover:text-mg-foreground",
-                    )}
-                  >
-                    <VehicleIcon vehicle={v} selected={profile.vehicle === v} />
-                    {VEHICLE_LABELS[v]}
-                  </button>
-                ))}
-              </div>
-            </Field>
-          </div>
-          <div className="sm:col-span-2">
-            <Field label="Plateformes">
-              <div className="flex flex-wrap gap-2">
-                {[...ONBOARDING_PLATFORMS, "Autre" as Platform].map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => togglePlatform(p)}
-                    className={cn(
-                      "min-h-9 cursor-pointer rounded-full border px-3.5 py-2 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
-                      profile.platforms?.includes(p)
-                        ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
-                        : "border-mg-border text-mg-muted hover:border-mg-border-strong",
-                    )}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </Field>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Rentabilité</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-3">
-          <Field label="Coût / km" hint="Essence, usure, assurance.">
-            <div className="relative">
+          <Field label="Véhicule" hint="Détermine ton coût au kilomètre.">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {VEHICLE_OPTIONS.map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => update("vehicle", v)}
+                  className={cn(
+                    "flex min-h-[84px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border py-3 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
+                    profile.vehicle === v
+                      ? "border-mg-accent/50 bg-mg-accent-soft text-mg-accent shadow-mg-glow"
+                      : "border-mg-border text-mg-muted hover:border-mg-border-strong hover:text-mg-foreground",
+                  )}
+                >
+                  <VehicleIcon vehicle={v} selected={profile.vehicle === v} />
+                  {VEHICLE_LABELS[v]}
+                </button>
+              ))}
+            </div>
+          </Field>
+          <Field label="Plateformes">
+            <div className="flex flex-wrap gap-2">
+              {[...ONBOARDING_PLATFORMS, "Autre" as Platform].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => togglePlatform(p)}
+                  className={cn(
+                    "inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
+                    profile.platforms?.includes(p)
+                      ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
+                      : "border-mg-border text-mg-muted hover:border-mg-border-strong",
+                  )}
+                >
+                  <PlatformLogo platform={p} size="xs" />
+                  {p}
+                </button>
+              ))}
+            </div>
+          </Field>
+          <div className="grid gap-5 sm:grid-cols-3">
+            <Field label="Coût / km">
               <Input
                 type="number"
                 inputMode="decimal"
@@ -203,15 +307,10 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 min="0"
                 value={profile.costPerKm}
                 onChange={(e) => update("costPerKm", Number(e.target.value))}
-                className="min-h-11 pr-8"
+                className="min-h-11"
               />
-              <span className="absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-mg-faint">
-                €
-              </span>
-            </div>
-          </Field>
-          <Field label="Objectif €/h" hint="Taux horaire net minimum.">
-            <div className="relative">
+            </Field>
+            <Field label="Objectif €/h">
               <Input
                 type="number"
                 inputMode="numeric"
@@ -219,15 +318,10 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 min="0"
                 value={profile.targetHourly}
                 onChange={(e) => update("targetHourly", Number(e.target.value))}
-                className="min-h-11 pr-12"
+                className="min-h-11"
               />
-              <span className="absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-mg-faint">
-                €/h
-              </span>
-            </div>
-          </Field>
-          <Field label="Objectif / jour" hint="Gain net visé.">
-            <div className="relative">
+            </Field>
+            <Field label="Objectif / jour">
               <Input
                 type="number"
                 inputMode="numeric"
@@ -235,47 +329,44 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 min="0"
                 value={profile.dailyTarget}
                 onChange={(e) => update("dailyTarget", Number(e.target.value))}
-                className="min-h-11 pr-8"
+                className="min-h-11"
               />
-              <span className="absolute top-1/2 right-3.5 -translate-y-1/2 text-sm text-mg-faint">
-                €
-              </span>
-            </div>
-          </Field>
+            </Field>
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Préférences</CardTitle>
+          <CardTitle className="text-base">Apparence & compte</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-white/[0.05]">
-                <Moon className="size-4 text-mg-muted" />
+              <span className="flex size-9 items-center justify-center rounded-xl bg-mg-accent-soft">
+                {theme === "dark" ? (
+                  <Moon className="size-4 text-mg-accent" />
+                ) : (
+                  <Sun className="size-4 text-mg-accent" />
+                )}
               </span>
               <div>
                 <p className="text-sm font-medium text-mg-foreground">
-                  Mode sombre
+                  Mode clair
                 </p>
                 <p className="text-xs text-mg-faint">
-                  Uberly est optimisé pour la route de nuit.
+                  {theme === "light"
+                    ? "Thème clair actif"
+                    : "Thème sombre (route de nuit)"}
                 </p>
               </div>
             </div>
             <Switch
-              checked={darkMode}
-              onCheckedChange={(checked) => {
-                setDarkMode(checked);
-                if (!checked) {
-                  setTimeout(() => setDarkMode(true), 900);
-                  toast("Bientôt disponible", {
-                    description: "Le mode clair arrive dans une prochaine version.",
-                  });
-                }
-              }}
-              aria-label="Mode sombre"
+              checked={theme === "light"}
+              onCheckedChange={(checked) =>
+                setTheme(checked ? "light" : "dark")
+              }
+              aria-label="Activer le mode clair"
             />
           </div>
 
@@ -297,29 +388,39 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
             </div>
             {!profile.premium && (
               <Link href={margeoRoutes.premium}>
-                <Button variant="secondary" size="sm" className="min-h-10 w-full sm:w-auto">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-10 w-full sm:w-auto"
+                >
                   Découvrir Premium
                 </Button>
               </Link>
             )}
           </div>
+
+          <a
+            href={UBERLY_PATHS.deconnexion}
+            className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-mg-stop/30 bg-mg-stop-soft px-4 text-sm font-medium text-mg-stop transition-colors hover:border-mg-stop/50"
+          >
+            <LogOut className="size-4" />
+            Se déconnecter
+          </a>
         </CardContent>
       </Card>
 
-      {/* Desktop save */}
-      <div className="hidden justify-end lg:flex">
-        <Button onClick={save} disabled={pending} className="min-h-11">
+      <div className="hidden justify-end gap-3 lg:flex">
+        <Button onClick={save} disabled={busy} className="min-h-11">
           <Save />
           {pending ? "Enregistrement…" : "Enregistrer"}
         </Button>
       </div>
 
-      {/* Mobile sticky save */}
-      <div className="fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-20 border-t border-mg-border bg-mg-background/90 p-3 backdrop-blur-xl lg:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] z-20 border-t border-mg-border bg-mg-background/92 p-3 backdrop-blur-xl lg:hidden">
         <Button
           onClick={save}
-          disabled={pending}
-          className="app-cta-primary w-full min-h-11"
+          disabled={busy}
+          className="app-cta-primary w-full min-h-12"
         >
           <Save />
           {pending ? "Enregistrement…" : "Enregistrer"}

@@ -102,7 +102,7 @@ export function DashboardView({
     100,
     Math.round((stats.todayNet / profile.dailyTarget) * 100),
   );
-  const firstName = profile.name.split(" ")[0] || "livreur";
+  const firstName = profile.firstName || profile.name.split(" ")[0] || "livreur";
   const { savedEstimate, refusedCount, weekCount, verdictCounts } =
     computeMetrics(analyses);
 
