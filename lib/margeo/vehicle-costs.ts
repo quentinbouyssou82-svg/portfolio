@@ -60,6 +60,36 @@ export function normalizeVehicle(vehicle: string | null | undefined): Vehicle {
   }
 }
 
+/**
+ * Valeur canonique à écrire en DB (CHECK vehicles-v2).
+ * En cas d’échec CHECK ancien schéma, retry via toLegacyPersistedVehicle.
+ */
+export function toPersistedVehicle(vehicle: Vehicle | string): string {
+  return normalizeVehicle(vehicle);
+}
+
+/** Fallback si le CHECK prod n’accepte que les anciennes valeurs. */
+export function toLegacyPersistedVehicle(vehicle: Vehicle | string): string {
+  const id = normalizeVehicle(vehicle);
+  switch (id) {
+    case "velo":
+      return "velo";
+    case "velo_electrique":
+    case "trottinette_electrique":
+      return "velo_electrique";
+    case "moto":
+      return "moto";
+    case "voiture":
+    case "voiture_essence":
+    case "voiture_diesel":
+    case "voiture_hybride":
+    case "voiture_electrique":
+      return "voiture";
+    default:
+      return "scooter";
+  }
+}
+
 export function defaultCostForVehicle(vehicle: Vehicle | string): number {
   const id = normalizeVehicle(vehicle);
   return DEFAULT_VEHICLE_COSTS[id] ?? 0.18;

@@ -3,7 +3,7 @@ import type { UserProfile } from "../types";
 import { createMargeoServerClient } from "../supabase/server";
 import { buildDisplayName } from "../profile-display";
 import { getMargeoAdminDb } from "../supabase/admin";
-import { normalizeVehicle } from "../vehicle-costs";
+import { normalizeVehicle, toLegacyPersistedVehicle, toPersistedVehicle } from "../vehicle-costs";
 
 export { buildDisplayName, getProfileInitials } from "../profile-display";
 
@@ -52,6 +52,12 @@ export function rowToUserProfile(
     dailyTarget: Number(row.daily_target),
     platforms: row.platforms as UserProfile["platforms"],
     otherPlatform: row.other_platform ?? undefined,
+    planId:
+      row.plan_id === "pro" || row.plan_id === "elite" || row.plan_id === "discovery"
+        ? row.plan_id
+        : row.premium
+          ? "pro"
+          : "discovery",
     premium: row.premium,
     premiumUntil: row.premium_until ?? undefined,
     premiumSource: row.premium_source ?? undefined,
@@ -70,14 +76,28 @@ export function rowToUserProfile(
 function isMissingColumnError(error: { message?: string; code?: string } | null) {
   if (!error) return false;
   const msg = (error.message ?? "").toLowerCase();
-  return (
-    error.code === "PGRST204" ||
-    error.code === "42703" ||
+  const mentionsProfileCol =
     msg.includes("first_name") ||
     msg.includes("last_name") ||
     msg.includes("avatar_url") ||
-    msg.includes("schema cache") ||
-    msg.includes("does not exist")
+    msg.includes("plan_id");
+  return (
+    error.code === "PGRST204" ||
+    error.code === "42703" ||
+    (mentionsProfileCol &&
+      (msg.includes("schema cache") ||
+        msg.includes("does not exist") ||
+        msg.includes("could not find")))
+  );
+}
+
+function isVehicleCheckError(error: { message?: string; code?: string } | null) {
+  if (!error) return false;
+  const msg = (error.message ?? "").toLowerCase();
+  return (
+    error.code === "23514" ||
+    msg.includes("vehicle_check") ||
+    (msg.includes("check constraint") && msg.includes("vehicle"))
   );
 }
 
@@ -192,7 +212,6 @@ export async function updateProfile(
 ): Promise<UserProfile | null> {
   const supabase = await createMargeoServerClient();
 
-  // Toujours synchroniser auth metadata (fonctionne sans migration SQL)
   await syncAuthProfileMeta(userId, {
     first_name: input.first_name,
     last_name: input.last_name,
@@ -200,47 +219,71 @@ export async function updateProfile(
       input.avatar_url === null ? "" : (input.avatar_url ?? undefined),
   });
 
-  let { data, error } = await supabase
-    .from("margeo_profiles")
-    .update(input)
-    .eq("id", userId)
-    .select("*")
-    .single();
+  const basePayload: ProfileUpdateInput = {
+    ...input,
+    ...(input.vehicle != null
+      ? {
+          vehicle: toPersistedVehicle(
+            input.vehicle,
+          ) as ProfileUpdateInput["vehicle"],
+        }
+      : {}),
+  };
 
-  if (isMissingColumnError(error)) {
-    const legacyInput: ProfileUpdateInput = {
-      name: input.name,
-      city: input.city,
-      vehicle: input.vehicle,
-      cost_per_km: input.cost_per_km,
-      target_hourly: input.target_hourly,
-      daily_target: input.daily_target,
-      platforms: input.platforms,
-      other_platform: input.other_platform,
-      onboarding_completed: input.onboarding_completed,
-      min_benefit: input.min_benefit,
-      max_distance_km: input.max_distance_km,
-      empty_returns: input.empty_returns,
-      weekly_hours: input.weekly_hours,
-      last_lat: input.last_lat,
-      last_lng: input.last_lng,
-      location_permission: input.location_permission,
-      location_updated_at: input.location_updated_at,
-    };
-    const legacy = await supabase
+  const runUpdate = async (payload: ProfileUpdateInput) =>
+    supabase
       .from("margeo_profiles")
-      .update(legacyInput)
+      .update(payload)
       .eq("id", userId)
       .select("*")
       .single();
+
+  const stripIdentityCols = (payload: ProfileUpdateInput): ProfileUpdateInput => ({
+    name: payload.name,
+    city: payload.city,
+    vehicle: payload.vehicle,
+    cost_per_km: payload.cost_per_km,
+    target_hourly: payload.target_hourly,
+    daily_target: payload.daily_target,
+    platforms: payload.platforms,
+    other_platform: payload.other_platform,
+    onboarding_completed: payload.onboarding_completed,
+    min_benefit: payload.min_benefit,
+    max_distance_km: payload.max_distance_km,
+    empty_returns: payload.empty_returns,
+    weekly_hours: payload.weekly_hours,
+    last_lat: payload.last_lat,
+    last_lng: payload.last_lng,
+    location_permission: payload.location_permission,
+    location_updated_at: payload.location_updated_at,
+  });
+
+  let { data, error } = await runUpdate(basePayload);
+
+  if (isMissingColumnError(error)) {
+    const legacy = await runUpdate(stripIdentityCols(basePayload));
     data = legacy.data;
     error = legacy.error;
   }
 
-  if (error || !data) {
-    if (process.env.NODE_ENV === "development" && error) {
-      console.error("[uberly/profile] update failed:", error.message);
+  if (isVehicleCheckError(error) && input.vehicle != null) {
+    const legacyVehicle = toLegacyPersistedVehicle(
+      input.vehicle,
+    ) as ProfileUpdateInput["vehicle"];
+    const vehiclePayload: ProfileUpdateInput = {
+      ...basePayload,
+      vehicle: legacyVehicle,
+    };
+    let retry = await runUpdate(vehiclePayload);
+    if (isMissingColumnError(retry.error)) {
+      retry = await runUpdate(stripIdentityCols(vehiclePayload));
     }
+    data = retry.data;
+    error = retry.error;
+  }
+
+  if (error || !data) {
+    console.error("[uberly/profile] update failed:", error?.message ?? "no data");
     return null;
   }
 

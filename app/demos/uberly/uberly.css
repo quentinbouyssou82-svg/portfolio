@@ -3781,26 +3781,10 @@
   }
 }
 
-/* Float rail : cartes autour du téléphone (mobile + desktop) */
+/* Float rail + hero compose — Desktop = layout 6fb34d0 ; Mobile = scale uniforme */
 .uberly-root .phone-mock-stage,
 .margeo-root .phone-mock-stage {
   position: relative;
-  padding: 0.35rem 0.15rem 2.85rem;
-  overflow: visible;
-}
-
-@media (min-width: 640px) {
-  .uberly-root .phone-mock-stage,
-  .margeo-root .phone-mock-stage {
-    padding: 0.75rem 0.35rem 3.1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .uberly-root .phone-mock-stage,
-  .margeo-root .phone-mock-stage {
-    padding: 0.5rem 0.5rem 1.25rem;
-  }
 }
 
 .uberly-root .phone-float-rail,
@@ -3816,114 +3800,105 @@
 .uberly-root .phone-float-rail .phone-float-stat,
 .margeo-root .phone-float-rail .phone-float-stat {
   pointer-events: auto;
-  width: 6.5rem;
-  padding: 0.5rem 0.55rem;
 }
 
-@media (min-width: 640px) {
-  .uberly-root .phone-float-rail .phone-float-stat,
-  .margeo-root .phone-float-rail .phone-float-stat {
-    width: 8rem;
-    padding: 0.65rem 0.8rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .uberly-root .phone-float-rail .phone-float-stat,
-  .margeo-root .phone-float-rail .phone-float-stat {
-    width: 9.25rem;
-    padding: 0.75rem 0.875rem;
-  }
-}
-
-/* Mobile : cartes calées dans le stage, chevauchent légèrement le phone */
-.uberly-root .phone-float-left,
-.margeo-root .phone-float-left {
-  top: 10%;
-  left: 0;
-}
-
-.uberly-root .phone-float-right,
-.margeo-root .phone-float-right {
-  right: 0;
-  bottom: 28%;
-}
-
-.uberly-root .phone-float-stat-mid,
-.margeo-root .phone-float-stat-mid {
-  top: auto;
-  left: 50%;
-  bottom: 0.1rem;
-  transform: translateX(-50%);
-  width: 7rem;
-  padding: 0.5rem 0.55rem;
-}
-
-@media (min-width: 640px) {
-  .uberly-root .phone-float-left,
-  .margeo-root .phone-float-left {
-    top: 12%;
-    left: 0.15rem;
+/* Mobile only : scale uniforme (proportions iPhone intactes) + floats autour */
+@media (max-width: 1023px) {
+  .uberly-root .phone-mock-stage--hero,
+  .margeo-root .phone-mock-stage--hero {
+    max-width: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+    padding-inline: 0.25rem;
   }
 
-  .uberly-root .phone-float-right,
-  .margeo-root .phone-float-right {
-    right: 0.15rem;
-    bottom: 26%;
+  .uberly-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    position: relative;
+    /* Même largeur de layout que Desktop → mêmes proportions, puis scale */
+    width: 360px;
+    max-width: none;
+    zoom: 0.72;
   }
 
-  .uberly-root .phone-float-stat-mid,
-  .margeo-root .phone-float-stat-mid {
-    width: 8rem;
-    bottom: 0.2rem;
+  @supports not (zoom: 1) {
+    .uberly-root .phone-hero-compose,
+    .margeo-root .phone-hero-compose {
+      zoom: unset;
+      transform: scale(0.72);
+      transform-origin: top center;
+      margin-bottom: -28%;
+    }
   }
-}
 
-@media (min-width: 1024px) {
   .uberly-root .phone-float-left,
   .margeo-root .phone-float-left {
     top: 16%;
-    left: 0;
+    left: -3.5rem;
   }
 
   .uberly-root .phone-float-right,
   .margeo-root .phone-float-right {
-    right: 0;
+    right: -3.5rem;
     bottom: 24%;
   }
 
   .uberly-root .phone-float-stat-mid,
   .margeo-root .phone-float-stat-mid {
-    top: 48%;
-    bottom: auto;
-    left: 0;
-    transform: none;
-    width: 8.75rem;
+    top: auto;
+    left: 50%;
+    bottom: -0.35rem;
+    transform: translateX(-50%);
   }
 }
 
-/* Timeline / route connectors — centrés sur les badges (size-8 = 2rem) */
-.uberly-root .problem-timeline-segment,
-.margeo-root .problem-timeline-segment {
-  position: absolute;
-  top: calc(0.625rem + 2rem); /* pt-2.5 + badge */
-  bottom: -0.85rem;
-  left: 50%;
-  width: 1px;
-  transform: translateX(-50%);
+@media (max-width: 389px) {
+  .uberly-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    zoom: 0.66;
+  }
+
+  @supports not (zoom: 1) {
+    .uberly-root .phone-hero-compose,
+    .margeo-root .phone-hero-compose {
+      transform: scale(0.66);
+      margin-bottom: -34%;
+    }
+  }
+
+  .uberly-root .phone-float-left,
+  .margeo-root .phone-float-left {
+    left: -3.25rem;
+  }
+
+  .uberly-root .phone-float-right,
+  .margeo-root .phone-float-right {
+    right: -3.25rem;
+  }
+}
+
+/* Desktop : aucun scale — positions via utilities lg: du composant */
+@media (min-width: 1024px) {
+  .uberly-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    zoom: unset;
+    transform: none;
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
+
+/* Timeline / route connectors */
+.uberly-root .problem-timeline-line,
+.margeo-root .problem-timeline-line {
   background: linear-gradient(
     180deg,
     rgba(129, 140, 248, 0.45),
-    rgba(129, 140, 248, 0.12)
+    rgba(129, 140, 248, 0.14) 55%,
+    rgba(99, 102, 241, 0.1)
   );
-  z-index: 0;
-}
-
-@media (min-width: 640px) {
-  .uberly-root .problem-timeline-segment,
-  .margeo-root .problem-timeline-segment {
-    top: calc(0.75rem + 2rem); /* pt-3 + badge */
-  }
 }
 
 .uberly-root .problem-route-segment,
@@ -3943,9 +3918,7 @@
 }
 
 .uberly-root .problem-route-rail,
-.margeo-root .problem-route-rail,
-.uberly-root .problem-timeline-rail,
-.margeo-root .problem-timeline-rail {
+.margeo-root .problem-route-rail {
   position: relative;
 }
 
@@ -3975,6 +3948,59 @@
     border-color: rgba(24, 24, 27, 0.14);
   }
 }
+
+/* iOS landing polish — safe areas + overflow + tap targets */
+@media (max-width: 639px) {
+  .uberly-root .landing-page,
+  .margeo-root .landing-page {
+    overflow-x: clip;
+  }
+
+  .uberly-root .hero-section,
+  .margeo-root .hero-section {
+    padding-bottom: 2.5rem;
+  }
+
+  .uberly-root .hero-phone-orbit,
+  .margeo-root .hero-phone-orbit {
+    opacity: 0.55;
+  }
+
+  .uberly-root .hero-benefit,
+  .margeo-root .hero-benefit {
+    min-height: 2.75rem;
+  }
+
+  .uberly-root .landing-cta-primary,
+  .margeo-root .landing-cta-primary,
+  .uberly-root .landing-cta-secondary,
+  .margeo-root .landing-cta-secondary {
+    min-height: 3rem;
+  }
+
+  .uberly-root .sticky-cta,
+  .margeo-root .sticky-cta,
+  .uberly-root .landing-sticky-cta,
+  .margeo-root .landing-sticky-cta {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .uberly-root .app-shell-tab-label,
+  .margeo-root .app-shell-tab-label {
+    font-size: 0.5625rem;
+  }
+
+  .uberly-root .problem-section,
+  .margeo-root .problem-section {
+    overflow-x: clip;
+  }
+
+  .uberly-root .trust-card,
+  .margeo-root .trust-card {
+    padding-inline: 1rem;
+  }
+}
+
 
 /* Decision mini visuals */
 .uberly-root .decision-mini-scan,

@@ -48,8 +48,8 @@ const STAGGER = {
   }),
 };
 
-const FLOAT_LEFT = { y: [0, -6, 0] };
-const FLOAT_RIGHT = { y: [0, 6, 0] };
+const FLOAT_LEFT = { y: [0, -9, 0] };
+const FLOAT_RIGHT = { y: [0, 9, 0] };
 
 function PhoneStatusBar() {
   return (
@@ -254,8 +254,10 @@ function FloatingStatCard({
   return (
     <motion.div
       className={cn(
-        "phone-float-stat absolute z-[3]",
-        side === "left" ? "phone-float-left" : "phone-float-right",
+        "phone-float-stat absolute z-[3] w-[9.5rem] px-3.5 py-3",
+        side === "left"
+          ? "phone-float-left lg:-left-[5.5rem] lg:top-[18%]"
+          : "phone-float-right lg:-right-[5.5rem] lg:bottom-[26%]",
       )}
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -272,12 +274,12 @@ function FloatingStatCard({
         }}
       >
         {badge && (
-          <span className="mb-1 inline-flex rounded-full border border-mg-go/25 bg-mg-go-soft px-1.5 py-0.5 text-[8px] font-semibold text-mg-go sm:mb-1.5 sm:px-2 sm:text-[9px]">
+          <span className="mb-1.5 inline-flex rounded-full border border-mg-go/25 bg-mg-go-soft px-2 py-0.5 text-[9px] font-semibold text-mg-go">
             {badge}
           </span>
         )}
-        <p className="text-[9px] text-mg-faint sm:text-[10px]">{title}</p>
-        <p className="mt-0.5 text-xs font-bold text-mg-foreground sm:text-sm">{value}</p>
+        <p className="text-[10px] text-mg-faint">{title}</p>
+        <p className="mt-0.5 text-sm font-bold text-mg-foreground">{value}</p>
         {sub}
         <Sparkline color={sparkColor} />
       </motion.div>
@@ -398,26 +400,22 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
     <div
       ref={stageRef}
       className={cn(
-        "phone-mock-stage mx-auto w-full",
+        "phone-mock-stage mx-auto",
         isHero
-          ? "max-w-[22.5rem] sm:max-w-[26rem] lg:max-w-[30rem]"
-          : "max-w-[16.25rem] sm:max-w-[18.75rem]",
+          ? "phone-mock-stage--hero w-full max-w-[360px]"
+          : "w-[280px] sm:w-[300px]",
       )}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetTilt}
     >
+      <div className={cn(isHero && "phone-hero-compose")}>
       <div className="phone-mock-ambient phone-mock-ambient-a" aria-hidden />
       <div className="phone-mock-ambient phone-mock-ambient-b" aria-hidden />
       <div className="phone-mock-ambient phone-mock-ambient-c" aria-hidden />
       <div className="phone-mock-reflection" aria-hidden />
 
       <motion.div
-        className={cn(
-          "phone-mock-float mx-auto w-full",
-          isHero
-            ? "max-w-[14.75rem] sm:max-w-[17.5rem] lg:max-w-[20rem]"
-            : "max-w-full",
-        )}
+        className="phone-mock-float"
         animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
         transition={{ duration: 5.8, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -646,25 +644,25 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
         />
         {isHero && (
           <motion.div
-            className="phone-float-stat phone-float-stat-mid absolute z-[3]"
+            className="phone-float-stat phone-float-stat-mid absolute z-[3] w-[8.75rem] px-3.5 py-3 lg:top-[52%] lg:left-[-6.5rem]"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55, delay: 0.7 }}
           >
             <motion.div
-              animate={reduceMotion ? undefined : { y: [0, -4, 0] }}
+              animate={reduceMotion ? undefined : { y: [0, -7, 0] }}
               transition={{ duration: 6.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
             >
-              <span className="mb-1 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-1.5 py-0.5 text-[8px] font-semibold text-mg-accent sm:mb-1.5 sm:px-2 sm:text-[9px]">
+              <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[9px] font-semibold text-mg-accent">
                 <Clock className="size-2.5" />
                 8 s
               </span>
-              <p className="text-[9px] text-mg-faint sm:text-[10px]">Temps moyen</p>
-              <p className="mt-0.5 text-xs font-bold text-mg-foreground sm:text-sm">
+              <p className="text-[10px] text-mg-faint">Temps moyen</p>
+              <p className="mt-0.5 text-sm font-bold text-mg-foreground">
                 Capture → verdict
               </p>
-              <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/[0.06] sm:mt-2">
+              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-mg-accent to-mg-go"
                   initial={{ width: "0%" }}
@@ -682,7 +680,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
           value={
             <>
               <AnimatedCounter value={9} duration={1.4} />{" "}
-              <span className="text-[9px] font-normal text-mg-stop sm:text-[10px]">
+              <span className="text-[10px] font-normal text-mg-stop">
                 non rentables
               </span>
             </>
@@ -690,6 +688,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
           sparkColor="rgba(248,113,113,0.75)"
           reduceMotion={reduceMotion}
         />
+      </div>
       </div>
     </div>
   );

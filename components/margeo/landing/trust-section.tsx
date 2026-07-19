@@ -5,20 +5,35 @@ import { Reveal } from "@/components/margeo/reveal";
 
 const REVIEWS = [
   {
-    quote: "Je refuse beaucoup moins de mauvaises courses.",
-    meta: "Livreur Uber Eats · Lyon",
+    quote:
+      "Je pensais gagner correctement avant... en réalité je refusais presque aucune mauvaise course.",
+    name: "Thomas",
+    platform: "Uber Eats",
+    city: "Toulouse",
+    seniority: "3 ans",
   },
   {
-    quote: "En une soirée j'ai déjà évité plusieurs courses inutiles.",
-    meta: "Livreur Deliveroo · Paris",
+    quote: "Je regarde Uberly avant chaque commande, ça prend deux secondes.",
+    name: "Sarah",
+    platform: "Deliveroo",
+    city: "Lyon",
+    seniority: "18 mois",
   },
   {
-    quote: "L'analyse est rapide et rassure avant d'accepter.",
-    meta: "Livreur multi-apps · Bordeaux",
+    quote:
+      "Le verdict évite de réfléchir quand Uber laisse seulement quelques secondes.",
+    name: "Karim",
+    platform: "Uber Eats",
+    city: "Paris",
+    seniority: "2 ans",
   },
   {
-    quote: "Je regarde le net, plus le chiffre affiché.",
-    meta: "Livreur Stuart · Lille",
+    quote:
+      "J'ai arrêté d'accepter au feeling. Le net, c'est souvent loin du chiffre affiché.",
+    name: "Nina",
+    platform: "Stuart",
+    city: "Bordeaux",
+    seniority: "1 an",
   },
 ] as const;
 
@@ -57,7 +72,8 @@ export function TrustSection() {
                   « {review.quote} »
                 </p>
                 <footer className="mt-3 text-[11px] font-medium tracking-wide text-mg-faint">
-                  {review.meta}
+                  {review.name} · {review.platform} · {review.city}
+                  <span className="text-mg-faint/80"> · {review.seniority}</span>
                 </footer>
               </blockquote>
             </Reveal>

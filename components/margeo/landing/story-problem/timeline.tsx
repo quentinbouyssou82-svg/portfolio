@@ -59,32 +59,37 @@ export const TIMELINE_STEPS: {
   },
 ];
 
+/**
+ * Timeline « Une soirée » — une seule ligne continue centrée sur les badges
+ * (même rendu Desktop / Mobile, colonnes flex responsive).
+ */
 export function ProblemTimeline() {
   return (
     <div className="problem-timeline relative mx-auto max-w-2xl">
-      <ol className="space-y-3 sm:space-y-3.5">
+      {/*
+        left-5 = centre d’une colonne w-10 (2.5rem).
+        sm:left-[1.375rem] = centre d’une colonne w-11 (2.75rem).
+      */}
+      <div
+        className="problem-timeline-line absolute top-4 bottom-4 left-5 w-px sm:left-[1.375rem]"
+        aria-hidden
+      />
+
+      <ol className="space-y-3 sm:space-y-4">
         {TIMELINE_STEPS.map((step, i) => (
-          <li key={step.title} className="relative flex gap-3.5 sm:gap-5">
-            <div className="problem-timeline-rail relative flex w-10 shrink-0 justify-center sm:w-11">
-              {i < TIMELINE_STEPS.length - 1 && (
-                <span
-                  className="problem-timeline-segment"
-                  aria-hidden
-                />
-              )}
-              <div className="relative z-[2] pt-2.5 sm:pt-3">
-                <PremiumIconBadge
-                  icon={step.icon}
-                  tone={mapStepTone(step.tone)}
-                  size="sm"
-                  idle={false}
-                />
-              </div>
+          <li key={step.title} className="relative flex gap-4 sm:gap-5">
+            <div className="relative z-[2] flex w-10 shrink-0 justify-center pt-3 sm:w-11">
+              <PremiumIconBadge
+                icon={step.icon}
+                tone={mapStepTone(step.tone)}
+                size="sm"
+                idle={false}
+              />
             </div>
 
             <PremiumCard
               index={i}
-              className="min-w-0 flex-1 rounded-2xl px-4 py-3.5 sm:px-5 sm:py-4"
+              className="min-w-0 flex-1 rounded-2xl px-4 py-4 sm:px-5 sm:py-4"
             >
               <p className="text-sm font-semibold tracking-tight text-mg-foreground sm:text-base">
                 {step.title}

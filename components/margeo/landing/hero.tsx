@@ -137,7 +137,7 @@ export function Hero() {
           </div>
 
           <motion.div
-            className="hero-phone-stage relative mx-auto w-full max-w-[22.5rem] overflow-visible px-0 sm:max-w-[26rem] lg:max-w-[30rem]"
+            className="hero-phone-stage relative mx-auto w-full max-w-[380px] overflow-visible lg:max-w-none"
             initial={reduceMotion ? false : { opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.2, ease }}
