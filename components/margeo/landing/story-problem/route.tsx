@@ -14,52 +14,69 @@ export function ProblemRoute() {
     <PremiumCard index={0} className="overflow-hidden rounded-3xl" tilt={false}>
       <div className="grid lg:grid-cols-[1fr_1.1fr]">
         <div className="border-b border-white/[0.06] p-6 lg:border-b-0 lg:border-r lg:p-8">
-          <p className="text-xs font-semibold tracking-[0.18em] text-mg-faint uppercase">
-            Le trajet invisible
-          </p>
-          <p className="mt-2 text-lg font-semibold tracking-tight text-mg-foreground sm:text-xl">
+          <p className="text-lg font-semibold tracking-tight text-mg-foreground sm:text-xl">
             La moitié du trajet, ignorée.
           </p>
 
-          <div className="relative mt-6 pl-1">
-            <div
-              className="absolute top-3 bottom-3 left-[1.15rem] w-px bg-gradient-to-b from-mg-accent/50 via-mg-border to-mg-stop/50"
-              aria-hidden
-            />
-
-            <div className="relative flex gap-3.5 pb-5">
-              <PremiumIconBadge icon={UtensilsCrossed} tone="accent" size="sm" />
-              <div className="pt-0.5">
-                <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
-                  Restaurant
-                </p>
-                <p className="text-sm font-semibold text-mg-foreground">
-                  Burger Père &amp; Fils
-                </p>
+          <div className="relative mt-6">
+            <div className="space-y-0">
+              <div className="relative flex gap-3.5 pb-5">
+                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
+                  <span className="problem-route-segment" aria-hidden />
+                  <PremiumIconBadge
+                    icon={UtensilsCrossed}
+                    tone="accent"
+                    size="sm"
+                    idle={false}
+                  />
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
+                    Restaurant
+                  </p>
+                  <p className="text-sm font-semibold text-mg-foreground">
+                    Burger Père &amp; Fils
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="relative flex gap-3.5 pb-5">
-              <PremiumIconBadge icon={MapPin} tone="go" size="sm" />
-              <div className="pt-0.5">
-                <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
-                  Client
-                </p>
-                <p className="text-sm font-semibold text-mg-foreground">
-                  Quai Claude Bernard
-                </p>
+              <div className="relative flex gap-3.5 pb-5">
+                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
+                  <span className="problem-route-segment" aria-hidden />
+                  <PremiumIconBadge
+                    icon={MapPin}
+                    tone="go"
+                    size="sm"
+                    idle={false}
+                  />
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
+                    Client
+                  </p>
+                  <p className="text-sm font-semibold text-mg-foreground">
+                    Quai Claude Bernard
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="relative flex gap-3.5">
-              <PremiumIconBadge icon={MapPin} tone="danger" size="sm" />
-              <div className="pt-0.5">
-                <p className="text-[10px] font-medium tracking-wide text-mg-stop/80 uppercase">
-                  Retour à vide
-                </p>
-                <p className="text-sm font-semibold text-mg-muted">
-                  2,4 km · invisible
-                </p>
+              <div className="relative flex gap-3.5">
+                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
+                  <PremiumIconBadge
+                    icon={MapPin}
+                    tone="danger"
+                    size="sm"
+                    idle={false}
+                  />
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <p className="text-[10px] font-medium tracking-wide text-mg-stop/80 uppercase">
+                    Retour à vide
+                  </p>
+                  <p className="text-sm font-semibold text-mg-muted">
+                    2,4 km · invisible
+                  </p>
+                </div>
               </div>
             </div>
           </div>

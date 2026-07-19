@@ -2,7 +2,7 @@
 
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 
-/** Marques affichées pour la confiance (marquee) — inclut cibles & proches. */
+/** Marques affichées pour la confiance (marquee). */
 const MARQUEE_BRANDS = [
   { id: "Uber Eats", label: "Uber Eats" },
   { id: "Deliveroo", label: "Deliveroo" },
@@ -38,14 +38,19 @@ function MarqueeItem({
   id,
   label,
   tint,
+  keySuffix = "",
 }: {
   id: string;
   label: string;
   tint?: string;
+  keySuffix?: string;
 }) {
   if (id === "Just Eat" || id === "Glovo") {
     return (
-      <span className="platform-marquee-item inline-flex items-center gap-2.5 whitespace-nowrap">
+      <span
+        className="platform-marquee-item inline-flex items-center gap-2.5 whitespace-nowrap"
+        data-key={`${id}${keySuffix}`}
+      >
         <span
           className="inline-flex size-8 shrink-0 items-center justify-center rounded-xl shadow-sm"
           style={{
@@ -72,17 +77,18 @@ function MarqueeItem({
   );
 }
 
-function MarqueeTrack() {
+/** Deux groupes identiques dans le track → boucle -50%. Desktop : chaque groupe = pleine largeur. */
+function MarqueeGroup({ ariaHidden }: { ariaHidden?: boolean }) {
   return (
-    <>
+    <div className="platform-marquee-group" aria-hidden={ariaHidden}>
       {MARQUEE_BRANDS.map((b) => (
-        <MarqueeItem key={b.id} {...b} />
+        <MarqueeItem key={`${b.id}${ariaHidden ? "-d" : ""}`} {...b} />
       ))}
-    </>
+    </div>
   );
 }
 
-/** Bande logos plateformes — défilement infini, confiance immédiate. */
+/** Bande logos plateformes — défilement infini pleine largeur. */
 export function PlatformMarquee() {
   return (
     <section
@@ -98,12 +104,8 @@ export function PlatformMarquee() {
 
       <div className="platform-marquee-viewport overflow-hidden">
         <div className="platform-marquee-track">
-          <div className="platform-marquee-group">
-            <MarqueeTrack />
-          </div>
-          <div className="platform-marquee-group" aria-hidden>
-            <MarqueeTrack />
-          </div>
+          <MarqueeGroup />
+          <MarqueeGroup ariaHidden />
         </div>
       </div>
     </section>

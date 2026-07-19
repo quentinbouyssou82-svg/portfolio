@@ -140,11 +140,14 @@ export function PremiumIconBadge({
   tone = "neutral",
   size = "md",
   className,
+  idle = true,
 }: {
   icon: LucideIcon;
   tone?: BadgeTone;
   size?: "sm" | "md" | "lg";
   className?: string;
+  /** Idle bob — désactiver sur les rails/timeline pour garder les connecteurs alignés. */
+  idle?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const styles = BADGE_TONE[tone];
@@ -155,7 +158,7 @@ export function PremiumIconBadge({
 
   return (
     <motion.span
-      animate={reduceMotion ? undefined : { y: [0, -2, 0] }}
+      animate={reduceMotion || !idle ? undefined : { y: [0, -2, 0] }}
       transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
       className={cn(
         "relative flex shrink-0 items-center justify-center rounded-xl border backdrop-blur-sm",

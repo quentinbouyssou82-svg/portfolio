@@ -26,22 +26,12 @@ function ProblemOpener() {
         Le problème
       </motion.p>
 
-      <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
-        viewport={{ once: true }}
-        transition={{ ...SPRING, delay: 0.06 }}
-        className="mt-5 text-sm font-medium tracking-wide text-mg-muted sm:text-base"
-      >
-        Chaque course, un pari.
-      </motion.p>
-
       <motion.h2
         initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
         whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ ...SPRING, delay: 0.1 }}
-        className="problem-title text-gradient mt-6 text-[2.15rem] leading-[1.06] font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.35rem]"
+        transition={{ ...SPRING, delay: 0.08 }}
+        className="problem-title text-gradient mt-5 text-[2.15rem] leading-[1.06] font-bold tracking-tight text-balance sm:mt-6 sm:text-5xl lg:text-[3.35rem]"
       >
         Tu crois gagner{" "}
         <span className="text-gradient-accent problem-title-accent">7 €.</span>
@@ -51,10 +41,10 @@ function ProblemOpener() {
         initial={reduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
         whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true }}
-        transition={{ ...SPRING, delay: 0.16 }}
-        className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-7 sm:text-xl"
+        transition={{ ...SPRING, delay: 0.14 }}
+        className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-5 sm:text-lg"
       >
-        …le vrai gain reste caché.
+        Le vrai gain reste caché.
       </motion.p>
     </div>
   );
@@ -62,12 +52,12 @@ function ProblemOpener() {
 
 function ProblemHook() {
   return (
-    <PremiumCard index={0} className="rounded-3xl px-6 py-12 text-center sm:px-10 sm:py-14">
+    <PremiumCard index={0} className="rounded-3xl px-6 py-10 text-center sm:px-10 sm:py-12">
       <div className="problem-hook-glow" aria-hidden />
       <p className="relative text-xs font-semibold tracking-[0.2em] text-mg-faint uppercase">
         La question
       </p>
-      <p className="relative mt-4 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
+      <p className="relative mt-3 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
         Et si tu savais avant ?
       </p>
     </PremiumCard>
@@ -76,7 +66,7 @@ function ProblemHook() {
 
 function SceneLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="problem-scene-label mb-8 flex items-center justify-center gap-4 sm:mb-10">
+    <div className="problem-scene-label mb-6 flex items-center justify-center gap-4 sm:mb-8">
       <span className="problem-scene-line hidden h-px flex-1 sm:block" aria-hidden />
       <p className="shrink-0 text-center text-[11px] font-semibold tracking-[0.2em] text-mg-faint uppercase">
         {children}
@@ -90,34 +80,34 @@ export function StoryProblem() {
   return (
     <section
       id="probleme"
-      className="problem-section relative scroll-mt-24 py-24 sm:py-36"
+      className="problem-section relative scroll-mt-24 py-16 sm:py-24 lg:py-28"
     >
-      <div className="section-bridge mb-16 sm:mb-20" aria-hidden />
+      <div className="section-bridge mb-12 sm:mb-16" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-5">
         <ProblemOpener />
 
-        <div className="mt-16 space-y-16 sm:mt-28 sm:space-y-0">
-          <div className="sm:mb-24">
+        <div className="mt-12 space-y-14 sm:mt-16 sm:space-y-0">
+          <div className="sm:mb-16">
             <SceneLabel>Une soirée</SceneLabel>
             <ProblemTimeline />
           </div>
 
-          <div className="sm:mb-32 sm:ml-auto sm:max-w-5xl">
+          <div className="sm:mb-20 sm:ml-auto sm:max-w-5xl">
             <SceneLabel>Affiché vs réel</SceneLabel>
             <ProblemComparison />
           </div>
 
-          <div className="sm:mb-20 sm:mr-auto sm:max-w-5xl">
+          <div className="sm:mb-16 sm:mr-auto sm:max-w-5xl">
             <SceneLabel>Le trajet invisible</SceneLabel>
             <ProblemRoute />
           </div>
 
-          <div className="sm:mb-28">
+          <div className="sm:mb-16">
             <SceneLabel>En une soirée</SceneLabel>
             <ProblemStats />
           </div>
 
-          <div className="sm:mb-24 sm:ml-[4%]">
+          <div className="sm:mb-16">
             <SceneLabel>Sous pression</SceneLabel>
             <ProblemStress />
           </div>

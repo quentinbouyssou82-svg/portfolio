@@ -2733,9 +2733,7 @@
 
 .uberly-root .phone-float-stat-mid,
 .margeo-root .phone-float-stat-mid {
-  top: 52%;
-  left: -6.5rem;
-  width: 8.75rem;
+  /* Positions finales dans le bloc float rail (fin de fichier). */
 }
 
 /* Section rhythm & bridges */
@@ -3623,15 +3621,41 @@
 .margeo-root .platform-marquee-track {
   display: flex;
   width: max-content;
-  animation: platform-marquee-scroll 42s linear infinite;
+  animation: platform-marquee-scroll 38s linear infinite;
+  will-change: transform;
 }
 
 .uberly-root .platform-marquee-group,
 .margeo-root .platform-marquee-group {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 2.25rem;
-  padding-inline: 1.125rem;
+  padding-inline: 1.25rem;
+}
+
+/* Mobile : piste plus longue (2× marques) via contenu + gaps confortables */
+@media (max-width: 767px) {
+  .uberly-root .platform-marquee-group,
+  .margeo-root .platform-marquee-group {
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .uberly-root .platform-marquee-group,
+  .margeo-root .platform-marquee-group {
+    justify-content: space-evenly;
+    gap: clamp(1.5rem, 2.5vw, 3.5rem);
+    min-width: 100%;
+    padding-inline: clamp(1.25rem, 2vw, 2.5rem);
+    box-sizing: border-box;
+  }
+
+  .uberly-root .platform-marquee-track,
+  .margeo-root .platform-marquee-track {
+    animation-duration: 52s;
+  }
 }
 
 .uberly-root .platform-marquee-item,
@@ -3757,65 +3781,198 @@
   }
 }
 
-/* Float rail : mobile bandeau / desktop absolu autour du phone */
+/* Float rail : cartes autour du téléphone (mobile + desktop) */
 .uberly-root .phone-mock-stage,
 .margeo-root .phone-mock-stage {
   position: relative;
+  padding: 0.35rem 0.15rem 2.85rem;
+  overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .uberly-root .phone-mock-stage,
+  .margeo-root .phone-mock-stage {
+    padding: 0.75rem 0.35rem 3.1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .uberly-root .phone-mock-stage,
+  .margeo-root .phone-mock-stage {
+    padding: 0.5rem 0.5rem 1.25rem;
+  }
 }
 
 .uberly-root .phone-float-rail,
 .margeo-root .phone-float-rail {
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 0.5rem;
-  margin-top: 1.1rem;
-  padding-bottom: 0.25rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.uberly-root .phone-float-rail::-webkit-scrollbar,
-.margeo-root .phone-float-rail::-webkit-scrollbar {
-  display: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 4;
 }
 
 .uberly-root .phone-float-rail .phone-float-stat,
 .margeo-root .phone-float-rail .phone-float-stat {
-  position: relative;
-  left: auto;
-  right: auto;
-  top: auto;
-  bottom: auto;
-  flex: 0 0 auto;
+  pointer-events: auto;
+  width: 6.5rem;
+  padding: 0.5rem 0.55rem;
+}
+
+@media (min-width: 640px) {
+  .uberly-root .phone-float-rail .phone-float-stat,
+  .margeo-root .phone-float-rail .phone-float-stat {
+    width: 8rem;
+    padding: 0.65rem 0.8rem;
+  }
 }
 
 @media (min-width: 1024px) {
-  .uberly-root .phone-float-rail,
-  .margeo-root .phone-float-rail {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    overflow: visible;
-    pointer-events: none;
-  }
-
   .uberly-root .phone-float-rail .phone-float-stat,
   .margeo-root .phone-float-rail .phone-float-stat {
-    pointer-events: auto;
+    width: 9.25rem;
+    padding: 0.75rem 0.875rem;
+  }
+}
+
+/* Mobile : cartes calées dans le stage, chevauchent légèrement le phone */
+.uberly-root .phone-float-left,
+.margeo-root .phone-float-left {
+  top: 10%;
+  left: 0;
+}
+
+.uberly-root .phone-float-right,
+.margeo-root .phone-float-right {
+  right: 0;
+  bottom: 28%;
+}
+
+.uberly-root .phone-float-stat-mid,
+.margeo-root .phone-float-stat-mid {
+  top: auto;
+  left: 50%;
+  bottom: 0.1rem;
+  transform: translateX(-50%);
+  width: 7rem;
+  padding: 0.5rem 0.55rem;
+}
+
+@media (min-width: 640px) {
+  .uberly-root .phone-float-left,
+  .margeo-root .phone-float-left {
+    top: 12%;
+    left: 0.15rem;
   }
 
-  .uberly-root .phone-float-rail .phone-float-stat.lg\:absolute,
-  .margeo-root .phone-float-rail .phone-float-stat {
-    /* positions via utility classes on cards */
+  .uberly-root .phone-float-right,
+  .margeo-root .phone-float-right {
+    right: 0.15rem;
+    bottom: 26%;
   }
 
   .uberly-root .phone-float-stat-mid,
   .margeo-root .phone-float-stat-mid {
-    position: absolute;
-    top: 52%;
-    left: -6.5rem;
+    width: 8rem;
+    bottom: 0.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .uberly-root .phone-float-left,
+  .margeo-root .phone-float-left {
+    top: 16%;
+    left: 0;
+  }
+
+  .uberly-root .phone-float-right,
+  .margeo-root .phone-float-right {
+    right: 0;
+    bottom: 24%;
+  }
+
+  .uberly-root .phone-float-stat-mid,
+  .margeo-root .phone-float-stat-mid {
+    top: 48%;
+    bottom: auto;
+    left: 0;
+    transform: none;
+    width: 8.75rem;
+  }
+}
+
+/* Timeline / route connectors — centrés sur les badges (size-8 = 2rem) */
+.uberly-root .problem-timeline-segment,
+.margeo-root .problem-timeline-segment {
+  position: absolute;
+  top: calc(0.625rem + 2rem); /* pt-2.5 + badge */
+  bottom: -0.85rem;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.45),
+    rgba(129, 140, 248, 0.12)
+  );
+  z-index: 0;
+}
+
+@media (min-width: 640px) {
+  .uberly-root .problem-timeline-segment,
+  .margeo-root .problem-timeline-segment {
+    top: calc(0.75rem + 2rem); /* pt-3 + badge */
+  }
+}
+
+.uberly-root .problem-route-segment,
+.margeo-root .problem-route-segment {
+  position: absolute;
+  top: 2rem;
+  bottom: -1.35rem;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.45),
+    rgba(248, 113, 113, 0.35)
+  );
+  z-index: 0;
+}
+
+.uberly-root .problem-route-rail,
+.margeo-root .problem-route-rail,
+.uberly-root .problem-timeline-rail,
+.margeo-root .problem-timeline-rail {
+  position: relative;
+}
+
+.uberly-root .trust-card,
+.margeo-root .trust-card {
+  box-shadow: var(--shadow-mg-card);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+@media (hover: hover) {
+  .uberly-root .trust-card:hover,
+  .margeo-root .trust-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+  }
+}
+
+.uberly-root[data-theme="light"] .trust-card,
+.margeo-root[data-theme="light"] .trust-card {
+  background: #fff;
+}
+
+@media (hover: hover) {
+  .uberly-root[data-theme="light"] .trust-card:hover,
+  .margeo-root[data-theme="light"] .trust-card:hover {
+    border-color: rgba(24, 24, 27, 0.14);
   }
 }
 

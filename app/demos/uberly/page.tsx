@@ -10,6 +10,7 @@ import { SocialProof } from "@/components/margeo/landing/social-proof";
 import { StoryDecision } from "@/components/margeo/landing/story-decision";
 import { StoryProblem } from "@/components/margeo/landing/story-problem";
 import { LandingStickyCta } from "@/components/margeo/landing/sticky-cta";
+import { TrustSection } from "@/components/margeo/landing/trust-section";
 
 export default function LandingPage() {
   return (
@@ -23,6 +24,7 @@ export default function LandingPage() {
         <InteractiveDemo />
         <StoryDecision />
         <SocialProof />
+        <TrustSection />
         <Faq />
         <FinalCta />
       </main>
