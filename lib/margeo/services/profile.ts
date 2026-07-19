@@ -52,12 +52,6 @@ export function rowToUserProfile(
     dailyTarget: Number(row.daily_target),
     platforms: row.platforms as UserProfile["platforms"],
     otherPlatform: row.other_platform ?? undefined,
-    planId:
-      row.plan_id === "pro" || row.plan_id === "elite" || row.plan_id === "discovery"
-        ? row.plan_id
-        : row.premium
-          ? "pro"
-          : "discovery",
     premium: row.premium,
     premiumUntil: row.premium_until ?? undefined,
     premiumSource: row.premium_source ?? undefined,
@@ -79,8 +73,7 @@ function isMissingColumnError(error: { message?: string; code?: string } | null)
   const mentionsProfileCol =
     msg.includes("first_name") ||
     msg.includes("last_name") ||
-    msg.includes("avatar_url") ||
-    msg.includes("plan_id");
+    msg.includes("avatar_url");
   return (
     error.code === "PGRST204" ||
     error.code === "42703" ||
