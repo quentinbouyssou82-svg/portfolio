@@ -20,7 +20,7 @@ const STEPS = [
     icon: CircleCheckBig,
     title: "Verdict",
     description:
-      "Gain net estimé, €/h, score. Accepter, vérifier ou refuser — en ~8 s.",
+      "Gain net estimé, €/h, score. Accepter, vérifier ou refuser — en ~2 s.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function HowItWorks() {
             Comment ça marche
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
-            3 gestes. ~8 secondes.
+            3 gestes. ~2 secondes.
           </h2>
         </Reveal>
 

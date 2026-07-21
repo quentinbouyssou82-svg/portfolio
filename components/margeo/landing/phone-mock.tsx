@@ -655,7 +655,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
             >
               <span className="mb-1.5 inline-flex items-center gap-1 rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[9px] font-semibold text-mg-accent">
                 <Clock className="size-2.5" />
-                8 s
+                2 s
               </span>
               <p className="text-[10px] text-mg-faint">Temps moyen</p>
               <p className="mt-0.5 text-sm font-bold text-mg-foreground">
