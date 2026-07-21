@@ -193,12 +193,20 @@ export async function signUpAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "").trim();
+  const acceptTerms = formData.get("acceptTerms");
 
   if (!email || !password) {
     return { ok: false, message: "Email et mot de passe requis." };
   }
   if (password.length < 6) {
     return { ok: false, message: "Le mot de passe doit contenir au moins 6 caractères." };
+  }
+  if (acceptTerms !== "1" && acceptTerms !== "on") {
+    return {
+      ok: false,
+      message:
+        "Tu dois accepter les Conditions Générales d'Utilisation et la Politique de confidentialité.",
+    };
   }
 
   try {

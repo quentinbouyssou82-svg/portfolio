@@ -171,6 +171,37 @@ export function AuthForm({
             </div>
           )}
 
+          {isSignup && (
+            <label className="flex items-start gap-3 rounded-xl border border-mg-border bg-mg-background/40 p-3 text-left">
+              <input
+                type="checkbox"
+                name="acceptTerms"
+                value="1"
+                required
+                className="mt-0.5 size-4 shrink-0 rounded border-mg-border accent-[var(--color-mg-accent)]"
+              />
+              <span className="text-xs leading-relaxed text-mg-muted">
+                J&apos;ai lu et j&apos;accepte les{" "}
+                <Link
+                  href={UBERLY_PATHS.cgu}
+                  target="_blank"
+                  className="font-medium text-mg-accent underline-offset-2 hover:underline"
+                >
+                  Conditions Générales d&apos;Utilisation
+                </Link>{" "}
+                et la{" "}
+                <Link
+                  href={UBERLY_PATHS.confidentialite}
+                  target="_blank"
+                  className="font-medium text-mg-accent underline-offset-2 hover:underline"
+                >
+                  Politique de confidentialité
+                </Link>
+                .
+              </span>
+            </label>
+          )}
+
           <Button
             type="submit"
             size="lg"
