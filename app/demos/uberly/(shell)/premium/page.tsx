@@ -1,8 +1,7 @@
 "use client";
 
 import { Check, Crown, Minus, Sparkles, Zap } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import Link from "next/link";
 import { Reveal } from "@/components/margeo/reveal";
 import { Button } from "@/components/margeo/ui/button";
 import { Card } from "@/components/margeo/ui/card";
@@ -13,6 +12,7 @@ import {
   formatPlanPrice,
   type UberlyPlanId,
 } from "@/lib/margeo/plans";
+import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
 interface CompareRow {
@@ -63,25 +63,11 @@ function FeatureValue({ value }: { value: string | boolean }) {
   return <span className="text-sm text-mg-foreground">{value}</span>;
 }
 
+function checkoutHref(planId: UberlyPlanId) {
+  return `${margeoRoutes.subscriptionCheckout}?plan=${planId}`;
+}
+
 export default function PremiumPage() {
-  const [loading, setLoading] = useState<UberlyPlanId | null>(null);
-
-  const startTrial = (plan: "pro" | "elite") => {
-    setLoading(plan);
-    setTimeout(() => {
-      setLoading(null);
-      if (plan === "pro") {
-        toast.success(UBERLY_PRICING_COPY.trialToastTitle, {
-          description: UBERLY_PRICING_COPY.trialToastDesc,
-        });
-      } else {
-        toast.success(UBERLY_PRICING_COPY.eliteToastTitle, {
-          description: UBERLY_PRICING_COPY.eliteToastDesc,
-        });
-      }
-    }, 1100);
-  };
-
   return (
     <div className="mx-auto max-w-5xl space-y-12 pb-8">
       <Reveal className="text-center">
@@ -94,6 +80,14 @@ export default function PremiumPage() {
         </h1>
         <p className="mx-auto mt-3 max-w-lg text-mg-muted text-pretty">
           {UBERLY_PRICING_COPY.subtitle}
+        </p>
+        <p className="mt-3">
+          <Link
+            href={margeoRoutes.subscription}
+            className="text-sm font-medium text-mg-accent hover:underline"
+          >
+            Voir mon abonnement →
+          </Link>
         </p>
       </Reveal>
 
@@ -165,34 +159,31 @@ export default function PremiumPage() {
                   ))}
                 </ul>
 
-                {id === "discovery" ? (
+                <Link href={checkoutHref(id)} className="mt-7 block">
                   <Button
-                    variant="secondary"
-                    className="mt-7 w-full min-h-11"
-                    disabled
-                  >
-                    {plan.cta}
-                  </Button>
-                ) : (
-                  <>
-                    <Button
-                      className={cn(
-                        "mt-7 w-full min-h-11",
-                        isPro && "landing-cta-primary",
-                      )}
-                      variant={isPro ? "primary" : "outline"}
-                      onClick={() => startTrial(id)}
-                      disabled={loading !== null}
-                      loading={loading === id}
-                    >
-                      {plan.cta}
-                    </Button>
-                    {plan.ctaSecondary && (
-                      <p className="mt-2.5 text-center text-xs text-mg-faint">
-                        {plan.ctaSecondary}
-                      </p>
+                    className={cn(
+                      "w-full min-h-11",
+                      isPro && "landing-cta-primary",
                     )}
-                  </>
+                    variant={
+                      id === "discovery"
+                        ? "secondary"
+                        : isPro
+                          ? "primary"
+                          : "outline"
+                    }
+                  >
+                    {id === "discovery"
+                      ? "Choisir Découverte"
+                      : id === "pro"
+                        ? "Passer en Pro"
+                        : "Passer en Elite"}
+                  </Button>
+                </Link>
+                {plan.ctaSecondary && id !== "discovery" && (
+                  <p className="mt-2.5 text-center text-xs text-mg-faint">
+                    Activation immédiate · paiement simulé (bêta)
+                  </p>
                 )}
               </Card>
             </Reveal>

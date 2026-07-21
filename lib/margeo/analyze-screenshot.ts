@@ -1,15 +1,15 @@
 import type { Platform, RideOffer } from "./types";
-import {
-  validateCompleteOffer,
-} from "./vision/validate-offer";
+import { validateCompleteOffer } from "./vision/validate-offer";
 import type { ExtractionQuality } from "./vision/extraction-types";
 import { hashImage } from "./vision/image-encoding";
 import { normalizeVisionExtraction } from "./vision/normalize-vision-result";
+import type { PreparedImage } from "./vision/prepare-image";
 import {
   getVisionProvider,
   resolveVisionProviderId,
 } from "./vision/providers/resolve";
 import type { VisionProviderId } from "./vision/providers/types";
+import { getVisionCache, setVisionCache } from "./vision/vision-cache";
 
 export type ScreenshotAnalysisSource = "mock" | "vision";
 
@@ -20,21 +20,23 @@ export interface ScreenshotAnalysisResult {
   warnings: string[];
   missingFields: string[];
   extractionQuality: ExtractionQuality;
-  /** Durée appel Vision en ms (vision uniquement). */
   visionDurationMs?: number;
-  /** Provider utilisé pour l'extraction (vision uniquement). */
   visionProvider?: VisionProviderId;
-  /** @deprecated Utiliser visionDurationMs — conservé pour métadonnées beta existantes. */
+  /** true si servi depuis le cache mémoire */
+  fromCache?: boolean;
+  /** @deprecated */
   geminiDurationMs?: number;
 }
 
 export interface AnalyzeScreenshotOptions {
   seed?: number;
   provider?: "mock" | "vision" | "auto";
+  /** Hash du contenu préparé — active le cache Vision */
+  contentHash?: string;
 }
 
 export async function analyzeScreenshot(
-  image: File | Blob | ArrayBuffer,
+  image: File | Blob | ArrayBuffer | PreparedImage,
   options: AnalyzeScreenshotOptions = {},
 ): Promise<ScreenshotAnalysisResult> {
   const mode =
@@ -45,19 +47,34 @@ export async function analyzeScreenshot(
     return analyzeWithMock(image, options.seed);
   }
 
+  if (options.contentHash) {
+    const cached = getVisionCache(options.contentHash);
+    if (cached) {
+      return { ...cached, fromCache: true, visionDurationMs: 0 };
+    }
+  }
+
   try {
-    return await analyzeWithVisionProvider(image);
+    const result = await analyzeWithVisionProvider(image);
+    if (options.contentHash && result.extractionQuality !== "failed") {
+      setVisionCache(options.contentHash, result);
+    }
+    return result;
   } catch (e) {
     console.error("[uberly] Vision failed:", e);
+    const message =
+      e instanceof Error ? e.message : "Analyse IA indisponible.";
     if (process.env.NODE_ENV === "development") {
       return analyzeWithMock(image, options.seed);
     }
-    throw e;
+    throw new Error(
+      message.includes("Mistral") ? message : `Analyse IA : ${message}`,
+    );
   }
 }
 
 async function analyzeWithVisionProvider(
-  image: File | Blob | ArrayBuffer,
+  image: File | Blob | ArrayBuffer | PreparedImage,
 ): Promise<ScreenshotAnalysisResult> {
   const providerId = resolveVisionProviderId("auto");
   const provider = getVisionProvider(providerId);
@@ -86,11 +103,17 @@ async function analyzeWithVisionProvider(
 }
 
 async function analyzeWithMock(
-  image: File | Blob | ArrayBuffer,
+  image: File | Blob | ArrayBuffer | PreparedImage,
   seed?: number,
 ): Promise<ScreenshotAnalysisResult> {
-  await new Promise((r) => setTimeout(r, 80));
-  const hashSeed = seed ?? hashImage(image);
+  await new Promise((r) => setTimeout(r, 20));
+  const hashSeed =
+    seed ??
+    (image &&
+    typeof image === "object" &&
+    "preparedBytes" in image
+      ? (image as PreparedImage).preparedBytes
+      : hashImage(image as File | Blob | ArrayBuffer));
   const mocks: Omit<RideOffer, "id">[] = [
     {
       platform: "Uber Eats" as Platform,

@@ -65,17 +65,22 @@ export function checkUberlyEnv(): EnvStatus {
 
   const gemini = hasGeminiKey();
   const mistral = hasMistralKey();
-  const visionProvider = resolveConfiguredVisionProvider();
+  let visionProvider: VisionProviderId | null = null;
+  try {
+    visionProvider = resolveConfiguredVisionProvider();
+  } catch {
+    visionProvider = null;
+  }
   const vision = visionProvider != null && visionProvider !== "mock";
 
   if (!vision) {
     const preferred =
       process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase() || "mistral";
-    if (preferred === "mistral") {
+    if (preferred === "mistral" && !mistral) {
       missing.push("MISTRAL_API_KEY");
-    } else if (preferred === "gemini") {
+    } else if (preferred === "gemini" && !gemini) {
       missing.push("UBERLY_GEMINI_API_KEY");
-    } else {
+    } else if (!mistral && !gemini) {
       missing.push("MISTRAL_API_KEY ou UBERLY_GEMINI_API_KEY");
     }
   }
@@ -91,7 +96,7 @@ export function checkUberlyEnv(): EnvStatus {
     vision,
     visionProvider,
     appUrl,
-    readyForBeta: supabase && serviceRole && vision,
+    readyForBeta: supabase && serviceRole && vision && (mistral || gemini),
     missing,
   };
 }

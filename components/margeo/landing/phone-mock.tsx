@@ -35,14 +35,13 @@ const KPI_ITEMS = [
 ] as const;
 
 const STAGGER = {
-  hidden: { opacity: 0, y: 14, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 10 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: {
-      delay: 0.35 + i * 0.08,
-      duration: 0.55,
+      delay: 0.2 + i * 0.06,
+      duration: 0.35,
       ease: [0.21, 0.47, 0.32, 0.98] as const,
     },
   }),
@@ -164,7 +163,7 @@ function PremiumScoreRing({
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.06)"
+            className="phone-score-track"
             strokeWidth={strokeWidth}
           />
           <circle
@@ -172,7 +171,7 @@ function PremiumScoreRing({
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="rgba(52,211,153,0.12)"
+            className="phone-score-glow-ring"
             strokeWidth={strokeWidth + 6}
           />
           <motion.circle
@@ -434,7 +433,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
               <div className="phone-mock-island" aria-hidden />
               <div className="phone-mock-screen-glow" aria-hidden />
               <motion.div
-                className="pointer-events-none absolute inset-0 opacity-40"
+                className="phone-tilt-glow pointer-events-none absolute inset-0 opacity-40"
                 style={{ background: tiltGlowBackground }}
                 aria-hidden
               />
@@ -514,7 +513,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
                 >
                   {KPI_ITEMS.map(({ label, value, icon: Icon }) => (
                     <div key={label} className="phone-kpi-card px-2 py-2.5 text-center">
-                      <span className="mx-auto flex size-6 items-center justify-center rounded-lg bg-white/[0.06]">
+                      <span className="phone-kpi-icon-wrap mx-auto flex size-6 items-center justify-center rounded-lg">
                         <Icon className="size-3 text-mg-muted" aria-hidden />
                       </span>
                       <p className="mt-1.5 text-[9px] font-medium tracking-wide text-mg-faint uppercase">
@@ -572,7 +571,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
                     </div>
                   </div>
 
-                  <div className="mt-3 flex items-center justify-between rounded-lg border border-white/[0.05] bg-black/20 px-2.5 py-2">
+                  <div className="phone-route-mini-bar mt-3 flex items-center justify-between rounded-lg px-2.5 py-2">
                     <div className="relative h-8 flex-1 overflow-hidden rounded-md bg-gradient-to-br from-mg-accent/10 via-transparent to-mg-go/10">
                       <svg
                         className="absolute inset-0 h-full w-full opacity-60"
@@ -662,7 +661,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
               <p className="mt-0.5 text-sm font-bold text-mg-foreground">
                 Capture → verdict
               </p>
-              <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+              <div className="phone-progress-track mt-2 h-1 overflow-hidden rounded-full">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-mg-accent to-mg-go"
                   initial={{ width: "0%" }}

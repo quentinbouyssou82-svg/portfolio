@@ -9,7 +9,10 @@ export type MargeoEvent =
   | "margeo_result_displayed"
   | "margeo_feedback_submitted"
   | "margeo_onboarding_completed"
-  | "margeo_profile_updated";
+  | "margeo_profile_updated"
+  | "margeo_subscription_activated"
+  | "margeo_subscription_changed"
+  | "margeo_subscription_canceled";
 
 const FUNNEL_STEPS = [
   "visitor",

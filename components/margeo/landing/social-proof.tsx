@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
 import { Clock, ScanLine, ShieldCheck, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Reveal } from "@/components/margeo/reveal";
@@ -59,15 +58,20 @@ function AnimatedStat({
   suffix?: string;
   decimals?: number;
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [display, setDisplay] = useState(reduceMotion ? value : 0);
 
   useEffect(() => {
-    if (reduceMotion) {
+    const preferReduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (preferReduce) {
       setDisplay(value);
       return;
     }
-    const duration = 1200;
+    const duration = 900;
     const start = performance.now();
     let frame: number;
 
@@ -80,7 +84,7 @@ function AnimatedStat({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [value, reduceMotion]);
+  }, [value]);
 
   const formatted =
     decimals > 0
@@ -109,10 +113,8 @@ export function SocialProof() {
 
       <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
         {STATS.map((stat, i) => (
-          <Reveal key={stat.label} delay={i * 0.08}>
-            <motion.article
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.22 }}
+          <Reveal key={stat.label} delay={i * 0.05}>
+            <article
               className={cn(
                 "proof-card landing-card-hover p-5 sm:p-6",
                 stat.featured && "proof-card-featured sm:col-span-2 lg:col-span-1",
@@ -152,7 +154,7 @@ export function SocialProof() {
                   />
                 ))}
               </div>
-            </motion.article>
+            </article>
           </Reveal>
         ))}
       </div>

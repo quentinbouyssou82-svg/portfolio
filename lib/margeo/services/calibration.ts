@@ -15,14 +15,39 @@ const NEUTRAL: UserCalibration = {
   sampleSize: 0,
 };
 
+const CACHE_TTL_MS = 5 * 60_000;
+const calibrationCache = new Map<
+  string,
+  { value: UserCalibration; expires: number }
+>();
+
 /**
  * Calibre les estimations à partir du feedback utilisateur (courses acceptées).
- * Utilisé pour affiner durationMin avant scoring.
+ * Cache 5 min — la plupart des bêta-testeurs n'ont pas encore de feedback.
  */
 export async function getUserCalibration(
   userId: string,
 ): Promise<UserCalibration> {
+  const cached = calibrationCache.get(userId);
+  if (cached && Date.now() < cached.expires) return cached.value;
+
   const supabase = await createMargeoServerClient();
+
+  // Fast-path : 1 requête count — zéro feedback → NEUTRAL sans jointure
+  const { count, error: countError } = await supabase
+    .from("margeo_feedback")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("accepted", true)
+    .not("actual_duration_min", "is", null);
+
+  if (countError || !count || count < 3) {
+    calibrationCache.set(userId, {
+      value: NEUTRAL,
+      expires: Date.now() + CACHE_TTL_MS,
+    });
+    return NEUTRAL;
+  }
 
   const { data: feedbacks, error } = await supabase
     .from("margeo_feedback")
@@ -33,7 +58,13 @@ export async function getUserCalibration(
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (error || !feedbacks?.length) return NEUTRAL;
+  if (error || !feedbacks?.length) {
+    calibrationCache.set(userId, {
+      value: NEUTRAL,
+      expires: Date.now() + CACHE_TTL_MS,
+    });
+    return NEUTRAL;
+  }
 
   const analysisIds = feedbacks.map((f) => f.analysis_id);
   const { data: analyses } = await supabase
@@ -41,11 +72,20 @@ export async function getUserCalibration(
     .select("id, gross_gain, ride:margeo_rides(duration_min)")
     .in("id", analysisIds);
 
-  if (!analyses?.length) return NEUTRAL;
+  if (!analyses?.length) {
+    calibrationCache.set(userId, {
+      value: NEUTRAL,
+      expires: Date.now() + CACHE_TTL_MS,
+    });
+    return NEUTRAL;
+  }
 
   const byId = new Map(
     analyses.map((a) => {
-      const rideRaw = a.ride as { duration_min: number } | { duration_min: number }[] | null;
+      const rideRaw = a.ride as
+        | { duration_min: number }
+        | { duration_min: number }[]
+        | null;
       const ride = Array.isArray(rideRaw) ? rideRaw[0] : rideRaw;
       return [
         a.id as string,
@@ -78,7 +118,13 @@ export async function getUserCalibration(
     }
   }
 
-  if (durationCount === 0 && gainCount === 0) return NEUTRAL;
+  if (durationCount === 0 && gainCount === 0) {
+    calibrationCache.set(userId, {
+      value: NEUTRAL,
+      expires: Date.now() + CACHE_TTL_MS,
+    });
+    return NEUTRAL;
+  }
 
   const durationFactor =
     durationCount > 0
@@ -88,11 +134,16 @@ export async function getUserCalibration(
   const gainBias =
     gainCount > 0 ? Math.round((gainBiasSum / gainCount) * 100) / 100 : 0;
 
-  return {
+  const value: UserCalibration = {
     durationFactor,
     gainBias,
     sampleSize: Math.max(durationCount, gainCount),
   };
+  calibrationCache.set(userId, {
+    value,
+    expires: Date.now() + CACHE_TTL_MS,
+  });
+  return value;
 }
 
 /** Applique la calibration utilisateur sur une offre extraite. */
@@ -113,4 +164,8 @@ export function applyCalibrationToOffer(
       Math.round((offer.payout + calibration.gainBias) * 100) / 100,
     ),
   };
+}
+
+export function getNeutralCalibration(): UserCalibration {
+  return NEUTRAL;
 }

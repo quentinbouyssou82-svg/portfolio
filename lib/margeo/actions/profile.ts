@@ -52,10 +52,15 @@ export async function updateProfileAction(
     name: displayName || firstName,
     city: input.city,
     vehicle: input.vehicle,
+    vehicle_details: input.vehicleDetails
+      ? (input.vehicleDetails as unknown as Record<string, unknown>)
+      : undefined,
     cost_per_km: input.costPerKm,
     target_hourly: input.targetHourly,
     daily_target: input.dailyTarget,
     platforms: input.platforms,
+    min_benefit: input.minBenefit,
+    max_distance_km: input.maxDistanceKm,
     ...(input.avatarUrl !== undefined
       ? { avatar_url: input.avatarUrl || null }
       : {}),

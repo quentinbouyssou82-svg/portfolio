@@ -109,7 +109,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <PlatformBadge platform={analysis.offer.platform} />
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-xs text-mg-faint">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-mg-border bg-[var(--mg-surface-muted)] px-2.5 py-1 text-xs text-mg-faint">
               <MapPin className="size-3" />
               {analysis.offer.pickup} → {analysis.offer.dropoff}
             </span>

@@ -1,9 +1,10 @@
 import { VISION_EXTRACTION_PROMPT } from "../extraction-prompt";
-import { toBase64 } from "../image-encoding";
+import type { PreparedImage } from "../prepare-image";
 import type { VisionProvider, VisionProviderResult } from "./types";
 
+/** Modèle multimodal rapide (bêta). */
 const DEFAULT_MODEL =
-  process.env.UBERLY_MISTRAL_VISION_MODEL?.trim() || "pixtral-12b-2409";
+  process.env.UBERLY_MISTRAL_VISION_MODEL?.trim() || "mistral-small-latest";
 
 function getApiKey(): string {
   const key = process.env.MISTRAL_API_KEY?.trim();
@@ -32,60 +33,91 @@ function extractJsonText(content: unknown): string {
   throw new Error("Réponse Mistral Vision vide");
 }
 
+async function imageToDataUrl(
+  image: File | Blob | ArrayBuffer | PreparedImage,
+): Promise<string> {
+  if (
+    image &&
+    typeof image === "object" &&
+    "buffer" in image &&
+    "mimeType" in image &&
+    Buffer.isBuffer((image as PreparedImage).buffer)
+  ) {
+    const p = image as PreparedImage;
+    return `data:${p.mimeType};base64,${p.buffer.toString("base64")}`;
+  }
+  if (image instanceof ArrayBuffer) {
+    return `data:image/jpeg;base64,${Buffer.from(image).toString("base64")}`;
+  }
+  const blob = image as Blob;
+  const mimeType = blob.type || "image/jpeg";
+  const buffer = Buffer.from(await blob.arrayBuffer());
+  return `data:${mimeType};base64,${buffer.toString("base64")}`;
+}
+
 export const mistralVisionProvider: VisionProvider = {
   id: "mistral",
 
   async analyzeImage(
-    image: File | Blob | ArrayBuffer,
+    image: File | Blob | ArrayBuffer | PreparedImage,
   ): Promise<VisionProviderResult> {
     const apiKey = getApiKey();
-    const { base64, mimeType } = await toBase64(image);
+    const dataUrl = await imageToDataUrl(image);
     const started = Date.now();
 
-    const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: DEFAULT_MODEL,
-        temperature: 0.05,
-        response_format: { type: "json_object" },
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: VISION_EXTRACTION_PROMPT },
-              {
-                type: "image_url",
-                image_url: `data:${mimeType};base64,${base64}`,
-              },
-            ],
-          },
-        ],
-      }),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`Mistral Vision : ${res.status} ${err.slice(0, 200)}`);
-    }
-
-    const json = await res.json();
-    const text = extractJsonText(json.choices?.[0]?.message?.content);
-
-    let parsed: Record<string, unknown>;
     try {
-      parsed = JSON.parse(text) as Record<string, unknown>;
-    } catch {
-      throw new Error("Mistral Vision : JSON invalide dans la réponse");
-    }
+      const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: DEFAULT_MODEL,
+          temperature: 0,
+          max_tokens: 140,
+          response_format: { type: "json_object" },
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: VISION_EXTRACTION_PROMPT },
+                {
+                  type: "image_url",
+                  image_url: dataUrl,
+                },
+              ],
+            },
+          ],
+        }),
+      });
 
-    return {
-      rawJson: parsed,
-      durationMs: Date.now() - started,
-      provider: "mistral",
-    };
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`Mistral Vision : ${res.status} ${err.slice(0, 200)}`);
+      }
+
+      const json = await res.json();
+      const text = extractJsonText(json.choices?.[0]?.message?.content);
+
+      let parsed: Record<string, unknown>;
+      try {
+        parsed = JSON.parse(text) as Record<string, unknown>;
+      } catch {
+        throw new Error("Mistral Vision : JSON invalide dans la réponse");
+      }
+
+      return {
+        rawJson: parsed,
+        durationMs: Date.now() - started,
+        provider: "mistral",
+      };
+    } finally {
+      clearTimeout(timeout);
+    }
   },
 };

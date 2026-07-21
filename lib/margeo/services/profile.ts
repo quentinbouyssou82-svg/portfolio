@@ -4,6 +4,7 @@ import { createMargeoServerClient } from "../supabase/server";
 import { buildDisplayName } from "../profile-display";
 import { getMargeoAdminDb } from "../supabase/admin";
 import { normalizeVehicle, toLegacyPersistedVehicle, toPersistedVehicle } from "../vehicle-costs";
+import { parseVehicleDetails } from "../vehicle-details";
 
 export { buildDisplayName, getProfileInitials } from "../profile-display";
 
@@ -11,6 +12,7 @@ type ProfileMeta = {
   first_name?: string;
   last_name?: string;
   avatar_url?: string;
+  vehicle_details?: Record<string, unknown>;
 };
 
 function readMeta(meta: Record<string, unknown> | undefined): ProfileMeta {
@@ -21,6 +23,10 @@ function readMeta(meta: Record<string, unknown> | undefined): ProfileMeta {
     last_name: typeof meta.last_name === "string" ? meta.last_name : undefined,
     avatar_url:
       typeof meta.avatar_url === "string" ? meta.avatar_url : undefined,
+    vehicle_details:
+      meta.vehicle_details && typeof meta.vehicle_details === "object"
+        ? (meta.vehicle_details as Record<string, unknown>)
+        : undefined,
   };
 }
 
@@ -47,11 +53,20 @@ export function rowToUserProfile(
     avatarUrl: avatarUrl || undefined,
     city: row.city,
     vehicle: normalizeVehicle(row.vehicle),
+    vehicleDetails: parseVehicleDetails(
+      row.vehicle_details ?? meta?.vehicle_details,
+    ),
     costPerKm: Number(row.cost_per_km),
     targetHourly: Number(row.target_hourly),
     dailyTarget: Number(row.daily_target),
     platforms: row.platforms as UserProfile["platforms"],
     otherPlatform: row.other_platform ?? undefined,
+    planId:
+      row.plan_id === "pro" || row.plan_id === "elite" || row.plan_id === "discovery"
+        ? row.plan_id
+        : row.premium
+          ? "pro"
+          : "discovery",
     premium: row.premium,
     premiumUntil: row.premium_until ?? undefined,
     premiumSource: row.premium_source ?? undefined,
@@ -73,7 +88,8 @@ function isMissingColumnError(error: { message?: string; code?: string } | null)
   const mentionsProfileCol =
     msg.includes("first_name") ||
     msg.includes("last_name") ||
-    msg.includes("avatar_url");
+    msg.includes("avatar_url") ||
+    msg.includes("vehicle_details");
   return (
     error.code === "PGRST204" ||
     error.code === "42703" ||
@@ -111,6 +127,9 @@ async function syncAuthProfileMeta(
         ...(meta.last_name !== undefined ? { last_name: meta.last_name } : {}),
         ...(meta.avatar_url !== undefined
           ? { avatar_url: meta.avatar_url }
+          : {}),
+        ...(meta.vehicle_details !== undefined
+          ? { vehicle_details: meta.vehicle_details }
           : {}),
       },
     });
@@ -210,6 +229,7 @@ export async function updateProfile(
     last_name: input.last_name,
     avatar_url:
       input.avatar_url === null ? "" : (input.avatar_url ?? undefined),
+    vehicle_details: input.vehicle_details ?? undefined,
   });
 
   const basePayload: ProfileUpdateInput = {
@@ -235,6 +255,7 @@ export async function updateProfile(
     name: payload.name,
     city: payload.city,
     vehicle: payload.vehicle,
+    vehicle_details: payload.vehicle_details,
     cost_per_km: payload.cost_per_km,
     target_hourly: payload.target_hourly,
     daily_target: payload.daily_target,
@@ -253,8 +274,20 @@ export async function updateProfile(
 
   let { data, error } = await runUpdate(basePayload);
 
+  const withoutOptionalCols = (payload: ProfileUpdateInput): ProfileUpdateInput => {
+    const next: ProfileUpdateInput = { ...payload };
+    delete next.vehicle_details;
+    delete next.first_name;
+    delete next.last_name;
+    delete next.avatar_url;
+    return next;
+  };
+
   if (isMissingColumnError(error)) {
-    const legacy = await runUpdate(stripIdentityCols(basePayload));
+    let legacy = await runUpdate(withoutOptionalCols(basePayload));
+    if (isMissingColumnError(legacy.error)) {
+      legacy = await runUpdate(withoutOptionalCols(stripIdentityCols(basePayload)));
+    }
     data = legacy.data;
     error = legacy.error;
   }
@@ -263,13 +296,13 @@ export async function updateProfile(
     const legacyVehicle = toLegacyPersistedVehicle(
       input.vehicle,
     ) as ProfileUpdateInput["vehicle"];
-    const vehiclePayload: ProfileUpdateInput = {
+    const vehiclePayload: ProfileUpdateInput = withoutOptionalCols({
       ...basePayload,
       vehicle: legacyVehicle,
-    };
+    });
     let retry = await runUpdate(vehiclePayload);
     if (isMissingColumnError(retry.error)) {
-      retry = await runUpdate(stripIdentityCols(vehiclePayload));
+      retry = await runUpdate(withoutOptionalCols(stripIdentityCols(vehiclePayload)));
     }
     data = retry.data;
     error = retry.error;
@@ -285,5 +318,6 @@ export async function updateProfile(
     last_name: input.last_name,
     avatar_url:
       input.avatar_url === null ? "" : (input.avatar_url ?? undefined),
+    vehicle_details: input.vehicle_details ?? undefined,
   });
 }

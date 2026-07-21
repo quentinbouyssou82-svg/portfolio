@@ -10,8 +10,26 @@ export function resolveVisionProviderId(
   const env = process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase();
 
   if (env === "mock") return "mock";
-  if (env === "mistral") return "mistral";
-  if (env === "gemini") return "gemini";
+  if (env === "mistral") {
+    if (!process.env.MISTRAL_API_KEY?.trim()) {
+      throw new Error(
+        "Analyse IA non configurée. Ajoute MISTRAL_API_KEY sur le serveur.",
+      );
+    }
+    return "mistral";
+  }
+  if (env === "gemini") {
+    if (
+      !process.env.UBERLY_GEMINI_API_KEY?.trim() &&
+      !process.env.GOOGLE_API_KEY?.trim() &&
+      !process.env.GEMINI_API_KEY?.trim()
+    ) {
+      throw new Error(
+        "Analyse IA non configurée. Ajoute UBERLY_GEMINI_API_KEY sur le serveur.",
+      );
+    }
+    return "gemini";
+  }
 
   if (process.env.MISTRAL_API_KEY?.trim()) return "mistral";
   if (

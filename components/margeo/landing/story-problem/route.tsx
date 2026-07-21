@@ -9,6 +9,33 @@ import {
 
 const EASE = [0.21, 0.47, 0.32, 0.98] as const;
 
+const ROUTE_STOPS = [
+  {
+    icon: UtensilsCrossed,
+    tone: "accent" as const,
+    label: "Restaurant",
+    value: "Burger Père & Fils",
+    labelClass: "text-mg-faint",
+    valueClass: "text-mg-foreground",
+  },
+  {
+    icon: MapPin,
+    tone: "go" as const,
+    label: "Client",
+    value: "Quai Claude Bernard",
+    labelClass: "text-mg-faint",
+    valueClass: "text-mg-foreground",
+  },
+  {
+    icon: MapPin,
+    tone: "danger" as const,
+    label: "Retour à vide",
+    value: "2,4 km · invisible",
+    labelClass: "text-mg-stop/80",
+    valueClass: "text-mg-muted",
+  },
+];
+
 export function ProblemRoute() {
   return (
     <PremiumCard index={0} className="overflow-hidden rounded-3xl" tilt={false}>
@@ -18,67 +45,43 @@ export function ProblemRoute() {
             La moitié du trajet, ignorée.
           </p>
 
-          <div className="relative mt-6">
-            <div className="space-y-0">
-              <div className="relative flex gap-3.5 pb-5">
-                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
-                  <span className="problem-route-segment" aria-hidden />
-                  <PremiumIconBadge
-                    icon={UtensilsCrossed}
-                    tone="accent"
-                    size="sm"
-                    idle={false}
-                  />
-                </div>
-                <div className="min-w-0 pt-0.5">
-                  <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
-                    Restaurant
-                  </p>
-                  <p className="text-sm font-semibold text-mg-foreground">
-                    Burger Père &amp; Fils
-                  </p>
-                </div>
-              </div>
+          {/*
+            Une seule ligne continue (comme Desktop) — évite les segments 1px
+            coupés / invisibles sur Safari iOS.
+          */}
+          <div className="problem-route-track relative mt-6">
+            <div
+              className="problem-route-line absolute top-4 bottom-4 left-5 w-[2px] -translate-x-1/2"
+              aria-hidden
+            />
 
-              <div className="relative flex gap-3.5 pb-5">
-                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
-                  <span className="problem-route-segment" aria-hidden />
-                  <PremiumIconBadge
-                    icon={MapPin}
-                    tone="go"
-                    size="sm"
-                    idle={false}
-                  />
-                </div>
-                <div className="min-w-0 pt-0.5">
-                  <p className="text-[10px] font-medium tracking-wide text-mg-faint uppercase">
-                    Client
-                  </p>
-                  <p className="text-sm font-semibold text-mg-foreground">
-                    Quai Claude Bernard
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative flex gap-3.5">
-                <div className="problem-route-rail relative flex w-10 shrink-0 justify-center">
-                  <PremiumIconBadge
-                    icon={MapPin}
-                    tone="danger"
-                    size="sm"
-                    idle={false}
-                  />
-                </div>
-                <div className="min-w-0 pt-0.5">
-                  <p className="text-[10px] font-medium tracking-wide text-mg-stop/80 uppercase">
-                    Retour à vide
-                  </p>
-                  <p className="text-sm font-semibold text-mg-muted">
-                    2,4 km · invisible
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ol className="space-y-0">
+              {ROUTE_STOPS.map((stop, i) => (
+                <li
+                  key={stop.label}
+                  className={`relative flex gap-3.5 ${i < ROUTE_STOPS.length - 1 ? "pb-5" : ""}`}
+                >
+                  <div className="relative z-[2] flex w-10 shrink-0 justify-center">
+                    <PremiumIconBadge
+                      icon={stop.icon}
+                      tone={stop.tone}
+                      size="sm"
+                      idle={false}
+                    />
+                  </div>
+                  <div className="min-w-0 pt-0.5">
+                    <p
+                      className={`text-[10px] font-medium tracking-wide uppercase ${stop.labelClass}`}
+                    >
+                      {stop.label}
+                    </p>
+                    <p className={`text-sm font-semibold ${stop.valueClass}`}>
+                      {stop.value}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
 
@@ -125,7 +128,7 @@ export function ProblemRoute() {
               <circle cx="180" cy="150" r="4" fill="#f87171" opacity="0.8" />
             </svg>
 
-            <div className="absolute top-3 left-3 rounded-lg border border-white/[0.08] bg-black/50 px-2 py-1 text-[10px] text-mg-muted backdrop-blur-sm">
+            <div className="problem-route-chip absolute top-3 left-3 rounded-lg px-2 py-1 text-[10px] text-mg-muted backdrop-blur-sm">
               Trajet payé
             </div>
             <div className="absolute right-3 bottom-3 rounded-lg border border-mg-stop/25 bg-mg-stop-soft/80 px-2 py-1 text-[10px] font-medium text-mg-stop backdrop-blur-sm">

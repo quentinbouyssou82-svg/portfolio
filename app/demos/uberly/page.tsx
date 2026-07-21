@@ -1,16 +1,35 @@
+import dynamic from "next/dynamic";
 import { Faq } from "@/components/margeo/landing/faq";
 import { FinalCta } from "@/components/margeo/landing/final-cta";
 import { Footer } from "@/components/margeo/landing/footer";
 import { Hero } from "@/components/margeo/landing/hero";
-import { InteractiveDemo } from "@/components/margeo/landing/interactive-demo";
 import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
 import { LandingNav } from "@/components/margeo/landing/nav";
 import { PlatformMarquee } from "@/components/margeo/landing/platform-marquee";
-import { SocialProof } from "@/components/margeo/landing/social-proof";
-import { StoryDecision } from "@/components/margeo/landing/story-decision";
-import { StoryProblem } from "@/components/margeo/landing/story-problem";
 import { LandingStickyCta } from "@/components/margeo/landing/sticky-cta";
-import { TrustSection } from "@/components/margeo/landing/trust-section";
+
+const StoryProblem = dynamic(
+  () =>
+    import("@/components/margeo/landing/story-problem").then((m) => m.StoryProblem),
+  { ssr: true },
+);
+const StoryDecision = dynamic(
+  () =>
+    import("@/components/margeo/landing/story-decision").then(
+      (m) => m.StoryDecision,
+    ),
+  { ssr: true },
+);
+const SocialProof = dynamic(
+  () =>
+    import("@/components/margeo/landing/social-proof").then((m) => m.SocialProof),
+  { ssr: true },
+);
+const TrustSection = dynamic(
+  () =>
+    import("@/components/margeo/landing/trust-section").then((m) => m.TrustSection),
+  { ssr: true },
+);
 
 export default function LandingPage() {
   return (
@@ -21,7 +40,6 @@ export default function LandingPage() {
         <Hero />
         <PlatformMarquee />
         <StoryProblem />
-        <InteractiveDemo />
         <StoryDecision />
         <SocialProof />
         <TrustSection />

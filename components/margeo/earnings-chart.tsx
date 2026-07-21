@@ -10,8 +10,8 @@ interface EarningsChartProps {
 }
 
 const W = 720;
-const PAD_X = 8;
-const PAD_TOP = 16;
+const PAD_X = 12;
+const PAD_TOP = 18;
 const PAD_BOTTOM = 28;
 
 /** Graphique d'évolution des gains nets — SVG maison, zéro dépendance. */
@@ -47,6 +47,8 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
 
   const active = hovered !== null ? points[hovered] : null;
   const hasData = data.some((d) => d.net > 0);
+  /** Sur mobile étroit : 1 label sur 2 pour éviter le chevauchement. */
+  const labelStep = data.length > 10 ? 2 : 1;
 
   if (!hasData) {
     return (
@@ -60,10 +62,14 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
   }
 
   return (
-    <div className="relative w-full touch-pan-y">
+    <div
+      className="earnings-chart relative w-full min-w-0 touch-pan-y overflow-visible"
+      style={{ aspectRatio: `${W} / ${height}` }}
+    >
       <svg
         viewBox={`0 0 ${W} ${height}`}
-        className="w-full"
+        preserveAspectRatio="xMidYMid meet"
+        className="block h-full w-full"
         role="img"
         aria-label="Graphique des gains nets sur 14 jours"
         onMouseLeave={() => setHovered(null)}
@@ -93,18 +99,20 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
         />
+        {/* Trait statique — pathLength Safari iOS laisse parfois le trait invisible */}
         <motion.path
           d={linePath}
           fill="none"
           stroke="var(--color-mg-go)"
           strokeWidth={2.5}
           strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
+          strokeLinejoin="round"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1.6, ease: "easeInOut" }}
+          transition={{ duration: 0.6, delay: 0.25 }}
           style={{ filter: "drop-shadow(0 0 8px rgba(52,211,153,0.4))" }}
         />
 
@@ -119,15 +127,18 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
               onMouseEnter={() => setHovered(i)}
               onTouchStart={() => setHovered(i)}
             />
-            <text
-              x={p.x}
-              y={height - 8}
-              textAnchor="middle"
-              className="fill-mg-faint text-[11px]"
-              fill="var(--color-mg-faint)"
-            >
-              {p.day}
-            </text>
+            {(i % labelStep === 0 || i === points.length - 1) && (
+              <text
+                x={p.x}
+                y={height - 8}
+                textAnchor="middle"
+                className="fill-mg-faint"
+                fill="var(--color-mg-faint)"
+                fontSize={11}
+              >
+                {p.day}
+              </text>
+            )}
           </g>
         ))}
 
@@ -154,8 +165,8 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
         <text
           x={PAD_X}
           y={12}
-          className="fill-mg-faint text-[10px]"
           fill="var(--color-mg-faint)"
+          fontSize={10}
         >
           {formatEur(max)}
         </text>
@@ -163,8 +174,10 @@ export function EarningsChart({ data, height = 220 }: EarningsChartProps) {
 
       {active && (
         <div
-          className="pointer-events-none absolute -top-1 z-10 -translate-x-1/2 rounded-lg border border-mg-border bg-mg-surface px-3 py-1.5 text-xs shadow-mg-card"
-          style={{ left: `${(active.x / W) * 100}%` }}
+          className="pointer-events-none absolute -top-1 z-10 max-w-[calc(100%-0.5rem)] -translate-x-1/2 rounded-lg border border-mg-border bg-mg-surface px-3 py-1.5 text-xs shadow-mg-card"
+          style={{
+            left: `${Math.min(92, Math.max(8, (active.x / W) * 100))}%`,
+          }}
         >
           <span className="text-mg-muted">{active.day} · </span>
           <span className="font-semibold text-mg-foreground">

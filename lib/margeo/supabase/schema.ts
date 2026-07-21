@@ -8,6 +8,7 @@ export interface MargeoProfileRow {
   avatar_url: string | null;
   city: string;
   vehicle: Vehicle;
+  vehicle_details?: Record<string, unknown> | null;
   cost_per_km: number;
   target_hourly: number;
   daily_target: number;
@@ -16,6 +17,7 @@ export interface MargeoProfileRow {
   premium: boolean;
   premium_until: string | null;
   premium_source: "manual" | "beta" | "stripe" | "trial" | null;
+  plan_id?: "discovery" | "pro" | "elite" | null;
   is_beta_tester: boolean;
   onboarding_completed: boolean;
   min_benefit: number;
@@ -99,6 +101,7 @@ export type ProfileUpdateInput = Partial<
     | "avatar_url"
     | "city"
     | "vehicle"
+    | "vehicle_details"
     | "cost_per_km"
     | "target_hourly"
     | "daily_target"

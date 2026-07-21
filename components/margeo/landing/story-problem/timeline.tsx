@@ -71,7 +71,7 @@ export function ProblemTimeline() {
         sm:left-[1.375rem] = centre d’une colonne w-11 (2.75rem).
       */}
       <div
-        className="problem-timeline-line absolute top-4 bottom-4 left-5 w-px sm:left-[1.375rem]"
+        className="problem-timeline-line absolute top-4 bottom-4 left-5 w-[2px] -translate-x-1/2 sm:left-[1.375rem]"
         aria-hidden
       />
 

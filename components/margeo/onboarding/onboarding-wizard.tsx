@@ -275,15 +275,15 @@ export function OnboardingWizard({
               loading={finishing || pending}
               size="sm"
               className={cn(
-                "justify-self-end",
-                isSummary && "onboarding-nav-btn-finish max-w-[11rem] px-3 text-xs sm:max-w-none sm:text-sm",
+                "justify-self-end whitespace-normal text-center leading-tight",
+                isSummary && "onboarding-nav-btn-finish px-3 text-xs sm:text-sm",
               )}
             >
               {isSummary ? (
                 finishing || pending ? (
                   "Enregistrement…"
                 ) : (
-                  "Lancer ma première analyse"
+                  "Lancer l'analyse"
                 )
               ) : (
                 <>

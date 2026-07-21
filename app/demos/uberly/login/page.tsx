@@ -14,7 +14,7 @@ export default async function MargeoLoginPage({
     <>
       <LandingBackdrop />
       <AuthErrorBanner message={error} />
-      <div className="relative z-[1] flex min-h-dvh items-center justify-center p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] sm:p-6">
+      <div className="auth-page relative z-[1] flex min-h-dvh items-center justify-center overflow-x-clip p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] sm:p-6">
         <AuthForm mode={isSignup ? "signup" : "login"} premium />
       </div>
     </>

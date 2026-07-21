@@ -1,5 +1,4 @@
-import type { ExtractionQuality } from "../extraction-types";
-import type { RideOffer } from "../../types";
+import type { PreparedImage } from "../prepare-image";
 
 export type VisionProviderId = "mistral" | "gemini" | "mock";
 
@@ -12,16 +11,16 @@ export interface VisionProviderResult {
 export interface VisionProvider {
   id: VisionProviderId;
   analyzeImage(
-    image: File | Blob | ArrayBuffer,
+    image: File | Blob | ArrayBuffer | Buffer | PreparedImage,
   ): Promise<VisionProviderResult>;
 }
 
 export interface NormalizedVisionResult {
-  offer: RideOffer;
+  offer: import("../../types").RideOffer;
   confidence: number;
   warnings: string[];
   missingFields: string[];
-  extractionQuality: ExtractionQuality;
+  extractionQuality: import("../extraction-types").ExtractionQuality;
   visionDurationMs: number;
   visionProvider: VisionProviderId;
 }

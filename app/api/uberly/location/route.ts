@@ -15,6 +15,34 @@ function parsePermission(value: unknown): GeoPermission {
   return "unknown";
 }
 
+export async function GET() {
+  try {
+    const user = await requireAuthUser();
+    const supabase = await createMargeoServerClient();
+    const { data, error } = await supabase
+      .from("margeo_profiles")
+      .select(
+        "last_lat,last_lng,location_permission,location_updated_at,city",
+      )
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      throw new ApiError("Profil introuvable", 404, "PROFILE_NOT_FOUND");
+    }
+
+    return NextResponse.json({
+      lat: data.last_lat != null ? Number(data.last_lat) : null,
+      lng: data.last_lng != null ? Number(data.last_lng) : null,
+      permission: data.location_permission ?? "unknown",
+      updatedAt: data.location_updated_at,
+      city: data.city,
+    });
+  } catch (error) {
+    return jsonError(error);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const user = await requireAuthUser();

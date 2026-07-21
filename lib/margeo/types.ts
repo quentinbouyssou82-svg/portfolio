@@ -78,11 +78,15 @@ export interface UserProfile {
   avatarUrl?: string;
   city: string;
   vehicle: Vehicle;
+  /** Détails marque / modèle / conso (extensible). */
+  vehicleDetails?: import("./vehicle-details").VehicleDetails;
   costPerKm: number;
   targetHourly: number;
   dailyTarget: number;
   platforms: Platform[];
   otherPlatform?: string;
+  /** Plan commercial : discovery | pro | elite */
+  planId?: "discovery" | "pro" | "elite";
   premium: boolean;
   premiumUntil?: string;
   premiumSource?: "manual" | "beta" | "stripe" | "trial";

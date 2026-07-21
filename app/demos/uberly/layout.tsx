@@ -55,7 +55,7 @@ export default function UberlyLayout({
     >
       <script
         dangerouslySetInnerHTML={{
-          __html: `(function(){try{var t=localStorage.getItem("uberly-theme");if(t==="light"||t==="dark"){var r=document.currentScript&&document.currentScript.parentElement;if(r)r.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
+          __html: `(function(){try{var p=location.pathname;var base="/demos/uberly";var marketing=p===base||p===base+"/"||p.indexOf(base+"/login")===0||p.indexOf(base+"/signup")===0||p.indexOf(base+"/forgot-password")===0;if(marketing){document.documentElement.style.colorScheme="dark";return;}var t=localStorage.getItem("uberly-theme");if(t==="light"||t==="dark"){var r=document.currentScript&&document.currentScript.parentElement;if(r)r.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
         }}
       />
       <UberlyThemeProvider>

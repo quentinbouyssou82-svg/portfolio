@@ -60,7 +60,7 @@ function FaqItem({
         <span className="font-medium text-mg-foreground">{question}</span>
         <span
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-full border border-mg-border bg-white/[0.03] transition-all duration-300",
+            "flex size-7 shrink-0 items-center justify-center rounded-full border border-mg-border bg-[var(--mg-surface-muted)] transition-all duration-300",
             open && "border-mg-accent/40 bg-mg-accent-soft rotate-45",
           )}
         >

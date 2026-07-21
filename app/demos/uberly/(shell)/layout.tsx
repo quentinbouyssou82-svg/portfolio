@@ -26,6 +26,11 @@ export default async function MargeoShellLayout({
         typeof user.user_metadata?.avatar_url === "string"
           ? user.user_metadata.avatar_url
           : undefined,
+      vehicle_details:
+        user.user_metadata?.vehicle_details &&
+        typeof user.user_metadata.vehicle_details === "object"
+          ? (user.user_metadata.vehicle_details as Record<string, unknown>)
+          : undefined,
     },
   );
   if (!profile) redirect(UBERLY_PATHS.login);

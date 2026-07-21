@@ -8,7 +8,7 @@ export async function GET() {
   const env = checkUberlyEnv();
 
   return NextResponse.json({
-    ok: env.supabase && env.vision,
+    ok: env.readyForBeta,
     betaMode: isUberlyBetaMode(),
     checks: {
       supabase: env.supabase,

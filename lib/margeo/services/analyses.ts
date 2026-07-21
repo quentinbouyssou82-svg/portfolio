@@ -6,8 +6,7 @@ import type {
 } from "../supabase/schema";
 import type { RideAnalysis, RideOffer, UserProfile } from "../types";
 import { createMargeoServerClient } from "../supabase/server";
-import { getProfileForUser } from "./profile";
-import { getFreeHistoryCutoffIso } from "./quota";
+import { getHistoryCutoffIsoForUser } from "./quota";
 
 function rowToRideOffer(ride: MargeoRideRow): RideOffer {
   return {
@@ -53,8 +52,7 @@ export async function listAnalysesForUser(
   userId: string,
   limit = 50,
 ): Promise<RideAnalysis[]> {
-  const profile = await getProfileForUser(userId);
-  const historyCutoff = getFreeHistoryCutoffIso(profile);
+  const historyCutoff = await getHistoryCutoffIsoForUser(userId);
 
   const supabase = await createMargeoServerClient();
   let query = supabase
@@ -96,7 +94,12 @@ export async function getAnalysisById(
   const { ride, ...analysis } = data as MargeoAnalysisWithRide & {
     ride: MargeoRideRow;
   };
-  return rowToRideAnalysis(analysis as MargeoAnalysisRow, ride);
+  const result = rowToRideAnalysis(analysis as MargeoAnalysisRow, ride);
+  const cutoff = await getHistoryCutoffIsoForUser(userId);
+  if (cutoff && new Date(result.analyzedAt).getTime() < new Date(cutoff).getTime()) {
+    return null;
+  }
+  return result;
 }
 
 export async function saveAnalysis(
@@ -114,54 +117,78 @@ export async function saveAnalysis(
   },
 ): Promise<RideAnalysis | null> {
   const result = analyzeOffer(offer, profile);
-  const supabase = await createMargeoServerClient();
+  // Service role : inserts plus rapides (pas de RLS cookie)
+  let supabase;
+  try {
+    const { getMargeoAdminDb } = await import("../supabase/admin");
+    supabase = getMargeoAdminDb();
+  } catch {
+    supabase = await createMargeoServerClient();
+  }
+  const rideId = crypto.randomUUID();
+  const analysisId = crypto.randomUUID();
 
-  const { data: ride, error: rideError } = await supabase
+  const ridePayload = {
+    id: rideId,
+    user_id: userId,
+    platform: offer.platform,
+    pickup: offer.pickup,
+    dropoff: offer.dropoff,
+    payout: offer.payout,
+    distance_km: offer.distanceKm ?? null,
+    duration_min: offer.durationMin ?? null,
+    empty_return_km: offer.emptyReturnKm,
+    pickup_distance_km: offer.pickupDistanceKm ?? null,
+    courier_lat: opts?.courierLat ?? profile.lastLat ?? null,
+    courier_lng: opts?.courierLng ?? profile.lastLng ?? null,
+    image_path: opts?.imagePath ?? null,
+    vision_source: opts?.visionSource ?? null,
+    vision_confidence: opts?.visionConfidence ?? null,
+    missing_fields: opts?.missingFields ?? [],
+    extraction_quality: opts?.extractionQuality ?? "complete",
+  };
+
+  const analysisPayload = {
+    id: analysisId,
+    user_id: userId,
+    ride_id: rideId,
+    gross_gain: result.grossGain,
+    estimated_cost: result.estimatedCost,
+    net_gain: result.netGain,
+    hourly_rate: result.hourlyRate,
+    score: result.score,
+    verdict: result.verdict,
+    explanation: result.explanation,
+    insights: result.insights,
+    score_breakdown: result.scoreBreakdown,
+    analyzed_at: result.analyzedAt,
+  };
+
+  // Ride d'abord (FK), puis analysis — selects minimaux
+  const { error: rideError } = await supabase
     .from("margeo_rides")
-    .insert({
-      user_id: userId,
-      platform: offer.platform,
-      pickup: offer.pickup,
-      dropoff: offer.dropoff,
-      payout: offer.payout,
-      distance_km: offer.distanceKm ?? null,
-      duration_min: offer.durationMin ?? null,
-      empty_return_km: offer.emptyReturnKm,
-      pickup_distance_km: offer.pickupDistanceKm ?? null,
-      courier_lat: opts?.courierLat ?? profile.lastLat ?? null,
-      courier_lng: opts?.courierLng ?? profile.lastLng ?? null,
-      image_path: opts?.imagePath ?? null,
-      vision_source: opts?.visionSource ?? null,
-      vision_confidence: opts?.visionConfidence ?? null,
-      missing_fields: opts?.missingFields ?? [],
-      extraction_quality: opts?.extractionQuality ?? "complete",
-    })
-    .select("*")
-    .single();
+    .insert(ridePayload);
 
-  if (rideError || !ride) return null;
+  if (rideError) {
+    console.error("[uberly/analyses] ride insert:", rideError.message);
+    return null;
+  }
 
-  const { data: analysis, error: analysisError } = await supabase
+  const { error: analysisError } = await supabase
     .from("margeo_analyses")
-    .insert({
-      user_id: userId,
-      ride_id: ride.id,
-      gross_gain: result.grossGain,
-      estimated_cost: result.estimatedCost,
-      net_gain: result.netGain,
-      hourly_rate: result.hourlyRate,
-      score: result.score,
-      verdict: result.verdict,
-      explanation: result.explanation,
-      insights: result.insights,
-      score_breakdown: result.scoreBreakdown,
-      analyzed_at: result.analyzedAt,
-    })
-    .select("*")
-    .single();
+    .insert(analysisPayload);
 
-  if (analysisError || !analysis) return null;
-  return rowToRideAnalysis(analysis as MargeoAnalysisRow, ride as MargeoRideRow);
+  if (analysisError) {
+    console.error("[uberly/analyses] analysis insert:", analysisError.message);
+    return null;
+  }
+
+  // Retour immédiat depuis le moteur — pas de relecture DB
+  return {
+    ...result,
+    id: analysisId,
+    offer: { ...offer, id: rideId },
+  };
 }
 
 export async function countAnalysesForUser(userId: string): Promise<number> {

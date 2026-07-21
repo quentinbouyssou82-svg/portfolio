@@ -11,6 +11,7 @@ import {
 } from "@/components/margeo/analyse/scan-overlay";
 import { UploadZone } from "@/components/margeo/analyse/upload-zone";
 import { LocationBanner } from "@/components/margeo/location-banner";
+import { useUberlyProfile } from "@/components/margeo/profile-context";
 import { Button } from "@/components/margeo/ui/button";
 import { ErrorState } from "@/components/margeo/ui/error-state";
 import { useGeolocation } from "@/hooks/margeo/use-geolocation";
@@ -47,7 +48,12 @@ export default function AnalysePage() {
     description?: string;
   } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const geo = useGeolocation();
+  const profile = useUberlyProfile();
+  const geo = useGeolocation({
+    lat: profile.lastLat,
+    lng: profile.lastLng,
+    permission: profile.locationPermission,
+  });
 
   useEffect(() => {
     return () => {

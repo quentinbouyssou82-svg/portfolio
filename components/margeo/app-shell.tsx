@@ -11,17 +11,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/margeo/logo";
 import { PageTransition } from "@/components/margeo/page-transition";
+import { ProfileProvider } from "@/components/margeo/profile-context";
 import { getProfileInitials } from "@/lib/margeo/profile-display";
 import type { UserProfile } from "@/lib/margeo/types";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
 const NAV_ITEMS = [
+  { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
+  { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
+  { href: margeoRoutes.historique, label: "Histo", icon: History },
+  { href: margeoRoutes.profil, label: "Profil", icon: User },
+  { href: margeoRoutes.subscription, label: "Plans", icon: Crown },
+];
+
+const NAV_ITEMS_DESKTOP = [
   { href: margeoRoutes.dashboard, label: "Dashboard", icon: LayoutDashboard },
   { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
   { href: margeoRoutes.historique, label: "Historique", icon: History },
   { href: margeoRoutes.profil, label: "Profil", icon: User },
-  { href: margeoRoutes.premium, label: "Offres", icon: Crown },
+  { href: margeoRoutes.subscription, label: "Abonnement", icon: Crown },
 ];
 
 function AvatarBubble({
@@ -74,9 +83,9 @@ function NavLink({
     >
       <Icon className="size-[18px]" />
       {label}
-      {href === margeoRoutes.premium && !active && (
+      {href === margeoRoutes.subscription && !active && (
         <span className="ml-auto rounded-full bg-mg-accent-soft px-2 py-0.5 text-[10px] font-semibold text-mg-accent">
-          Pro
+          Plans
         </span>
       )}
     </Link>
@@ -102,7 +111,8 @@ export function AppShell({
     "Livreur";
 
   return (
-    <div className="min-h-dvh overflow-x-clip lg:flex">
+    <ProfileProvider profile={profile}>
+      <div className="min-h-dvh overflow-x-clip lg:flex">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-mg-border bg-mg-surface/80 backdrop-blur-xl lg:flex">
         <div className="flex h-16 items-center border-b border-mg-border px-5">
           <Link href={margeoRoutes.home} aria-label="Retour à l'accueil">
@@ -111,7 +121,7 @@ export function AppShell({
         </div>
 
         <nav className="flex-1 space-y-1 p-3">
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS_DESKTOP.map((item) => (
             <NavLink key={item.href} {...item} active={isActive(item.href)} />
           ))}
         </nav>
@@ -127,7 +137,12 @@ export function AppShell({
                 {displayName}
               </span>
               <span className="block text-xs text-mg-faint">
-                Plan {profile.premium ? "Pro" : "Découverte"}
+                Plan{" "}
+                {profile.planId === "elite"
+                  ? "Elite"
+                  : profile.planId === "pro" || profile.premium
+                    ? "Pro"
+                    : "Découverte"}
                 {profile.city ? ` · ${profile.city}` : ""}
               </span>
             </span>
@@ -167,7 +182,7 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 aria-label={item.label}
                 className={cn(
-                  "relative flex min-h-[52px] min-w-[3.25rem] flex-1 max-w-[4.5rem] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1 text-[10px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
+                  "relative flex min-h-[52px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1 text-[10px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
                   active ? "text-mg-accent" : "text-mg-faint",
                   item.href === margeoRoutes.analyse &&
                     !active &&
@@ -181,12 +196,13 @@ export function AppShell({
                   className="size-[1.35rem]"
                   strokeWidth={active ? 2.25 : 1.75}
                 />
-                <span className="truncate">{item.label}</span>
+                <span className="app-shell-tab-label truncate">{item.label}</span>
               </Link>
             );
           })}
         </div>
       </nav>
     </div>
+    </ProfileProvider>
   );
 }

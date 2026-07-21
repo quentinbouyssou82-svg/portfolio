@@ -18,14 +18,34 @@ export async function uploadScreenshot(
   ext: string,
 ): Promise<UploadScreenshotResult | null> {
   try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    return uploadScreenshotBuffer(
+      userId,
+      buffer,
+      ext,
+      file.type || "image/jpeg",
+    );
+  } catch (e) {
+    console.warn("[uberly/storage] upload skipped:", e);
+    return null;
+  }
+}
+
+/** Upload depuis Buffer déjà préparé (évite File → arrayBuffer). */
+export async function uploadScreenshotBuffer(
+  userId: string,
+  buffer: Buffer,
+  ext: string,
+  contentType = "image/jpeg",
+): Promise<UploadScreenshotResult | null> {
+  try {
     const admin = getMargeoAdminDb();
     const path = `${userId}/${crypto.randomUUID()}.${ext}`;
-    const buffer = Buffer.from(await file.arrayBuffer());
 
     const { error } = await admin.storage
       .from(SCREENSHOT_BUCKET)
       .upload(path, buffer, {
-        contentType: file.type || "image/jpeg",
+        contentType,
         upsert: false,
       });
 

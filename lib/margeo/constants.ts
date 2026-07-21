@@ -15,6 +15,8 @@ export const UBERLY_PATHS = {
   historique: `${UBERLY_BASE}/historique`,
   profil: `${UBERLY_BASE}/profil`,
   premium: `${UBERLY_BASE}/premium`,
+  subscription: `${UBERLY_BASE}/subscription`,
+  subscriptionCheckout: `${UBERLY_BASE}/subscription/checkout`,
 } as const;
 
 export const MARGEO_PATHS = UBERLY_PATHS;
@@ -35,6 +37,7 @@ export const PROTECTED_UBERLY_PREFIXES = [
   "/historique",
   "/profil",
   "/premium",
+  "/subscription",
 ] as const;
 
 export const PROTECTED_MARGEO_PREFIXES = PROTECTED_UBERLY_PREFIXES;

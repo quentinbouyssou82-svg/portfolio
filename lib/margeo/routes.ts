@@ -16,6 +16,8 @@ export const uberlyRoutes = {
   historiqueDetail: (id: string) => `${UBERLY_BASE}/historique/${id}`,
   profil: `${UBERLY_BASE}/profil`,
   premium: `${UBERLY_BASE}/premium`,
+  subscription: `${UBERLY_BASE}/subscription`,
+  subscriptionCheckout: `${UBERLY_BASE}/subscription/checkout`,
 } as const;
 
 /** Alias rétrocompatibilité */

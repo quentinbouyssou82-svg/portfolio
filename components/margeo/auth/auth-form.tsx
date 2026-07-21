@@ -174,7 +174,7 @@ export function AuthForm({
           <Button
             type="submit"
             size="lg"
-            className="w-full"
+            className={cn("w-full", premium && "auth-submit-btn")}
             loading={pending}
           >
             {pending

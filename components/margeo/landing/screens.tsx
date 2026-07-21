@@ -113,7 +113,7 @@ export function Screens() {
               </div>
 
               {/* Barre de score */}
-              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+              <div className="mg-progress-track mt-4 h-1.5 overflow-hidden rounded-full">
                 <div
                   className="h-full rounded-full transition-all duration-700"
                   style={{

@@ -1,0 +1,24 @@
+import { NextResponse } from "next/server";
+import { jsonError, ApiError } from "@/lib/margeo/api/errors";
+import { requireAuthUser } from "@/lib/margeo/api/auth";
+import { changePlan } from "@/lib/margeo/services/subscription";
+import type { UberlyPlanId } from "@/lib/margeo/plans";
+
+/** POST — upgrade / downgrade */
+export async function POST(request: Request) {
+  try {
+    const user = await requireAuthUser();
+    const body = (await request.json().catch(() => ({}))) as {
+      planId?: string;
+    };
+    const planId = body.planId;
+    if (planId !== "discovery" && planId !== "pro" && planId !== "elite") {
+      throw new ApiError("Plan invalide.", 400, "INVALID_PLAN");
+    }
+
+    const subscription = await changePlan(user.id, planId as UberlyPlanId);
+    return NextResponse.json({ subscription });
+  } catch (error) {
+    return jsonError(error);
+  }
+}

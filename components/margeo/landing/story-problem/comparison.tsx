@@ -52,7 +52,7 @@ export function ProblemComparison() {
         <p className="mt-2 text-center text-sm text-mg-muted">
           Gain affiché
         </p>
-        <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/[0.06] shadow-[inset_0_1px_2px_rgba(0,0,0,0.35)]">
+        <div className="mg-progress-track mt-6 h-2 overflow-hidden rounded-full">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-mg-go/80 to-mg-go"
             initial={{ width: 0 }}

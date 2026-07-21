@@ -6,6 +6,7 @@ import type {
   UserProfile,
   Verdict,
 } from "./types";
+import { normalizeVehicle } from "./vehicle-costs";
 import { formatEur } from "./utils";
 
 /** Coût du temps immobilisé (usure, opportunité) par minute selon le véhicule. */
@@ -54,6 +55,10 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
+function isCarVehicle(vehicle: UserProfile["vehicle"]): boolean {
+  return normalizeVehicle(vehicle).startsWith("voiture");
+}
+
 function isDenseZone(city: string): boolean {
   return DENSE_CITIES.has(city.toLowerCase().trim());
 }
@@ -72,9 +77,10 @@ export function analyzeOffer(
   const hasDuration = offer.durationMin != null;
   const distanceKm = offer.distanceKm ?? 0;
   const durationMin = offer.durationMin ?? 0;
+  const vehicleId = normalizeVehicle(profile.vehicle);
 
   const totalKm = pickupKm + distanceKm + offer.emptyReturnKm;
-  const timeCost = TIME_COST_PER_MIN[profile.vehicle];
+  const timeCost = TIME_COST_PER_MIN[vehicleId] ?? 0.018;
   const estimatedCost = round2(
     totalKm * profile.costPerKm +
       (hasDuration ? durationMin * timeCost : 0),
@@ -131,6 +137,8 @@ function computeScoreWithBreakdown(
   const breakdown: ScoreFactor[] = [];
   let score = 50;
   const pickupKm = offer.pickupDistanceKm ?? 0;
+  const distanceKm = offer.distanceKm ?? 0;
+  const durationMin = offer.durationMin ?? 0;
 
   // 1. Taux horaire vs objectif (±25 pts)
   if (flags.hasDuration) {
@@ -209,36 +217,46 @@ function computeScoreWithBreakdown(
     });
   }
 
-  // 3. Retour à vide (±15 pts)
+  // 3. Retour à vide (±15 pts) + préférence utilisateur
   if (flags.hasDistance && offer.distanceKm != null) {
     const emptyRatio = offer.emptyReturnKm / Math.max(offer.distanceKm, 1);
-  let emptyImpact = 0;
-  if (emptyRatio <= 0.25) {
-    emptyImpact = 8;
-  } else if (emptyRatio <= 0.45) {
-    emptyImpact = 0;
-  } else if (emptyRatio <= 0.7) {
-    emptyImpact = -8;
-  } else {
-    emptyImpact = -15;
-  }
+    let emptyImpact = 0;
+    if (emptyRatio <= 0.25) {
+      emptyImpact = 8;
+    } else if (emptyRatio <= 0.45) {
+      emptyImpact = 0;
+    } else if (emptyRatio <= 0.7) {
+      emptyImpact = -8;
+    } else {
+      emptyImpact = -15;
+    }
 
-  if (!isDenseZone(profile.city) && emptyRatio > 0.4) {
-    emptyImpact -= 3;
-  }
+    if (!isDenseZone(profile.city) && emptyRatio > 0.4) {
+      emptyImpact -= 3;
+    }
 
-  score += emptyImpact;
-  breakdown.push({
-    label:
-      emptyImpact >= 0
-        ? "Retour à vide limité"
-        : "Retour difficile estimé",
-    impact: emptyImpact,
-    detail: `${offer.emptyReturnKm.toLocaleString("fr-FR")} km à vide (${Math.round(emptyRatio * 100)} % de la course).`,
-  });
+    const emptyPref = profile.emptyReturns ?? "short_only";
+    if (emptyPref === "no" && offer.emptyReturnKm > 1.5) {
+      emptyImpact -= 10;
+    } else if (emptyPref === "short_only" && offer.emptyReturnKm > 3) {
+      emptyImpact -= 6;
+    } else if (emptyPref === "yes" && emptyRatio <= 0.35) {
+      emptyImpact += 2;
+    }
+
+    score += emptyImpact;
+    breakdown.push({
+      label:
+        emptyImpact >= 0
+          ? "Retour à vide limité"
+          : "Retour difficile estimé",
+      impact: emptyImpact,
+      detail: `${offer.emptyReturnKm.toLocaleString("fr-FR")} km à vide (${Math.round(emptyRatio * 100)} % de la course).`,
+    });
   }
 
   // 4. Gain net absolu (±10 pts)
+  const minBenefit = profile.minBenefit ?? 6;
   const netImpact = clamp((netGain - 3) * 2, -10, 10);
   score += netImpact;
   if (netGain <= 0) {
@@ -253,6 +271,54 @@ function computeScoreWithBreakdown(
       impact: Math.round(netImpact),
       detail: `${formatEur(netGain)} nets${flags.hasDuration && offer.durationMin != null ? ` pour ${offer.durationMin} min de travail` : ""}.`,
     });
+  }
+
+  // 4b. Bénéfice minimum utilisateur (±15 pts)
+  if (netGain < minBenefit) {
+    const deficit = minBenefit - netGain;
+    const minImpact = clamp(-deficit * 2.5, -15, -4);
+    score += minImpact;
+    breakdown.push({
+      label: "Sous ton bénéfice minimum",
+      impact: Math.round(minImpact),
+      detail: `${formatEur(netGain)} net vs ${formatEur(minBenefit)} minimum souhaité.`,
+    });
+  } else if (netGain >= minBenefit + 2) {
+    const bonus = clamp((netGain - minBenefit) * 1.2, 2, 8);
+    score += bonus;
+    breakdown.push({
+      label: "Au-dessus de ton minimum",
+      impact: Math.round(bonus),
+      detail: `${formatEur(netGain - minBenefit)} au-dessus de ton seuil de ${formatEur(minBenefit)}.`,
+    });
+  }
+
+  // 4c. Distance maximale souhaitée (±12 pts)
+  const maxDistanceKm = profile.maxDistanceKm ?? 8;
+  const missionKm = pickupKm + distanceKm;
+  if (flags.hasDistance && missionKm > maxDistanceKm) {
+    const over = missionKm - maxDistanceKm;
+    const distImpact = clamp(-over * 2.5, -12, -3);
+    score += distImpact;
+    breakdown.push({
+      label: "Course plus longue que ta limite",
+      impact: Math.round(distImpact),
+      detail: `${missionKm.toLocaleString("fr-FR")} km au total vs ${maxDistanceKm} km max.`,
+    });
+  }
+
+  // 4d. Temps d'attente estimé (vitesse effective basse) (±8 pts)
+  if (flags.hasDuration && flags.hasDistance && missionKm > 0.3) {
+    const speedKmh = missionKm / (durationMin / 60);
+    if (speedKmh < 10) {
+      const waitImpact = speedKmh < 6 ? -8 : -4;
+      score += waitImpact;
+      breakdown.push({
+        label: "Temps d'attente élevé",
+        impact: waitImpact,
+        detail: `${durationMin} min pour ${missionKm.toLocaleString("fr-FR")} km — beaucoup d'attente au restaurant.`,
+      });
+    }
   }
 
   // 5. Plateforme (±5 pts)
@@ -271,7 +337,8 @@ function computeScoreWithBreakdown(
 
   // 6. Véhicule vs durée (±5 pts) — courses longues pénalisent vélo
   let vehicleImpact = 0;
-  if (profile.vehicle === "velo" && offer.durationMin != null && offer.durationMin > 25) {
+  const vehicleId = normalizeVehicle(profile.vehicle);
+  if (vehicleId === "velo" && offer.durationMin != null && offer.durationMin > 25) {
     vehicleImpact = -5;
     breakdown.push({
       label: "Course longue en vélo",
@@ -279,7 +346,7 @@ function computeScoreWithBreakdown(
       detail: `${offer.durationMin} min estimées — fatigue accrue.`,
     });
   } else if (
-    (profile.vehicle === "velo" || profile.vehicle === "velo_electrique") &&
+    (vehicleId === "velo" || vehicleId === "velo_electrique") &&
     offer.durationMin != null &&
     offer.durationMin > 35
   ) {
@@ -289,7 +356,11 @@ function computeScoreWithBreakdown(
       impact: vehicleImpact,
       detail: `${offer.durationMin} min — prévois une pause hydratation.`,
     });
-  } else if (profile.vehicle === "voiture" && offer.distanceKm != null && offer.distanceKm < 2) {
+  } else if (
+    isCarVehicle(profile.vehicle) &&
+    offer.distanceKm != null &&
+    offer.distanceKm < 2
+  ) {
     vehicleImpact = -4;
     breakdown.push({
       label: "Course courte en voiture",
@@ -319,7 +390,7 @@ function computeScoreWithBreakdown(
 
   return {
     score: Math.round(clamp(score, 0, 100)),
-    breakdown: breakdown.filter((f) => f.impact !== 0).slice(0, 6),
+    breakdown: breakdown.filter((f) => f.impact !== 0).slice(0, 8),
   };
 }
 

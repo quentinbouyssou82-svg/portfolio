@@ -28,18 +28,18 @@ export function FinalCta() {
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mg-muted sm:text-lg">
               Compte gratuit. Première analyse en 30 secondes.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link href={margeoRoutes.signup}>
-                <Button size="lg" className="landing-cta-primary min-h-12 w-full min-w-[240px]">
+            <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+              <Link href={margeoRoutes.signup} className="w-full sm:w-auto">
+                <Button size="lg" className="landing-cta-primary min-h-12 w-full sm:min-w-[240px]">
                   Commencer gratuitement
                   <ArrowRight />
                 </Button>
               </Link>
-              <Link href={margeoRoutes.login}>
+              <Link href={margeoRoutes.login} className="w-full sm:w-auto">
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="landing-cta-secondary min-h-12 w-full min-w-[200px] sm:w-auto"
+                  className="landing-cta-secondary min-h-12 w-full sm:min-w-[200px] sm:w-auto"
                 >
                   J&apos;ai déjà un compte
                 </Button>
