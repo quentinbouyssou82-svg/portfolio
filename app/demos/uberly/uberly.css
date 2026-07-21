@@ -1668,6 +1668,43 @@
     0 12px 32px rgba(0, 0, 0, 0.32);
 }
 
+/* Logo — fond sombre (dark) / clair (light) */
+.uberly-root .uberly-logo-icon-wrap,
+.margeo-root .uberly-logo-icon-wrap {
+  background: #0c0c0f;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.uberly-root .uberly-logo-icon-light,
+.margeo-root .uberly-logo-icon-light {
+  display: none;
+}
+
+.uberly-root[data-theme="light"] .uberly-logo-icon-wrap,
+.margeo-root[data-theme="light"] .uberly-logo-icon-wrap {
+  background: #fafafa;
+  box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.08);
+}
+
+.uberly-root[data-theme="light"] .uberly-logo-icon-dark,
+.margeo-root[data-theme="light"] .uberly-logo-icon-dark {
+  display: none;
+}
+
+.uberly-root[data-theme="light"] .uberly-logo-icon-light,
+.margeo-root[data-theme="light"] .uberly-logo-icon-light {
+  display: block;
+}
+
+.uberly-root[data-theme="light"] .problem-route-map,
+.margeo-root[data-theme="light"] .problem-route-map {
+  border-color: rgba(24, 24, 27, 0.08);
+  background: rgba(250, 250, 250, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(24, 24, 27, 0.04) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
 /* ── Auth (login premium) ── */
 
 .uberly-root .auth-card,

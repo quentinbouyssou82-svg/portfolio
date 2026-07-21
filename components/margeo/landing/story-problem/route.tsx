@@ -82,12 +82,12 @@ export function ProblemRoute() {
           </div>
         </div>
 
-        <div className="relative min-h-[220px] bg-gradient-to-br from-mg-accent/[0.04] via-transparent to-transparent p-6 lg:p-8">
-          <div className="problem-route-map relative h-full min-h-[180px] overflow-hidden rounded-2xl">
+        <div className="relative flex items-center bg-gradient-to-br from-mg-accent/[0.04] via-transparent to-transparent p-6 lg:p-8">
+          <div className="problem-route-map relative aspect-[320/200] w-full overflow-hidden rounded-2xl">
             <svg
-              className="absolute inset-0 h-full w-full"
+              className="block h-full w-full"
               viewBox="0 0 320 200"
-              preserveAspectRatio="xMidYMid slice"
+              preserveAspectRatio="xMidYMid meet"
               aria-hidden
             >
               <defs>
