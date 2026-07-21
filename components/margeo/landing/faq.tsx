@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   {
     question: "Ça marche pendant le compte à rebours ?",
     answer:
-      "Oui. L'analyse prend ~8 secondes en moyenne. Tu décides avant l'expiration de la proposition.",
+      "Oui. L'analyse prend ~2 secondes en moyenne. Tu décides avant l'expiration de la proposition.",
   },
   {
     question: "Mes données sont partagées avec les plateformes ?",
@@ -102,7 +102,7 @@ export function Faq() {
           <p className="text-xs font-semibold tracking-[0.2em] text-mg-accent uppercase">
             FAQ
           </p>
-          <h2 className="text-gradient mt-3 text-2xl font-bold tracking-tight text-mg-foreground sm:text-4xl">
+          <h2 className="text-gradient mt-3 text-2xl font-bold tracking-tight text-mg-foreground leading-[1.25] sm:text-4xl sm:leading-[1.2]">
             Questions fréquentes
           </h2>
         </Reveal>

@@ -45,7 +45,7 @@ export function SectionShell({
           )}
           <h2
             className={cn(
-              "text-gradient mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl lg:text-5xl",
+              "text-gradient mt-3 text-3xl font-bold tracking-tight text-balance leading-[1.2] sm:text-4xl sm:leading-[1.15] lg:text-5xl",
               eyebrow ? "" : "mt-0",
             )}
           >

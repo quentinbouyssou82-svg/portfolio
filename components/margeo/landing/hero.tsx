@@ -16,7 +16,7 @@ import { margeoRoutes } from "@/lib/margeo/routes";
 const BENEFITS = [
   { icon: TrendingUp, label: "Mieux filtrer pour le €/h", tone: "go" as const },
   { icon: Ban, label: "Moins de mauvaises courses", tone: "stop" as const },
-  { icon: Zap, label: "Verdict en ~8 secondes", tone: "accent" as const },
+  { icon: Zap, label: "Verdict en ~2 secondes", tone: "accent" as const },
 ];
 
 const ease = [0.21, 0.47, 0.32, 0.98] as const;
@@ -56,7 +56,7 @@ export function Hero() {
               initial={reduceMotion ? false : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.08, ease }}
-              className="text-gradient mt-7 text-[2.35rem] leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]"
+              className="text-gradient mt-7 text-[2.35rem] leading-[1.15] font-bold tracking-tight text-balance sm:text-5xl sm:leading-[1.12] lg:text-[3.4rem]"
             >
               Accepte les bonnes courses.{" "}
               <span className="text-gradient-accent">Refuse</span> le reste.

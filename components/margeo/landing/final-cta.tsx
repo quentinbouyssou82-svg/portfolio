@@ -22,8 +22,8 @@ export function FinalCta() {
               <Sparkles className="size-3" />
               Beta ouverte
             </span>
-            <h2 className="text-gradient mt-5 text-3xl font-bold tracking-tight text-balance sm:text-5xl">
-              Arrête de deviner. Estime avant d&apos;accepter.
+            <h2 className="text-gradient mt-5 text-3xl font-bold tracking-tight text-balance leading-[1.2] sm:text-5xl sm:leading-[1.15]">
+              Ne devine plus. Estime ton gain avant d&apos;accepter.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mg-muted sm:text-lg">
               Compte gratuit. Première analyse en 30 secondes. Résultat

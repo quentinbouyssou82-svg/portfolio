@@ -17,8 +17,8 @@ function ProblemOpener() {
       <div className="problem-opener-glow" aria-hidden />
 
       <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 10, filter: "blur(6px)" }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ ...SPRING, delay: 0 }}
         className="text-xs font-semibold tracking-[0.24em] text-mg-accent uppercase"
@@ -27,14 +27,14 @@ function ProblemOpener() {
       </motion.p>
 
       <motion.h2
-        initial={reduceMotion ? false : { opacity: 0, y: 18, filter: "blur(8px)" }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ ...SPRING, delay: 0.08 }}
-        className="problem-title text-gradient mt-5 text-[2.15rem] leading-[1.06] font-bold tracking-tight text-balance sm:mt-6 sm:text-5xl lg:text-[3.35rem]"
+        className="problem-title text-gradient mt-5 text-[2.15rem] leading-[1.18] font-bold tracking-tight text-balance sm:mt-6 sm:text-5xl sm:leading-[1.12] lg:text-[3.35rem]"
       >
         Tu crois gagner{" "}
-        <span className="text-gradient-accent problem-title-accent">7 €.</span>
+        <span className="text-gradient-accent problem-title-accent">7&nbsp;€.</span>
       </motion.h2>
 
       <motion.p

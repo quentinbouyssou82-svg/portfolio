@@ -219,7 +219,14 @@
   );
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
+  /* Évite la coupe des descendantes (g, p, y) et des fins de mot */
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .uberly-root .text-gradient-accent,
@@ -232,7 +239,13 @@
   );
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .uberly-root section[id],
