@@ -17,6 +17,21 @@ export const UBERLY_PATHS = {
   premium: `${UBERLY_BASE}/premium`,
   subscription: `${UBERLY_BASE}/subscription`,
   subscriptionCheckout: `${UBERLY_BASE}/subscription/checkout`,
+  mentionsLegales: `${UBERLY_BASE}/mentions-legales`,
+  confidentialite: `${UBERLY_BASE}/confidentialite`,
+  cgu: `${UBERLY_BASE}/cgu`,
+  cgv: `${UBERLY_BASE}/cgv`,
+  cookies: `${UBERLY_BASE}/cookies`,
+  conditionsBeta: `${UBERLY_BASE}/conditions-beta`,
+  beta: `${UBERLY_BASE}/beta`,
+  remboursement: `${UBERLY_BASE}/remboursement`,
+  demandesRgpd: `${UBERLY_BASE}/demandes-rgpd`,
+  suppressionDonnees: `${UBERLY_BASE}/suppression-donnees`,
+  securiteDonnees: `${UBERLY_BASE}/securite-donnees`,
+  abonnementsStripe: `${UBERLY_BASE}/abonnements-stripe`,
+  proprieteIntellectuelle: `${UBERLY_BASE}/propriete-intellectuelle`,
+  charteUtilisation: `${UBERLY_BASE}/charte-utilisation`,
+  contact: `${UBERLY_BASE}/contact`,
 } as const;
 
 export const MARGEO_PATHS = UBERLY_PATHS;
@@ -27,6 +42,21 @@ export const PUBLIC_UBERLY_PATHS = new Set<string>([
   `${UBERLY_BASE}/signup`,
   UBERLY_PATHS.forgotPassword,
   UBERLY_PATHS.deconnexion,
+  UBERLY_PATHS.mentionsLegales,
+  UBERLY_PATHS.confidentialite,
+  UBERLY_PATHS.cgu,
+  UBERLY_PATHS.cgv,
+  UBERLY_PATHS.cookies,
+  UBERLY_PATHS.conditionsBeta,
+  UBERLY_PATHS.beta,
+  UBERLY_PATHS.remboursement,
+  UBERLY_PATHS.demandesRgpd,
+  UBERLY_PATHS.suppressionDonnees,
+  UBERLY_PATHS.securiteDonnees,
+  UBERLY_PATHS.abonnementsStripe,
+  UBERLY_PATHS.proprieteIntellectuelle,
+  UBERLY_PATHS.charteUtilisation,
+  UBERLY_PATHS.contact,
 ]);
 
 export const PUBLIC_MARGEO_PATHS = PUBLIC_UBERLY_PATHS;

@@ -3,6 +3,7 @@ import { UberlyPostHogProvider } from "@/components/margeo/analytics/posthog-pro
 import { UberlyThemeProvider } from "@/components/margeo/theme-provider";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import "./uberly.css";
 
@@ -52,10 +53,13 @@ export default function UberlyLayout({
     <div
       className={`${geistSans.variable} ${geistMono.variable} uberly-root`}
       data-theme="dark"
+      suppressHydrationWarning
     >
-      <script
+      <Script
+        id="uberly-theme-boot"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
-          __html: `(function(){try{var p=location.pathname;var base="/demos/uberly";var marketing=p===base||p===base+"/"||p.indexOf(base+"/login")===0||p.indexOf(base+"/signup")===0||p.indexOf(base+"/forgot-password")===0;if(marketing){document.documentElement.style.colorScheme="dark";return;}var t=localStorage.getItem("uberly-theme");if(t==="light"||t==="dark"){var r=document.currentScript&&document.currentScript.parentElement;if(r)r.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
+          __html: `(function(){try{var p=location.pathname;var base="/demos/uberly";var marketing=p===base||p===base+"/"||p.indexOf(base+"/login")===0||p.indexOf(base+"/signup")===0||p.indexOf(base+"/forgot-password")===0;if(marketing){document.documentElement.style.colorScheme="dark";return;}var t=localStorage.getItem("uberly-theme");if(t==="light"||t==="dark"){var r=document.getElementById("uberly-theme-boot");var root=r&&r.parentElement;if(root&&root.classList.contains("uberly-root"))root.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
         }}
       />
       <UberlyThemeProvider>

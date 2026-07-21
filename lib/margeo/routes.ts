@@ -18,6 +18,22 @@ export const uberlyRoutes = {
   premium: `${UBERLY_BASE}/premium`,
   subscription: `${UBERLY_BASE}/subscription`,
   subscriptionCheckout: `${UBERLY_BASE}/subscription/checkout`,
+  /** Pages juridiques — contenu à rédiger séparément. */
+  mentionsLegales: `${UBERLY_BASE}/mentions-legales`,
+  confidentialite: `${UBERLY_BASE}/confidentialite`,
+  cgu: `${UBERLY_BASE}/cgu`,
+  cgv: `${UBERLY_BASE}/cgv`,
+  cookies: `${UBERLY_BASE}/cookies`,
+  conditionsBeta: `${UBERLY_BASE}/conditions-beta`,
+  beta: `${UBERLY_BASE}/beta`,
+  remboursement: `${UBERLY_BASE}/remboursement`,
+  demandesRgpd: `${UBERLY_BASE}/demandes-rgpd`,
+  suppressionDonnees: `${UBERLY_BASE}/suppression-donnees`,
+  securiteDonnees: `${UBERLY_BASE}/securite-donnees`,
+  abonnementsStripe: `${UBERLY_BASE}/abonnements-stripe`,
+  proprieteIntellectuelle: `${UBERLY_BASE}/propriete-intellectuelle`,
+  charteUtilisation: `${UBERLY_BASE}/charte-utilisation`,
+  contact: `${UBERLY_BASE}/contact`,
 } as const;
 
 /** Alias rétrocompatibilité */

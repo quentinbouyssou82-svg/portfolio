@@ -35,6 +35,15 @@ const entitlementsCache = new Map<
   { value: PlanEntitlements; expires: number }
 >();
 
+/** Invalide le cache après activation / changement / annulation de plan. */
+export function invalidateEntitlementsCache(userId?: string): void {
+  if (userId) {
+    entitlementsCache.delete(userId);
+    return;
+  }
+  entitlementsCache.clear();
+}
+
 function db() {
   // Service role : RLS contourné après requireAuthUser / actions authentifiées
   try {
@@ -307,6 +316,7 @@ export async function getCurrentSubscription(
     .eq("user_id", userId)
     .maybeSingle();
 
+  // Prefer metadata plan when subscriptions table / plan_id column manquent
   if (isMissingRelation(error)) {
     const profile = await loadProfile(userId);
     if (!profile) return discoveryFallback(userId);
@@ -314,7 +324,15 @@ export async function getCurrentSubscription(
     try {
       const admin = getMargeoAdminDb();
       const { data: userData } = await admin.auth.admin.getUserById(userId);
-      const metaPlan = userData.user?.user_metadata?.plan_id;
+      const meta = userData.user?.user_metadata as
+        | {
+            plan_id?: string;
+            premium?: boolean;
+            premium_until?: string;
+            premium_source?: string;
+          }
+        | undefined;
+      const metaPlan = meta?.plan_id;
       if (
         metaPlan === "discovery" ||
         metaPlan === "pro" ||
@@ -322,6 +340,35 @@ export async function getCurrentSubscription(
       ) {
         planId = metaPlan;
       }
+      // Metadata premium sans plan_id explicite
+      if (
+        planId === "discovery" &&
+        (meta?.premium === true || profile.premium)
+      ) {
+        planId = "pro";
+      }
+      return fromLegacyProfile(userId, {
+        premium:
+          profile.premium ||
+          meta?.premium === true ||
+          planId === "pro" ||
+          planId === "elite",
+        premiumUntil: profile.premiumUntil ?? meta?.premium_until,
+        premiumSource:
+          (profile.premiumSource as
+            | "manual"
+            | "beta"
+            | "stripe"
+            | "trial"
+            | undefined) ??
+          (meta?.premium_source as
+            | "manual"
+            | "beta"
+            | "stripe"
+            | "trial"
+            | undefined),
+        planId,
+      });
     } catch {
       // ignore
     }
@@ -520,6 +567,7 @@ async function upsertSubscription(
       provider: input.provider,
       payload: input.metadata,
     });
+    invalidateEntitlementsCache(userId);
     return {
       ...discoveryFallback(userId),
       planId: input.planId,
@@ -578,12 +626,14 @@ async function upsertSubscription(
     payload: input.metadata,
   });
 
+  invalidateEntitlementsCache(userId);
   return rowToSubscription(saved);
 }
 
 /**
- * Active un plan via le provider de paiement (simulé en bêta).
- * Point d'entrée unique pour Stripe plus tard.
+ * Active un plan via le provider de paiement.
+ * - Bêta : simulated (activation immédiate)
+ * - Production : Stripe Checkout + abonnement à renouvellement automatique
  */
 export async function checkoutAndActivatePlan(
   userId: string,

@@ -271,7 +271,9 @@ export function OnboardingWizard({
             <Button
               type="button"
               onClick={handleContinue}
-              disabled={finishing || pending}
+              disabled={
+                finishing || pending || Boolean(validateStep(step, draft))
+              }
               loading={finishing || pending}
               size="sm"
               className={cn(

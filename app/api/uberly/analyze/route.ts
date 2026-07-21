@@ -57,9 +57,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Auth parallèle : profil léger + quota + formData
+    // Valider l'image avant le quota — évite un 429 trompeur sur fichier invalide
+    const formData = await request.formData();
+    const file = formData.get("image");
+    if (!(file instanceof File)) {
+      throw new ApiError("Image requise", 400, "IMAGE_REQUIRED");
+    }
+    validateScreenshotFile(file);
+
+    // Auth parallèle : profil léger + quota
     const prepStarted = Date.now();
-    const [profileRaw, quota, formData] = await Promise.all([
+    const [profileRaw, quota] = await Promise.all([
       getProfileForUser(user.id, {
         first_name:
           typeof user.user_metadata?.first_name === "string"
@@ -82,7 +90,6 @@ export async function POST(request: Request) {
           ),
       ),
       assertAnalysisQuota(user.id),
-      request.formData(),
     ]);
     const profile = profileRaw;
     mark("prepMs", prepStarted);
@@ -97,13 +104,6 @@ export async function POST(request: Request) {
         "ONBOARDING_REQUIRED",
       );
     }
-
-    const file = formData.get("image");
-    if (!(file instanceof File)) {
-      throw new ApiError("Image requise", 400, "IMAGE_REQUIRED");
-    }
-
-    validateScreenshotFile(file);
 
     const courierLat = parseOptionalCoordinate(formData.get("courierLat"));
     const courierLng = parseOptionalCoordinate(formData.get("courierLng"));

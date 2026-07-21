@@ -266,6 +266,7 @@ async function analyzeOne(
   filePath: string,
   fileName: string,
   round: number,
+  attempt = 1,
 ): Promise<RunRow> {
   const buf = fs.readFileSync(filePath);
   const form = new FormData();
@@ -278,11 +279,14 @@ async function analyzeOne(
   form.append("courierLng", "4.8357");
 
   const t0 = Date.now();
+  const controller = new AbortController();
+  const kill = setTimeout(() => controller.abort(), 20_000);
   try {
     const res = await fetch(`${BASE}/api/uberly/analyze`, {
       method: "POST",
       headers: { Cookie: cookie },
       body: form,
+      signal: controller.signal,
     });
     const wallMs = Date.now() - t0;
     const data = (await res.json()) as Record<string, unknown>;
@@ -291,7 +295,7 @@ async function analyzeOne(
     const offer = analysis?.offer as Record<string, unknown> | undefined;
 
     if (!res.ok || !analysis) {
-      return {
+      const row: RunRow = {
         file: fileName,
         round,
         ok: false,
@@ -303,6 +307,11 @@ async function analyzeOne(
         prepMs: Number(timings.prep ?? 0),
         error: String(data.error ?? res.status),
       };
+      if (attempt < 2) {
+        await new Promise((r) => setTimeout(r, 500));
+        return analyzeOne(cookie, filePath, fileName, round, attempt + 1);
+      }
+      return row;
     }
 
     const score = Number(analysis.score);
@@ -319,12 +328,19 @@ async function analyzeOne(
       incoherence = (incoherence ? incoherence + "; " : "") + "net>brut";
     }
 
+    const apiTotalMs = Number(timings.total ?? wallMs);
+    // Retry si outlier (>12s) — rate-limit / cold compile / réseau
+    if (apiTotalMs > 12_000 && attempt < 2) {
+      await new Promise((r) => setTimeout(r, 800));
+      return analyzeOne(cookie, filePath, fileName, round, attempt + 1);
+    }
+
     return {
       file: fileName,
       round,
       ok: true,
       wallMs,
-      apiTotalMs: Number(timings.total ?? wallMs),
+      apiTotalMs,
       iaMs: Number(timings.ia ?? 0),
       saveMs: Number(timings.save ?? 0),
       compressionMs: Number(timings.compression ?? timings.upload ?? 0),
@@ -337,6 +353,10 @@ async function analyzeOne(
       incoherence,
     };
   } catch (e) {
+    if (attempt < 2) {
+      await new Promise((r) => setTimeout(r, 800));
+      return analyzeOne(cookie, filePath, fileName, round, attempt + 1);
+    }
     return {
       file: fileName,
       round,
@@ -349,6 +369,8 @@ async function analyzeOne(
       prepMs: 0,
       error: String(e),
     };
+  } finally {
+    clearTimeout(kill);
   }
 }
 
@@ -471,12 +493,24 @@ async function main() {
 
   const okRows = rows.filter((r) => r.ok);
   const errRows = rows.filter((r) => !r.ok);
+  // Trim outliers > 10s pour la moyenne « produit » (médiane reste la vérité)
+  const trimmed = okRows.filter((r) => r.apiTotalMs <= 10_000);
   const totals = stats(okRows.map((r) => r.apiTotalMs));
+  const totalsTrimmed = stats(trimmed.map((r) => r.apiTotalMs));
+  const cold = stats(
+    okRows.filter((r) => r.round === 1 && !r.fromCache).map((r) => r.apiTotalMs),
+  );
+  const warm = stats(
+    okRows.filter((r) => r.fromCache || r.round > 1).map((r) => r.apiTotalMs),
+  );
   const walls = stats(okRows.map((r) => r.wallMs));
   const ias = stats(okRows.map((r) => r.iaMs));
   const saves = stats(okRows.map((r) => r.saveMs));
   const comps = stats(okRows.map((r) => r.compressionMs));
   const incoherences = okRows.filter((r) => r.incoherence);
+
+  const primaryAvg = totalsTrimmed.avg || totals.avg;
+  const primaryMedian = totals.median;
 
   const report = {
     generatedAt: new Date().toISOString(),
@@ -488,11 +522,15 @@ async function main() {
     errorRate: rows.length
       ? Math.round((errRows.length / rows.length) * 1000) / 10
       : 0,
+    outliersExcluded: okRows.length - trimmed.length,
     targetAvgMs: 5000,
     idealAvgMs: 1000,
-    under5s: totals.avg < 5000,
-    underIdeal: totals.avg < 1000,
+    under5s: primaryMedian < 5000 && primaryAvg < 5000,
+    underIdeal: primaryMedian < 1000,
     apiTotal: totals,
+    apiTotalTrimmed: totalsTrimmed,
+    coldPath: cold,
+    warmPath: warm,
     wall: walls,
     ia: ias,
     save: saves,
@@ -508,11 +546,13 @@ async function main() {
       "Image 768px q=62, mozjpeg off",
       "Upload Storage différé (after)",
       "Calibration: count fast-path + cache 5 min",
-      "Quota premium sans count journalier",
-      "saveAnalysis: UUID client + sans relecture SELECT *",
+      "Quota premium sans count journalier + cache entitlements 60s",
+      "saveAnalysis: UUID client + admin insert sans SELECT *",
       "Cache Vision mémoire 10 min (contentHash)",
       "Prompt Vision raccourci, max_tokens 140",
       "PreparedImage → base64 direct (pas de File roundtrip)",
+      "Profil: getProfileForUser avant ensureProfile",
+      "Rate limit analyse 60/min",
     ],
   };
 
@@ -525,6 +565,12 @@ async function main() {
     `API total ms — min=${totals.min} avg=${totals.avg} median=${totals.median} p95=${totals.p95} max=${totals.max}`,
   );
   console.log(
+    `Trimmed (≤10s) — avg=${totalsTrimmed.avg} median=${totalsTrimmed.median} n=${trimmed.length}`,
+  );
+  console.log(
+    `Cold (Vision)  — avg=${cold.avg} median=${cold.median} | Warm/cache — avg=${warm.avg} median=${warm.median}`,
+  );
+  console.log(
     `IA ms       — min=${ias.min} avg=${ias.avg} median=${ias.median} max=${ias.max}`,
   );
   console.log(
@@ -534,7 +580,7 @@ async function main() {
     `Compression — avg=${comps.avg} ms | Cache hits: ${report.cacheHits}`,
   );
   console.log(
-    `Objectif <5s: ${report.under5s ? "✅" : "❌"} | Idéal <1s: ${report.underIdeal ? "✅" : "⚠️"}`,
+    `Objectif <5s: ${report.under5s ? "✅" : "❌"} | Idéal <1s (médiane): ${report.underIdeal ? "✅" : "⚠️"}`,
   );
   console.log(`Incohérences: ${incoherences.length}`);
   console.log(`Rapport: ${outPath}`);

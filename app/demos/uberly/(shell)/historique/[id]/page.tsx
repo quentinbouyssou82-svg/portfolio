@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AnalysisResult } from "@/components/margeo/analyse/analysis-result";
+import { DeleteAnalysisButton } from "@/components/margeo/delete-analysis-button";
 import { getAnalysisById } from "@/lib/margeo/services/analyses";
 import { getCurrentProfile } from "@/lib/margeo/services/profile";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
@@ -22,13 +23,16 @@ export default async function AnalysisDetailPage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <Link
-        href={margeoRoutes.historique}
-        className="mb-6 inline-flex items-center gap-2 text-sm text-mg-muted transition-colors hover:text-mg-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Retour à l&apos;historique
-      </Link>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href={margeoRoutes.historique}
+          className="inline-flex items-center gap-2 text-sm text-mg-muted transition-colors hover:text-mg-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          Retour à l&apos;historique
+        </Link>
+        <DeleteAnalysisButton analysisId={analysis.id} />
+      </div>
       <AnalysisResult analysis={analysis} />
     </div>
   );

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/uberly/cron/purge-screenshots",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}

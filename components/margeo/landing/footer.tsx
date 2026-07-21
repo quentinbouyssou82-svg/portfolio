@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
+import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
+import { UBERLY_CONTACT_EMAIL } from "@/lib/margeo/brand";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 const COLUMNS = [
@@ -28,6 +30,10 @@ const COLUMNS = [
       { label: "Résultats beta", href: "#resultats" },
       { label: "Le problème", href: "#probleme" },
       { label: "FAQ", href: "#faq" },
+      {
+        label: "Contact",
+        href: `mailto:${UBERLY_CONTACT_EMAIL}`,
+      },
     ],
   },
 ];
@@ -71,13 +77,23 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-mg-border pt-6 sm:flex-row">
-          <p className="text-xs text-mg-faint">
-            © {new Date().getFullYear()} Uberly. Tous droits réservés.
-          </p>
-          <p className="text-xs text-mg-faint">
-            Conçu pour les livreurs indépendants.
-          </p>
+        <div className="mt-12 space-y-4 border-t border-mg-border pt-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-mg-faint">
+              Informations légales
+            </p>
+            <div className="mt-3">
+              <LegalFooterLinks />
+            </div>
+          </div>
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+            <p className="text-xs text-mg-faint">
+              © {new Date().getFullYear()} Uberly. Tous droits réservés.
+            </p>
+            <p className="text-xs text-mg-faint">
+              Abonnements : renouvellement automatique via Stripe.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

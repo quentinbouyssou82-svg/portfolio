@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, useInView } from "framer-motion";
+import { animate, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 interface AnimatedCounterProps {
@@ -12,6 +12,19 @@ interface AnimatedCounterProps {
   className?: string;
 }
 
+function formatValue(
+  n: number,
+  decimals: number,
+  prefix: string,
+  suffix: string,
+): string {
+  return `${prefix}${n.toLocaleString("fr-FR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })}${suffix}`;
+}
+
+/** Alias — même implémentation que components/margeo/animated-counter. */
 export function AnimatedCounter({
   value,
   decimals = 0,
@@ -21,32 +34,40 @@ export function AnimatedCounter({
   className,
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const reducedMotion = useReducedMotion();
+  const inView = useInView(ref, { once: true, amount: 0.2 });
 
   useEffect(() => {
-    if (!inView || !ref.current) return;
     const node = ref.current;
+    if (!node) return;
+
+    const finalText = formatValue(value, decimals, prefix, suffix);
+
+    if (reducedMotion || !inView) {
+      node.textContent = finalText;
+      return;
+    }
+
     const controls = animate(0, value, {
       duration,
       ease: [0.21, 0.47, 0.32, 0.98],
       onUpdate(latest) {
-        node.textContent = `${prefix}${latest.toLocaleString("fr-FR", {
-          minimumFractionDigits: decimals,
-          maximumFractionDigits: decimals,
-        })}${suffix}`;
+        node.textContent = formatValue(latest, decimals, prefix, suffix);
+      },
+      onComplete() {
+        node.textContent = finalText;
       },
     });
-    return () => controls.stop();
-  }, [inView, value, decimals, prefix, suffix, duration]);
+
+    return () => {
+      controls.stop();
+      node.textContent = finalText;
+    };
+  }, [inView, value, decimals, prefix, suffix, duration, reducedMotion]);
 
   return (
     <span ref={ref} className={className}>
-      {prefix}
-      {(0).toLocaleString("fr-FR", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })}
-      {suffix}
+      {formatValue(value, decimals, prefix, suffix)}
     </span>
   );
 }

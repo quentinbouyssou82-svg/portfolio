@@ -1,11 +1,13 @@
 /**
- * Abstraction paiement — bêta = simulated.
- * Stripe / LemonSqueezy : implémenter PaymentProvider et brancher via getPaymentProvider().
+ * Abstraction paiement.
+ * - Bêta : simulated (activation immédiate sans prélèvement)
+ * - Production : Stripe uniquement (renouvellement automatique)
  */
 
 import type { UberlyPlanId } from "@/lib/margeo/plans";
 
-export type PaymentProviderId = "simulated" | "stripe" | "lemonsqueezy";
+/** Stripe = seul PSP prévu. `simulated` = mode bêta sans facturation réelle. */
+export type PaymentProviderId = "simulated" | "stripe";
 
 export type BillingPeriod = "monthly" | "yearly";
 
@@ -20,8 +22,8 @@ export type CheckoutIntent = {
 
 /**
  * Résultat checkout.
- * - mode "activate" : activation immédiate (bêta / webhook déjà traité)
- * - mode "redirect" : rediriger vers provider.checkoutUrl (Stripe Checkout)
+ * - mode "activate" : activation immédiate (bêta / webhook Stripe déjà traité)
+ * - mode "redirect" : rediriger vers Stripe Checkout
  */
 export type CheckoutResult =
   | {
@@ -42,7 +44,7 @@ export interface PaymentProvider {
   createCheckout(intent: CheckoutIntent): Promise<CheckoutResult>;
 }
 
-/** Bêta : active immédiatement sans paiement réel. */
+/** Bêta : active immédiatement sans paiement réel. auto_renew reste géré côté abonnement. */
 export const simulatedPaymentProvider: PaymentProvider = {
   id: "simulated",
   async createCheckout(intent) {
@@ -57,11 +59,12 @@ export const simulatedPaymentProvider: PaymentProvider = {
 };
 
 /**
- * Point d'extension Stripe :
- * return stripePaymentProvider quand STRIPE_SECRET_KEY est défini.
+ * Point d'extension Stripe Checkout.
+ * Quand STRIPE_SECRET_KEY est défini, brancher stripePaymentProvider ici.
+ * Les abonnements Stripe sont en renouvellement automatique (subscription).
  */
 export function getPaymentProvider(): PaymentProvider {
-  // Futur :
+  // Production :
   // if (process.env.STRIPE_SECRET_KEY) return stripePaymentProvider;
   return simulatedPaymentProvider;
 }

@@ -12,6 +12,7 @@ import { Switch } from "@/components/margeo/ui/switch";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { VehicleIcon } from "@/components/margeo/vehicle-icon";
 import { useUberlyTheme } from "@/components/margeo/theme-provider";
+import { DeleteAccountSection } from "@/components/margeo/delete-account-section";
 import {
   removeAvatarAction,
   updateProfileAction,
@@ -662,6 +663,8 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
             <LogOut className="size-4" />
             Se déconnecter
           </a>
+
+          <DeleteAccountSection />
         </CardContent>
       </Card>
 

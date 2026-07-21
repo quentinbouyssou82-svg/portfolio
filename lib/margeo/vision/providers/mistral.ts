@@ -66,7 +66,7 @@ export const mistralVisionProvider: VisionProvider = {
     const started = Date.now();
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10_000);
+    const timeout = setTimeout(() => controller.abort(), 8_000);
 
     try {
       const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
@@ -116,6 +116,11 @@ export const mistralVisionProvider: VisionProvider = {
         durationMs: Date.now() - started,
         provider: "mistral",
       };
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") {
+        throw new Error("Mistral Vision : timeout (8s)");
+      }
+      throw e;
     } finally {
       clearTimeout(timeout);
     }

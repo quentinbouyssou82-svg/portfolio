@@ -1,6 +1,6 @@
 import { getMargeoAdminDb } from "../supabase/admin";
 
-const SCREENSHOT_BUCKET = "uberly-screenshots";
+export const SCREENSHOT_BUCKET = "uberly-screenshots";
 const AVATAR_BUCKET = "uberly-avatars";
 
 export interface UploadScreenshotResult {
@@ -59,6 +59,51 @@ export async function uploadScreenshotBuffer(
     console.warn("[uberly/storage] upload skipped:", e);
     return null;
   }
+}
+
+/** Supprime une capture du bucket privé (best-effort). */
+export async function deleteScreenshot(path: string): Promise<boolean> {
+  if (!path.trim()) return false;
+  try {
+    const admin = getMargeoAdminDb();
+    const { error } = await admin.storage
+      .from(SCREENSHOT_BUCKET)
+      .remove([path]);
+    if (error) {
+      console.warn("[uberly/storage] delete failed:", error.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.warn("[uberly/storage] delete skipped:", e);
+    return false;
+  }
+}
+
+/** Supprime plusieurs captures (chunké). */
+export async function deleteScreenshots(paths: string[]): Promise<number> {
+  const unique = [...new Set(paths.map((p) => p.trim()).filter(Boolean))];
+  if (unique.length === 0) return 0;
+
+  let deleted = 0;
+  const chunkSize = 50;
+  try {
+    const admin = getMargeoAdminDb();
+    for (let i = 0; i < unique.length; i += chunkSize) {
+      const chunk = unique.slice(i, i + chunkSize);
+      const { error } = await admin.storage
+        .from(SCREENSHOT_BUCKET)
+        .remove(chunk);
+      if (error) {
+        console.warn("[uberly/storage] batch delete failed:", error.message);
+        continue;
+      }
+      deleted += chunk.length;
+    }
+  } catch (e) {
+    console.warn("[uberly/storage] batch delete skipped:", e);
+  }
+  return deleted;
 }
 
 /** URL signée temporaire pour consultation interne (admin / debug). */

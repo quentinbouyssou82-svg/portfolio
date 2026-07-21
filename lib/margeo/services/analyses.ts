@@ -199,3 +199,70 @@ export async function countAnalysesForUser(userId: string): Promise<number> {
     .eq("user_id", userId);
   return count ?? 0;
 }
+
+/**
+ * Supprime une analyse appartenant à l'utilisateur :
+ * feedback lié (cascade), analyse, ride, capture Storage éventuelle.
+ */
+export async function deleteAnalysisForUser(
+  userId: string,
+  analysisId: string,
+): Promise<boolean> {
+  let supabase;
+  try {
+    const { getMargeoAdminDb } = await import("../supabase/admin");
+    supabase = getMargeoAdminDb();
+  } catch {
+    supabase = await createMargeoServerClient();
+  }
+
+  const { data, error } = await supabase
+    .from("margeo_analyses")
+    .select("id, ride_id, ride:margeo_rides(id, image_path, user_id)")
+    .eq("user_id", userId)
+    .eq("id", analysisId)
+    .maybeSingle();
+
+  if (error || !data) return false;
+
+  const ride = data.ride as
+    | { id: string; image_path: string | null; user_id: string }
+    | { id: string; image_path: string | null; user_id: string }[]
+    | null;
+
+  const rideRow = Array.isArray(ride) ? ride[0] : ride;
+  if (!rideRow || rideRow.user_id !== userId) return false;
+
+  const imagePath = rideRow.image_path;
+
+  const { error: deleteAnalysisError } = await supabase
+    .from("margeo_analyses")
+    .delete()
+    .eq("id", analysisId)
+    .eq("user_id", userId);
+
+  if (deleteAnalysisError) {
+    console.error(
+      "[uberly/analyses] delete analysis:",
+      deleteAnalysisError.message,
+    );
+    return false;
+  }
+
+  const { error: deleteRideError } = await supabase
+    .from("margeo_rides")
+    .delete()
+    .eq("id", rideRow.id)
+    .eq("user_id", userId);
+
+  if (deleteRideError) {
+    console.error("[uberly/analyses] delete ride:", deleteRideError.message);
+  }
+
+  if (imagePath) {
+    const { deleteScreenshot } = await import("./storage");
+    await deleteScreenshot(imagePath);
+  }
+
+  return true;
+}

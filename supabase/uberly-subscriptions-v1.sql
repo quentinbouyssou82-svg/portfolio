@@ -1,4 +1,4 @@
--- Uberly — système d'abonnement (prêt Stripe / LemonSqueezy)
+-- Uberly — système d'abonnement (Stripe = PSP unique ; simulated = bêta)
 -- Exécuter dans le SQL Editor Supabase.
 
 -- Plan dénormalisé sur le profil (cache lecture rapide)
@@ -36,7 +36,7 @@ create table if not exists public.margeo_subscriptions (
   billing_period text not null default 'monthly'
     check (billing_period in ('monthly', 'yearly')),
   provider text
-    check (provider is null or provider in ('simulated', 'stripe', 'lemonsqueezy')),
+    check (provider is null or provider in ('simulated', 'stripe')),
   provider_customer_id text,
   provider_subscription_id text,
   payment_status text not null default 'none'
