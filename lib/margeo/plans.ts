@@ -54,7 +54,7 @@ export const UBERLY_PLANS: Record<UberlyPlanId, UberlyPlan> = {
     dailyAnalyses: null,
     historyDays: null,
     featured: true,
-    badge: "Le choix de 95 %",
+    badge: "Recommandé",
     cta: "Passer en Pro — 14 j offerts",
     ctaSecondary: "Sans engagement. Annulable en 1 clic.",
     features: [

@@ -35,6 +35,7 @@ async function repairUserForSignup(
   userId: string,
   password: string,
   name: string,
+  termsAcceptedAt?: string,
 ): Promise<void> {
   try {
     const admin = getMargeoAdminDb();
@@ -44,15 +45,23 @@ async function repairUserForSignup(
     const user = data.user;
     const needsPasswordSync =
       !user.email_confirmed_at || !user.last_sign_in_at;
+    const prev =
+      typeof user.user_metadata === "object" && user.user_metadata
+        ? user.user_metadata
+        : {};
 
     await admin.auth.admin.updateUserById(userId, {
       email_confirm: true,
       ...(needsPasswordSync ? { password } : {}),
       user_metadata: {
-        ...(typeof user.user_metadata === "object" && user.user_metadata
-          ? user.user_metadata
+        ...prev,
+        name: name || (prev as { name?: string }).name || "",
+        ...(termsAcceptedAt
+          ? {
+              terms_accepted_at: termsAcceptedAt,
+              terms_version: "cgu-privacy-v1",
+            }
           : {}),
-        name: name || (user.user_metadata as { name?: string })?.name || "",
       },
     });
   } catch {
@@ -66,8 +75,9 @@ async function establishSessionAfterSignUp(
   password: string,
   userId: string,
   name = "",
+  termsAcceptedAt?: string,
 ): Promise<User | null> {
-  await repairUserForSignup(userId, password, name);
+  await repairUserForSignup(userId, password, name, termsAcceptedAt);
   await confirmUserEmail(userId);
 
   for (let attempt = 0; attempt < 4; attempt++) {
@@ -109,29 +119,53 @@ async function adminCreateUser(
   email: string,
   password: string,
   name: string,
+  termsAcceptedAt: string,
 ): Promise<string> {
   const admin = getMargeoAdminDb();
   const { data, error } = await admin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { name },
+    user_metadata: {
+      name,
+      terms_accepted_at: termsAcceptedAt,
+      terms_version: "cgu-privacy-v1",
+    },
   });
   if (error) throw error;
   if (!data.user?.id) throw new Error("admin_create_user_failed");
-  await repairUserForSignup(data.user.id, password, name);
+  await repairUserForSignup(data.user.id, password, name, termsAcceptedAt);
   return data.user.id;
 }
 
 async function finalizeSignUpAndRedirect(
   user: User,
   name: string,
+  termsAcceptedAt?: string,
 ): Promise<never> {
   await markBetaTester(user.id);
+  if (termsAcceptedAt) {
+    try {
+      const admin = getMargeoAdminDb();
+      await admin
+        .from("margeo_profiles")
+        .update({
+          terms_accepted_at: termsAcceptedAt,
+          terms_version: "cgu-privacy-v1",
+        })
+        .eq("id", user.id);
+    } catch {
+      // colonne optionnelle tant que la migration n'est pas appliquée
+    }
+  }
   await logBetaEvent({
     userId: user.id,
     eventType: "account_created",
-    metadata: { method: "email", emailDomain: (user.email ?? "").split("@")[1] },
+    metadata: {
+      method: "email",
+      emailDomain: (user.email ?? "").split("@")[1],
+      ...(termsAcceptedAt ? { terms_accepted_at: termsAcceptedAt } : {}),
+    },
   });
   redirect(await getPostAuthPath(user.id, name));
 }
@@ -142,10 +176,11 @@ async function signUpWithAdminApi(
   email: string,
   password: string,
   name: string,
+  termsAcceptedAt: string,
 ): Promise<MargeoActionResult> {
   let userId: string;
   try {
-    userId = await adminCreateUser(email, password, name);
+    userId = await adminCreateUser(email, password, name, termsAcceptedAt);
   } catch (adminErr) {
     const msg = adminErr instanceof Error ? adminErr.message.toLowerCase() : "";
     if (msg.includes("already") || msg.includes("exists")) {
@@ -154,7 +189,7 @@ async function signUpWithAdminApi(
         return { ok: false, message: "Un compte existe déjà avec cet email." };
       }
       userId = existingId;
-      await repairUserForSignup(existingId, password, name);
+      await repairUserForSignup(existingId, password, name, termsAcceptedAt);
     } else {
       if (process.env.NODE_ENV === "development") {
         console.error("[uberly/auth] admin signup failed:", adminErr);
@@ -166,7 +201,14 @@ async function signUpWithAdminApi(
     }
   }
 
-  const user = await establishSessionAfterSignUp(supabase, email, password, userId, name);
+  const user = await establishSessionAfterSignUp(
+    supabase,
+    email,
+    password,
+    userId,
+    name,
+    termsAcceptedAt,
+  );
   if (!user) {
     const existing = await findUserIdByEmail(email);
     if (existing) {
@@ -182,7 +224,7 @@ async function signUpWithAdminApi(
     };
   }
 
-  await finalizeSignUpAndRedirect(user, name);
+  await finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
   throw new Error("unreachable");
 }
 
@@ -209,18 +251,32 @@ export async function signUpAction(
     };
   }
 
+  const termsAcceptedAt = new Date().toISOString();
+
   try {
     const supabase = await createMargeoServerClient();
 
     // Bêta : priorité admin API (évite rate limit email Supabase ~2/h sans SMTP custom).
     if (getMargeoServiceKey()) {
-      return await signUpWithAdminApi(supabase, email, password, name);
+      return await signUpWithAdminApi(
+        supabase,
+        email,
+        password,
+        name,
+        termsAcceptedAt,
+      );
     }
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: {
+        data: {
+          name,
+          terms_accepted_at: termsAcceptedAt,
+          terms_version: "cgu-privacy-v1",
+        },
+      },
     });
 
     if (error) {
@@ -247,7 +303,14 @@ export async function signUpAction(
     let user = data.user;
 
     if (!data.session && user) {
-      user = await establishSessionAfterSignUp(supabase, email, password, user.id, name);
+      user = await establishSessionAfterSignUp(
+        supabase,
+        email,
+        password,
+        user.id,
+        name,
+        termsAcceptedAt,
+      );
     } else if (data.session) {
       user = data.user;
     }
@@ -259,7 +322,7 @@ export async function signUpAction(
       };
     }
 
-    await finalizeSignUpAndRedirect(user, name);
+    await finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
     throw new Error("unreachable");
   } catch (e) {
     if (isRedirectError(e)) throw e;

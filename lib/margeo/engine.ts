@@ -424,27 +424,27 @@ function buildRecommendation(
   let explanation: string;
   if (verdict === "accept") {
     if (topPositive) {
-      explanation = `${topPositive.label} : ${topPositive.detail} C'est une course à prendre.`;
+      explanation = `${topPositive.label} : ${topPositive.detail} D'après ton profil, cette course semble intéressante.`;
     } else if (hourlyDelta >= 2) {
-      explanation = `Cette course dépasse ton objectif de ${formatEur(hourlyDelta)} de l'heure.`;
+      explanation = `Estimation : cette course dépasse ton objectif d'environ ${formatEur(hourlyDelta)} de l'heure.`;
     } else {
-      explanation = `Gain net de ${formatEur(netGain)}${offer.durationMin != null ? ` en ${offer.durationMin} min` : ""} — au-dessus de tes critères.`;
+      explanation = `Estimation : gain net d'environ ${formatEur(netGain)}${offer.durationMin != null ? ` en ${offer.durationMin} min` : ""} — au-dessus de tes critères.`;
     }
   } else if (verdict === "check") {
     if (topNegative && topPositive) {
-      explanation = `${topPositive.label}, mais ${topNegative.label.toLowerCase()}. À prendre seulement si tu peux enchaîner dans la zone.`;
+      explanation = `${topPositive.label}, mais ${topNegative.label.toLowerCase()}. À évaluer selon ta journée et la zone.`;
     } else if (emptyRatio > 0.6) {
-      explanation = `Retour à vide estimé à ${offer.emptyReturnKm.toLocaleString("fr-FR")} km. Accepte si une autre course t'attend dans le secteur.`;
+      explanation = `Retour à vide estimé à ${offer.emptyReturnKm.toLocaleString("fr-FR")} km. À juger si une autre course peut suivre dans le secteur.`;
     } else {
-      explanation = `Rentabilité limite : ${formatEur(hourlyRate)}/h net. À toi de juger selon ta journée.`;
+      explanation = `Rentabilité estimée limite : environ ${formatEur(hourlyRate)}/h net. À toi de juger selon ta journée.`;
     }
   } else {
     if (netGain <= 0) {
-      explanation = `Après tes coûts (${profile.vehicle}, ${profile.costPerKm} €/km), cette course te fait perdre de l'argent.`;
+      explanation = `Après tes coûts estimés (${profile.vehicle}, ${profile.costPerKm} €/km), cette course semble peu rentable.`;
     } else if (topNegative) {
-      explanation = `${topNegative.label} : ${topNegative.detail} Refuse si tu as mieux.`;
+      explanation = `${topNegative.label} : ${topNegative.detail} Estimation défavorable si tu as mieux.`;
     } else {
-      explanation = `${formatEur(hourlyRate)}/h net — trop loin de ton objectif de ${profile.targetHourly} €/h.`;
+      explanation = `Environ ${formatEur(hourlyRate)}/h net — loin de ton objectif de ${profile.targetHourly} €/h selon ton profil.`;
     }
   }
 
