@@ -10,32 +10,32 @@ const FAQ_ITEMS = [
   {
     question: "Comment Uberly lit ma capture ?",
     answer:
-      "L'IA extrait le gain, la distance, le temps et les adresses. Tu déposes l'image, le verdict arrive en quelques secondes. Aucune saisie.",
+      "L'IA estime le gain, la distance, le temps et les adresses à partir de ton image. Tu déposes la capture, le verdict arrive en quelques secondes. Aucune saisie. L'IA peut se tromper : vérifie toujours les chiffres clés.",
   },
   {
-    question: "Quelles plateformes sont compatibles ?",
+    question: "Quelles captures sont prises en charge ?",
     answer:
-      "Uber Eats, Deliveroo, Stuart et Amazon Flex dès aujourd'hui. Just Eat et Glovo sont sur la feuille de route selon la demande beta.",
+      "Les captures des apps de livraison courantes (Uber Eats, Deliveroo, Stuart, Amazon Flex). D'autres apps (Just Eat, Glovo…) sont sur la feuille de route selon la demande bêta. Uberly n'est affilié à aucune de ces plateformes.",
   },
   {
-    question: "Comment le gain net est calculé ?",
+    question: "Comment le gain net est estimé ?",
     answer:
-      "Uberly déduit tes coûts au km (essence, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Ce qui reste, c'est ton vrai gain.",
+      "Uberly déduit tes coûts au km (carburant, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Le résultat est une estimation indicative, pas un compte comptable.",
   },
   {
     question: "Ça marche pendant le compte à rebours ?",
     answer:
-      "Oui. L'analyse prend ~8 secondes. Tu décides avant l'expiration de la proposition.",
+      "Oui. L'analyse prend ~8 secondes en moyenne. Tu décides avant l'expiration de la proposition.",
   },
   {
     question: "Mes données sont partagées avec les plateformes ?",
     answer:
-      "Non. Tes captures et tes stats restent privées. Uberly travaille pour toi.",
+      "Non. Tes captures et tes stats restent privées. Uberly est indépendant et n'est affilié à aucune plateforme de livraison.",
   },
   {
     question: "C'est gratuit ?",
     answer:
-      "Oui. Le plan Découverte offre 2 analyses/jour pour tester. Le plan Pro (4,99 €/mois) débloque analyses illimitées, dashboard et zones rentables — c'est l'offre faite pour livrer au quotidien. Elite ajoute export et stats avancées.",
+      "Oui pendant la bêta et sur le plan Découverte (2 analyses/jour). Pro (4,99 €/mois) et Elite débloquent davantage — sans prélèvement tant que le paiement Stripe n'est pas activé.",
   },
 ];
 

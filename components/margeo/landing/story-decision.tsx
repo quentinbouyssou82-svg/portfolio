@@ -13,7 +13,7 @@ const STEPS = [
     step: "01",
     title: "Uberly analyse",
     description:
-      "L'IA lit ta capture : gain, distance, temps, zone. Tes coûts réels inclus.",
+      "L'IA lit ta capture : gain, distance, temps, zone. Tes coûts inclus (estimation).",
     accent: "from-mg-accent/20 via-transparent to-transparent",
     visual: "scan" as const,
   },
@@ -22,7 +22,7 @@ const STEPS = [
     step: "02",
     title: "Tu décides",
     description:
-      "Accepter, vérifier ou refuser. Score, gain net, explication claire.",
+      "Accepter, vérifier ou refuser. Score, gain net estimé, explication claire.",
     accent: "from-mg-go/15 via-transparent to-transparent",
     visual: "verdict" as const,
   },
@@ -84,8 +84,8 @@ function StepVisual({ kind }: { kind: "scan" | "verdict" | "chart" }) {
   return (
     <div className="decision-mini mt-6 overflow-hidden rounded-xl border border-mg-border bg-mg-surface/80 p-3">
       <div className="flex items-end justify-between gap-1">
-        <p className="text-[10px] text-mg-faint">Gain net / soirée</p>
-        <p className="text-sm font-bold text-mg-go">+42 €</p>
+        <p className="text-[10px] text-mg-faint">Gain net estimé / soirée (ex.)</p>
+        <p className="text-sm font-bold text-mg-go">~42 €</p>
       </div>
       <div className="mt-3 flex h-12 items-end gap-1">
         {[35, 48, 42, 62, 55, 78, 70].map((h, i) => (

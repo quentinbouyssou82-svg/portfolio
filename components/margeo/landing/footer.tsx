@@ -16,20 +16,11 @@ const COLUMNS = [
     ],
   },
   {
-    title: "Plateformes",
-    links: [
-      { label: "Uber Eats", href: margeoRoutes.signup },
-      { label: "Deliveroo", href: margeoRoutes.signup },
-      { label: "Stuart", href: margeoRoutes.signup },
-      { label: "Amazon Flex", href: margeoRoutes.signup },
-    ],
-  },
-  {
     title: "Ressources",
     links: [
-      { label: "Résultats beta", href: "#resultats" },
+      { label: "Comment ça marche", href: "#fonctionnalites" },
       { label: "Le problème", href: "#probleme" },
-      { label: "FAQ", href: "#faq" },
+      { label: "FAQ — plateformes", href: "#faq" },
       {
         label: "Contact",
         href: `mailto:${UBERLY_CONTACT_EMAIL}`,
@@ -42,18 +33,24 @@ export function Footer() {
   return (
     <footer className="relative z-[1] border-t border-mg-border pb-24 lg:pb-0">
       <div className="mx-auto max-w-6xl px-5 py-14">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(2,1fr)]">
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-mg-muted">
-              Le gain net, avant d&apos;accepter. Pour les livreurs Uber Eats,
-              Deliveroo et Stuart.
+              Aide à la décision pour livreurs indépendants : analyse de
+              captures de propositions de course (estimation, pas une
+              garantie).
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {(["Uber Eats", "Deliveroo", "Stuart"] as const).map((p) => (
-                <PlatformLogo key={p} platform={p} size="xs" />
+                <PlatformLogo key={p} platform={p} size="xs" showLabel />
               ))}
             </div>
+            <p className="mt-3 max-w-sm text-[11px] leading-relaxed text-mg-faint">
+              Uber Eats, Deliveroo, Stuart, Amazon Flex et autres marques citées
+              appartiennent à leurs titulaires. Uberly n&apos;est pas affilié,
+              partenaire ni approuvé par ces sociétés.
+            </p>
           </div>
 
           {COLUMNS.map((column) => (
@@ -91,7 +88,8 @@ export function Footer() {
               © {new Date().getFullYear()} Uberly. Tous droits réservés.
             </p>
             <p className="text-xs text-mg-faint">
-              Abonnements : renouvellement automatique via Stripe.
+              Bêta : pas de prélèvement. Paiement Stripe prévu à la
+              commercialisation (renouvellement auto).
             </p>
           </div>
         </div>

@@ -147,6 +147,29 @@ export function AppShell({
               </span>
             </span>
           </Link>
+          <nav
+            aria-label="Informations légales"
+            className="mt-2 flex flex-wrap gap-x-2.5 gap-y-1 px-2.5 pb-1"
+          >
+            <Link
+              href={margeoRoutes.mentionsLegales}
+              className="text-[10px] text-mg-faint transition-colors hover:text-mg-muted"
+            >
+              Mentions
+            </Link>
+            <Link
+              href={margeoRoutes.confidentialite}
+              className="text-[10px] text-mg-faint transition-colors hover:text-mg-muted"
+            >
+              Confidentialité
+            </Link>
+            <Link
+              href={margeoRoutes.cgu}
+              className="text-[10px] text-mg-faint transition-colors hover:text-mg-muted"
+            >
+              CGU
+            </Link>
+          </nav>
         </div>
       </aside>
 

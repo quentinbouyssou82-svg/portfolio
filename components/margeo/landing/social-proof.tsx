@@ -12,7 +12,7 @@ const STATS = [
     value: 2400,
     suffix: "+",
     label: "Courses analysées",
-    detail: "beta",
+    detail: "échantillon bêta",
     bars: [40, 55, 48, 70, 62, 85, 78],
     featured: true,
   },
@@ -29,10 +29,10 @@ const STATS = [
     icon: TrendingUp,
     value: 4.2,
     suffix: " €",
-    prefix: "+",
+    prefix: "~",
     decimals: 1,
-    label: "Gain net détecté",
-    detail: "par analyse",
+    label: "Gain net estimé",
+    detail: "par analyse (bêta)",
     bars: [35, 50, 42, 68, 75, 90, 82],
     featured: false,
   },
@@ -41,7 +41,7 @@ const STATS = [
     value: 92,
     suffix: "%",
     label: "Satisfaits",
-    detail: "après 1 semaine",
+    detail: "échantillon bêta",
     bars: [50, 58, 65, 72, 80, 88, 92],
     featured: false,
   },
@@ -106,7 +106,7 @@ export function SocialProof() {
       id="resultats"
       eyebrow="Résultats beta"
       title="Des livreurs qui décident mieux"
-      description="Chiffres beta Uberly — mis à jour chaque semaine."
+      description="Chiffres bêta Uberly — indicatifs, mis à jour chaque semaine."
       className="relative py-16 sm:py-24"
     >
       <div className="section-bridge mb-14 sm:mb-16" aria-hidden />
@@ -161,7 +161,7 @@ export function SocialProof() {
 
       <Reveal delay={0.2} className="mt-10 text-center">
         <p className="text-xs text-mg-faint">
-          * Chiffres beta. Résultats variables selon véhicule et zone.
+          * Chiffres bêta indicatifs. Résultats variables selon véhicule et zone. Uberly n&apos;est affilié à aucune plateforme.
         </p>
       </Reveal>
     </SectionShell>

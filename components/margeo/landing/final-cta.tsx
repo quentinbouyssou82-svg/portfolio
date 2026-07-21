@@ -23,10 +23,11 @@ export function FinalCta() {
               Beta ouverte
             </span>
             <h2 className="text-gradient mt-5 text-3xl font-bold tracking-tight text-balance sm:text-5xl">
-              Arrête de deviner. Sais combien tu gagnes.
+              Arrête de deviner. Estime avant d&apos;accepter.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mg-muted sm:text-lg">
-              Compte gratuit. Première analyse en 30 secondes.
+              Compte gratuit. Première analyse en 30 secondes. Résultat
+              estimatif — à toi de décider.
             </p>
             <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <Link href={margeoRoutes.signup} className="w-full sm:w-auto">
@@ -50,6 +51,10 @@ export function FinalCta() {
                 <PlatformLogo key={platform} platform={platform} size="xs" showLabel />
               ))}
             </div>
+            <p className="mx-auto mt-4 max-w-sm text-[10px] leading-relaxed text-mg-faint">
+              Captures prises en charge. Uberly n&apos;est affilié à aucune
+              plateforme de livraison.
+            </p>
           </div>
         </div>
       </Reveal>

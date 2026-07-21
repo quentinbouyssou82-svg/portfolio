@@ -130,7 +130,7 @@ export function DashboardView({
         <EmptyState
           icon={ScanLine}
           title="Prêt à analyser"
-          description="Dépose une capture. Verdict et gain net en 8 secondes."
+          description="Dépose une capture. Verdict et gain net estimé en ~8 s."
           action={
             <Link href={margeoRoutes.analyse}>
               <Button size="lg">
@@ -242,7 +242,7 @@ export function DashboardView({
               icon={ShieldCheck}
               footer={
                 savedEstimate > 0
-                  ? `~${savedEstimate} € économisés`
+                  ? `~${savedEstimate} € estimés évités`
                   : "grâce aux refus"
               }
             >
@@ -255,7 +255,7 @@ export function DashboardView({
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">Cette semaine</CardTitle>
-                <p className="text-xs text-mg-faint">Gain net / jour</p>
+                <p className="text-xs text-mg-faint">Gain net estimé / jour</p>
               </CardHeader>
               <CardContent>
                 <WeeklyBars data={earnings} />
@@ -284,7 +284,7 @@ export function DashboardView({
             <CardHeader className="flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-base">14 derniers jours</CardTitle>
-                <p className="text-xs text-mg-faint">Gain net cumulé</p>
+                <p className="text-xs text-mg-faint">Gain net estimé cumulé</p>
               </div>
             </CardHeader>
             <CardContent>

@@ -74,7 +74,7 @@ export function AuthForm({
             {[
               "Sais si ça vaut le coup avant d'accepter",
               "Gain net réel, pas le montant affiché",
-              "Verdict clair en 8 secondes",
+              "Verdict clair en ~8 s",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <Check className="mt-0.5 size-3.5 shrink-0 text-mg-go" />

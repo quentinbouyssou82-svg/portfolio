@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Download, Mail, Shield, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/margeo/ui/button";
+import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
 import { UBERLY_CONTACT_EMAIL } from "@/lib/margeo/brand";
 import { UBERLY_PATHS } from "@/lib/margeo/constants";
 
@@ -11,8 +12,7 @@ const ACCOUNT_DELETION_MESSAGE =
   "La suppression complète de votre compte et de vos données peut être demandée par email.";
 
 /**
- * Encart RGPD profil — export / suppression / contact.
- * Les actions non automatisées renvoient vers le support.
+ * Encart RGPD profil — export / suppression / contact / résumé données.
  */
 export function PersonalDataSection() {
   const [showDeleteHelp, setShowDeleteHelp] = useState(false);
@@ -32,6 +32,28 @@ export function PersonalDataSection() {
             Exercer vos droits RGPD (accès, portabilité, effacement).
           </p>
         </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-mg-border/80 bg-mg-background/60 p-3">
+        <p className="text-[11px] font-semibold tracking-wide text-mg-faint uppercase">
+          Quelles données ?
+        </p>
+        <ul className="mt-2 space-y-1.5 text-xs leading-relaxed text-mg-muted">
+          <li>· Captures analysées (durée limitée, puis purge)</li>
+          <li>· Profil livreur (véhicule, coûts, objectifs)</li>
+          <li>· Historique d&apos;analyses et verdicts estimés</li>
+          <li>· Compte (email, préférences, abonnement)</li>
+        </ul>
+        <p className="mt-2 text-[11px] leading-relaxed text-mg-faint">
+          Les gains affichés sont des estimations indicatives. Détails dans la{" "}
+          <Link
+            href={UBERLY_PATHS.confidentialite}
+            className="font-medium text-mg-accent underline-offset-2 hover:underline"
+          >
+            politique de confidentialité
+          </Link>
+          .
+        </p>
       </div>
 
       <div className="mt-4 space-y-2">
@@ -111,6 +133,13 @@ export function PersonalDataSection() {
           </p>
         </div>
       )}
+
+      <div className="mt-4 border-t border-mg-border pt-3">
+        <p className="mb-2 text-[11px] font-semibold tracking-wide text-mg-faint uppercase">
+          Informations légales
+        </p>
+        <LegalFooterLinks />
+      </div>
     </div>
   );
 }

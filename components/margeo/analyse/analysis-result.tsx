@@ -107,6 +107,10 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
           <p className="mt-2 text-sm leading-relaxed text-mg-muted">
             {verdictMeta.description}
           </p>
+          <p className="mt-3 text-[11px] leading-relaxed text-mg-faint">
+            Résultat estimatif basé sur ton profil et la capture fournie. Uberly
+            est une aide à la décision et ne garantit aucun gain.
+          </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <PlatformBadge platform={analysis.offer.platform} />
             <span className="inline-flex items-center gap-1.5 rounded-full border border-mg-border bg-[var(--mg-surface-muted)] px-2.5 py-1 text-xs text-mg-faint">
@@ -165,6 +169,9 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
                 €/h
               </span>
             </p>
+            <p className="mt-1.5 text-[11px] text-mg-faint">
+              Estimation · basée sur ta capture et ton profil
+            </p>
           </div>
         </div>
       </Card>
@@ -217,7 +224,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
           />
           <Metric
             icon={PiggyBank}
-            label="Gain net"
+            label="Gain net estimé"
             value={analysis.netGain}
             suffix=" €"
             highlight

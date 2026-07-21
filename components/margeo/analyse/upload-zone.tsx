@@ -101,6 +101,10 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-mg-muted">
           Galerie, appareil photo ou fichier — à toi de choisir.
         </p>
+        <p className="mt-2 max-w-sm text-center text-[11px] leading-relaxed text-mg-faint">
+          L&apos;IA peut se tromper — vérifie toujours le gain et la distance.
+          Résultats indicatifs.
+        </p>
 
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
           {UPLOAD_PLATFORMS.map((platform) => (

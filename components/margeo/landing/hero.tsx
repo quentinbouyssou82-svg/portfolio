@@ -14,9 +14,9 @@ import { Button } from "@/components/margeo/ui/button";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 const BENEFITS = [
-  { icon: TrendingUp, label: "Plus de €/h net", tone: "go" as const },
+  { icon: TrendingUp, label: "Mieux filtrer pour le €/h", tone: "go" as const },
   { icon: Ban, label: "Moins de mauvaises courses", tone: "stop" as const },
-  { icon: Zap, label: "Verdict en 8 secondes", tone: "accent" as const },
+  { icon: Zap, label: "Verdict en ~8 secondes", tone: "accent" as const },
 ];
 
 const ease = [0.21, 0.47, 0.32, 0.98] as const;
@@ -68,8 +68,8 @@ export function Hero() {
               transition={{ duration: 0.65, delay: 0.16, ease }}
               className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:text-lg lg:mx-0"
             >
-              Capture ta proposition. Uberly calcule ton gain net réel et te dit
-              quoi faire — avant la fin du compte à rebours.
+              Capture ta proposition. Uberly estime ton gain net (frais inclus)
+              et t&apos;aide à décider — avant la fin du compte à rebours.
             </motion.p>
 
             <motion.ul

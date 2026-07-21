@@ -8,19 +8,19 @@ const STEPS = [
     icon: Camera,
     title: "Capture",
     description:
-      "Course Uber Eats, Deliveroo ou Stuart ? Screenshot, comme d'habitude.",
+      "Course sur une app de livraison ? Screenshot, comme d'habitude.",
   },
   {
     icon: ScanLine,
     title: "Analyse",
     description:
-      "Uberly lit gain, distance, temps et zone. Rien à taper.",
+      "Uberly estime gain, distance, temps et zone. Rien à taper.",
   },
   {
     icon: CircleCheckBig,
     title: "Verdict",
     description:
-      "Gain net, €/h, score. Accepter, vérifier ou refuser — en 8 secondes.",
+      "Gain net estimé, €/h, score. Accepter, vérifier ou refuser — en ~8 s.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function HowItWorks() {
             Comment ça marche
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
-            3 gestes. 8 secondes.
+            3 gestes. ~8 secondes.
           </h2>
         </Reveal>
 

@@ -44,7 +44,7 @@ function ProblemOpener() {
         transition={{ ...SPRING, delay: 0.14 }}
         className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-5 sm:text-lg"
       >
-        Le vrai gain reste caché.
+        Le gain net reste souvent caché.
       </motion.p>
     </div>
   );

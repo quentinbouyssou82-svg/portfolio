@@ -4,9 +4,9 @@ import { Reveal } from "@/components/margeo/reveal";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
 
 const STATS = [
-  { value: 38, suffix: " %", label: "des courses proposées te font perdre de l'argent après frais" },
-  { value: 8, suffix: " s", label: "pour obtenir un verdict avant la fin du compte à rebours" },
-  { value: 214, prefix: "+", suffix: " €", label: "de gain net récupéré en moyenne par mois (beta)" },
+  { value: 38, suffix: " %", label: "des courses proposées peuvent te faire perdre de l'argent après frais (estimation)" },
+  { value: 8, suffix: " s", label: "en moyenne pour obtenir un verdict avant la fin du compte à rebours" },
+  { value: 214, prefix: "~", suffix: " €", label: "de gain net estimé en moyenne par mois (bêta, résultats variables)" },
 ];
 
 export function Presentation() {

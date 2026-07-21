@@ -44,19 +44,24 @@ export function AnalysisConfidence({ meta }: AnalysisConfidenceProps) {
         <div className="min-w-0">
           <p className="text-sm font-medium text-mg-foreground">
             {isHigh
-              ? `Fiable à ${pct} %`
+              ? `Confiance lecture ~${pct} %`
               : isPartial
                 ? "Données partiellement estimées"
-                : `Confiance ${pct} %`}
+                : `Confiance lecture ~${pct} %`}
           </p>
           {missingText && (
             <p className="mt-1 text-xs leading-relaxed text-mg-muted">
-              {missingText} Calcul valable avec les données disponibles.
+              {missingText} Estimation indicative avec les données disponibles.
             </p>
           )}
           {!missingText && !isHigh && (
             <p className="mt-1 text-xs text-mg-muted">
-              Vérifie le gain et la distance ci-dessous.
+              Vérifie le gain et la distance — l&apos;IA peut se tromper.
+            </p>
+          )}
+          {isHigh && !missingText && (
+            <p className="mt-1 text-xs text-mg-muted">
+              Montants indicatifs. Vérifie les chiffres clés avant d&apos;accepter.
             </p>
           )}
           {meta.warnings && meta.warnings.length > 0 && (

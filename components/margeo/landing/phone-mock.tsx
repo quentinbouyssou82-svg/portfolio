@@ -631,7 +631,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
       <div className="phone-float-rail" aria-hidden={false}>
         <FloatingStatCard
           side="left"
-          title="Gain du jour"
+          title="Gain du jour (ex.)"
           badge="+ aujourd'hui"
           value={
             <span className="text-mg-go">
@@ -675,7 +675,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
         )}
         <FloatingStatCard
           side="right"
-          title="Courses évitées"
+          title="Courses évitées (ex.)"
           value={
             <>
               <AnimatedCounter value={9} duration={1.4} />{" "}
