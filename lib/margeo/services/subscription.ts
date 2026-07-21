@@ -29,6 +29,12 @@ import {
 } from "@/lib/margeo/services/profile";
 import type { MargeoProfileRow } from "@/lib/margeo/supabase/schema";
 
+const ENTITLEMENTS_TTL_MS = 60_000;
+const entitlementsCache = new Map<
+  string,
+  { value: PlanEntitlements; expires: number }
+>();
+
 function db() {
   // Service role : RLS contourné après requireAuthUser / actions authentifiées
   try {
@@ -361,8 +367,16 @@ export async function getCurrentSubscription(
 export async function getUserEntitlements(
   userId: string,
 ): Promise<PlanEntitlements> {
+  const cached = entitlementsCache.get(userId);
+  if (cached && Date.now() < cached.expires) return cached.value;
+
   const sub = await getCurrentSubscription(userId);
-  return getEntitlementsForPlan(resolveEffectivePlan(sub));
+  const value = getEntitlementsForPlan(resolveEffectivePlan(sub));
+  entitlementsCache.set(userId, {
+    value,
+    expires: Date.now() + ENTITLEMENTS_TTL_MS,
+  });
+  return value;
 }
 
 export async function listSubscriptionHistory(

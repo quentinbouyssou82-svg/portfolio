@@ -9,7 +9,10 @@ import {
 } from "@/lib/margeo/api/validate-image";
 import { checkRateLimit } from "@/lib/margeo/api/rate-limit";
 import { analyzeScreenshot } from "@/lib/margeo/analyze-screenshot";
-import { ensureProfileForUser } from "@/lib/margeo/services/profile";
+import {
+  ensureProfileForUser,
+  getProfileForUser,
+} from "@/lib/margeo/services/profile";
 import { saveAnalysis } from "@/lib/margeo/services/analyses";
 import { assertAnalysisQuota } from "@/lib/margeo/services/quota";
 import { uploadScreenshotBuffer } from "@/lib/margeo/services/storage";
@@ -54,16 +57,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Auth parallèle : profil + quota + formData
+    // Auth parallèle : profil léger + quota + formData
     const prepStarted = Date.now();
-    const [profile, quota, formData] = await Promise.all([
-      ensureProfileForUser(
-        user.id,
-        user.user_metadata?.name as string | undefined,
+    const [profileRaw, quota, formData] = await Promise.all([
+      getProfileForUser(user.id, {
+        first_name:
+          typeof user.user_metadata?.first_name === "string"
+            ? user.user_metadata.first_name
+            : undefined,
+        last_name:
+          typeof user.user_metadata?.last_name === "string"
+            ? user.user_metadata.last_name
+            : undefined,
+        avatar_url:
+          typeof user.user_metadata?.avatar_url === "string"
+            ? user.user_metadata.avatar_url
+            : undefined,
+      }).then(
+        (p) =>
+          p ??
+          ensureProfileForUser(
+            user.id,
+            user.user_metadata?.name as string | undefined,
+          ),
       ),
       assertAnalysisQuota(user.id),
       request.formData(),
     ]);
+    const profile = profileRaw;
     mark("prepMs", prepStarted);
 
     if (!profile) {
@@ -97,8 +118,7 @@ export async function POST(request: Request) {
     const prepared = await prepareScreenshotForVision(file);
     mark("imageMs", imageStarted);
 
-    // Chemin critique : Vision (+ calibration légère en parallèle)
-    // Upload Storage + count analyses → after() (hors latence utilisateur)
+    // Chemin critique : Vision (+ calibration en parallèle, free si Vision > 200ms)
     const workStarted = Date.now();
     const [vision, calibration] = await Promise.all([
       analyzeScreenshot(prepared, { contentHash: prepared.contentHash }),
