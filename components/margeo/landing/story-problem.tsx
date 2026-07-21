@@ -38,8 +38,8 @@ function ProblemOpener() {
       </motion.h2>
 
       <motion.p
-        initial={reduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
+        initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ ...SPRING, delay: 0.14 }}
         className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:mt-5 sm:text-lg"

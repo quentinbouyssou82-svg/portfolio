@@ -3077,6 +3077,13 @@
   backdrop-filter: blur(20px);
 }
 
+.uberly-root .final-cta-stage .text-gradient,
+.margeo-root .final-cta-stage .text-gradient {
+  display: inline-block;
+  max-width: 100%;
+  padding-inline: 0.06em;
+}
+
 .uberly-root .final-cta-glow,
 .margeo-root .final-cta-glow {
   position: absolute;
