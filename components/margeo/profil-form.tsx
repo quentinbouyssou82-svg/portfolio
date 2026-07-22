@@ -641,7 +641,15 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 </p>
               </div>
             </div>
-            <Link href={margeoRoutes.subscription}>
+            <Link
+              href={
+                profile.premium ||
+                profile.planId === "pro" ||
+                profile.planId === "elite"
+                  ? margeoRoutes.subscription
+                  : `${margeoRoutes.premium}?source=nav`
+              }
+            >
               <Button
                 variant="secondary"
                 size="sm"
@@ -651,7 +659,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 profile.planId === "pro" ||
                 profile.planId === "elite"
                   ? "Gérer l'abonnement"
-                  : "Voir mon abonnement"}
+                  : "Débloquer mon plan →"}
               </Button>
             </Link>
           </div>

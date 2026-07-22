@@ -13,6 +13,8 @@ export interface DriveelyPlan {
   /** Tagline courte sous le nom */
   tagline: string;
   priceMonthly: number;
+  /** Prix annuel TTC (null = gratuit / N/A) */
+  priceYearly: number | null;
   /** null = illimité */
   dailyAnalyses: number | null;
   historyDays: number | null;
@@ -31,6 +33,7 @@ export const DRIVEELY_PLANS: Record<DriveelyPlanId, DriveelyPlan> = {
     name: "Découverte",
     tagline: "Juste pour tester Driveely.",
     priceMonthly: 0,
+    priceYearly: null,
     dailyAnalyses: 2,
     historyDays: 3,
     featured: false,
@@ -51,6 +54,7 @@ export const DRIVEELY_PLANS: Record<DriveelyPlanId, DriveelyPlan> = {
     name: "Pro",
     tagline: "Tout ce qu'il faut, chaque jour.",
     priceMonthly: 4.99,
+    priceYearly: 39.99,
     dailyAnalyses: null,
     historyDays: null,
     featured: true,
@@ -72,6 +76,7 @@ export const DRIVEELY_PLANS: Record<DriveelyPlanId, DriveelyPlan> = {
     name: "Elite",
     tagline: "Pour les livreurs intensifs.",
     priceMonthly: 8.99,
+    priceYearly: 69.99,
     dailyAnalyses: null,
     historyDays: null,
     featured: false,
@@ -109,4 +114,16 @@ export const DRIVEELY_PRICING_COPY = {
 export function formatPlanPrice(price: number): string {
   if (price === 0) return "0 €";
   return `${price.toFixed(2).replace(".", ",")} €`;
+}
+
+/** Économie annuelle vs 12× mensuel (0 si non applicable). */
+export function yearlySavingsPercent(planId: DriveelyPlanId): number {
+  const plan = DRIVEELY_PLANS[planId];
+  if (!plan.priceYearly || plan.priceMonthly <= 0) return 0;
+  const full = plan.priceMonthly * 12;
+  return Math.round(((full - plan.priceYearly) / full) * 100);
+}
+
+export function formatYearlyEquivalentMonthly(priceYearly: number): string {
+  return formatPlanPrice(priceYearly / 12);
 }

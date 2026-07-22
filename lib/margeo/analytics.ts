@@ -12,7 +12,13 @@ export type MargeoEvent =
   | "margeo_profile_updated"
   | "margeo_subscription_activated"
   | "margeo_subscription_changed"
-  | "margeo_subscription_canceled";
+  | "margeo_subscription_canceled"
+  | "driveely_paywall_view"
+  | "driveely_paywall_screen"
+  | "driveely_paywall_cta_click"
+  | "driveely_paywall_trial_start"
+  | "driveely_paywall_exit_offer"
+  | "driveely_paywall_dismiss";
 
 const FUNNEL_STEPS = [
   "visitor",

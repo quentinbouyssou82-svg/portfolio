@@ -1,6 +1,7 @@
 "use client";
 
 import { RotateCcw, ScanLine, Sparkles, X, Check } from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -46,6 +47,8 @@ export default function AnalysePage() {
   const [uploadError, setUploadError] = useState<{
     title: string;
     description?: string;
+    href?: string;
+    cta?: string;
   } | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const profile = useDriveelyProfile();
@@ -122,7 +125,12 @@ export default function AnalysePage() {
         if (url) URL.revokeObjectURL(url);
         setPreviewUrl(null);
         const err = getAnalysisErrorMessage(e);
-        setUploadError({ title: err.title, description: err.description });
+        setUploadError({
+          title: err.title,
+          description: err.description,
+          href: err.href,
+          cta: err.cta,
+        });
         toast.error(err.title, { description: err.description });
       }
     },
@@ -235,7 +243,25 @@ export default function AnalysePage() {
         <ErrorState
           title={uploadError.title}
           description={uploadError.description}
-          onRetry={() => setUploadError(null)}
+          onRetry={uploadError.href ? undefined : () => setUploadError(null)}
+          action={
+            uploadError.href ? (
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                <Link href={uploadError.href}>
+                  <Button className="app-cta-primary min-h-11 w-full sm:w-auto">
+                    {uploadError.cta ?? "Voir l'offre →"}
+                  </Button>
+                </Link>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setUploadError(null)}
+                >
+                  Fermer
+                </Button>
+              </div>
+            ) : undefined
+          }
         />
       )}
 

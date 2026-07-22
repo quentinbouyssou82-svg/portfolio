@@ -101,7 +101,7 @@ export async function completeOnboardingAction(
     },
   });
 
-  return { ok: true, redirectTo: DRIVEELY_PATHS.dashboard };
+  return { ok: true, redirectTo: `${DRIVEELY_PATHS.premium}?source=onboarding` };
 }
 
 export async function completeOnboardingAndRedirect(

@@ -5075,3 +5075,143 @@
     max-width: none;
   }
 }
+
+/* ── Paywall conversion flow ─────────────────────────────── */
+
+.driveely-root .paywall-flow,
+.margeo-root .paywall-flow {
+  position: relative;
+}
+
+.driveely-root .paywall-benefit-row,
+.margeo-root .paywall-benefit-row {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(12px);
+}
+
+.driveely-root .paywall-benefit-icon,
+.margeo-root .paywall-benefit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(129, 140, 248, 0.22);
+  background: rgba(129, 140, 248, 0.12);
+  flex-shrink: 0;
+}
+
+.driveely-root .paywall-perso-card,
+.margeo-root .paywall-perso-card {
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  backdrop-filter: blur(14px);
+}
+
+.driveely-root .paywall-period-card,
+.margeo-root .paywall-period-card {
+  position: relative;
+  padding: 1rem 1.05rem 1.1rem;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.driveely-root .paywall-period-card-active,
+.margeo-root .paywall-period-card-active {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(129, 140, 248, 0.1);
+  box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.12) inset,
+    0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.driveely-root .paywall-period-badge,
+.margeo-root .paywall-period-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(199, 210, 254);
+  background: rgba(99, 102, 241, 0.35);
+}
+
+.driveely-root .paywall-timeline-dot,
+.margeo-root .paywall-timeline-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 9999px;
+  background: rgb(129, 140, 248);
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.18);
+  flex-shrink: 0;
+}
+
+.driveely-root .paywall-timeline-line,
+.margeo-root .paywall-timeline-line {
+  width: 1px;
+  flex: 1;
+  min-height: 1.25rem;
+  margin-top: 0.35rem;
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.45),
+    rgba(129, 140, 248, 0.08)
+  );
+}
+
+.driveely-root .paywall-exit-sheet,
+.margeo-root .paywall-exit-sheet {
+  background: linear-gradient(
+    160deg,
+    rgba(24, 24, 27, 0.98) 0%,
+    rgba(9, 9, 11, 0.98) 100%
+  );
+  backdrop-filter: blur(20px);
+}
+
+.driveely-root .paywall-soft-banner,
+.margeo-root .paywall-soft-banner {
+  margin-bottom: 1.25rem;
+}
+
+.driveely-root[data-theme="light"] .paywall-benefit-row,
+.margeo-root[data-theme="light"] .paywall-benefit-row,
+.driveely-root[data-theme="light"] .paywall-perso-card,
+.margeo-root[data-theme="light"] .paywall-perso-card,
+.driveely-root[data-theme="light"] .paywall-period-card,
+.margeo-root[data-theme="light"] .paywall-period-card {
+  border-color: rgba(24, 24, 27, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.driveely-root[data-theme="light"] .paywall-period-card-active,
+.margeo-root[data-theme="light"] .paywall-period-card-active {
+  border-color: rgba(79, 70, 229, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.driveely-root[data-theme="light"] .paywall-exit-sheet,
+.margeo-root[data-theme="light"] .paywall-exit-sheet {
+  background: #fff;
+}

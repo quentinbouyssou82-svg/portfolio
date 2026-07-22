@@ -7,7 +7,12 @@ export interface AnalysisErrorInput {
 
 export function getAnalysisErrorMessage(
   error: unknown,
-): { title: string; description: string } {
+): {
+  title: string;
+  description: string;
+  href?: string;
+  cta?: string;
+} {
   const input = normalizeError(error);
   const message = input.message ?? "Analyse impossible";
   const { code } = input;
@@ -62,6 +67,29 @@ export function getAnalysisErrorMessage(
     return {
       title: "Trop d'analyses",
       description: "Réessaie dans quelques secondes.",
+    };
+  }
+
+  if (
+    code === "DAILY_LIMIT_REACHED" ||
+    lower.includes("limite découverte") ||
+    lower.includes("analyses / jour")
+  ) {
+    return {
+      title: "Limite du jour atteinte",
+      description:
+        "2 analyses/jour en Découverte. Passe en Pro pour débloquer l'illimité.",
+      href: "/demos/driveely/premium?source=quota",
+      cta: "Commencer mon essai gratuit →",
+    };
+  }
+
+  if (code === "PLAN_FORBIDDEN") {
+    return {
+      title: "Plan insuffisant",
+      description: "Ton offre actuelle ne permet pas d'analyser.",
+      href: "/demos/driveely/premium?source=quota",
+      cta: "Voir mon plan →",
     };
   }
 

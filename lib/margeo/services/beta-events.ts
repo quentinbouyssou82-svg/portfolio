@@ -9,7 +9,13 @@ export type BetaEventType =
   | "analysis_failed"
   | "vision_low_confidence"
   | "feedback_submitted"
-  | "feedback_correction";
+  | "feedback_correction"
+  | "paywall_view"
+  | "paywall_screen"
+  | "paywall_cta_click"
+  | "paywall_trial_start"
+  | "paywall_exit_offer"
+  | "paywall_dismiss";
 
 export interface BetaEventInput {
   userId: string;

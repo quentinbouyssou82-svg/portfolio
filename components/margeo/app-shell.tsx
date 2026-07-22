@@ -22,7 +22,7 @@ const NAV_ITEMS = [
   { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
   { href: margeoRoutes.historique, label: "Histo", icon: History },
   { href: margeoRoutes.profil, label: "Profil", icon: User },
-  { href: margeoRoutes.subscription, label: "Plans", icon: Crown },
+  { href: `${margeoRoutes.premium}?source=nav`, label: "Plans", icon: Crown, match: margeoRoutes.premium },
 ];
 
 const NAV_ITEMS_DESKTOP = [
@@ -30,7 +30,12 @@ const NAV_ITEMS_DESKTOP = [
   { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
   { href: margeoRoutes.historique, label: "Historique", icon: History },
   { href: margeoRoutes.profil, label: "Profil", icon: User },
-  { href: margeoRoutes.subscription, label: "Abonnement", icon: Crown },
+  {
+    href: `${margeoRoutes.premium}?source=nav`,
+    label: "Offres",
+    icon: Crown,
+    match: margeoRoutes.premium,
+  },
 ];
 
 function AvatarBubble({
@@ -64,12 +69,17 @@ function NavLink({
   label,
   icon: Icon,
   active,
+  match,
 }: {
   href: string;
   label: string;
   icon: typeof LayoutDashboard;
   active: boolean;
+  match?: string;
 }) {
+  const showPlansBadge =
+    (match ?? href.split("?")[0]) === margeoRoutes.premium && !active;
+
   return (
     <Link
       href={href}
@@ -83,9 +93,9 @@ function NavLink({
     >
       <Icon className="size-[18px]" />
       {label}
-      {href === margeoRoutes.subscription && !active && (
+      {showPlansBadge && (
         <span className="ml-auto rounded-full bg-mg-accent-soft px-2 py-0.5 text-[10px] font-semibold text-mg-accent">
-          Plans
+          Pro
         </span>
       )}
     </Link>
@@ -100,10 +110,12 @@ export function AppShell({
   profile: UserProfile;
 }) {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    href === margeoRoutes.dashboard
-      ? pathname === href
-      : pathname.startsWith(href);
+  const isActive = (href: string, match?: string) => {
+    const base = match ?? href.split("?")[0];
+    return base === margeoRoutes.dashboard
+      ? pathname === base
+      : pathname.startsWith(base);
+  };
 
   const displayName =
     profile.name ||
@@ -122,7 +134,11 @@ export function AppShell({
 
         <nav className="flex-1 space-y-1 p-3">
           {NAV_ITEMS_DESKTOP.map((item) => (
-            <NavLink key={item.href} {...item} active={isActive(item.href)} />
+            <NavLink
+              key={item.href}
+              {...item}
+              active={isActive(item.href, item.match)}
+            />
           ))}
         </nav>
 
@@ -197,7 +213,7 @@ export function AppShell({
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/92 backdrop-blur-xl lg:hidden pb-[env(safe-area-inset-bottom,0px)]">
         <div className="mx-auto flex max-w-md items-stretch justify-around px-0.5 pt-1.5 pb-1">
           {NAV_ITEMS.map((item) => {
-            const active = isActive(item.href);
+            const active = isActive(item.href, item.match);
             return (
               <Link
                 key={item.href}

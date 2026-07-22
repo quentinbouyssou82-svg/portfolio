@@ -12,6 +12,7 @@ import Link from "next/link";
 import { AnalysisCard } from "@/components/margeo/analysis-card";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
 import { EarningsChart } from "@/components/margeo/earnings-chart";
+import { PaywallSoftBanner } from "@/components/margeo/paywall/soft-banner";
 import { ProgressRing } from "@/components/margeo/progress-ring";
 import { StatCard } from "@/components/margeo/stat-card";
 import { WeeklyBars } from "@/components/margeo/weekly-bars";
@@ -105,9 +106,14 @@ export function DashboardView({
   const firstName = profile.firstName || profile.name.split(" ")[0] || "livreur";
   const { savedEstimate, refusedCount, weekCount, verdictCounts } =
     computeMetrics(analyses);
+  const isFreePlan =
+    !profile.premium &&
+    (profile.planId == null || profile.planId === "discovery");
 
   return (
     <div className="app-page">
+      <PaywallSoftBanner isFreePlan={isFreePlan} />
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <header className="app-page-header">
           <p className="app-page-eyebrow">Tableau de bord</p>
