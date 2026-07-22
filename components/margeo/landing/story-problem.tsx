@@ -87,7 +87,7 @@ export function StoryProblem() {
         <ProblemOpener />
 
         <div className="mt-12 space-y-14 sm:mt-16 sm:space-y-0">
-          <div className="sm:mb-16">
+          <div className="problem-constellation-scene sm:mb-20">
             <SceneLabel>Une soirée</SceneLabel>
             <ProblemTimeline />
           </div>

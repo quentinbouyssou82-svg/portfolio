@@ -1521,6 +1521,7 @@
 .uberly-root .problem-section,
 .margeo-root .problem-section {
   overflow: visible;
+  overflow-x: clip;
 }
 
 .uberly-root .problem-opener-glow,
@@ -1649,6 +1650,238 @@
     rgba(129, 140, 248, 0.12) 50%,
     rgba(99, 102, 241, 0.08)
   );
+}
+
+/* ── Constellation « Une soirée » ─────────────────────────── */
+
+.uberly-root .problem-constellation-scene,
+.margeo-root .problem-constellation-scene {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-inline: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+}
+
+.uberly-root .problem-constellation,
+.margeo-root .problem-constellation {
+  position: relative;
+  isolation: isolate;
+}
+
+.uberly-root .problem-constellation-glow,
+.margeo-root .problem-constellation-glow {
+  position: absolute;
+  top: 8%;
+  left: 18%;
+  width: min(420px, 55vw);
+  height: min(320px, 42vw);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.12),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(8px);
+}
+
+.uberly-root .problem-constellation-glow-b,
+.margeo-root .problem-constellation-glow-b {
+  top: auto;
+  bottom: 6%;
+  left: auto;
+  right: 12%;
+  width: min(380px, 48vw);
+  height: min(280px, 36vw);
+  background: radial-gradient(
+    ellipse,
+    rgba(139, 92, 246, 0.09),
+    transparent 72%
+  );
+}
+
+.uberly-root .problem-constellation-stage,
+.margeo-root .problem-constellation-stage {
+  position: relative;
+  z-index: 1;
+  min-height: clamp(22rem, 52vw, 34rem);
+  max-width: 72rem;
+}
+
+.uberly-root .problem-constellation-links,
+.margeo-root .problem-constellation-links {
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.uberly-root .problem-bubble-slot,
+.margeo-root .problem-bubble-slot {
+  position: absolute;
+  left: var(--bx);
+  top: var(--by);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.uberly-root .problem-bubble,
+.margeo-root .problem-bubble {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 12px 36px rgba(0, 0, 0, 0.32),
+    0 0 24px rgba(129, 140, 248, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  white-space: nowrap;
+}
+
+.uberly-root .problem-bubble-icon,
+.margeo-root .problem-bubble-icon {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.uberly-root .problem-bubble--accent,
+.margeo-root .problem-bubble--accent {
+  border-color: rgba(129, 140, 248, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.08) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 14px 40px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(129, 140, 248, 0.12);
+}
+
+.uberly-root .problem-bubble--accent .problem-bubble-icon,
+.margeo-root .problem-bubble--accent .problem-bubble-icon {
+  border-color: rgba(129, 140, 248, 0.22);
+  background: rgba(129, 140, 248, 0.12);
+}
+
+.uberly-root .problem-bubble--warn,
+.margeo-root .problem-bubble--warn {
+  border-color: rgba(251, 191, 36, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 12px 36px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(251, 191, 36, 0.08);
+}
+
+.uberly-root .problem-bubble--warn .problem-bubble-icon,
+.margeo-root .problem-bubble--warn .problem-bubble-icon {
+  border-color: rgba(251, 191, 36, 0.18);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.uberly-root .problem-bubble--danger,
+.margeo-root .problem-bubble--danger {
+  border-color: rgba(248, 113, 113, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(248, 113, 113, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 12px 36px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(248, 113, 113, 0.07);
+}
+
+.uberly-root .problem-bubble--danger .problem-bubble-icon,
+.margeo-root .problem-bubble--danger .problem-bubble-icon {
+  border-color: rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.uberly-root .problem-bubble--go,
+.margeo-root .problem-bubble--go {
+  border-color: rgba(52, 211, 153, 0.24);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 12px 36px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(52, 211, 153, 0.09);
+}
+
+.uberly-root .problem-bubble--go .problem-bubble-icon,
+.margeo-root .problem-bubble--go .problem-bubble-icon {
+  border-color: rgba(52, 211, 153, 0.2);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.uberly-root .problem-bubble--lg,
+.margeo-root .problem-bubble--lg {
+  border-radius: 1.15rem;
+  z-index: 2;
+}
+
+.uberly-root .problem-bubble--xs,
+.margeo-root .problem-bubble--xs {
+  border-radius: 0.85rem;
+  opacity: 0.92;
+}
+
+.uberly-root .problem-constellation-caption,
+.margeo-root .problem-constellation-caption {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .uberly-root .problem-constellation-stage,
+  .margeo-root .problem-constellation-stage {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.65rem 0.75rem;
+    min-height: 0;
+    padding: 0.25rem 0 0.5rem;
+  }
+
+  .uberly-root .problem-bubble-slot,
+  .margeo-root .problem-bubble-slot {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    order: var(--bo);
+  }
+
+  .uberly-root .problem-bubble,
+  .margeo-root .problem-bubble {
+    white-space: normal;
+  }
+
+  .uberly-root .problem-constellation-glow,
+  .margeo-root .problem-constellation-glow {
+    width: 70vw;
+    height: 40vw;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .uberly-root .problem-constellation-glow-b,
+  .margeo-root .problem-constellation-glow-b {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uberly-root .problem-bubble,
+  .margeo-root .problem-bubble {
+    transition: none;
+  }
 }
 
 .uberly-root .problem-comparison-glow,
@@ -3543,7 +3776,11 @@
   );
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
 }
 
 .uberly-root[data-theme="light"] .landing-backdrop-halo-a,
