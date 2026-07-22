@@ -5,9 +5,9 @@ import {
   verifySessionToken,
 } from "@/lib/control-tower/pin-session";
 import {
-  UBERLY_PATHS,
-  PUBLIC_UBERLY_PATHS,
-  PROTECTED_UBERLY_PREFIXES,
+  DRIVEELY_PATHS,
+  PUBLIC_DRIVEELY_PATHS,
+  PROTECTED_DRIVEELY_PREFIXES,
 } from "@/lib/margeo/constants";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
@@ -15,8 +15,11 @@ import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
 const CONTROL_TOWER_PREFIX = "/control-tower";
 const MAISON_PREFIX = "/demos/maison";
-const UBERLY_PREFIX = "/demos/uberly";
+const DRIVEELY_PREFIX = "/demos/driveely";
+const LEGACY_UBERLY_PREFIX = "/demos/uberly";
 const LEGACY_MARGEO_PREFIX = "/demos/margeo";
+const LEGACY_UBERLY_API = "/api/uberly";
+const DRIVEELY_API = "/api/driveely";
 
 /** Domaines Vercel du projet « margeo » (pas portfolio-omega-…). */
 function isMargeoProjectHost(hostname: string): boolean {
@@ -29,18 +32,30 @@ export async function middleware(request: NextRequest) {
 
   if (pathname === "/" && isMargeoProjectHost(request.nextUrl.hostname)) {
     const url = request.nextUrl.clone();
-    url.pathname = UBERLY_PATHS.home;
+    url.pathname = DRIVEELY_PATHS.home;
+    return NextResponse.redirect(url, 308);
+  }
+
+  if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(LEGACY_UBERLY_PREFIX, DRIVEELY_PREFIX);
+    return NextResponse.redirect(url, 308);
+  }
+
+  if (pathname.startsWith(LEGACY_UBERLY_API)) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(LEGACY_UBERLY_API, DRIVEELY_API);
     return NextResponse.redirect(url, 308);
   }
 
   if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
     const url = request.nextUrl.clone();
-    url.pathname = pathname.replace(LEGACY_MARGEO_PREFIX, UBERLY_PREFIX);
-    return NextResponse.redirect(url);
+    url.pathname = pathname.replace(LEGACY_MARGEO_PREFIX, DRIVEELY_PREFIX);
+    return NextResponse.redirect(url, 308);
   }
 
-  if (pathname.startsWith(UBERLY_PREFIX)) {
-    return handleUberlyAuth(request, pathname);
+  if (pathname.startsWith(DRIVEELY_PREFIX)) {
+    return handleDriveelyAuth(request, pathname);
   }
 
   if (pathname.startsWith(MAISON_PREFIX)) {
@@ -72,12 +87,12 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-function isUberlyProtected(pathname: string): boolean {
-  const relative = pathname.slice(UBERLY_PREFIX.length);
-  return PROTECTED_UBERLY_PREFIXES.some((p) => relative.startsWith(p));
+function isDriveelyProtected(pathname: string): boolean {
+  const relative = pathname.slice(DRIVEELY_PREFIX.length);
+  return PROTECTED_DRIVEELY_PREFIXES.some((p) => relative.startsWith(p));
 }
 
-async function handleUberlyAuth(request: NextRequest, pathname: string) {
+async function handleDriveelyAuth(request: NextRequest, pathname: string) {
   const url = getMargeoSupabaseUrl();
   const key = getMargeoClientKey();
 
@@ -85,9 +100,9 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
     return NextResponse.next();
   }
 
-  if (pathname === `${UBERLY_PREFIX}/signup`) {
+  if (pathname === `${DRIVEELY_PREFIX}/signup`) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = UBERLY_PATHS.login;
+    redirectUrl.pathname = DRIVEELY_PATHS.login;
     redirectUrl.searchParams.set("mode", "signup");
     return NextResponse.redirect(redirectUrl, 308);
   }
@@ -112,14 +127,14 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublic = PUBLIC_UBERLY_PATHS.has(pathname);
-  const isAuthPage = pathname === UBERLY_PATHS.login;
-  const isOnboarding = pathname === UBERLY_PATHS.onboarding;
-  const isProtected = isUberlyProtected(pathname);
+  const isPublic = PUBLIC_DRIVEELY_PATHS.has(pathname);
+  const isAuthPage = pathname === DRIVEELY_PATHS.login;
+  const isOnboarding = pathname === DRIVEELY_PATHS.onboarding;
+  const isProtected = isDriveelyProtected(pathname);
 
   if (!user && (isProtected || isOnboarding)) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = UBERLY_PATHS.login;
+    redirectUrl.pathname = DRIVEELY_PATHS.login;
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -133,8 +148,8 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname =
       profile?.onboarding_completed === true
-        ? UBERLY_PATHS.dashboard
-        : UBERLY_PATHS.onboarding;
+        ? DRIVEELY_PATHS.dashboard
+        : DRIVEELY_PATHS.onboarding;
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -149,18 +164,18 @@ async function handleUberlyAuth(request: NextRequest, pathname: string) {
 
     if (!onboardingDone && isProtected) {
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = UBERLY_PATHS.onboarding;
+      redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
       return NextResponse.redirect(redirectUrl);
     }
 
     if (onboardingDone && isOnboarding) {
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = UBERLY_PATHS.dashboard;
+      redirectUrl.pathname = DRIVEELY_PATHS.dashboard;
       return NextResponse.redirect(redirectUrl);
     }
   }
 
-  if (user && isPublic && pathname === UBERLY_PATHS.home) {
+  if (user && isPublic && pathname === DRIVEELY_PATHS.home) {
     // Landing accessible même connecté
   }
 
@@ -207,6 +222,6 @@ export const config = {
     "/control-tower/:path*",
     "/demos/maison/:path*",
     "/demos/margeo/:path*",
-    "/demos/uberly/:path*",
+    "/demos/driveely/:path*",
   ],
 };

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
-import { UBERLY_CONTACT_EMAIL } from "@/lib/margeo/brand";
+import { DRIVEELY_CONTACT_EMAIL } from "@/lib/margeo/brand";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
 const COLUMNS = [
@@ -23,7 +23,7 @@ const COLUMNS = [
       { label: "FAQ — plateformes", href: "#faq" },
       {
         label: "Contact",
-        href: `mailto:${UBERLY_CONTACT_EMAIL}`,
+        href: `mailto:${DRIVEELY_CONTACT_EMAIL}`,
       },
     ],
   },
@@ -48,7 +48,7 @@ export function Footer() {
             </div>
             <p className="mt-3 max-w-sm text-[11px] leading-relaxed text-mg-faint">
               Uber Eats, Deliveroo, Stuart, Amazon Flex et autres marques citées
-              appartiennent à leurs titulaires. Uberly n&apos;est pas affilié,
+              appartiennent à leurs titulaires. Driveely n&apos;est pas affilié,
               partenaire ni approuvé par ces sociétés.
             </p>
           </div>
@@ -85,7 +85,7 @@ export function Footer() {
           </div>
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <p className="text-xs text-mg-faint">
-              © {new Date().getFullYear()} Uberly. Tous droits réservés.
+              © {new Date().getFullYear()} Driveely. Tous droits réservés.
             </p>
             <p className="text-xs text-mg-faint">
               Bêta : pas de prélèvement. Paiement Stripe prévu à la

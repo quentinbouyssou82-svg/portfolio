@@ -15,7 +15,7 @@ const FEATURES = [
     icon: BrainCircuit,
     title: "Lecture automatique",
     description:
-      "Dépose ta capture. Uberly lit le gain, la distance et le temps. Zéro saisie.",
+      "Dépose ta capture. Driveely lit le gain, la distance et le temps. Zéro saisie.",
   },
   {
     icon: Fuel,
@@ -27,7 +27,7 @@ const FEATURES = [
     icon: RotateCcw,
     title: "Retour à vide",
     description:
-      "Zone morte après la livraison ? Uberly le compte dans ta marge.",
+      "Zone morte après la livraison ? Driveely le compte dans ta marge.",
   },
   {
     icon: Gauge,

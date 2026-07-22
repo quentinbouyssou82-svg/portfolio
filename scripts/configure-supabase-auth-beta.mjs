@@ -1,5 +1,5 @@
 /**
- * Applique la config Auth recommandée pour la bêta Uberly via Management API.
+ * Applique la config Auth recommandée pour la bêta Driveely via Management API.
  *
  * Prérequis :
  *   SUPABASE_ACCESS_TOKEN — https://supabase.com/dashboard/account/tokens

@@ -1,4 +1,4 @@
-import type { UberlyPlanId } from "@/lib/margeo/plans";
+import type { DriveelyPlanId } from "@/lib/margeo/plans";
 import type { BillingPeriod, PaymentProviderId } from "@/lib/margeo/billing/provider";
 
 export type SubscriptionStatus =
@@ -31,7 +31,7 @@ export type SubscriptionEventType =
 export interface MargeoSubscriptionRow {
   id: string;
   user_id: string;
-  plan_id: UberlyPlanId;
+  plan_id: DriveelyPlanId;
   status: SubscriptionStatus;
   created_at: string;
   started_at: string;
@@ -66,7 +66,7 @@ export interface MargeoSubscriptionEventRow {
 export interface UserSubscription {
   id: string;
   userId: string;
-  planId: UberlyPlanId;
+  planId: DriveelyPlanId;
   status: SubscriptionStatus;
   createdAt: string;
   startedAt: string;
@@ -85,8 +85,8 @@ export interface UserSubscription {
 export interface SubscriptionEvent {
   id: string;
   eventType: SubscriptionEventType;
-  fromPlan: UberlyPlanId | null;
-  toPlan: UberlyPlanId | null;
+  fromPlan: DriveelyPlanId | null;
+  toPlan: DriveelyPlanId | null;
   fromStatus: string | null;
   toStatus: string | null;
   provider: string | null;
@@ -121,8 +121,8 @@ export function rowToSubscriptionEvent(
   return {
     id: row.id,
     eventType: row.event_type,
-    fromPlan: (row.from_plan as UberlyPlanId | null) ?? null,
-    toPlan: (row.to_plan as UberlyPlanId | null) ?? null,
+    fromPlan: (row.from_plan as DriveelyPlanId | null) ?? null,
+    toPlan: (row.to_plan as DriveelyPlanId | null) ?? null,
     fromStatus: row.from_status,
     toStatus: row.to_status,
     provider: row.provider,

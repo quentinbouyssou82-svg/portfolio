@@ -2,7 +2,7 @@
 
 import {
   DEFAULT_VEHICLE_COSTS,
-  UBERLY_PATHS,
+  DRIVEELY_PATHS,
 } from "@/lib/margeo/constants";
 import type { MargeoActionResult } from "@/lib/margeo/auth/actions";
 import { updateProfile } from "@/lib/margeo/services/profile";
@@ -101,7 +101,7 @@ export async function completeOnboardingAction(
     },
   });
 
-  return { ok: true, redirectTo: UBERLY_PATHS.dashboard };
+  return { ok: true, redirectTo: DRIVEELY_PATHS.dashboard };
 }
 
 export async function completeOnboardingAndRedirect(

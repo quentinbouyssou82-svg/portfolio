@@ -20,7 +20,7 @@ function initPostHog() {
   initialized = true;
 }
 
-export function UberlyPostHogProvider({
+export function DriveelyPostHogProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -34,6 +34,6 @@ export function UberlyPostHogProvider({
 }
 
 /** @deprecated */
-export const MargeoPostHogProvider = UberlyPostHogProvider;
+export const MargeoPostHogProvider = DriveelyPostHogProvider;
 
 export { posthog };

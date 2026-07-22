@@ -22,8 +22,8 @@ import type {
   UserSubscription,
 } from "@/lib/margeo/billing/types";
 import {
-  UBERLY_PLAN_ORDER,
-  UBERLY_PLANS,
+  DRIVEELY_PLAN_ORDER,
+  DRIVEELY_PLANS,
   formatPlanPrice,
 } from "@/lib/margeo/plans";
 import { margeoRoutes } from "@/lib/margeo/routes";
@@ -79,7 +79,7 @@ export function SubscriptionManageView({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [busy, setBusy] = useState<string | null>(null);
-  const plan = UBERLY_PLANS[subscription.planId];
+  const plan = DRIVEELY_PLANS[subscription.planId];
 
   const statusLabel = useMemo(() => {
     if (subscription.cancelAtPeriodEnd) {
@@ -150,7 +150,7 @@ export function SubscriptionManageView({
               </Button>
             </Link>
             {entitlements.canExportCSV && (
-              <a href="/api/uberly/export/csv" className="flex-1">
+              <a href="/api/driveely/export/csv" className="flex-1">
                 <Button variant="outline" className="w-full min-h-11">
                   <Download className="size-4" />
                   Export CSV
@@ -202,8 +202,8 @@ export function SubscriptionManageView({
           <CardTitle className="text-base">Changer de formule</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3">
-          {UBERLY_PLAN_ORDER.map((id) => {
-            const p = UBERLY_PLANS[id];
+          {DRIVEELY_PLAN_ORDER.map((id) => {
+            const p = DRIVEELY_PLANS[id];
             const current = id === subscription.planId;
             return (
               <div

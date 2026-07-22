@@ -13,7 +13,7 @@ export function getScoreLabel(score: number, verdict: Verdict): string {
   return "Correcte";
 }
 
-/** Métadonnées IA renvoyées par POST /api/uberly/analyze (hors RideAnalysis). */
+/** Métadonnées IA renvoyées par POST /api/driveely/analyze (hors RideAnalysis). */
 export interface AnalysisMeta {
   confidence?: number;
   warnings?: string[];

@@ -1,5 +1,5 @@
-/** Limites produit Uberly — backend source of truth. */
-export const UBERLY_LIMITS = {
+/** Limites produit Driveely — backend source of truth. */
+export const DRIVEELY_LIMITS = {
   /** Analyses plan Découverte par jour (non Pro / Elite). */
   freeDailyAnalyses: 2,
   /** Historique visible plan Découverte (jours). */
@@ -8,7 +8,7 @@ export const UBERLY_LIMITS = {
   maxImageBytes: 10 * 1024 * 1024,
   /**
    * Durée de conservation des captures d'écran (jours).
-   * Purge automatique via /api/uberly/cron/purge-screenshots.
+   * Purge automatique via /api/driveely/cron/purge-screenshots.
    */
   screenshotRetentionDays: 30,
   /** Rate limit location : requêtes / heure / utilisateur. */

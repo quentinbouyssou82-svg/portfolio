@@ -1,11 +1,14 @@
-/** Configuration mode beta Uberly. */
-export function isUberlyBetaMode(): boolean {
-  return process.env.UBERLY_BETA_MODE === "true";
+/** Configuration mode beta Driveely. */
+export function isDriveelyBetaMode(): boolean {
+  return (
+    process.env.DRIVEELY_BETA_MODE === "true" ||
+    process.env.UBERLY_BETA_MODE === "true"
+  );
 }
 
 export function isBetaVerboseLogging(): boolean {
   return (
-    isUberlyBetaMode() || process.env.NODE_ENV === "development"
+    isDriveelyBetaMode() || process.env.NODE_ENV === "development"
   );
 }
 
@@ -15,5 +18,5 @@ export function betaLog(
   meta?: Record<string, unknown>,
 ) {
   if (!isBetaVerboseLogging()) return;
-  console.info(`[uberly/beta:${scope}] ${message}`, meta ?? "");
+  console.info(`[driveely/beta:${scope}] ${message}`, meta ?? "");
 }

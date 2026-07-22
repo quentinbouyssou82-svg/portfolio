@@ -3,22 +3,22 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Logo } from "@/components/margeo/logo";
 import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
-import { UBERLY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
-import type { UberlyLegalDocument } from "@/lib/margeo/legal/documents";
-import { UBERLY_LEGAL_DOCUMENTS } from "@/lib/margeo/legal/documents";
+import { DRIVEELY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import type { DriveelyLegalDocument } from "@/lib/margeo/legal/documents";
+import { DRIVEELY_LEGAL_DOCUMENTS } from "@/lib/margeo/legal/documents";
 import { cn } from "@/lib/margeo/utils";
 
 export function LegalDocumentView({
   doc,
   markdown,
 }: {
-  doc: UberlyLegalDocument;
+  doc: DriveelyLegalDocument;
   markdown: string;
 }) {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col px-1 py-6 sm:py-10">
-      <Link href={UBERLY_PATHS.home} className="inline-flex w-fit">
+      <Link href={DRIVEELY_PATHS.home} className="inline-flex w-fit">
         <Logo />
       </Link>
 
@@ -84,7 +84,7 @@ export function LegalDocumentView({
           Autres documents
         </p>
         <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {UBERLY_LEGAL_DOCUMENTS.filter((d) => d.id !== doc.id).map((d) => (
+          {DRIVEELY_LEGAL_DOCUMENTS.filter((d) => d.id !== doc.id).map((d) => (
             <li key={d.id}>
               <Link
                 href={d.path}
@@ -98,10 +98,10 @@ export function LegalDocumentView({
         <p className="mt-4 text-sm text-mg-muted">
           Contact :{" "}
           <a
-            href={`mailto:${UBERLY_CONTACT_EMAIL}`}
+            href={`mailto:${DRIVEELY_CONTACT_EMAIL}`}
             className="font-medium text-mg-accent underline-offset-2 hover:underline"
           >
-            {UBERLY_CONTACT_EMAIL}
+            {DRIVEELY_CONTACT_EMAIL}
           </a>
         </p>
       </aside>
@@ -109,7 +109,7 @@ export function LegalDocumentView({
       <footer className="mt-10 border-t border-mg-border pt-6">
         <LegalFooterLinks />
         <Link
-          href={UBERLY_PATHS.home}
+          href={DRIVEELY_PATHS.home}
           className="mt-4 inline-block text-sm text-mg-muted hover:text-mg-foreground"
         >
           ← Retour à l&apos;accueil

@@ -19,7 +19,7 @@ export function jsonError(error: unknown): NextResponse {
     );
   }
 
-  console.error("[uberly/api]", error);
+  console.error("[driveely/api]", error);
   return NextResponse.json(
     {
       error: "Une erreur est survenue. Réessaie dans quelques instants.",
@@ -31,6 +31,6 @@ export function jsonError(error: unknown): NextResponse {
 
 export function logApi(event: string, meta?: Record<string, unknown>) {
   if (process.env.NODE_ENV === "development") {
-    console.info(`[uberly/api] ${event}`, meta ?? "");
+    console.info(`[driveely/api] ${event}`, meta ?? "");
   }
 }

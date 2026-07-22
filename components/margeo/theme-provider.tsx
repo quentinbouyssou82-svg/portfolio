@@ -9,24 +9,25 @@ import {
   useMemo,
   useState,
 } from "react";
-import { UBERLY_BASE } from "@/lib/margeo/routes";
+import { DRIVEELY_BASE } from "@/lib/margeo/routes";
 
-export type UberlyTheme = "dark" | "light";
+export type DriveelyTheme = "dark" | "light";
 
-const STORAGE_KEY = "uberly-theme";
+const STORAGE_KEY = "driveely-theme";
+const LEGACY_STORAGE_KEY = "uberly-theme";
 
 type ThemeContextValue = {
-  theme: UberlyTheme;
-  setTheme: (theme: UberlyTheme) => void;
+  theme: DriveelyTheme;
+  setTheme: (theme: DriveelyTheme) => void;
   toggleTheme: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 /** Landing / login / signup / forgot — toujours sombre. */
-export function isUberlyMarketingPath(pathname: string | null): boolean {
+export function isDriveelyMarketingPath(pathname: string | null): boolean {
   if (!pathname) return true;
-  const base = UBERLY_BASE.replace(/\/$/, "");
+  const base = DRIVEELY_BASE.replace(/\/$/, "");
   if (pathname === base || pathname === `${base}/`) return true;
   if (pathname.startsWith(`${base}/login`)) return true;
   if (pathname.startsWith(`${base}/signup`)) return true;
@@ -34,29 +35,34 @@ export function isUberlyMarketingPath(pathname: string | null): boolean {
   return false;
 }
 
-function applyTheme(theme: UberlyTheme) {
-  const root = document.querySelector(".uberly-root");
+function applyTheme(theme: DriveelyTheme) {
+  const root = document.querySelector(".driveely-root");
   if (root instanceof HTMLElement) {
     root.dataset.theme = theme;
   }
   document.documentElement.style.colorScheme = theme;
 }
 
-export function UberlyThemeProvider({
+export function DriveelyThemeProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const forceDark = isUberlyMarketingPath(pathname);
-  const [storedTheme, setStoredTheme] = useState<UberlyTheme>("dark");
+  const forceDark = isDriveelyMarketingPath(pathname);
+  const [storedTheme, setStoredTheme] = useState<DriveelyTheme>("dark");
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY) as UberlyTheme | null;
+      const stored =
+        (localStorage.getItem(STORAGE_KEY) as DriveelyTheme | null) ||
+        (localStorage.getItem(LEGACY_STORAGE_KEY) as DriveelyTheme | null);
       const initial =
         stored === "light" || stored === "dark" ? stored : "dark";
       setStoredTheme(initial);
+      if (!localStorage.getItem(STORAGE_KEY) && stored) {
+        localStorage.setItem(STORAGE_KEY, stored);
+      }
     } catch {
       setStoredTheme("dark");
     }
@@ -67,7 +73,7 @@ export function UberlyThemeProvider({
   }, [forceDark, storedTheme]);
 
   const setTheme = useCallback(
-    (next: UberlyTheme) => {
+    (next: DriveelyTheme) => {
       setStoredTheme(next);
       try {
         localStorage.setItem(STORAGE_KEY, next);
@@ -97,12 +103,12 @@ export function UberlyThemeProvider({
   );
 }
 
-export function useUberlyTheme() {
+export function useDriveelyTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) {
     return {
-      theme: "dark" as UberlyTheme,
-      setTheme: (_: UberlyTheme) => {},
+      theme: "dark" as DriveelyTheme,
+      setTheme: (_: DriveelyTheme) => {},
       toggleTheme: () => {},
     };
   }

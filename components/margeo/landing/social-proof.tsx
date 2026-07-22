@@ -106,7 +106,7 @@ export function SocialProof() {
       id="resultats"
       eyebrow="Résultats beta"
       title="Des livreurs qui décident mieux"
-      description="Chiffres bêta Uberly — indicatifs, mis à jour chaque semaine."
+      description="Chiffres bêta Driveely — indicatifs, mis à jour chaque semaine."
       className="relative py-16 sm:py-24"
     >
       <div className="section-bridge mb-14 sm:mb-16" aria-hidden />
@@ -161,7 +161,7 @@ export function SocialProof() {
 
       <Reveal delay={0.2} className="mt-10 text-center">
         <p className="text-xs text-mg-faint">
-          * Chiffres bêta indicatifs. Résultats variables selon véhicule et zone. Uberly n&apos;est affilié à aucune plateforme.
+          * Chiffres bêta indicatifs. Résultats variables selon véhicule et zone. Driveely n&apos;est affilié à aucune plateforme.
         </p>
       </Reveal>
     </SectionShell>

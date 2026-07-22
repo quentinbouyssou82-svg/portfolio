@@ -135,7 +135,7 @@ async function syncAuthProfileMeta(
     });
   } catch (e) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("[uberly/profile] auth metadata sync failed:", e);
+      console.warn("[driveely/profile] auth metadata sync failed:", e);
     }
   }
 }
@@ -309,7 +309,7 @@ export async function updateProfile(
   }
 
   if (error || !data) {
-    console.error("[uberly/profile] update failed:", error?.message ?? "no data");
+    console.error("[driveely/profile] update failed:", error?.message ?? "no data");
     return null;
   }
 

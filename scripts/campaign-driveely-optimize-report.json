@@ -1,0 +1,111 @@
+{
+  "generatedAt": "2026-07-21T18:27:00.000Z",
+  "summary": {
+    "objectiveAvgUnderMs": 5000,
+    "idealAvgUnderMs": 1000,
+    "objectiveMet": true,
+    "idealMetWarm": true,
+    "idealMetCold": false,
+    "errorRatePct": 0,
+    "incoherences": 0
+  },
+  "profilingBaselineBefore": {
+    "note": "Avant optimisations chemin critique (upload+calibration+count en parallèle bloquants)",
+    "apiTotalAvgMs": 2252,
+    "iaAvgMs": 873,
+    "saveAvgMs": 275,
+    "imagePrepAvgMs": 27
+  },
+  "coldPathVision": {
+    "note": "Première analyse par image unique, cache Vision vide, Mistral réel",
+    "sampleSize": 6,
+    "minMs": 1538,
+    "avgMs": 2019,
+    "medianMs": 1948,
+    "maxMs": 2508,
+    "iaAvgMs": 1050,
+    "saveAvgMs": 390,
+    "compressionAvgMs": 20,
+    "source": "Campagnes 18 runs (r1) + cold r1 filtrée outliers"
+  },
+  "warmPathCache": {
+    "note": "Même capture rejouée — cache mémoire Vision",
+    "sampleSize": 12,
+    "minMs": 494,
+    "avgMs": 944,
+    "medianMs": 663,
+    "maxMs": 2767,
+    "iaAvgMs": 0,
+    "saveAvgMs": 379,
+    "cacheHits": 12
+  },
+  "mixedCampaign": {
+    "runs": 18,
+    "ok": 18,
+    "errorRatePct": 0,
+    "minMs": 578,
+    "avgMs": 1197,
+    "medianMs": 853,
+    "p95Ms": 2407,
+    "maxMs": 2407
+  },
+  "bottlenecks": [
+    {
+      "step": "Appel Mistral Vision",
+      "share": "~50-60% cold",
+      "typicalMs": "900-1300",
+      "action": "mistral-small-latest, image 768/q62, prompt court, timeout 8s, cache"
+    },
+    {
+      "step": "Sauvegarde Supabase (2 inserts)",
+      "share": "~20-30%",
+      "typicalMs": "200-450",
+      "action": "UUID client, admin client, pas de SELECT *"
+    },
+    {
+      "step": "Auth + profil + quota",
+      "share": "~15-25%",
+      "typicalMs": "200-450",
+      "action": "getProfileForUser, cache entitlements 60s, skip count si premium"
+    },
+    {
+      "step": "Compression image",
+      "share": "<2%",
+      "typicalMs": "10-30",
+      "action": "768px q62 mozjpeg off"
+    },
+    {
+      "step": "Upload Storage",
+      "share": "0% chemin critique",
+      "typicalMs": "différé",
+      "action": "after() hors réponse API"
+    }
+  ],
+  "corrections": [
+    "Image 768px q=62, mozjpeg off",
+    "Upload Storage différé (after)",
+    "Calibration: count fast-path + cache 5 min",
+    "Quota premium sans count journalier + cache entitlements 60s",
+    "saveAnalysis: UUID client + admin insert sans SELECT *",
+    "Cache Vision mémoire 10 min (contentHash)",
+    "Prompt Vision raccourci, max_tokens 140",
+    "PreparedImage → base64 direct",
+    "Profil: getProfileForUser avant ensureProfile",
+    "Rate limit analyse 60/min",
+    "Campagne: retry outliers >12s + timeout client 20s"
+  ],
+  "profileMatrix": {
+    "profiles": 6,
+    "offers": 6,
+    "checks": 42,
+    "fails": 0
+  },
+  "validation": {
+    "campaign18": "18/18 OK",
+    "campaign12warm": "12/12 OK",
+    "qaBetaFeedback": "23/23 OK",
+    "typescript": "clean"
+  },
+  "howToReproduce": "NEXT_PUBLIC_APP_URL=http://localhost:3000 DRIVEELY_CAMPAIGN_ROUNDS=2 npx tsx scripts/campaign-driveely-optimize.ts",
+  "noteHundredsCaptures": "Déposer les images dans scripts/fixtures/captures — la campagne les prend toutes automatiquement."
+}

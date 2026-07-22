@@ -45,10 +45,10 @@ export async function logBetaEvent(input: BetaEventInput): Promise<void> {
     });
 
     if (error) {
-      console.warn("[uberly/beta-events] insert failed:", error.message);
+      console.warn("[driveely/beta-events] insert failed:", error.message);
     }
   } catch (e) {
-    console.warn("[uberly/beta-events] log skipped:", e);
+    console.warn("[driveely/beta-events] log skipped:", e);
   }
 }
 

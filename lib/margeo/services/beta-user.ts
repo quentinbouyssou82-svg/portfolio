@@ -1,9 +1,9 @@
-import { isUberlyBetaMode } from "../api/beta-config";
+import { isDriveelyBetaMode } from "../api/beta-config";
 import { getMargeoAdminDb } from "../supabase/admin";
 
 /** Marque un utilisateur comme testeur beta (mode beta actif uniquement). */
 export async function markBetaTester(userId: string): Promise<void> {
-  if (!isUberlyBetaMode()) return;
+  if (!isDriveelyBetaMode()) return;
 
   try {
     const admin = getMargeoAdminDb();
@@ -12,6 +12,6 @@ export async function markBetaTester(userId: string): Promise<void> {
       .update({ is_beta_tester: true })
       .eq("id", userId);
   } catch (e) {
-    console.warn("[uberly/beta] mark tester skipped:", e);
+    console.warn("[driveely/beta] mark tester skipped:", e);
   }
 }

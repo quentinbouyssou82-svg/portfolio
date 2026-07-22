@@ -170,7 +170,7 @@ export async function saveAnalysis(
     .insert(ridePayload);
 
   if (rideError) {
-    console.error("[uberly/analyses] ride insert:", rideError.message);
+    console.error("[driveely/analyses] ride insert:", rideError.message);
     return null;
   }
 
@@ -179,7 +179,7 @@ export async function saveAnalysis(
     .insert(analysisPayload);
 
   if (analysisError) {
-    console.error("[uberly/analyses] analysis insert:", analysisError.message);
+    console.error("[driveely/analyses] analysis insert:", analysisError.message);
     return null;
   }
 
@@ -243,7 +243,7 @@ export async function deleteAnalysisForUser(
 
   if (deleteAnalysisError) {
     console.error(
-      "[uberly/analyses] delete analysis:",
+      "[driveely/analyses] delete analysis:",
       deleteAnalysisError.message,
     );
     return false;
@@ -256,7 +256,7 @@ export async function deleteAnalysisForUser(
     .eq("user_id", userId);
 
   if (deleteRideError) {
-    console.error("[uberly/analyses] delete ride:", deleteRideError.message);
+    console.error("[driveely/analyses] delete ride:", deleteRideError.message);
   }
 
   if (imagePath) {

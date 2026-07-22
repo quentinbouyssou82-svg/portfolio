@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/margeo/ui/button";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 export function DeleteAnalysisButton({ analysisId }: { analysisId: string }) {
   const router = useRouter();
@@ -20,7 +20,7 @@ export function DeleteAnalysisButton({ analysisId }: { analysisId: string }) {
 
     startTransition(async () => {
       try {
-        const res = await fetch(`/api/uberly/analyses/${analysisId}`, {
+        const res = await fetch(`/api/driveely/analyses/${analysisId}`, {
           method: "DELETE",
         });
         const body = await res.json().catch(() => ({}));
@@ -34,7 +34,7 @@ export function DeleteAnalysisButton({ analysisId }: { analysisId: string }) {
           return;
         }
         toast.success("Analyse supprimée");
-        router.push(UBERLY_PATHS.historique);
+        router.push(DRIVEELY_PATHS.historique);
         router.refresh();
       } catch {
         toast.error("Erreur réseau. Réessaie.");

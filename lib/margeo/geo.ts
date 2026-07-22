@@ -30,7 +30,7 @@ export async function geocodeAddress(
 
   try {
     const res = await fetch(url.toString(), {
-      headers: { "User-Agent": "Uberly/1.0 (delivery-copilot)" },
+      headers: { "User-Agent": "Driveely/1.0 (delivery-copilot)" },
       next: { revalidate: 3600 },
     });
     if (!res.ok) return null;

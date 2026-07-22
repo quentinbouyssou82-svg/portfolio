@@ -4,7 +4,7 @@ import type { VisionProvider, VisionProviderResult } from "./types";
 
 /** Modèle multimodal rapide (bêta). */
 const DEFAULT_MODEL =
-  process.env.UBERLY_MISTRAL_VISION_MODEL?.trim() || "mistral-small-latest";
+  process.env.DRIVEELY_MISTRAL_VISION_MODEL?.trim() || "mistral-small-latest";
 
 function getApiKey(): string {
   const key = process.env.MISTRAL_API_KEY?.trim();

@@ -1,0 +1,5077 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mg-background: #09090b;
+  --color-mg-surface: #0e0e11;
+  --color-mg-card: #121215;
+  --color-mg-card-hover: #17171b;
+  --color-mg-border: rgba(255, 255, 255, 0.08);
+  --color-mg-border-strong: rgba(255, 255, 255, 0.14);
+
+  --color-mg-foreground: #fafafa;
+  --color-mg-muted: #a1a1aa;
+  --color-mg-faint: #8b8b94;
+
+  --color-mg-accent: #818cf8;
+  --color-mg-accent-strong: #6366f1;
+  --color-mg-accent-soft: rgba(129, 140, 248, 0.14);
+
+  --color-mg-go: #34d399;
+  --color-mg-go-soft: rgba(52, 211, 153, 0.12);
+  --color-mg-check: #fbbf24;
+  --color-mg-check-soft: rgba(251, 191, 36, 0.12);
+  --color-mg-stop: #f87171;
+  --color-mg-stop-soft: rgba(248, 113, 113, 0.12);
+
+  --radius-mg-sm: 0.5rem;
+  --radius-mg-md: 0.75rem;
+  --radius-mg-lg: 1rem;
+  --radius-mg-xl: 1.25rem;
+  --radius-mg-2xl: 1.5rem;
+
+  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-mg-glow: 0 0 0 1px rgba(129, 140, 248, 0.25),
+    0 8px 40px rgba(99, 102, 241, 0.14);
+
+  --animate-mg-fade-up: mg-fade-up 0.5s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  --animate-mg-shimmer: mg-shimmer 1.8s linear infinite;
+  --animate-mg-scan: mg-scan 2.2s ease-in-out infinite;
+
+  @keyframes mg-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes mg-scan {
+    0%,
+    100% {
+      transform: translateY(-110%);
+    }
+    50% {
+      transform: translateY(110%);
+    }
+  }
+
+  @keyframes mg-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.driveely-root,
+.margeo-root {
+  color-scheme: dark;
+  --color-mg-background: #09090b;
+  --color-mg-surface: #0e0e11;
+  --color-mg-card: #121215;
+  --color-mg-card-hover: #17171b;
+  --color-mg-border: rgba(255, 255, 255, 0.08);
+  --color-mg-border-strong: rgba(255, 255, 255, 0.14);
+  --color-mg-foreground: #fafafa;
+  --color-mg-muted: #a1a1aa;
+  --color-mg-faint: #8b8b94;
+  --color-mg-accent: #818cf8;
+  --color-mg-accent-strong: #6366f1;
+  --color-mg-accent-soft: rgba(129, 140, 248, 0.14);
+  --color-mg-go: #34d399;
+  --color-mg-go-soft: rgba(52, 211, 153, 0.12);
+  --color-mg-check: #fbbf24;
+  --color-mg-check-soft: rgba(251, 191, 36, 0.12);
+  --color-mg-stop: #f87171;
+  --color-mg-stop-soft: rgba(248, 113, 113, 0.12);
+  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-mg-glow: 0 0 0 1px rgba(129, 140, 248, 0.25),
+    0 8px 40px rgba(99, 102, 241, 0.14);
+  --mg-nav-hover: rgba(255, 255, 255, 0.05);
+  --mg-surface-muted: rgba(255, 255, 255, 0.04);
+  --mg-grid-line: rgba(255, 255, 255, 0.035);
+  --mg-hero-glow-a: rgba(99, 102, 241, 0.18);
+  --mg-hero-glow-b: rgba(139, 92, 246, 0.08);
+  --mg-glass-border: rgba(255, 255, 255, 0.1);
+  --mg-glass-highlight: rgba(255, 255, 255, 0.06);
+  --mg-inset-light: rgba(255, 255, 255, 0.04);
+
+  background: var(--color-mg-background);
+  color: var(--color-mg-foreground);
+  font-family: var(--font-driveely-sans), var(--font-margeo-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Thème clair — même système de tokens, contraste premium */
+.driveely-root[data-theme="light"],
+.margeo-root[data-theme="light"] {
+  color-scheme: light;
+  --color-mg-background: #f4f4f5;
+  --color-mg-surface: #ffffff;
+  --color-mg-card: #ffffff;
+  --color-mg-card-hover: #fafafa;
+  --color-mg-border: rgba(24, 24, 27, 0.1);
+  --color-mg-border-strong: rgba(24, 24, 27, 0.18);
+  --color-mg-foreground: #18181b;
+  --color-mg-muted: #3f3f46;
+  --color-mg-faint: #71717a;
+  --color-mg-accent: #4f46e5;
+  --color-mg-accent-strong: #4338ca;
+  --color-mg-accent-soft: rgba(79, 70, 229, 0.1);
+  --color-mg-go: #047857;
+  --color-mg-go-soft: rgba(4, 120, 87, 0.1);
+  --color-mg-check: #b45309;
+  --color-mg-check-soft: rgba(180, 83, 9, 0.1);
+  --color-mg-stop: #dc2626;
+  --color-mg-stop-soft: rgba(220, 38, 38, 0.1);
+  --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 1px 2px rgba(24, 24, 27, 0.04),
+    0 8px 24px rgba(24, 24, 27, 0.06);
+  --shadow-mg-glow: 0 0 0 1px rgba(79, 70, 229, 0.22),
+    0 8px 28px rgba(79, 70, 229, 0.12);
+  --mg-nav-hover: rgba(24, 24, 27, 0.05);
+  --mg-surface-muted: rgba(24, 24, 27, 0.04);
+  --mg-grid-line: rgba(24, 24, 27, 0.07);
+  --mg-hero-glow-a: rgba(79, 70, 229, 0.12);
+  --mg-hero-glow-b: rgba(99, 102, 241, 0.08);
+  --mg-glass-border: rgba(24, 24, 27, 0.1);
+  --mg-glass-highlight: rgba(255, 255, 255, 0.9);
+  --mg-inset-light: rgba(24, 24, 27, 0.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root,
+  .margeo-root {
+    scroll-behavior: auto;
+  }
+}
+
+.driveely-root ::selection,
+.margeo-root ::selection {
+  background: color-mix(in srgb, var(--color-mg-accent) 35%, transparent);
+}
+
+.driveely-root *,
+.margeo-root * {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-mg-foreground) 18%, transparent)
+    transparent;
+}
+
+.driveely-root .bg-hero-glow,
+.margeo-root .bg-hero-glow {
+  min-height: 100%;
+  background-color: var(--color-mg-background);
+  background-image:
+    radial-gradient(
+      ellipse 120% 80% at 50% -20%,
+      var(--mg-hero-glow-a, rgba(99, 102, 241, 0.18)),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 85% 5%,
+      var(--mg-hero-glow-b, rgba(139, 92, 246, 0.08)),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 10% 30%,
+      var(--mg-hero-glow-b, rgba(99, 102, 241, 0.05)),
+      transparent 60%
+    );
+}
+
+.driveely-root .bg-grid,
+.margeo-root .bg-grid {
+  inset: 0;
+  min-height: 100%;
+  background-image:
+    linear-gradient(var(--mg-grid-line, rgba(255, 255, 255, 0.035)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mg-grid-line, rgba(255, 255, 255, 0.035)) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 100% 85% at 50% 0%,
+    black 25%,
+    transparent 100%
+  );
+}
+
+.driveely-root .text-gradient,
+.margeo-root .text-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--color-mg-foreground) 30%,
+    color-mix(in srgb, var(--color-mg-foreground) 55%, transparent)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Évite la coupe des descendantes (g, p, y) et des fins de mot */
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.driveely-root .text-gradient-accent,
+.margeo-root .text-gradient-accent {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-mg-accent) 85%, white),
+    var(--color-mg-accent) 45%,
+    color-mix(in srgb, var(--color-mg-accent) 70%, #c4b5fd)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.driveely-root section[id],
+.margeo-root section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* ── Landing — fond continu ── */
+
+.driveely-root .landing-page,
+.margeo-root .landing-page {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+  .driveely-root .landing-page,
+  .margeo-root .landing-page {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+.driveely-root .landing-backdrop-base,
+.margeo-root .landing-backdrop-base {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-mg-background);
+  background-image:
+    radial-gradient(
+      ellipse 120% 70% at 50% -15%,
+      var(--mg-hero-glow-a),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 85% 60%,
+      rgba(139, 92, 246, 0.07),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-mg-background) 0%,
+      var(--color-mg-background) 45%,
+      var(--color-mg-surface) 100%
+    );
+}
+
+.driveely-root .landing-backdrop-mesh,
+.margeo-root .landing-backdrop-mesh {
+  position: absolute;
+  inset: -10%;
+  opacity: 0.55;
+  background:
+    radial-gradient(ellipse 40% 30% at 20% 25%, rgba(99, 102, 241, 0.12), transparent 70%),
+    radial-gradient(ellipse 35% 28% at 78% 40%, rgba(139, 92, 246, 0.1), transparent 70%),
+    radial-gradient(ellipse 45% 32% at 45% 78%, rgba(79, 70, 229, 0.08), transparent 72%);
+  animation: landing-mesh-breathe 48s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.driveely-root .landing-backdrop-grid,
+.margeo-root .landing-backdrop-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.028;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.55) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 20%, transparent 75%);
+}
+
+.driveely-root .landing-backdrop-halo,
+.margeo-root .landing-backdrop-halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.driveely-root .landing-backdrop-halo-a,
+.margeo-root .landing-backdrop-halo-a {
+  top: -8%;
+  left: -12%;
+  width: min(68vw, 720px);
+  height: min(52vw, 520px);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 68%);
+  animation: landing-halo-drift-a 72s ease-in-out infinite;
+}
+
+.driveely-root .landing-backdrop-halo-b,
+.margeo-root .landing-backdrop-halo-b {
+  top: 38%;
+  right: -18%;
+  width: min(58vw, 640px);
+  height: min(48vw, 480px);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
+  animation: landing-halo-drift-b 88s ease-in-out infinite;
+}
+
+.driveely-root .landing-backdrop-halo-c,
+.margeo-root .landing-backdrop-halo-c {
+  bottom: -10%;
+  left: 18%;
+  width: min(62vw, 680px);
+  height: min(44vw, 440px);
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.1), transparent 72%);
+  animation: landing-halo-drift-c 96s ease-in-out infinite;
+}
+
+.driveely-root .landing-backdrop-halo-d,
+.margeo-root .landing-backdrop-halo-d {
+  top: 18%;
+  left: 42%;
+  width: min(40vw, 420px);
+  height: min(36vw, 360px);
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08), transparent 70%);
+  animation: landing-halo-drift-d 64s ease-in-out infinite;
+  opacity: 0.45;
+}
+
+.driveely-root .landing-backdrop-streak,
+.margeo-root .landing-backdrop-streak {
+  position: absolute;
+  height: 1px;
+  width: min(42vw, 480px);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(129, 140, 248, 0.22),
+    transparent
+  );
+  filter: blur(0.5px);
+  opacity: 0.35;
+  will-change: transform, opacity;
+}
+
+.driveely-root .landing-backdrop-streak-a,
+.margeo-root .landing-backdrop-streak-a {
+  top: 22%;
+  left: 8%;
+  transform: rotate(-18deg);
+  animation: landing-streak-drift 28s ease-in-out infinite;
+}
+
+.driveely-root .landing-backdrop-streak-b,
+.margeo-root .landing-backdrop-streak-b {
+  top: 68%;
+  right: 6%;
+  transform: rotate(12deg);
+  animation: landing-streak-drift 36s ease-in-out infinite reverse;
+}
+
+.driveely-root .landing-backdrop-particles,
+.margeo-root .landing-backdrop-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.driveely-root .landing-backdrop-particle,
+.margeo-root .landing-backdrop-particle {
+  position: absolute;
+  left: var(--p-x);
+  top: var(--p-y);
+  width: var(--p-size);
+  height: var(--p-size);
+  border-radius: 50%;
+  background: rgba(199, 210, 254, 0.55);
+  box-shadow: 0 0 6px rgba(129, 140, 248, 0.35);
+  animation: landing-particle-float var(--p-dur) ease-in-out infinite;
+  animation-delay: var(--p-delay);
+  opacity: 0.25;
+}
+
+.driveely-root .landing-backdrop-vignette,
+.margeo-root .landing-backdrop-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 40%, transparent 40%, rgba(0, 0, 0, 0.45) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, transparent 18%, transparent 82%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+.driveely-root .landing-backdrop-noise,
+.margeo-root .landing-backdrop-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.028;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes landing-halo-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4%, 3%) scale(1.04);
+  }
+}
+
+@keyframes landing-halo-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-5%, 2%) scale(1.03);
+  }
+}
+
+@keyframes landing-halo-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.05);
+  }
+}
+
+@keyframes landing-halo-drift-d {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3%, 5%) scale(1.08);
+  }
+}
+
+@keyframes landing-mesh-breathe {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.06) translate(1%, -1%);
+    opacity: 0.7;
+  }
+}
+
+@keyframes landing-streak-drift {
+  0%,
+  100% {
+    opacity: 0.2;
+    filter: blur(0.5px);
+  }
+  50% {
+    opacity: 0.55;
+    filter: blur(1px);
+  }
+}
+
+@keyframes landing-particle-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(8px, -18px) scale(1.35);
+    opacity: 0.45;
+  }
+}
+
+.driveely-root .landing-aurora,
+.margeo-root .landing-aurora {
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 30%,
+    rgba(99, 102, 241, 0.1),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .landing-phone-glow,
+.margeo-root .landing-phone-glow {
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(99, 102, 241, 0.28) 0%,
+    rgba(139, 92, 246, 0.12) 38%,
+    rgba(52, 211, 153, 0.05) 55%,
+    transparent 72%
+  );
+  animation: landing-phone-glow-pulse 6s ease-in-out infinite;
+}
+
+@keyframes landing-phone-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.driveely-root .landing-cta-primary,
+.margeo-root .landing-cta-primary {
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.4),
+    0 8px 32px rgba(99, 102, 241, 0.32),
+    0 0 48px rgba(99, 102, 241, 0.12);
+  transition:
+    transform 0.25s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    box-shadow 0.25s ease;
+}
+
+.driveely-root .landing-cta-primary::after,
+.margeo-root .landing-cta-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  animation: landing-cta-shine 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes landing-cta-shine {
+  0%,
+  70%,
+  100% {
+    transform: translateX(-120%);
+  }
+  85% {
+    transform: translateX(120%);
+  }
+}
+
+.driveely-root .landing-cta-primary:hover,
+.margeo-root .landing-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.55),
+    0 14px 44px rgba(99, 102, 241, 0.42),
+    0 0 64px rgba(99, 102, 241, 0.18);
+}
+
+.driveely-root .landing-cta-secondary,
+.margeo-root .landing-cta-secondary {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.driveely-root .landing-cta-secondary:hover,
+.margeo-root .landing-cta-secondary:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.driveely-root .landing-card-hover,
+.margeo-root .landing-card-hover {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.3s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.driveely-root .landing-card-hover::before,
+.margeo-root .landing-card-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 42%,
+    transparent 100%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.driveely-root .landing-card-hover:hover,
+.margeo-root .landing-card-hover:hover {
+  transform: translateY(-5px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 20px 48px rgba(0, 0, 0, 0.4),
+    0 0 36px rgba(129, 140, 248, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .landing-card-hover:hover,
+  .margeo-root .landing-card-hover:hover {
+    transform: none;
+  }
+}
+
+/* ── App shell premium ── */
+
+.driveely-root .app-cta-primary,
+.margeo-root .app-cta-primary {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.3),
+    0 4px 20px rgba(99, 102, 241, 0.2);
+}
+
+.driveely-root .app-cta-primary:hover,
+.margeo-root .app-cta-primary:hover {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.45),
+    0 6px 28px rgba(99, 102, 241, 0.3);
+}
+
+/* ── App UI system (mobile-first) ── */
+
+@keyframes mg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.driveely-root .mg-spinner,
+.margeo-root .mg-spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-mg-accent);
+  border-radius: 50%;
+  animation: mg-spin 0.65s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .mg-spinner,
+  .margeo-root .mg-spinner {
+    animation: none;
+    border-color: rgba(129, 140, 248, 0.35);
+    border-top-color: var(--color-mg-accent);
+    opacity: 0.85;
+  }
+}
+
+.driveely-root .mg-spinner-sm,
+.margeo-root .mg-spinner-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-width: 1.5px;
+}
+
+.driveely-root .mg-spinner-lg,
+.margeo-root .mg-spinner-lg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.driveely-root .app-btn-primary,
+.margeo-root .app-btn-primary {
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 6px 20px rgba(99, 102, 241, 0.22);
+}
+
+@media (hover: hover) {
+  .driveely-root .app-btn-primary:hover:not(:disabled),
+  .margeo-root .app-btn-primary:hover:not(:disabled) {
+    background: var(--color-mg-accent);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.45) inset,
+      0 1px 0 rgba(255, 255, 255, 0.14) inset,
+      0 8px 28px rgba(99, 102, 241, 0.32);
+  }
+
+  .driveely-root .app-btn-secondary:hover:not(:disabled),
+  .margeo-root .app-btn-secondary:hover:not(:disabled) {
+    border-color: var(--color-mg-border-strong);
+    background: var(--mg-nav-hover);
+  }
+}
+
+.driveely-root .app-page,
+.margeo-root .app-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.driveely-root .app-page-header,
+.margeo-root .app-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.driveely-root .app-page-eyebrow,
+.margeo-root .app-page-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .app-page-title,
+.margeo-root .app-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--color-mg-foreground);
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+@media (min-width: 640px) {
+  .driveely-root .app-page-title,
+  .margeo-root .app-page-title {
+    font-size: 1.75rem;
+  }
+}
+
+.driveely-root .app-page-desc,
+.margeo-root .app-page-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-mg-muted);
+  text-wrap: pretty;
+}
+
+.driveely-root .app-glass-surface,
+.margeo-root .app-glass-surface {
+  border: 1px solid var(--color-mg-border);
+  border-radius: var(--radius-mg-2xl);
+  background: linear-gradient(
+    160deg,
+    var(--mg-surface-muted) 0%,
+    transparent 100%
+  );
+  box-shadow: var(--shadow-mg-card);
+  backdrop-filter: blur(16px);
+}
+
+.driveely-root .app-upload-zone,
+.margeo-root .app-upload-zone {
+  display: flex;
+  min-height: 11.5rem;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-mg-xl);
+  border: 1.5px dashed var(--color-mg-border-strong);
+  background: var(--mg-surface-muted);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  outline: none;
+}
+
+.driveely-root .app-upload-zone:focus-visible,
+.margeo-root .app-upload-zone:focus-visible {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 45%, transparent);
+  box-shadow: 0 0 0 3px var(--color-mg-accent-soft);
+}
+
+.driveely-root .app-upload-zone-active,
+.margeo-root .app-upload-zone-active {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 45%, transparent);
+  background: var(--color-mg-accent-soft);
+}
+
+.driveely-root .app-upload-icon,
+.margeo-root .app-upload-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-mg-lg);
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .landing-demo-dropzone,
+.margeo-root .landing-demo-dropzone {
+  min-height: 15rem;
+  padding: 2.5rem 1.5rem;
+}
+
+.driveely-root .landing-demo-panel,
+.margeo-root .landing-demo-panel {
+  min-height: 18rem;
+}
+
+.driveely-root .landing-demo-result,
+.margeo-root .landing-demo-result {
+  position: relative;
+}
+
+.driveely-root .landing-demo-badge,
+.margeo-root .landing-demo-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  border-radius: 999px;
+  border: 1px solid rgba(129, 140, 248, 0.28);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.25rem 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mg-accent);
+  backdrop-filter: blur(8px);
+}
+
+.driveely-root .app-stage-steps,
+.margeo-root .app-stage-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+}
+
+.driveely-root .app-stage-dot,
+.margeo-root .app-stage-dot {
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.driveely-root .app-stage-dot-done,
+.margeo-root .app-stage-dot-done {
+  background: var(--color-mg-go);
+  color: #04120c;
+}
+
+.driveely-root .app-stage-dot-active,
+.margeo-root .app-stage-dot-active {
+  background: var(--color-mg-accent);
+  color: #04120c;
+}
+
+.driveely-root .app-stage-dot-idle,
+.margeo-root .app-stage-dot-idle {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .app-stage-line,
+.margeo-root .app-stage-line {
+  width: 1rem;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.driveely-root .app-scan-progress,
+.margeo-root .app-scan-progress {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .app-scan-progress-fill,
+.margeo-root .app-scan-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  transition: width 0.15s linear;
+}
+
+.driveely-root .app-error-state,
+.margeo-root .app-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: var(--radius-mg-2xl);
+  border: 1px solid rgba(248, 113, 113, 0.22);
+  background: rgba(248, 113, 113, 0.06);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+}
+
+.driveely-root .app-error-state-icon,
+.margeo-root .app-error-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-mg-lg);
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--color-mg-stop);
+}
+
+.driveely-root .app-error-state-title,
+.margeo-root .app-error-state-title {
+  margin-top: 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-mg-foreground);
+}
+
+.driveely-root .app-error-state-desc,
+.margeo-root .app-error-state-desc {
+  margin-top: 0.375rem;
+  max-width: 20rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-mg-muted);
+  text-wrap: pretty;
+}
+
+.driveely-root .app-error-state-action,
+.margeo-root .app-error-state-action {
+  margin-top: 1rem;
+}
+
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.driveely-root .app-fade-in,
+.margeo-root .app-fade-in {
+  animation: app-fade-in 0.45s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
+/* ── Polish global ── */
+
+.driveely-root a:focus-visible,
+.margeo-root a:focus-visible,
+.driveely-root button:focus-visible,
+.margeo-root button:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.55);
+  outline-offset: 2px;
+}
+
+.driveely-root .fill-mg-faint,
+.margeo-root .fill-mg-faint {
+  fill: var(--color-mg-faint);
+}
+
+.driveely-root .mg-scroll-x,
+.margeo-root .mg-scroll-x {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.driveely-root .card-interactive,
+.margeo-root .card-interactive {
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .card-interactive:hover,
+  .margeo-root .card-interactive:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    background-color: var(--color-mg-card-hover);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root *,
+  .margeo-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Premium phone mock (landing hero) ── */
+
+.driveely-root .phone-mock-stage,
+.margeo-root .phone-mock-stage {
+  position: relative;
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+  isolation: isolate;
+}
+
+.driveely-root .phone-mock-ambient,
+.margeo-root .phone-mock-ambient {
+  position: absolute;
+  inset: -18% -12%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.driveely-root .phone-mock-ambient-a,
+.margeo-root .phone-mock-ambient-a {
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 35%,
+    rgba(99, 102, 241, 0.14),
+    transparent 72%
+  );
+  filter: blur(28px);
+}
+
+.driveely-root .phone-mock-ambient-b,
+.margeo-root .phone-mock-ambient-b {
+  background: radial-gradient(
+    ellipse 40% 35% at 60% 70%,
+    rgba(139, 92, 246, 0.08),
+    transparent 70%
+  );
+  filter: blur(36px);
+}
+
+.driveely-root .phone-mock-float,
+.margeo-root .phone-mock-float {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+}
+
+.driveely-root .phone-mock-device,
+.margeo-root .phone-mock-device {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.driveely-root .phone-mock-shadow,
+.margeo-root .phone-mock-shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -6%;
+  height: 28%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 0, 0, 0.55),
+    transparent 68%
+  );
+  filter: blur(18px);
+  transform: translateZ(-40px) scale(1.05);
+  pointer-events: none;
+}
+
+.driveely-root .phone-mock-frame,
+.margeo-root .phone-mock-frame {
+  position: relative;
+  border-radius: 2.65rem;
+  padding: 0.42rem;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 22%,
+    rgba(0, 0, 0, 0.35) 55%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45) inset,
+    0 2px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 100px rgba(0, 0, 0, 0.65),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.driveely-root .phone-mock-frame::before,
+.margeo-root .phone-mock-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.14) 48%,
+    transparent 58%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+  animation: phone-shine 7s ease-in-out infinite;
+}
+
+.driveely-root .phone-mock-frame::after,
+.margeo-root .phone-mock-frame::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(2.65rem - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.driveely-root .phone-mock-screen,
+.margeo-root .phone-mock-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2.2rem;
+  background: linear-gradient(
+    180deg,
+    #121218 0%,
+    #0a0a0e 38%,
+    #09090b 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 24px 48px rgba(0, 0, 0, 0.45) inset;
+}
+
+.driveely-root .phone-mock-screen-glow,
+.margeo-root .phone-mock-screen-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 45% at 50% -5%,
+    rgba(255, 255, 255, 0.09),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .phone-mock-grain,
+.margeo-root .phone-mock-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.driveely-root .phone-mock-island,
+.margeo-root .phone-mock-island {
+  position: absolute;
+  top: 0.55rem;
+  left: 50%;
+  z-index: 20;
+  height: 1.35rem;
+  width: 5.5rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.driveely-root .phone-mock-island::after,
+.margeo-root .phone-mock-island::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0.55rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #1a1a22 30%, #0a0a0e 70%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .phone-mock-content,
+.margeo-root .phone-mock-content {
+  position: relative;
+  z-index: 2;
+  padding: 2.65rem 1rem 1.15rem;
+}
+
+.driveely-root .phone-glass-card,
+.margeo-root .phone-glass-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.driveely-root .phone-kpi-card,
+.margeo-root .phone-kpi-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 6px 16px rgba(0, 0, 0, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.driveely-root .phone-kpi-icon-wrap,
+.margeo-root .phone-kpi-icon-wrap {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .phone-route-mini-bar,
+.margeo-root .phone-route-mini-bar {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.driveely-root .phone-progress-track,
+.margeo-root .phone-progress-track {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .phone-score-track,
+.margeo-root .phone-score-track {
+  stroke: rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .phone-score-glow-ring,
+.margeo-root .phone-score-glow-ring {
+  stroke: rgba(52, 211, 153, 0.12);
+}
+
+@media (hover: hover) {
+  .driveely-root .phone-kpi-card:hover,
+  .margeo-root .phone-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.driveely-root .phone-accept-btn,
+.margeo-root .phone-accept-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(52, 211, 153, 0.95) 0%,
+    rgba(16, 185, 129, 0.88) 100%
+  );
+  color: #04120c;
+  font-weight: 700;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 12px 32px rgba(52, 211, 153, 0.28),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.driveely-root .phone-accept-btn::before,
+.margeo-root .phone-accept-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: phone-btn-shine 4.5s ease-in-out infinite;
+}
+
+@media (hover: hover) {
+  .driveely-root .phone-accept-btn:hover,
+  .margeo-root .phone-accept-btn:hover {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+      0 1px 0 rgba(255, 255, 255, 0.3) inset,
+      0 16px 40px rgba(52, 211, 153, 0.38),
+      0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.driveely-root .phone-verdict-ai,
+.margeo-root .phone-verdict-ai {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.14) 0%,
+    rgba(52, 211, 153, 0.04) 55%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
+    0 0 24px rgba(52, 211, 153, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.driveely-root .phone-verdict-ai::after,
+.margeo-root .phone-verdict-ai::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  animation: phone-scan-line 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.driveely-root .phone-score-halo,
+.margeo-root .phone-score-halo {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(52, 211, 153, 0.22),
+    transparent 68%
+  );
+  filter: blur(8px);
+  animation: phone-pulse-glow 3.2s ease-in-out infinite;
+}
+
+.driveely-root .phone-float-stat,
+.margeo-root .phone-float-stat {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    145deg,
+    rgba(18, 18, 22, 0.92) 0%,
+    rgba(12, 12, 16, 0.88) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 16px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+}
+
+.driveely-root .phone-sparkline,
+.margeo-root .phone-sparkline {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: phone-sparkline-draw 2.4s ease forwards 0.6s;
+}
+
+@keyframes phone-shine {
+  0%,
+  100% {
+    transform: translateX(-8%) rotate(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateX(8%) rotate(0deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes phone-btn-shine {
+  0%,
+  72%,
+  100% {
+    transform: translateX(-120%);
+  }
+  88% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes phone-scan-line {
+  0%,
+  100% {
+    left: -45%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    left: 105%;
+    opacity: 1;
+  }
+  65% {
+    opacity: 0;
+  }
+}
+
+@keyframes phone-pulse-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes phone-sparkline-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .phone-mock-frame::before,
+  .margeo-root .phone-mock-frame::before,
+  .driveely-root .phone-accept-btn::before,
+  .margeo-root .phone-accept-btn::before,
+  .driveely-root .phone-verdict-ai::after,
+  .margeo-root .phone-verdict-ai::after,
+  .driveely-root .phone-score-halo,
+  .margeo-root .phone-score-halo,
+  .driveely-root .phone-sparkline,
+  .margeo-root .phone-sparkline {
+    animation: none !important;
+  }
+}
+
+/* ── Story problem section (composants — pas de fond local) ── */
+
+.driveely-root .problem-section,
+.margeo-root .problem-section {
+  overflow: visible;
+  overflow-x: clip;
+}
+
+.driveely-root .problem-opener-glow,
+.margeo-root .problem-opener-glow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: min(720px, 90vw);
+  height: 280px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.1),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .problem-title-accent,
+.margeo-root .problem-title-accent {
+  filter: drop-shadow(0 0 24px rgba(129, 140, 248, 0.22));
+}
+
+.driveely-root .problem-scene-line,
+.margeo-root .problem-scene-line {
+  max-width: 120px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+}
+
+.driveely-root .problem-premium-card,
+.margeo-root .problem-premium-card {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 42%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+    0 16px 48px rgba(0, 0, 0, 0.34),
+    0 4px 16px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .problem-premium-card:hover,
+  .margeo-root .problem-premium-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+      0 1px 0 rgba(255, 255, 255, 0.09) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+      0 20px 56px rgba(0, 0, 0, 0.4),
+      0 0 40px rgba(129, 140, 248, 0.06);
+  }
+}
+
+.driveely-root .problem-premium-card-shine,
+.margeo-root .problem-premium-card-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 58%
+  );
+  opacity: 0.45;
+}
+
+@media (hover: hover) {
+  .driveely-root .problem-premium-card:hover .problem-premium-card-shine,
+  .margeo-root .problem-premium-card:hover .problem-premium-card-shine {
+    opacity: 0.75;
+  }
+}
+
+.driveely-root .problem-inner-row,
+.margeo-root .problem-inner-row {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.22) 0%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.driveely-root .problem-glass-card,
+.margeo-root .problem-glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.2) inset,
+    0 12px 40px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(14px);
+}
+
+.driveely-root .problem-timeline-line,
+.margeo-root .problem-timeline-line {
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.35),
+    rgba(129, 140, 248, 0.12) 50%,
+    rgba(99, 102, 241, 0.08)
+  );
+}
+
+/* ── Constellation « Une soirée » ─────────────────────────── */
+
+.driveely-root .problem-constellation-scene,
+.margeo-root .problem-constellation-scene {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-inline: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+}
+
+.driveely-root .problem-constellation,
+.margeo-root .problem-constellation {
+  position: relative;
+  isolation: isolate;
+}
+
+.driveely-root .problem-constellation-glow,
+.margeo-root .problem-constellation-glow {
+  position: absolute;
+  top: 8%;
+  left: 18%;
+  width: min(420px, 55vw);
+  height: min(320px, 42vw);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.12),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(8px);
+}
+
+.driveely-root .problem-constellation-glow-b,
+.margeo-root .problem-constellation-glow-b {
+  top: auto;
+  bottom: 6%;
+  left: auto;
+  right: 12%;
+  width: min(380px, 48vw);
+  height: min(280px, 36vw);
+  background: radial-gradient(
+    ellipse,
+    rgba(139, 92, 246, 0.09),
+    transparent 72%
+  );
+}
+
+.driveely-root .problem-constellation-stage,
+.margeo-root .problem-constellation-stage {
+  position: relative;
+  z-index: 1;
+  min-height: clamp(22rem, 52vw, 34rem);
+  max-width: 72rem;
+}
+
+.driveely-root .problem-constellation-links,
+.margeo-root .problem-constellation-links {
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.driveely-root .problem-bubble-slot,
+.margeo-root .problem-bubble-slot {
+  position: absolute;
+  left: var(--bx);
+  top: var(--by);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.driveely-root .problem-bubble-slot--hero,
+.margeo-root .problem-bubble-slot--hero {
+  z-index: 3;
+}
+
+.driveely-root .problem-bubble,
+.margeo-root .problem-bubble {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 12px 36px rgba(0, 0, 0, 0.32),
+    0 0 24px rgba(129, 140, 248, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  white-space: nowrap;
+}
+
+.driveely-root .problem-bubble-icon,
+.margeo-root .problem-bubble-icon {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.driveely-root .problem-bubble--accent,
+.margeo-root .problem-bubble--accent {
+  border-color: rgba(129, 140, 248, 0.28);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.08) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 14px 40px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(129, 140, 248, 0.12);
+}
+
+.driveely-root .problem-bubble--accent .problem-bubble-icon,
+.margeo-root .problem-bubble--accent .problem-bubble-icon {
+  border-color: rgba(129, 140, 248, 0.22);
+  background: rgba(129, 140, 248, 0.12);
+}
+
+.driveely-root .problem-bubble--warn,
+.margeo-root .problem-bubble--warn {
+  border-color: rgba(251, 191, 36, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 12px 36px rgba(0, 0, 0, 0.3),
+    0 0 22px rgba(251, 191, 36, 0.08);
+}
+
+.driveely-root .problem-bubble--warn .problem-bubble-icon,
+.margeo-root .problem-bubble--warn .problem-bubble-icon {
+  border-color: rgba(251, 191, 36, 0.18);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.driveely-root .problem-bubble--danger,
+.margeo-root .problem-bubble--danger {
+  border-color: rgba(248, 113, 113, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(248, 113, 113, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 12px 36px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(248, 113, 113, 0.07);
+}
+
+.driveely-root .problem-bubble--danger .problem-bubble-icon,
+.margeo-root .problem-bubble--danger .problem-bubble-icon {
+  border-color: rgba(248, 113, 113, 0.18);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.driveely-root .problem-bubble--sm,
+.margeo-root .problem-bubble--sm {
+  border-radius: 9999px;
+}
+
+.driveely-root .problem-bubble--md,
+.margeo-root .problem-bubble--md {
+  border-radius: 9999px;
+}
+
+.driveely-root .problem-bubble--hero,
+.margeo-root .problem-bubble--hero {
+  border-radius: 2.25rem;
+  min-width: min(16rem, 78vw);
+  z-index: 2;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.11) 0%,
+    rgba(129, 140, 248, 0.08) 40%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.12) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.28) inset,
+    0 20px 56px rgba(0, 0, 0, 0.4),
+    0 0 48px rgba(129, 140, 248, 0.16);
+}
+
+.driveely-root .problem-bubble-icon--hero,
+.margeo-root .problem-bubble-icon--hero {
+  border-radius: 1.15rem;
+}
+
+.driveely-root .problem-constellation-caption,
+.margeo-root .problem-constellation-caption {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .driveely-root .problem-constellation-stage,
+  .margeo-root .problem-constellation-stage {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7rem 0.75rem;
+    min-height: 0;
+    padding: 0.25rem 0 0.5rem;
+  }
+
+  .driveely-root .problem-bubble-slot,
+  .margeo-root .problem-bubble-slot {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    order: var(--bo);
+  }
+
+  .driveely-root .problem-bubble-slot--hero,
+  .margeo-root .problem-bubble-slot--hero {
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.35rem;
+  }
+
+  .driveely-root .problem-bubble--hero,
+  .margeo-root .problem-bubble--hero {
+    border-radius: 1.85rem;
+    width: 100%;
+    max-width: 18rem;
+  }
+
+  .driveely-root .problem-bubble,
+  .margeo-root .problem-bubble {
+    white-space: normal;
+  }
+
+  .driveely-root .problem-constellation-glow,
+  .margeo-root .problem-constellation-glow {
+    width: 70vw;
+    height: 40vw;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .driveely-root .problem-constellation-glow-b,
+  .margeo-root .problem-constellation-glow-b {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .problem-bubble,
+  .margeo-root .problem-bubble {
+    transition: none;
+  }
+}
+
+.driveely-root .problem-comparison-glow,
+.margeo-root .problem-comparison-glow {
+  position: absolute;
+  inset: -24%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(99, 102, 241, 0.06),
+    transparent 58%
+  );
+}
+
+.driveely-root .problem-amount-glow,
+.margeo-root .problem-amount-glow {
+  text-shadow: 0 0 40px rgba(52, 211, 153, 0.22);
+}
+
+.driveely-root .problem-amount-glow-warn,
+.margeo-root .problem-amount-glow-warn {
+  text-shadow: 0 0 40px rgba(251, 191, 36, 0.18);
+}
+
+.driveely-root .problem-stress-glow,
+.margeo-root .problem-stress-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 85% 55% at 50% 0%,
+    rgba(99, 102, 241, 0.08),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .problem-hook-glow,
+.margeo-root .problem-hook-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 65% at 50% 50%,
+    rgba(129, 140, 248, 0.08),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .problem-route-map,
+.margeo-root .problem-route-map {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(9, 9, 11, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 12px 32px rgba(0, 0, 0, 0.32);
+}
+
+.driveely-root .problem-route-chip,
+.margeo-root .problem-route-chip {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.driveely-root .mg-progress-track,
+.margeo-root .mg-progress-track {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* Logo — fond sombre (dark) / clair (light) */
+.driveely-root .driveely-logo-icon-wrap,
+.margeo-root .driveely-logo-icon-wrap {
+  background: #0c0c0f;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  /* Box fixe — dark/light parfaitement interchangeables */
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.driveely-root .driveely-logo-icon,
+.margeo-root .driveely-logo-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.driveely-root .driveely-logo-icon-light,
+.margeo-root .driveely-logo-icon-light {
+  display: none;
+}
+
+.driveely-root[data-theme="light"] .driveely-logo-icon-wrap,
+.margeo-root[data-theme="light"] .driveely-logo-icon-wrap {
+  background: #fafafa;
+  box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .driveely-logo-icon-dark,
+.margeo-root[data-theme="light"] .driveely-logo-icon-dark {
+  display: none;
+}
+
+.driveely-root[data-theme="light"] .driveely-logo-icon-light,
+.margeo-root[data-theme="light"] .driveely-logo-icon-light {
+  display: block;
+}
+
+.driveely-root[data-theme="light"] .problem-route-map,
+.margeo-root[data-theme="light"] .problem-route-map {
+  border-color: rgba(24, 24, 27, 0.08);
+  background: rgba(250, 250, 250, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(24, 24, 27, 0.04) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
+.driveely-root[data-theme="light"] .problem-route-chip,
+.margeo-root[data-theme="light"] .problem-route-chip {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-mg-muted);
+}
+
+.driveely-root[data-theme="light"] .mg-progress-track,
+.margeo-root[data-theme="light"] .mg-progress-track {
+  background: rgba(24, 24, 27, 0.08);
+  box-shadow: inset 0 1px 2px rgba(24, 24, 27, 0.06);
+}
+
+/* ── Auth (login premium) ── */
+
+.driveely-root .auth-card,
+.margeo-root .auth-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.025) 45%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset,
+    0 0 60px rgba(99, 102, 241, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(20px);
+}
+
+.driveely-root .auth-card-shine,
+.margeo-root .auth-card-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 60%
+  );
+}
+
+.driveely-root .auth-title,
+.margeo-root .auth-title {
+  filter: drop-shadow(0 0 28px rgba(129, 140, 248, 0.12));
+}
+
+.driveely-root .auth-google-btn,
+.margeo-root .auth-google-btn {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px rgba(0, 0, 0, 0.22);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .auth-google-btn:hover:not(:disabled),
+  .margeo-root .auth-google-btn:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.08) inset,
+      0 12px 32px rgba(0, 0, 0, 0.28),
+      0 0 24px rgba(99, 102, 241, 0.06);
+  }
+}
+
+.driveely-root .auth-divider-label,
+.margeo-root .auth-divider-label {
+  background: linear-gradient(
+    90deg,
+    rgba(9, 9, 11, 0) 0%,
+    rgba(9, 9, 11, 0.92) 20%,
+    rgba(9, 9, 11, 0.92) 80%,
+    rgba(9, 9, 11, 0) 100%
+  );
+}
+
+.driveely-root .auth-field-label,
+.margeo-root .auth-field-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-mg-muted);
+}
+
+.driveely-root .auth-field-input-wrap,
+.margeo-root .auth-field-input-wrap {
+  position: relative;
+}
+
+.driveely-root .auth-field-icon,
+.margeo-root .auth-field-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.875rem;
+  transform: translateY(-50%);
+  color: var(--color-mg-faint);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.driveely-root .auth-field-input,
+.margeo-root .auth-field-input {
+  height: 3rem;
+  min-height: 3rem;
+  width: 100%;
+  border-radius: var(--radius-mg-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding-left: 2.625rem;
+  padding-right: 0.875rem;
+  font-size: 1rem;
+  color: var(--color-mg-foreground);
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.driveely-root .auth-field-input::placeholder,
+.margeo-root .auth-field-input::placeholder {
+  color: rgba(139, 139, 148, 0.85);
+}
+
+.driveely-root .auth-field-input:hover:not(:disabled):not(:focus),
+.margeo-root .auth-field-input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.driveely-root .auth-field-input:focus,
+.margeo-root .auth-field-input:focus {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(129, 140, 248, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.driveely-root .auth-field:focus-within .auth-field-icon,
+.margeo-root .auth-field:focus-within .auth-field-icon {
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .auth-submit-btn,
+.margeo-root .auth-submit-btn {
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.98) 0%,
+    rgba(79, 70, 229, 0.92) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 28px rgba(99, 102, 241, 0.28);
+  transition:
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .auth-submit-btn:hover:not(:disabled),
+  .margeo-root .auth-submit-btn:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.45) inset,
+      0 1px 0 rgba(255, 255, 255, 0.16) inset,
+      0 12px 36px rgba(99, 102, 241, 0.38);
+  }
+}
+
+.driveely-root .auth-link,
+.margeo-root .auth-link {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.driveely-root .auth-link:hover,
+.margeo-root .auth-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Onboarding premium ── */
+
+.driveely-root .onboarding-page,
+.margeo-root .onboarding-page {
+  min-height: 100dvh;
+}
+
+.driveely-root .onboarding-shell,
+.margeo-root .onboarding-shell {
+  min-height: calc(100dvh - 2.5rem);
+}
+
+.driveely-root .onboarding-header,
+.margeo-root .onboarding-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.driveely-root .onboarding-progress,
+.margeo-root .onboarding-progress {
+  width: 100%;
+  max-width: 18rem;
+}
+
+.driveely-root .onboarding-progress-track,
+.margeo-root .onboarding-progress-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.driveely-root .onboarding-progress-fill,
+.margeo-root .onboarding-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.85),
+    rgba(129, 140, 248, 1)
+  );
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);
+}
+
+.driveely-root .onboarding-progress-label,
+.margeo-root .onboarding-progress-label {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .onboarding-card,
+.margeo-root .onboarding-card {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.025) 42%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 1px 0 rgba(255, 255, 255, 0.09) inset,
+    0 0 72px rgba(99, 102, 241, 0.1),
+    0 28px 72px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(24px);
+}
+
+.driveely-root .onboarding-card-body,
+.margeo-root .onboarding-card-body {
+  flex: 1;
+  min-height: 0;
+  padding: 1.75rem 1.5rem 1rem;
+  overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+  .driveely-root .onboarding-card-body,
+  .margeo-root .onboarding-card-body {
+    padding: 2rem 2rem 1.25rem;
+  }
+}
+
+.driveely-root .onboarding-step-header,
+.margeo-root .onboarding-step-header {
+  text-align: center;
+}
+
+.driveely-root .onboarding-step-title,
+.margeo-root .onboarding-step-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  filter: drop-shadow(0 0 32px rgba(129, 140, 248, 0.14));
+}
+
+@media (min-width: 640px) {
+  .driveely-root .onboarding-step-title,
+  .margeo-root .onboarding-step-title {
+    font-size: 1.75rem;
+  }
+}
+
+.driveely-root .onboarding-step-subtitle,
+.margeo-root .onboarding-step-subtitle {
+  margin-top: 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .onboarding-welcome-icon,
+.margeo-root .onboarding-welcome-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 32px rgba(99, 102, 241, 0.15);
+}
+
+.driveely-root .onboarding-welcome-list,
+.margeo-root .onboarding-welcome-list {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.driveely-root .onboarding-welcome-item,
+.margeo-root .onboarding-welcome-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-mg-muted);
+}
+
+.driveely-root .onboarding-welcome-dot,
+.margeo-root .onboarding-welcome-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: var(--color-mg-accent);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.6);
+}
+
+.driveely-root .onboarding-vehicle-grid,
+.margeo-root .onboarding-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+@media (min-width: 480px) {
+  .driveely-root .onboarding-vehicle-grid,
+  .margeo-root .onboarding-vehicle-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .driveely-root .onboarding-vehicle-grid,
+  .margeo-root .onboarding-vehicle-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.driveely-root .onboarding-hours-grid,
+.margeo-root .onboarding-hours-grid {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.driveely-root .onboarding-select-card,
+.margeo-root .onboarding-select-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 5.5rem;
+  padding: 1rem 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-mg-muted);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.driveely-root .onboarding-hours-card,
+.margeo-root .onboarding-hours-card {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.875rem;
+  min-height: 4.5rem;
+  padding: 1rem 1.125rem;
+  text-align: left;
+}
+
+.driveely-root .onboarding-hours-card .onboarding-select-card-icon,
+.margeo-root .onboarding-hours-card .onboarding-select-card-icon {
+  margin-top: 0.125rem;
+}
+
+.driveely-root .onboarding-hours-card .onboarding-select-card-label,
+.margeo-root .onboarding-hours-card .onboarding-select-card-label {
+  font-size: 0.9375rem;
+}
+
+.driveely-root .onboarding-hours-card .onboarding-select-card-text,
+.margeo-root .onboarding-hours-card .onboarding-select-card-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.driveely-root .onboarding-select-card-icon,
+.margeo-root .onboarding-select-card-icon {
+  color: var(--color-mg-faint);
+  transition: color 0.25s ease;
+}
+
+.driveely-root .onboarding-select-card-label,
+.margeo-root .onboarding-select-card-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.driveely-root .onboarding-select-card-desc,
+.margeo-root .onboarding-select-card-desc {
+  font-size: 0.75rem;
+  color: var(--color-mg-faint);
+  line-height: 1.35;
+}
+
+.driveely-root .onboarding-select-card-check,
+.margeo-root .onboarding-select-card-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  background: var(--color-mg-accent);
+  color: white;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+}
+
+.driveely-root .onboarding-hours-card .onboarding-select-card-check,
+.margeo-root .onboarding-hours-card .onboarding-select-card-check {
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}
+
+@media (hover: hover) {
+  .driveely-root .onboarding-select-card:hover:not(.onboarding-select-card-selected),
+  .margeo-root .onboarding-select-card:hover:not(.onboarding-select-card-selected) {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.driveely-root .onboarding-select-card-selected,
+.margeo-root .onboarding-select-card-selected {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--color-mg-foreground);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.2) inset,
+    0 0 28px rgba(99, 102, 241, 0.12);
+}
+
+.driveely-root .onboarding-select-card-selected .onboarding-select-card-icon,
+.margeo-root .onboarding-select-card-selected .onboarding-select-card-icon {
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .onboarding-slider,
+.margeo-root .onboarding-slider {
+  padding: 0 0.25rem;
+}
+
+.driveely-root .onboarding-slider-value-wrap,
+.margeo-root .onboarding-slider-value-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.driveely-root .onboarding-slider-value,
+.margeo-root .onboarding-slider-value {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fafafa 20%, #a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(129, 140, 248, 0.2));
+}
+
+.driveely-root .onboarding-slider-track-wrap,
+.margeo-root .onboarding-slider-track-wrap {
+  position: relative;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.driveely-root .onboarding-slider-fill,
+.margeo-root .onboarding-slider-fill {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.7), rgba(129, 140, 248, 1));
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+  pointer-events: none;
+  transition: width 0.15s ease;
+}
+
+.driveely-root .onboarding-slider-input,
+.margeo-root .onboarding-slider-input {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 2rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.driveely-root .onboarding-slider-input::-webkit-slider-runnable-track,
+.margeo-root .onboarding-slider-input::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.driveely-root .onboarding-slider-input::-webkit-slider-thumb,
+.margeo-root .onboarding-slider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: -0.5rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, #a5b4fc, #6366f1);
+  box-shadow:
+    0 0 0 4px rgba(99, 102, 241, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.driveely-root .onboarding-slider-input:active::-webkit-slider-thumb,
+.margeo-root .onboarding-slider-input:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 6px rgba(99, 102, 241, 0.25),
+    0 4px 20px rgba(99, 102, 241, 0.35);
+}
+
+.driveely-root .onboarding-slider-input::-moz-range-track,
+.margeo-root .onboarding-slider-input::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.driveely-root .onboarding-slider-input::-moz-range-thumb,
+.margeo-root .onboarding-slider-input::-moz-range-thumb {
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, #a5b4fc, #6366f1);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+.driveely-root .onboarding-slider-bounds,
+.margeo-root .onboarding-slider-bounds {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .onboarding-segment,
+.margeo-root .onboarding-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (min-width: 480px) {
+  .driveely-root .onboarding-segment,
+  .margeo-root .onboarding-segment {
+    flex-direction: row;
+  }
+}
+
+.driveely-root .onboarding-segment-item,
+.margeo-root .onboarding-segment-item {
+  flex: 1;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-mg-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .onboarding-segment-item:hover:not(.onboarding-segment-item-selected),
+  .margeo-root .onboarding-segment-item:hover:not(.onboarding-segment-item-selected) {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-mg-foreground);
+  }
+}
+
+.driveely-root .onboarding-segment-item-selected,
+.margeo-root .onboarding-segment-item-selected {
+  border-color: rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--color-mg-foreground);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.driveely-root .onboarding-summary,
+.margeo-root .onboarding-summary {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.driveely-root .onboarding-summary-row,
+.margeo-root .onboarding-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.driveely-root .onboarding-summary-row:last-child,
+.margeo-root .onboarding-summary-row:last-child {
+  border-bottom: none;
+}
+
+.driveely-root .onboarding-summary-label,
+.margeo-root .onboarding-summary-label {
+  font-size: 0.8125rem;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .onboarding-summary-value,
+.margeo-root .onboarding-summary-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-mg-foreground);
+  text-align: right;
+}
+
+.driveely-root .onboarding-summary-chip,
+.margeo-root .onboarding-summary-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.6875rem;
+  color: var(--color-mg-muted);
+}
+
+.driveely-root .onboarding-footer,
+.margeo-root .onboarding-footer {
+  flex-shrink: 0;
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(9, 9, 11, 0) 0%,
+    rgba(9, 9, 11, 0.55) 100%
+  );
+}
+
+.driveely-root .onboarding-footer-inner,
+.margeo-root .onboarding-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 1fr) auto minmax(5.5rem, 1.4fr);
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 3rem;
+}
+
+.driveely-root .onboarding-footer-inner .app-btn,
+.margeo-root .onboarding-footer-inner .app-btn {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.driveely-root .onboarding-nav-btn,
+.margeo-root .onboarding-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border-radius: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.driveely-root .onboarding-nav-btn:disabled,
+.margeo-root .onboarding-nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.driveely-root .onboarding-nav-btn-ghost,
+.margeo-root .onboarding-nav-btn-ghost {
+  justify-self: start;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-mg-muted);
+}
+
+@media (hover: hover) {
+  .driveely-root .onboarding-nav-btn-ghost:hover:not(:disabled),
+  .margeo-root .onboarding-nav-btn-ghost:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.14);
+    color: var(--color-mg-foreground);
+  }
+}
+
+.driveely-root .onboarding-nav-btn-skip,
+.margeo-root .onboarding-nav-btn-skip {
+  justify-self: center;
+  border: none;
+  background: transparent;
+  color: var(--color-mg-faint);
+  font-weight: 500;
+}
+
+@media (hover: hover) {
+  .driveely-root .onboarding-nav-btn-skip:hover,
+  .margeo-root .onboarding-nav-btn-skip:hover {
+    color: var(--color-mg-muted);
+  }
+}
+
+.driveely-root .onboarding-nav-btn-primary,
+.margeo-root .onboarding-nav-btn-primary {
+  justify-self: end;
+  border: none;
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.98) 0%,
+    rgba(79, 70, 229, 0.92) 100%
+  );
+  color: white;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 28px rgba(99, 102, 241, 0.28);
+}
+
+.driveely-root .onboarding-nav-btn-finish,
+.margeo-root .onboarding-nav-btn-finish {
+  max-width: 100%;
+  padding-inline: 0.75rem;
+  font-size: 0.6875rem;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
+}
+
+@media (min-width: 400px) {
+  .driveely-root .onboarding-nav-btn-finish,
+  .margeo-root .onboarding-nav-btn-finish {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+}
+
+@media (hover: hover) {
+  .driveely-root .onboarding-nav-btn-primary:hover:not(:disabled),
+  .margeo-root .onboarding-nav-btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.45) inset,
+      0 1px 0 rgba(255, 255, 255, 0.16) inset,
+      0 12px 36px rgba(99, 102, 241, 0.38);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Immersive premium layer — 2026 enrichment
+   ═══════════════════════════════════════════ */
+
+/* Hero stage */
+.driveely-root .hero-section-bloom,
+.margeo-root .hero-section-bloom {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: min(900px, 95vw);
+  height: 420px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(99, 102, 241, 0.12),
+    transparent 68%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.driveely-root .hero-section-ring,
+.margeo-root .hero-section-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(129, 140, 248, 0.08);
+  pointer-events: none;
+}
+
+.driveely-root .hero-section-ring-a,
+.margeo-root .hero-section-ring-a {
+  top: 12%;
+  right: -8%;
+  width: min(52vw, 520px);
+  height: min(52vw, 520px);
+  animation: hero-ring-spin 80s linear infinite;
+}
+
+.driveely-root .hero-section-ring-b,
+.margeo-root .hero-section-ring-b {
+  bottom: 5%;
+  left: -12%;
+  width: min(40vw, 380px);
+  height: min(40vw, 380px);
+  border-color: rgba(139, 92, 246, 0.06);
+  animation: hero-ring-spin 110s linear infinite reverse;
+}
+
+@keyframes hero-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.driveely-root .hero-badge,
+.margeo-root .hero-badge {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.15) inset,
+    0 0 28px rgba(99, 102, 241, 0.15);
+}
+
+.driveely-root .hero-badge-pulse,
+.margeo-root .hero-badge-pulse {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  animation: hero-badge-ring 2.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hero-badge-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+.driveely-root .hero-benefit,
+.margeo-root .hero-benefit {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.driveely-root .hero-phone-orbit,
+.margeo-root .hero-phone-orbit {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  border-radius: 50%;
+  border: 1px dashed rgba(129, 140, 248, 0.14);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.driveely-root .hero-phone-orbit-a,
+.margeo-root .hero-phone-orbit-a {
+  width: 118%;
+  height: 108%;
+  animation: hero-orbit-rotate 42s linear infinite;
+}
+
+.driveely-root .hero-phone-orbit-b,
+.margeo-root .hero-phone-orbit-b {
+  width: 138%;
+  height: 126%;
+  border-style: solid;
+  border-color: rgba(139, 92, 246, 0.07);
+  animation: hero-orbit-rotate 64s linear infinite reverse;
+}
+
+@keyframes hero-orbit-rotate {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.driveely-root .hero-phone-spark,
+.margeo-root .hero-phone-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(199, 210, 254, 0.8);
+  box-shadow: 0 0 12px rgba(129, 140, 248, 0.7);
+  z-index: 2;
+  pointer-events: none;
+  animation: hero-spark-twinkle 3.6s ease-in-out infinite;
+}
+
+.driveely-root .hero-phone-spark-a,
+.margeo-root .hero-phone-spark-a {
+  top: 12%;
+  left: 8%;
+}
+
+.driveely-root .hero-phone-spark-b,
+.margeo-root .hero-phone-spark-b {
+  top: 28%;
+  right: 4%;
+  animation-delay: 1.2s;
+  width: 4px;
+  height: 4px;
+}
+
+.driveely-root .hero-phone-spark-c,
+.margeo-root .hero-phone-spark-c {
+  bottom: 18%;
+  left: 2%;
+  animation-delay: 2.1s;
+  width: 5px;
+  height: 5px;
+  background: rgba(52, 211, 153, 0.75);
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.55);
+}
+
+@keyframes hero-spark-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Phone reflection + depth */
+.driveely-root .phone-mock-reflection,
+.margeo-root .phone-mock-reflection {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -14%;
+  height: 22%;
+  border-radius: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.12),
+    transparent 70%
+  );
+  filter: blur(16px);
+  transform: scaleY(-1) translateZ(-50px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.driveely-root .phone-mock-ambient-c,
+.margeo-root .phone-mock-ambient-c {
+  background: radial-gradient(
+    ellipse 50% 40% at 40% 55%,
+    rgba(52, 211, 153, 0.06),
+    transparent 70%
+  );
+  filter: blur(40px);
+}
+
+.driveely-root .phone-float-stat,
+.margeo-root .phone-float-stat {
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .phone-float-stat:hover,
+  .margeo-root .phone-float-stat:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.08) inset,
+      0 20px 48px rgba(0, 0, 0, 0.5),
+      0 0 28px rgba(129, 140, 248, 0.1);
+  }
+}
+
+.driveely-root .phone-float-stat-mid,
+.margeo-root .phone-float-stat-mid {
+  /* Positions finales dans le bloc float rail (fin de fichier). */
+}
+
+/* Section rhythm & bridges */
+.driveely-root .section-bridge,
+.margeo-root .section-bridge {
+  position: relative;
+  height: 1px;
+  margin: 0 auto;
+  max-width: 42rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(129, 140, 248, 0.28),
+    transparent
+  );
+}
+
+.driveely-root .section-bridge::before,
+.margeo-root .section-bridge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.driveely-root .section-shell-glow,
+.margeo-root .section-shell-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(640px, 80vw);
+  height: 180px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.07),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Decision steps — asymmetric premium */
+.driveely-root .decision-step,
+.margeo-root .decision-step {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.02) 45%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 16px 40px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(16px);
+}
+
+.driveely-root .decision-step::after,
+.margeo-root .decision-step::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(
+    circle,
+    rgba(129, 140, 248, 0.1),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.driveely-root .decision-step-icon,
+.margeo-root .decision-step-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(129, 140, 248, 0.28);
+  background: linear-gradient(
+    145deg,
+    rgba(129, 140, 248, 0.18),
+    rgba(129, 140, 248, 0.04)
+  );
+  box-shadow:
+    0 0 24px rgba(99, 102, 241, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
+.driveely-root .decision-connector,
+.margeo-root .decision-connector {
+  position: absolute;
+  top: 3.5rem;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(129, 140, 248, 0.35),
+    rgba(52, 211, 153, 0.25),
+    rgba(129, 140, 248, 0.35),
+    transparent
+  );
+  overflow: hidden;
+}
+
+.driveely-root .decision-connector::after,
+.margeo-root .decision-connector::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: decision-pulse 3.8s ease-in-out infinite;
+}
+
+@keyframes decision-pulse {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 110%;
+  }
+}
+
+/* Social proof mini charts */
+.driveely-root .proof-card,
+.margeo-root .proof-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.015)
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 12px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(14px);
+}
+
+.driveely-root .proof-card-featured,
+.margeo-root .proof-card-featured {
+  border-color: rgba(129, 140, 248, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 16px 40px rgba(0, 0, 0, 0.35),
+    0 0 40px rgba(99, 102, 241, 0.1);
+}
+
+.driveely-root .proof-mini-bars,
+.margeo-root .proof-mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+  margin-top: 0.75rem;
+}
+
+.driveely-root .proof-mini-bars span,
+.margeo-root .proof-mini-bars span {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.75),
+    rgba(99, 102, 241, 0.25)
+  );
+  animation: proof-bar-rise 1.2s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
+@keyframes proof-bar-rise {
+  from {
+    transform: scaleY(0.15);
+    opacity: 0.3;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Final CTA stage */
+.driveely-root .final-cta-stage,
+.margeo-root .final-cta-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(99, 102, 241, 0.06) 40%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 32px 80px rgba(0, 0, 0, 0.45),
+    0 0 80px rgba(99, 102, 241, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.driveely-root .final-cta-stage .text-gradient,
+.margeo-root .final-cta-stage .text-gradient {
+  display: inline-block;
+  max-width: 100%;
+  padding-inline: 0.06em;
+}
+
+.driveely-root .final-cta-glow,
+.margeo-root .final-cta-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 0%, rgba(99, 102, 241, 0.2), transparent 60%),
+    radial-gradient(ellipse 40% 35% at 80% 80%, rgba(139, 92, 246, 0.1), transparent 65%);
+  animation: final-cta-breathe 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes final-cta-breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.driveely-root .final-cta-noise,
+.margeo-root .final-cta-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* FAQ premium */
+.driveely-root .faq-panel,
+.margeo-root .faq-panel {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.015)
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 48px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(16px);
+}
+
+.driveely-root .faq-item-btn,
+.margeo-root .faq-item-btn {
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .faq-item-btn:hover,
+  .margeo-root .faq-item-btn:hover {
+    color: var(--color-mg-accent);
+  }
+}
+
+/* App analysis result showcase */
+.driveely-root .analysis-hero-card,
+.margeo-root .analysis-hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 20px 56px rgba(0, 0, 0, 0.4),
+    0 0 48px rgba(99, 102, 241, 0.08);
+}
+
+.driveely-root .analysis-hero-card::before,
+.margeo-root .analysis-hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 60%
+  );
+  animation: phone-shine 8s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.driveely-root .analysis-metric,
+.margeo-root .analysis-metric {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.01)
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .analysis-metric:hover,
+  .margeo-root .analysis-metric:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 12px 28px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.driveely-root .analysis-metric-highlight,
+.margeo-root .analysis-metric-highlight {
+  border-color: rgba(129, 140, 248, 0.3);
+  background: linear-gradient(
+    155deg,
+    rgba(129, 140, 248, 0.14),
+    rgba(129, 140, 248, 0.03)
+  );
+  box-shadow:
+    0 0 28px rgba(99, 102, 241, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+/* Scan overlay premium */
+.driveely-root .scan-preview-frame,
+.margeo-root .scan-preview-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(129, 140, 248, 0.3);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.4) inset,
+    0 20px 48px rgba(0, 0, 0, 0.45),
+    0 0 40px rgba(99, 102, 241, 0.15);
+}
+
+.driveely-root .scan-preview-frame::after,
+.margeo-root .scan-preview-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  pointer-events: none;
+}
+
+.driveely-root .app-scan-progress,
+.margeo-root .app-scan-progress {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.driveely-root .app-scan-progress-fill,
+.margeo-root .app-scan-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    #4f46e5,
+    #818cf8,
+    #a78bfa,
+    #818cf8
+  );
+  background-size: 200% 100%;
+  animation: scan-progress-shimmer 2s linear infinite;
+  box-shadow: 0 0 12px rgba(129, 140, 248, 0.45);
+  transition: width 0.15s linear;
+}
+
+@keyframes scan-progress-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.driveely-root .app-upload-zone,
+.margeo-root .app-upload-zone {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.015)
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.driveely-root .app-upload-zone::before,
+.margeo-root .app-upload-zone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 0%,
+    rgba(129, 140, 248, 0.08),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .driveely-root .app-upload-zone:hover,
+  .margeo-root .app-upload-zone:hover {
+    border-color: rgba(129, 140, 248, 0.4);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.12),
+      0 12px 32px rgba(0, 0, 0, 0.28),
+      0 0 32px rgba(99, 102, 241, 0.1);
+  }
+}
+
+.driveely-root .app-upload-icon,
+.margeo-root .app-upload-icon {
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .app-upload-zone:hover .app-upload-icon,
+  .margeo-root .app-upload-zone:hover .app-upload-icon {
+    transform: scale(1.06);
+    box-shadow: 0 0 32px rgba(99, 102, 241, 0.32);
+  }
+}
+
+/* Premium glass cards (app) */
+.driveely-root .app-glass-surface,
+.margeo-root .app-glass-surface {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 12px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.driveely-root .card-interactive,
+.margeo-root .card-interactive {
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .card-interactive:hover,
+  .margeo-root .card-interactive:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background-color: var(--color-mg-card-hover);
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Landing demo enrichment */
+.driveely-root .landing-demo-dropzone,
+.margeo-root .landing-demo-dropzone {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  border: 1.5px dashed rgba(129, 140, 248, 0.35);
+  background: linear-gradient(
+    160deg,
+    rgba(129, 140, 248, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 48px rgba(0, 0, 0, 0.3);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .landing-demo-dropzone:hover,
+  .margeo-root .landing-demo-dropzone:hover {
+    border-color: rgba(129, 140, 248, 0.55);
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.08) inset,
+      0 24px 56px rgba(0, 0, 0, 0.38),
+      0 0 40px rgba(99, 102, 241, 0.12);
+  }
+}
+
+.driveely-root .landing-demo-panel,
+.margeo-root .landing-demo-panel {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(0, 0, 0, 0.15)
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 56px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.driveely-root .landing-demo-result,
+.margeo-root .landing-demo-result {
+  position: relative;
+}
+
+.driveely-root .landing-demo-badge,
+.margeo-root .landing-demo-badge {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+/* Problem section rhythm variation */
+.driveely-root .problem-section .problem-scene-label:nth-of-type(odd),
+.margeo-root .problem-section .problem-scene-label:nth-of-type(odd) {
+  margin-top: 0.5rem;
+}
+
+.driveely-root .problem-hook-glow,
+.margeo-root .problem-hook-glow {
+  position: absolute;
+  inset: -30% -10%;
+  background: radial-gradient(
+    ellipse,
+    rgba(129, 140, 248, 0.12),
+    transparent 65%
+  );
+  pointer-events: none;
+  animation: final-cta-breathe 8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .landing-backdrop-mesh,
+  .margeo-root .landing-backdrop-mesh,
+  .driveely-root .landing-backdrop-halo,
+  .margeo-root .landing-backdrop-halo,
+  .driveely-root .landing-backdrop-streak,
+  .margeo-root .landing-backdrop-streak,
+  .driveely-root .landing-backdrop-particle,
+  .margeo-root .landing-backdrop-particle,
+  .driveely-root .hero-section-ring,
+  .margeo-root .hero-section-ring,
+  .driveely-root .hero-phone-orbit,
+  .margeo-root .hero-phone-orbit,
+  .driveely-root .hero-phone-spark,
+  .margeo-root .hero-phone-spark,
+  .driveely-root .hero-badge-pulse,
+  .margeo-root .hero-badge-pulse,
+  .driveely-root .landing-phone-glow,
+  .margeo-root .landing-phone-glow,
+  .driveely-root .landing-cta-primary::after,
+  .margeo-root .landing-cta-primary::after,
+  .driveely-root .decision-connector::after,
+  .margeo-root .decision-connector::after,
+  .driveely-root .final-cta-glow,
+  .margeo-root .final-cta-glow,
+  .driveely-root .app-scan-progress-fill,
+  .margeo-root .app-scan-progress-fill {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Pricing — 3 offres (Pro mis en avant)
+   ═══════════════════════════════════════════ */
+
+.driveely-root .pricing-plan-card,
+.margeo-root .pricing-plan-card {
+  transition:
+    transform 0.3s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.driveely-root .pricing-plan-card-featured,
+.margeo-root .pricing-plan-card-featured {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 45%, transparent);
+  box-shadow: var(--shadow-mg-glow);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-mg-accent) 8%, var(--color-mg-card)) 0%,
+    var(--color-mg-card) 55%
+  );
+  transform: scale(1.02);
+  z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  .driveely-root .pricing-plan-card-featured,
+  .margeo-root .pricing-plan-card-featured {
+    transform: scale(1.05);
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+  }
+}
+
+.driveely-root .pricing-plan-badge-featured,
+.margeo-root .pricing-plan-badge-featured {
+  background: linear-gradient(135deg, var(--color-mg-accent-strong), #7c3aed);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+  animation: pricing-badge-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pricing-badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(79, 70, 229, 0.5);
+  }
+}
+
+.driveely-root .pricing-plan-card-elite,
+.margeo-root .pricing-plan-card-elite {
+  border-color: color-mix(in srgb, var(--color-mg-foreground) 12%, transparent);
+}
+
+.driveely-root .pricing-compare-head,
+.margeo-root .pricing-compare-head {
+  background: var(--mg-surface-muted);
+}
+
+/* ═══════════════════════════════════════════
+   Light theme — finition premium (audit complet)
+   ═══════════════════════════════════════════ */
+
+.driveely-root[data-theme="light"] .text-gradient-accent,
+.margeo-root[data-theme="light"] .text-gradient-accent {
+  background: linear-gradient(
+    135deg,
+    #6366f1 0%,
+    var(--color-mg-accent) 45%,
+    #7c3aed 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+  overflow: visible;
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-halo-a,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-a {
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.14), transparent 68%);
+  opacity: 0.7;
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-halo-b,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-b {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1), transparent 70%);
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-halo-c,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-c,
+.driveely-root[data-theme="light"] .landing-backdrop-halo-d,
+.margeo-root[data-theme="light"] .landing-backdrop-halo-d {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent 72%);
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-grid,
+.margeo-root[data-theme="light"] .landing-backdrop-grid {
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(24, 24, 27, 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 24, 27, 0.45) 1px, transparent 1px);
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-particle,
+.margeo-root[data-theme="light"] .landing-backdrop-particle {
+  background: rgba(79, 70, 229, 0.45);
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.25);
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-vignette,
+.margeo-root[data-theme="light"] .landing-backdrop-vignette {
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 40%, transparent 45%, rgba(244, 244, 245, 0.85) 100%),
+    linear-gradient(180deg, rgba(244, 244, 245, 0.4) 0%, transparent 18%, transparent 82%, rgba(244, 244, 245, 0.6) 100%);
+}
+
+.driveely-root[data-theme="light"] .landing-backdrop-noise,
+.margeo-root[data-theme="light"] .landing-backdrop-noise {
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+}
+
+.driveely-root[data-theme="light"] .landing-cta-secondary,
+.margeo-root[data-theme="light"] .landing-cta-secondary {
+  border-color: rgba(24, 24, 27, 0.12);
+  background: linear-gradient(160deg, #fff, #fafafa);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset, 0 4px 12px rgba(24, 24, 27, 0.04);
+}
+
+.driveely-root[data-theme="light"] .landing-card-hover:hover,
+.margeo-root[data-theme="light"] .landing-card-hover:hover {
+  border-color: rgba(24, 24, 27, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 16px 40px rgba(24, 24, 27, 0.08),
+    0 0 24px rgba(79, 70, 229, 0.06);
+}
+
+.driveely-root[data-theme="light"] .problem-premium-card,
+.margeo-root[data-theme="light"] .problem-premium-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
+.driveely-root[data-theme="light"] .decision-step,
+.margeo-root[data-theme="light"] .decision-step,
+.driveely-root[data-theme="light"] .proof-card,
+.margeo-root[data-theme="light"] .proof-card,
+.driveely-root[data-theme="light"] .faq-panel,
+.margeo-root[data-theme="light"] .faq-panel,
+.driveely-root[data-theme="light"] .final-cta-stage,
+.margeo-root[data-theme="light"] .final-cta-stage,
+.driveely-root[data-theme="light"] .landing-demo-panel,
+.margeo-root[data-theme="light"] .landing-demo-panel {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff, #fafafa);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 12px 32px rgba(24, 24, 27, 0.06);
+}
+
+.driveely-root[data-theme="light"] .app-glass-surface,
+.margeo-root[data-theme="light"] .app-glass-surface {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff, #f8f8f9);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 8px 24px rgba(24, 24, 27, 0.05);
+}
+
+.driveely-root[data-theme="light"] .mg-spinner,
+.margeo-root[data-theme="light"] .mg-spinner {
+  border-color: rgba(24, 24, 27, 0.12);
+  border-top-color: var(--color-mg-accent);
+}
+
+.driveely-root[data-theme="light"] .app-upload-zone,
+.margeo-root[data-theme="light"] .app-upload-zone {
+  border-color: rgba(24, 24, 27, 0.16);
+  background: linear-gradient(160deg, #fafafa, #f4f4f5);
+}
+
+.driveely-root[data-theme="light"] .app-scan-progress,
+.margeo-root[data-theme="light"] .app-scan-progress {
+  background: rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .analysis-metric,
+.margeo-root[data-theme="light"] .analysis-metric {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff, #fafafa);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset;
+}
+
+.driveely-root[data-theme="light"] .card-interactive:hover,
+.margeo-root[data-theme="light"] .card-interactive:hover {
+  border-color: rgba(24, 24, 27, 0.16);
+  box-shadow: 0 12px 28px rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .section-bridge,
+.margeo-root[data-theme="light"] .section-bridge {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(79, 70, 229, 0.35),
+    transparent
+  );
+}
+
+.driveely-root[data-theme="light"] .section-bridge::before,
+.margeo-root[data-theme="light"] .section-bridge::before {
+  border-color: rgba(79, 70, 229, 0.4);
+  background: rgba(79, 70, 229, 0.12);
+}
+
+.driveely-root[data-theme="light"] .driveely-toast,
+.margeo-root[data-theme="light"] .driveely-toast {
+  background: #ffffff !important;
+  border: 1px solid rgba(24, 24, 27, 0.12) !important;
+  color: #18181b !important;
+  box-shadow: 0 12px 32px rgba(24, 24, 27, 0.1) !important;
+}
+
+/* Phone mock — version claire (même design, palette adaptée) */
+.driveely-root[data-theme="light"] .landing-phone-glow,
+.margeo-root[data-theme="light"] .landing-phone-glow {
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(79, 70, 229, 0.16) 0%,
+    rgba(99, 102, 241, 0.08) 38%,
+    rgba(4, 120, 87, 0.04) 55%,
+    transparent 72%
+  );
+}
+
+.driveely-root[data-theme="light"] .hero-phone-orbit-a,
+.margeo-root[data-theme="light"] .hero-phone-orbit-a {
+  border-color: rgba(79, 70, 229, 0.14);
+}
+
+.driveely-root[data-theme="light"] .hero-phone-orbit-b,
+.margeo-root[data-theme="light"] .hero-phone-orbit-b {
+  border-color: rgba(79, 70, 229, 0.08);
+}
+
+.driveely-root[data-theme="light"] .phone-mock-shadow,
+.margeo-root[data-theme="light"] .phone-mock-shadow {
+  background: radial-gradient(
+    ellipse,
+    rgba(24, 24, 27, 0.16),
+    transparent 68%
+  );
+}
+
+.driveely-root[data-theme="light"] .phone-mock-frame,
+.margeo-root[data-theme="light"] .phone-mock-frame {
+  background: linear-gradient(
+    145deg,
+    #fafafa 0%,
+    #e4e4e7 24%,
+    #d4d4d8 58%,
+    #f4f4f5 100%
+  );
+  border-color: rgba(24, 24, 27, 0.14);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.95) inset,
+    0 2px 0 rgba(255, 255, 255, 1) inset,
+    0 40px 100px rgba(24, 24, 27, 0.12),
+    0 12px 32px rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .phone-mock-frame::before,
+.margeo-root[data-theme="light"] .phone-mock-frame::before {
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.65) 48%,
+    transparent 58%
+  );
+  opacity: 0.45;
+}
+
+.driveely-root[data-theme="light"] .phone-mock-frame::after,
+.margeo-root[data-theme="light"] .phone-mock-frame::after {
+  border-color: rgba(24, 24, 27, 0.06);
+}
+
+.driveely-root[data-theme="light"] .phone-mock-screen,
+.margeo-root[data-theme="light"] .phone-mock-screen {
+  background: linear-gradient(
+    180deg,
+    #fafafa 0%,
+    #f4f4f5 38%,
+    #ffffff 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(24, 24, 27, 0.06) inset,
+    0 24px 48px rgba(24, 24, 27, 0.04) inset;
+}
+
+.driveely-root[data-theme="light"] .phone-mock-screen-glow,
+.margeo-root[data-theme="light"] .phone-mock-screen-glow {
+  background: radial-gradient(
+    ellipse 90% 45% at 50% -5%,
+    rgba(255, 255, 255, 0.95),
+    transparent 55%
+  );
+}
+
+.driveely-root[data-theme="light"] .phone-mock-grain,
+.margeo-root[data-theme="light"] .phone-mock-grain {
+  opacity: 0.02;
+  mix-blend-mode: multiply;
+}
+
+.driveely-root[data-theme="light"] .phone-status-bar,
+.margeo-root[data-theme="light"] .phone-status-bar {
+  color: rgba(24, 24, 27, 0.72);
+}
+
+.driveely-root[data-theme="light"] .phone-glass-card,
+.margeo-root[data-theme="light"] .phone-glass-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 8px 20px rgba(24, 24, 27, 0.06);
+  backdrop-filter: none;
+}
+
+.driveely-root[data-theme="light"] .phone-kpi-card,
+.margeo-root[data-theme="light"] .phone-kpi-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff 0%, #f8f8f9 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 4px 12px rgba(24, 24, 27, 0.05);
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .phone-kpi-card:hover,
+  .margeo-root[data-theme="light"] .phone-kpi-card:hover {
+    border-color: rgba(24, 24, 27, 0.16);
+  }
+}
+
+.driveely-root[data-theme="light"] .phone-kpi-icon-wrap,
+.margeo-root[data-theme="light"] .phone-kpi-icon-wrap {
+  background: rgba(24, 24, 27, 0.05);
+}
+
+.driveely-root[data-theme="light"] .phone-route-mini-bar,
+.margeo-root[data-theme="light"] .phone-route-mini-bar {
+  border-color: rgba(24, 24, 27, 0.08);
+  background: rgba(24, 24, 27, 0.04);
+}
+
+.driveely-root[data-theme="light"] .phone-progress-track,
+.margeo-root[data-theme="light"] .phone-progress-track {
+  background: rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .phone-score-track,
+.margeo-root[data-theme="light"] .phone-score-track {
+  stroke: rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .phone-score-glow-ring,
+.margeo-root[data-theme="light"] .phone-score-glow-ring {
+  stroke: rgba(4, 120, 87, 0.14);
+}
+
+.driveely-root[data-theme="light"] .phone-accept-btn,
+.margeo-root[data-theme="light"] .phone-accept-btn {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 12px 32px rgba(4, 120, 87, 0.22),
+    0 4px 12px rgba(24, 24, 27, 0.06);
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .phone-accept-btn:hover,
+  .margeo-root[data-theme="light"] .phone-accept-btn:hover {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+      0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 16px 40px rgba(4, 120, 87, 0.28),
+      0 6px 16px rgba(24, 24, 27, 0.08);
+  }
+}
+
+.driveely-root[data-theme="light"] .phone-verdict-ai,
+.margeo-root[data-theme="light"] .phone-verdict-ai {
+  border-color: rgba(4, 120, 87, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(4, 120, 87, 0.1) 0%,
+    rgba(4, 120, 87, 0.04) 55%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  box-shadow:
+    0 0 20px rgba(4, 120, 87, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.driveely-root[data-theme="light"] .phone-float-stat,
+.margeo-root[data-theme="light"] .phone-float-stat {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 12px 32px rgba(24, 24, 27, 0.08);
+  backdrop-filter: none;
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .phone-float-stat:hover,
+  .margeo-root[data-theme="light"] .phone-float-stat:hover {
+    border-color: rgba(24, 24, 27, 0.16);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 20px 48px rgba(24, 24, 27, 0.1),
+      0 0 28px rgba(79, 70, 229, 0.06);
+  }
+}
+
+.driveely-root[data-theme="light"] .phone-mock-reflection,
+.margeo-root[data-theme="light"] .phone-mock-reflection {
+  background: linear-gradient(
+    180deg,
+    rgba(79, 70, 229, 0.08),
+    transparent 70%
+  );
+  opacity: 0.4;
+}
+
+.driveely-root[data-theme="light"] .phone-mock-ambient-a,
+.margeo-root[data-theme="light"] .phone-mock-ambient-a {
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 35%,
+    rgba(79, 70, 229, 0.12),
+    transparent 72%
+  );
+}
+
+.driveely-root[data-theme="light"] .phone-mock-ambient-b,
+.margeo-root[data-theme="light"] .phone-mock-ambient-b {
+  background: radial-gradient(
+    ellipse 40% 35% at 60% 70%,
+    rgba(99, 102, 241, 0.08),
+    transparent 70%
+  );
+}
+
+.driveely-root[data-theme="light"] .phone-mock-ambient-c,
+.margeo-root[data-theme="light"] .phone-mock-ambient-c {
+  background: radial-gradient(
+    ellipse 50% 40% at 40% 55%,
+    rgba(4, 120, 87, 0.06),
+    transparent 70%
+  );
+}
+
+.driveely-root[data-theme="light"] .phone-tilt-glow,
+.margeo-root[data-theme="light"] .phone-tilt-glow {
+  opacity: 0.22 !important;
+}
+
+/* Auth + onboarding + app — thème clair */
+.driveely-root[data-theme="light"] .auth-card,
+.margeo-root[data-theme="light"] .auth-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 55%, #f4f4f5 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 1) inset,
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 0 48px rgba(79, 70, 229, 0.06),
+    0 24px 64px rgba(24, 24, 27, 0.08);
+  backdrop-filter: none;
+}
+
+.driveely-root[data-theme="light"] .auth-card-shine,
+.margeo-root[data-theme="light"] .auth-card-shine {
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.75) 50%,
+    transparent 60%
+  );
+}
+
+.driveely-root[data-theme="light"] .auth-title,
+.margeo-root[data-theme="light"] .auth-title {
+  filter: none;
+}
+
+.driveely-root[data-theme="light"] .auth-google-btn,
+.margeo-root[data-theme="light"] .auth-google-btn {
+  border-color: rgba(24, 24, 27, 0.12);
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 4px 16px rgba(24, 24, 27, 0.06);
+  color: var(--color-mg-foreground);
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .auth-google-btn:hover:not(:disabled),
+  .margeo-root[data-theme="light"] .auth-google-btn:hover:not(:disabled) {
+    border-color: rgba(24, 24, 27, 0.18);
+    background: linear-gradient(180deg, #ffffff 0%, #f4f4f5 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 8px 24px rgba(24, 24, 27, 0.08),
+      0 0 20px rgba(79, 70, 229, 0.04);
+  }
+}
+
+.driveely-root[data-theme="light"] .auth-divider-label,
+.margeo-root[data-theme="light"] .auth-divider-label {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-mg-background) 20%,
+    var(--color-mg-background) 80%,
+    transparent 100%
+  );
+}
+
+.driveely-root[data-theme="light"] .auth-field-input,
+.margeo-root[data-theme="light"] .auth-field-input {
+  border-color: rgba(24, 24, 27, 0.12);
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.driveely-root[data-theme="light"] .auth-field-input::placeholder,
+.margeo-root[data-theme="light"] .auth-field-input::placeholder {
+  color: rgba(113, 113, 122, 0.85);
+}
+
+.driveely-root[data-theme="light"] .auth-field-input:hover:not(:disabled):not(:focus),
+.margeo-root[data-theme="light"] .auth-field-input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(24, 24, 27, 0.18);
+  background: #fafafa;
+}
+
+.driveely-root[data-theme="light"] .auth-field-input:focus,
+.margeo-root[data-theme="light"] .auth-field-input:focus {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: #ffffff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.driveely-root[data-theme="light"] .auth-submit-btn,
+.margeo-root[data-theme="light"] .auth-submit-btn,
+.driveely-root[data-theme="light"] .app-btn-primary,
+.margeo-root[data-theme="light"] .app-btn-primary {
+  box-shadow:
+    0 0 0 1px rgba(79, 70, 229, 0.25) inset,
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 6px 20px rgba(79, 70, 229, 0.18);
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .auth-submit-btn:hover:not(:disabled),
+  .margeo-root[data-theme="light"] .auth-submit-btn:hover:not(:disabled),
+  .driveely-root[data-theme="light"] .app-btn-primary:hover:not(:disabled),
+  .margeo-root[data-theme="light"] .app-btn-primary:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgba(79, 70, 229, 0.32) inset,
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 8px 28px rgba(79, 70, 229, 0.24);
+  }
+}
+
+.driveely-root[data-theme="light"] .onboarding-card,
+.margeo-root[data-theme="light"] .onboarding-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(155deg, #ffffff 0%, #fafafa 55%, #f4f4f5 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 1) inset,
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 0 48px rgba(79, 70, 229, 0.05),
+    0 24px 64px rgba(24, 24, 27, 0.08);
+  backdrop-filter: none;
+}
+
+.driveely-root[data-theme="light"] .onboarding-select-card,
+.margeo-root[data-theme="light"] .onboarding-select-card {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: linear-gradient(160deg, #ffffff, #fafafa);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset;
+}
+
+.driveely-root[data-theme="light"] .onboarding-select-card-selected,
+.margeo-root[data-theme="light"] .onboarding-select-card-selected {
+  border-color: rgba(79, 70, 229, 0.35);
+  background: linear-gradient(
+    160deg,
+    rgba(79, 70, 229, 0.06),
+    #ffffff
+  );
+  box-shadow:
+    0 0 0 1px rgba(79, 70, 229, 0.12) inset,
+    0 8px 24px rgba(79, 70, 229, 0.08);
+}
+
+.driveely-root[data-theme="light"] .onboarding-segment,
+.margeo-root[data-theme="light"] .onboarding-segment {
+  border-color: rgba(24, 24, 27, 0.1);
+  background: rgba(24, 24, 27, 0.04);
+}
+
+.driveely-root[data-theme="light"] .onboarding-summary,
+.margeo-root[data-theme="light"] .onboarding-summary {
+  border-color: rgba(24, 24, 27, 0.08);
+  background: rgba(24, 24, 27, 0.03);
+}
+
+.driveely-root[data-theme="light"] .onboarding-progress-track,
+.margeo-root[data-theme="light"] .onboarding-progress-track {
+  background: rgba(24, 24, 27, 0.08);
+}
+
+.driveely-root[data-theme="light"] .landing-cta-primary,
+.margeo-root[data-theme="light"] .landing-cta-primary {
+  box-shadow:
+    0 0 0 1px rgba(79, 70, 229, 0.28),
+    0 8px 32px rgba(79, 70, 229, 0.2),
+    0 0 48px rgba(79, 70, 229, 0.08);
+}
+
+.driveely-root[data-theme="light"] .decision-step,
+.margeo-root[data-theme="light"] .decision-step {
+  animation: decision-card-breathe-light 7s ease-in-out infinite;
+}
+
+@keyframes decision-card-breathe-light {
+  0%,
+  100% {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 12px 32px rgba(24, 24, 27, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 16px 40px rgba(24, 24, 27, 0.08),
+      0 0 28px rgba(79, 70, 229, 0.05);
+  }
+}
+
+.driveely-root[data-theme="light"] .animate-mg-shimmer,
+.margeo-root[data-theme="light"] .animate-mg-shimmer {
+  background: linear-gradient(
+    110deg,
+    rgba(24, 24, 27, 0.04) 40%,
+    rgba(24, 24, 27, 0.08) 50%,
+    rgba(24, 24, 27, 0.04) 60%
+  ) !important;
+  background-size: 200% 100% !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .pricing-plan-badge-featured,
+  .margeo-root .pricing-plan-badge-featured {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Platform marquee + phone mobile realism
+   ═══════════════════════════════════════════ */
+
+.driveely-root .platform-marquee,
+.margeo-root .platform-marquee {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--color-mg-accent) 4%, transparent),
+    transparent
+  );
+}
+
+.driveely-root .platform-marquee-fade,
+.margeo-root .platform-marquee-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(4.5rem, 12vw);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.driveely-root .platform-marquee-fade-l,
+.margeo-root .platform-marquee-fade-l {
+  left: 0;
+  background: linear-gradient(90deg, var(--color-mg-background), transparent);
+}
+
+.driveely-root .platform-marquee-fade-r,
+.margeo-root .platform-marquee-fade-r {
+  right: 0;
+  background: linear-gradient(270deg, var(--color-mg-background), transparent);
+}
+
+.driveely-root .platform-marquee-track,
+.margeo-root .platform-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: platform-marquee-scroll 38s linear infinite;
+  will-change: transform;
+}
+
+.driveely-root .platform-marquee-group,
+.margeo-root .platform-marquee-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 2.25rem;
+  padding-inline: 1.25rem;
+}
+
+/* Mobile : piste plus longue (2× marques) via contenu + gaps confortables */
+@media (max-width: 767px) {
+  .driveely-root .platform-marquee-group,
+  .margeo-root .platform-marquee-group {
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .driveely-root .platform-marquee-group,
+  .margeo-root .platform-marquee-group {
+    justify-content: space-evenly;
+    gap: clamp(1.5rem, 2.5vw, 3.5rem);
+    min-width: 100%;
+    padding-inline: clamp(1.25rem, 2vw, 2.5rem);
+    box-sizing: border-box;
+  }
+
+  .driveely-root .platform-marquee-track,
+  .margeo-root .platform-marquee-track {
+    animation-duration: 52s;
+  }
+}
+
+.driveely-root .platform-marquee-item,
+.margeo-root .platform-marquee-item {
+  opacity: 0.88;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .platform-marquee-item:hover,
+  .margeo-root .platform-marquee-item:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes platform-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .platform-marquee-track,
+  .margeo-root .platform-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 48rem;
+    margin-inline: auto;
+    gap: 1.25rem;
+  }
+
+  .driveely-root .platform-marquee-group:last-child,
+  .margeo-root .platform-marquee-group:last-child {
+    display: none;
+  }
+}
+
+/* Status bar + Dynamic Island — visibles sur toutes tailles */
+.driveely-root .phone-status-bar,
+.margeo-root .phone-status-bar {
+  position: relative;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.1rem;
+  padding: 0.55rem 1rem 0.15rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(250, 250, 250, 0.78);
+  pointer-events: none;
+}
+
+.driveely-root .phone-status-time,
+.margeo-root .phone-status-time {
+  position: relative;
+  z-index: 1;
+  min-width: 2.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.driveely-root .phone-status-right,
+.margeo-root .phone-status-right {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.driveely-root .phone-status-battery,
+.margeo-root .phone-status-battery {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.driveely-root .phone-status-net,
+.margeo-root .phone-status-net {
+  font-size: 0.5625rem;
+  letter-spacing: 0.04em;
+}
+
+.driveely-root .phone-mock-island,
+.margeo-root .phone-mock-island {
+  top: 0.48rem;
+  z-index: 30;
+  height: 1.4rem;
+  width: clamp(4.75rem, 38%, 5.75rem);
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.driveely-root .phone-mock-content,
+.margeo-root .phone-mock-content {
+  padding: 0.35rem 0.85rem 1rem;
+}
+
+@media (max-width: 379px) {
+  .driveely-root .phone-status-bar,
+  .margeo-root .phone-status-bar {
+    font-size: 0.5625rem;
+    padding-inline: 0.75rem;
+  }
+
+  .driveely-root .phone-status-battery span:last-child,
+  .margeo-root .phone-status-battery span:last-child {
+    display: none;
+  }
+
+  .driveely-root .phone-mock-content,
+  .margeo-root .phone-mock-content {
+    padding-inline: 0.7rem;
+  }
+}
+
+/* Float rail + hero compose — Desktop = layout 6fb34d0 ; Mobile = scale uniforme */
+.driveely-root .phone-mock-stage,
+.margeo-root .phone-mock-stage {
+  position: relative;
+}
+
+.driveely-root .phone-float-rail,
+.margeo-root .phone-float-rail {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.driveely-root .phone-float-rail .phone-float-stat,
+.margeo-root .phone-float-rail .phone-float-stat {
+  pointer-events: auto;
+}
+
+/* Mobile only : scale uniforme (proportions iPhone intactes) + floats autour */
+@media (max-width: 1023px) {
+  .driveely-root .phone-mock-stage--hero,
+  .margeo-root .phone-mock-stage--hero {
+    max-width: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+    padding-inline: 0.25rem;
+  }
+
+  .driveely-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    position: relative;
+    /* Même largeur de layout que Desktop → mêmes proportions, puis scale */
+    width: 360px;
+    max-width: none;
+    zoom: 0.72;
+  }
+
+  @supports not (zoom: 1) {
+    .driveely-root .phone-hero-compose,
+    .margeo-root .phone-hero-compose {
+      zoom: unset;
+      transform: scale(0.72);
+      transform-origin: top center;
+      margin-bottom: -28%;
+    }
+  }
+
+  .driveely-root .phone-float-left,
+  .margeo-root .phone-float-left {
+    top: 16%;
+    left: -3.5rem;
+  }
+
+  .driveely-root .phone-float-right,
+  .margeo-root .phone-float-right {
+    right: -3.5rem;
+    bottom: 24%;
+  }
+
+  .driveely-root .phone-float-stat-mid,
+  .margeo-root .phone-float-stat-mid {
+    top: auto;
+    left: 50%;
+    bottom: -0.35rem;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 389px) {
+  .driveely-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    zoom: 0.66;
+  }
+
+  @supports not (zoom: 1) {
+    .driveely-root .phone-hero-compose,
+    .margeo-root .phone-hero-compose {
+      transform: scale(0.66);
+      margin-bottom: -34%;
+    }
+  }
+
+  .driveely-root .phone-float-left,
+  .margeo-root .phone-float-left {
+    left: -3.25rem;
+  }
+
+  .driveely-root .phone-float-right,
+  .margeo-root .phone-float-right {
+    right: -3.25rem;
+  }
+}
+
+/* Desktop : aucun scale — positions via utilities lg: du composant */
+@media (min-width: 1024px) {
+  .driveely-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    zoom: unset;
+    transform: none;
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
+
+/* Timeline / route connectors */
+.driveely-root .problem-timeline-line,
+.margeo-root .problem-timeline-line {
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.45),
+    rgba(129, 140, 248, 0.14) 55%,
+    rgba(99, 102, 241, 0.1)
+  );
+}
+
+.driveely-root .problem-route-line,
+.margeo-root .problem-route-line {
+  background: linear-gradient(
+    180deg,
+    rgba(129, 140, 248, 0.55),
+    rgba(248, 113, 113, 0.4) 70%,
+    rgba(248, 113, 113, 0.25)
+  );
+  border-radius: 999px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.driveely-root .problem-route-track,
+.margeo-root .problem-route-track {
+  position: relative;
+}
+
+.driveely-root .problem-timeline-line,
+.margeo-root .problem-timeline-line {
+  border-radius: 999px;
+  /* 2px + translate : trait visible sur Safari iOS (1px + transform disparaît) */
+  min-width: 2px;
+}
+
+.driveely-root .trust-card,
+.margeo-root .trust-card {
+  box-shadow: var(--shadow-mg-card);
+  backdrop-filter: blur(12px);
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+@media (hover: hover) {
+  .driveely-root .trust-card:hover,
+  .margeo-root .trust-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+  }
+}
+
+.driveely-root[data-theme="light"] .trust-card,
+.margeo-root[data-theme="light"] .trust-card {
+  background: #fff;
+}
+
+@media (hover: hover) {
+  .driveely-root[data-theme="light"] .trust-card:hover,
+  .margeo-root[data-theme="light"] .trust-card:hover {
+    border-color: rgba(24, 24, 27, 0.14);
+  }
+}
+
+/* iOS landing polish — safe areas + overflow + tap targets */
+@media (max-width: 639px) {
+  .driveely-root .landing-page,
+  .margeo-root .landing-page {
+    overflow-x: clip;
+  }
+
+  .driveely-root .hero-section,
+  .margeo-root .hero-section {
+    padding-bottom: 2.5rem;
+  }
+
+  .driveely-root .hero-phone-orbit,
+  .margeo-root .hero-phone-orbit {
+    opacity: 0.55;
+  }
+
+  .driveely-root .hero-benefit,
+  .margeo-root .hero-benefit {
+    min-height: 2.75rem;
+  }
+
+  .driveely-root .landing-cta-primary,
+  .margeo-root .landing-cta-primary,
+  .driveely-root .landing-cta-secondary,
+  .margeo-root .landing-cta-secondary {
+    min-height: 3rem;
+  }
+
+  .driveely-root .sticky-cta,
+  .margeo-root .sticky-cta,
+  .driveely-root .landing-sticky-cta,
+  .margeo-root .landing-sticky-cta {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .driveely-root .app-shell-tab-label,
+  .margeo-root .app-shell-tab-label {
+    font-size: 0.5625rem;
+  }
+
+  .driveely-root .problem-section,
+  .margeo-root .problem-section {
+    overflow-x: clip;
+  }
+
+  .driveely-root .trust-card,
+  .margeo-root .trust-card {
+    padding-inline: 1rem;
+  }
+}
+
+
+/* Decision mini visuals */
+.driveely-root .decision-mini-scan,
+.margeo-root .decision-mini-scan {
+  animation: mg-scan 2.4s ease-in-out infinite;
+}
+
+.driveely-root .decision-step,
+.margeo-root .decision-step {
+  /* subtle idle on touch devices (no hover) */
+  animation: decision-card-breathe 7s ease-in-out infinite;
+}
+
+.driveely-root .decision-step:nth-child(2),
+.margeo-root .decision-step:nth-child(2) {
+  animation-delay: 0.8s;
+}
+
+.driveely-root .decision-step:nth-child(3),
+.margeo-root .decision-step:nth-child(3) {
+  animation-delay: 1.6s;
+}
+
+@keyframes decision-card-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 16px 40px rgba(0, 0, 0, 0.32);
+  }
+  50% {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.08) inset,
+      0 18px 44px rgba(0, 0, 0, 0.36),
+      0 0 28px rgba(129, 140, 248, 0.06);
+  }
+}
+
+/* Mobile-first app polish */
+@media (max-width: 639px) {
+  .driveely-root .landing-page,
+  .margeo-root .landing-page {
+    overflow-x: clip;
+  }
+
+  .driveely-root .hero-section,
+  .margeo-root .hero-section {
+    padding-bottom: 2.5rem;
+  }
+
+  .driveely-root .hero-phone-orbit,
+  .margeo-root .hero-phone-orbit {
+    opacity: 0.55;
+  }
+
+  .driveely-root .app-shell-tab-label,
+  .margeo-root .app-shell-tab-label {
+    font-size: 0.5625rem;
+  }
+}
+
+/* Replace hover-only card lifts with active/tap on touch */
+@media (hover: none) {
+  .driveely-root .landing-card-hover:active,
+  .margeo-root .landing-card-hover:active,
+  .driveely-root .problem-premium-card:active,
+  .margeo-root .problem-premium-card:active,
+  .driveely-root .proof-card:active,
+  .margeo-root .proof-card:active {
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  .driveely-root .landing-cta-primary:active,
+  .margeo-root .landing-cta-primary:active {
+    transform: scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .decision-step,
+  .margeo-root .decision-step,
+  .driveely-root .decision-mini-scan,
+  .margeo-root .decision-mini-scan {
+    animation: none !important;
+  }
+}
+
+/* Auth + app — polish mobile iOS (Login en priorité) */
+@media (max-width: 639px) {
+  .driveely-root .auth-card,
+  .margeo-root .auth-card {
+    padding: 1.25rem;
+    border-radius: 1.15rem;
+  }
+
+  .driveely-root .auth-title,
+  .margeo-root .auth-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .driveely-root .auth-card .app-btn,
+  .margeo-root .auth-card .app-btn,
+  .driveely-root .auth-submit-btn,
+  .margeo-root .auth-submit-btn {
+    min-height: 3rem;
+    padding-inline: 1rem;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .driveely-root .auth-google-btn,
+  .margeo-root .auth-google-btn {
+    min-height: 3rem;
+    padding-inline: 0.875rem;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .driveely-root .auth-footer-link,
+  .margeo-root .auth-footer-link {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    padding-inline: 0.25rem;
+  }
+
+  .driveely-root .auth-field-input,
+  .margeo-root .auth-field-input {
+    font-size: 1rem;
+  }
+
+  .driveely-root .app-page-title,
+  .margeo-root .app-page-title {
+    font-size: 1.375rem;
+  }
+
+  .driveely-root .app-shell-tab-label,
+  .margeo-root .app-shell-tab-label {
+    max-width: 100%;
+    font-size: 0.5625rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  .driveely-root main .app-btn,
+  .margeo-root main .app-btn {
+    min-height: 2.75rem;
+  }
+
+  .driveely-root main .app-btn-primary,
+  .margeo-root main .app-btn-primary {
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .driveely-root .auth-card,
+  .margeo-root .auth-card {
+    padding: 1rem;
+  }
+
+  .driveely-root .auth-title,
+  .margeo-root .auth-title {
+    font-size: 1.375rem;
+  }
+
+  .driveely-root .phone-hero-compose,
+  .margeo-root .phone-hero-compose {
+    zoom: 0.66;
+  }
+
+  @supports not (zoom: 1) {
+    .driveely-root .phone-hero-compose,
+    .margeo-root .phone-hero-compose {
+      transform: scale(0.66);
+      margin-bottom: -34%;
+    }
+  }
+}
+
+/* Earnings chart — hauteur stable Safari iOS */
+.driveely-root .earnings-chart,
+.margeo-root .earnings-chart {
+  min-height: 180px;
+}
+
+.driveely-root .earnings-chart svg,
+.margeo-root .earnings-chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+/* Boutons app : wrap lisible sur iPhone (jamais de "…") */
+@media (max-width: 639px) {
+  .driveely-root .app-btn,
+  .margeo-root .app-btn {
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .driveely-root .landing-cta-primary,
+  .margeo-root .landing-cta-primary,
+  .driveely-root .landing-cta-secondary,
+  .margeo-root .landing-cta-secondary {
+    white-space: normal;
+    min-width: 0 !important;
+    width: 100%;
+    line-height: 1.25;
+    padding-inline: 1rem;
+  }
+
+  .driveely-root .onboarding-nav-btn-finish,
+  .margeo-root .onboarding-nav-btn-finish {
+    white-space: normal !important;
+    font-size: 0.75rem !important;
+    line-height: 1.2;
+  }
+
+  .driveely-root .app-shell-tab-label,
+  .margeo-root .app-shell-tab-label {
+    overflow: visible;
+    text-overflow: unset;
+    white-space: nowrap;
+    max-width: none;
+  }
+}

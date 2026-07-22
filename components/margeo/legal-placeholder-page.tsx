@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
 import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
-import { UBERLY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 /**
  * Placeholder pages juridiques — le contenu définitif sera intégré plus tard.
@@ -16,7 +16,7 @@ export function LegalPlaceholderPage({
 }) {
   return (
     <div className="mx-auto flex min-h-[70dvh] w-full max-w-2xl flex-col px-1 py-6 sm:py-10">
-      <Link href={UBERLY_PATHS.home} className="inline-flex w-fit">
+      <Link href={DRIVEELY_PATHS.home} className="inline-flex w-fit">
         <Logo />
       </Link>
 
@@ -32,10 +32,10 @@ export function LegalPlaceholderPage({
         <p className="mt-6 text-sm text-mg-muted">
           Contact :{" "}
           <a
-            href={`mailto:${UBERLY_CONTACT_EMAIL}`}
+            href={`mailto:${DRIVEELY_CONTACT_EMAIL}`}
             className="font-medium text-mg-accent underline-offset-2 hover:underline"
           >
-            {UBERLY_CONTACT_EMAIL}
+            {DRIVEELY_CONTACT_EMAIL}
           </a>
         </p>
       </main>
@@ -43,7 +43,7 @@ export function LegalPlaceholderPage({
       <footer className="mt-16 border-t border-mg-border pt-6">
         <LegalFooterLinks />
         <Link
-          href={UBERLY_PATHS.home}
+          href={DRIVEELY_PATHS.home}
           className="mt-4 inline-block text-sm text-mg-muted hover:text-mg-foreground"
         >
           ← Retour à l&apos;accueil

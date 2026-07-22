@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { UBERLY_LEGAL_DOCUMENTS } from "@/lib/margeo/legal/documents";
+import { DRIVEELY_LEGAL_DOCUMENTS } from "@/lib/margeo/legal/documents";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
 /** Liens footer principaux (demande produit). */
 export const LEGAL_FOOTER_LINKS = [
-  ...UBERLY_LEGAL_DOCUMENTS.filter((d) => d.inFooter).map((d) => ({
+  ...DRIVEELY_LEGAL_DOCUMENTS.filter((d) => d.inFooter).map((d) => ({
     label: d.footerLabel ?? d.title,
     href: d.path,
   })),

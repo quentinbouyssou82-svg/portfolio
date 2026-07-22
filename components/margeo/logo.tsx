@@ -7,7 +7,7 @@ import { cn } from "@/lib/margeo/utils";
 const ICON_SIZES = { sm: 24, md: 28, lg: 36 } as const;
 
 /**
- * Logo Uberly — dark/light interchangeables (même box, même crop object-cover).
+ * Logo Driveely — dark/light interchangeables (même box, même crop object-cover).
  * Les deux assets sont en 1024×1024.
  */
 export function Logo({
@@ -27,25 +27,25 @@ export function Logo({
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <span
         className={cn(
-          "uberly-logo-icon-wrap relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg",
+          "driveely-logo-icon-wrap relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg",
           box,
         )}
         style={{ width: iconSize, height: iconSize }}
       >
         <Image
-          src="/uberly/icon.png"
+          src="/driveely/icon.png"
           alt=""
           width={iconSize}
           height={iconSize}
-          className="uberly-logo-icon uberly-logo-icon-dark absolute inset-0 size-full object-cover"
+          className="driveely-logo-icon driveely-logo-icon-dark absolute inset-0 size-full object-cover"
           priority
         />
         <Image
-          src="/uberly/icon-light.png"
+          src="/driveely/icon-light.png"
           alt=""
           width={iconSize}
           height={iconSize}
-          className="uberly-logo-icon uberly-logo-icon-light absolute inset-0 size-full object-cover"
+          className="driveely-logo-icon driveely-logo-icon-light absolute inset-0 size-full object-cover"
           priority
         />
       </span>
@@ -69,24 +69,24 @@ export function LogoIcon({
   return (
     <span
       className={cn(
-        "uberly-logo-icon-wrap relative inline-flex shrink-0 overflow-hidden rounded-lg",
+        "driveely-logo-icon-wrap relative inline-flex shrink-0 overflow-hidden rounded-lg",
         className,
       )}
       style={{ width: size, height: size }}
     >
       <Image
-        src="/uberly/icon.png"
+        src="/driveely/icon.png"
         alt={PRODUCT_NAME}
         width={size}
         height={size}
-        className="uberly-logo-icon uberly-logo-icon-dark absolute inset-0 size-full rounded-lg object-cover"
+        className="driveely-logo-icon driveely-logo-icon-dark absolute inset-0 size-full rounded-lg object-cover"
       />
       <Image
-        src="/uberly/icon-light.png"
+        src="/driveely/icon-light.png"
         alt={PRODUCT_NAME}
         width={size}
         height={size}
-        className="uberly-logo-icon uberly-logo-icon-light absolute inset-0 size-full rounded-lg object-cover"
+        className="driveely-logo-icon driveely-logo-icon-light absolute inset-0 size-full rounded-lg object-cover"
       />
     </span>
   );

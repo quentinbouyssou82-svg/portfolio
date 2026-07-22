@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 
-const email = process.argv[2] || `uberly.repro.${Date.now()}@gmail.com`;
-const password = "TestUberly123!";
+const email = process.argv[2] || `driveely.repro.${Date.now()}@gmail.com`;
+const password = "TestDriveely123!";
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
@@ -11,7 +11,7 @@ const password = "TestUberly123!";
       console.log("POST", res.status(), res.url());
     }
   });
-  await page.goto("https://margeo.vercel.app/demos/uberly/login?mode=signup");
+  await page.goto("https://margeo.vercel.app/demos/driveely/login?mode=signup");
   await page.getByLabel("Prénom").fill("Repro");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Mot de passe").fill(password);

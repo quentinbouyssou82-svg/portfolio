@@ -29,7 +29,7 @@ import {
 } from "@/components/margeo/onboarding/onboarding-types";
 import { OnboardingVehicleIcon } from "@/components/margeo/onboarding/onboarding-vehicle-icon";
 import { Button } from "@/components/margeo/ui/button";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { cn } from "@/lib/margeo/utils";
 import {
   completeOnboardingAndRedirect,
@@ -183,7 +183,7 @@ export function OnboardingWizard({
   return (
     <div className="onboarding-shell mx-auto flex w-full max-w-lg flex-col">
       <header className="onboarding-header shrink-0 app-fade-in">
-        <Link href={UBERLY_PATHS.home} className="inline-flex">
+        <Link href={DRIVEELY_PATHS.home} className="inline-flex">
           <Logo size="sm" />
         </Link>
         {!isWelcome && (

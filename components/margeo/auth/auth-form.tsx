@@ -13,7 +13,7 @@ import {
   signUpAction,
   type MargeoActionResult,
 } from "@/lib/margeo/auth/actions";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { cn } from "@/lib/margeo/utils";
 
 type Mode = "login" | "signup";
@@ -46,7 +46,7 @@ export function AuthForm({
   return (
     <div className={cn("mx-auto w-full", premium ? "max-w-[420px]" : "max-w-md")}>
       <div className={cn("text-center app-fade-in", premium ? "mb-8" : "mb-8")}>
-        <Link href={UBERLY_PATHS.home} className="inline-block">
+        <Link href={DRIVEELY_PATHS.home} className="inline-block">
           <Logo />
         </Link>
         <h1
@@ -158,7 +158,7 @@ export function AuthForm({
           {!isSignup && (
             <div className={cn("flex justify-end", premium && "-mt-1")}>
               <Link
-                href={UBERLY_PATHS.forgotPassword}
+                href={DRIVEELY_PATHS.forgotPassword}
                 className={cn(
                   "text-xs transition-colors",
                   premium
@@ -183,7 +183,7 @@ export function AuthForm({
               <span className="text-xs leading-relaxed text-mg-muted">
                 J&apos;ai lu et j&apos;accepte les{" "}
                 <Link
-                  href={UBERLY_PATHS.cgu}
+                  href={DRIVEELY_PATHS.cgu}
                   target="_blank"
                   className="font-medium text-mg-accent underline-offset-2 hover:underline"
                 >
@@ -191,7 +191,7 @@ export function AuthForm({
                 </Link>{" "}
                 et la{" "}
                 <Link
-                  href={UBERLY_PATHS.confidentialite}
+                  href={DRIVEELY_PATHS.confidentialite}
                   target="_blank"
                   className="font-medium text-mg-accent underline-offset-2 hover:underline"
                 >
@@ -225,7 +225,7 @@ export function AuthForm({
       >
         {isSignup ? "Déjà un compte ?" : "Pas encore de compte ?"}{" "}
         <Link
-          href={isSignup ? UBERLY_PATHS.login : UBERLY_PATHS.signup}
+          href={isSignup ? DRIVEELY_PATHS.login : DRIVEELY_PATHS.signup}
           className={cn(
             premium
               ? "auth-link font-medium text-mg-accent/90 hover:text-mg-accent"

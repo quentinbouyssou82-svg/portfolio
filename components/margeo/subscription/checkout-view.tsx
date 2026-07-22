@@ -7,16 +7,16 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { activatePlanAction } from "@/lib/margeo/actions/subscription";
 import {
-  UBERLY_PLANS,
+  DRIVEELY_PLANS,
   formatPlanPrice,
-  type UberlyPlanId,
+  type DriveelyPlanId,
 } from "@/lib/margeo/plans";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import { Button } from "@/components/margeo/ui/button";
 import { Card, CardContent } from "@/components/margeo/ui/card";
 
-export function CheckoutView({ planId }: { planId: UberlyPlanId }) {
-  const plan = UBERLY_PLANS[planId];
+export function CheckoutView({ planId }: { planId: DriveelyPlanId }) {
+  const plan = DRIVEELY_PLANS[planId];
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [billingPeriod] = useState<"monthly">("monthly");

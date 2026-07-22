@@ -11,8 +11,8 @@ export interface PreparedImage {
 }
 
 /** Plus petit = Vision plus rapide (chiffres UI restent lisibles à 768). */
-const MAX_EDGE = Number(process.env.UBERLY_VISION_MAX_EDGE ?? 768);
-const JPEG_QUALITY = Number(process.env.UBERLY_VISION_JPEG_QUALITY ?? 62);
+const MAX_EDGE = Number(process.env.DRIVEELY_VISION_MAX_EDGE ?? 768);
+const JPEG_QUALITY = Number(process.env.DRIVEELY_VISION_JPEG_QUALITY ?? 62);
 
 /**
  * Redimensionne + compresse en JPEG pour accélérer l'appel Vision

@@ -444,7 +444,7 @@ export function PhoneMock({ variant = "default" }: PhoneMockProps) {
               <div
                 className="phone-mock-content"
                 role="img"
-                aria-label="Aperçu Uberly : score 84, verdict accepter, gain net 6,10 euros"
+                aria-label="Aperçu Driveely : score 84, verdict accepter, gain net 6,10 euros"
               >
                 <motion.div
                   custom={0}

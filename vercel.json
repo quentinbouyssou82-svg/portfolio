@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/uberly/cron/purge-screenshots",
+      "path": "/api/driveely/cron/purge-screenshots",
       "schedule": "0 3 * * *"
     }
   ]

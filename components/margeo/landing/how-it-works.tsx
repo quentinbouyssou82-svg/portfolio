@@ -14,7 +14,7 @@ const STEPS = [
     icon: ScanLine,
     title: "Analyse",
     description:
-      "Uberly estime gain, distance, temps et zone. Rien à taper.",
+      "Driveely estime gain, distance, temps et zone. Rien à taper.",
   },
   {
     icon: CircleCheckBig,

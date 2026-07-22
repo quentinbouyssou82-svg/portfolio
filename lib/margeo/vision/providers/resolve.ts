@@ -7,7 +7,9 @@ export function resolveVisionProviderId(
 ): VisionProviderId {
   if (override && override !== "auto") return override;
 
-  const env = process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase();
+  const env =
+    process.env.DRIVEELY_VISION_PROVIDER?.trim().toLowerCase() ||
+    process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase();
 
   if (env === "mock") return "mock";
   if (env === "mistral") {
@@ -20,12 +22,13 @@ export function resolveVisionProviderId(
   }
   if (env === "gemini") {
     if (
+      !process.env.DRIVEELY_GEMINI_API_KEY?.trim() &&
       !process.env.UBERLY_GEMINI_API_KEY?.trim() &&
       !process.env.GOOGLE_API_KEY?.trim() &&
       !process.env.GEMINI_API_KEY?.trim()
     ) {
       throw new Error(
-        "Analyse IA non configurée. Ajoute UBERLY_GEMINI_API_KEY sur le serveur.",
+        "Analyse IA non configurée. Ajoute DRIVEELY_GEMINI_API_KEY sur le serveur.",
       );
     }
     return "gemini";
@@ -33,6 +36,7 @@ export function resolveVisionProviderId(
 
   if (process.env.MISTRAL_API_KEY?.trim()) return "mistral";
   if (
+    process.env.DRIVEELY_GEMINI_API_KEY?.trim() ||
     process.env.UBERLY_GEMINI_API_KEY?.trim() ||
     process.env.GOOGLE_API_KEY?.trim() ||
     process.env.GEMINI_API_KEY?.trim()
@@ -41,7 +45,7 @@ export function resolveVisionProviderId(
   }
 
   throw new Error(
-    "Analyse IA non configurée. Définis MISTRAL_API_KEY ou UBERLY_GEMINI_API_KEY.",
+    "Analyse IA non configurée. Définis MISTRAL_API_KEY ou DRIVEELY_GEMINI_API_KEY.",
   );
 }
 

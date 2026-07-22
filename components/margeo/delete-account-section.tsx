@@ -2,7 +2,7 @@
 
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { UBERLY_CONTACT_EMAIL } from "@/lib/margeo/brand";
+import { DRIVEELY_CONTACT_EMAIL } from "@/lib/margeo/brand";
 import { Button } from "@/components/margeo/ui/button";
 
 const ACCOUNT_DELETION_MESSAGE =
@@ -45,12 +45,12 @@ export function DeleteAccountSection() {
           <p className="mt-3 text-sm text-mg-muted">
             Écris-nous à{" "}
             <a
-              href={`mailto:${UBERLY_CONTACT_EMAIL}?subject=${encodeURIComponent(
-                "Demande de suppression de compte Uberly",
+              href={`mailto:${DRIVEELY_CONTACT_EMAIL}?subject=${encodeURIComponent(
+                "Demande de suppression de compte Driveely",
               )}`}
               className="font-medium text-mg-accent underline-offset-2 hover:underline"
             >
-              {UBERLY_CONTACT_EMAIL}
+              {DRIVEELY_CONTACT_EMAIL}
             </a>
             .
           </p>

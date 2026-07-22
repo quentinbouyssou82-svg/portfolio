@@ -99,7 +99,7 @@ export function PlatformMarquee() {
       <div className="platform-marquee-fade platform-marquee-fade-r" aria-hidden />
 
       <p className="mx-auto mb-4 max-w-xl px-5 text-center text-[11px] leading-relaxed font-medium tracking-wide text-mg-faint sm:mb-5 sm:text-xs">
-        Uberly analyse les captures fournies. Aucun lien, partenariat ni
+        Driveely analyse les captures fournies. Aucun lien, partenariat ni
         affiliation avec ces applications.
       </p>
 

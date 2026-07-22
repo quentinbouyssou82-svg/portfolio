@@ -16,9 +16,9 @@ for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
   if (!process.env[key]) process.env[key] = value;
 }
 
-process.env.UBERLY_VISION_PROVIDER = "mistral";
+process.env.DRIVEELY_VISION_PROVIDER = "mistral";
 
-const fixture = path.join(__dirname, "fixtures/uberly-test-screenshot.png");
+const fixture = path.join(__dirname, "fixtures/driveely-test-screenshot.png");
 const buf = fs.readFileSync(fixture);
 
 (async () => {

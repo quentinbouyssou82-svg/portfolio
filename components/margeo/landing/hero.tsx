@@ -68,7 +68,7 @@ export function Hero() {
               transition={{ duration: 0.65, delay: 0.16, ease }}
               className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:text-lg lg:mx-0"
             >
-              Capture ta proposition. Uberly estime ton gain net (frais inclus)
+              Capture ta proposition. Driveely estime ton gain net (frais inclus)
               et t&apos;aide à décider — avant la fin du compte à rebours.
             </motion.p>
 

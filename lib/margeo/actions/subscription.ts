@@ -7,8 +7,8 @@ import type {
   SubscriptionEvent,
   UserSubscription,
 } from "@/lib/margeo/billing/types";
-import type { UberlyPlanId } from "@/lib/margeo/plans";
-import { UBERLY_PLANS } from "@/lib/margeo/plans";
+import type { DriveelyPlanId } from "@/lib/margeo/plans";
+import { DRIVEELY_PLANS } from "@/lib/margeo/plans";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import {
   cancelSubscription,
@@ -32,7 +32,7 @@ async function requireUserId(): Promise<
   return { ok: true, userId: user.id };
 }
 
-function assertPlanId(planId: string): planId is UberlyPlanId {
+function assertPlanId(planId: string): planId is DriveelyPlanId {
   return planId === "discovery" || planId === "pro" || planId === "elite";
 }
 
@@ -73,7 +73,7 @@ export async function activatePlanAction(input: {
   if (!assertPlanId(input.planId)) {
     return { ok: false, message: "Plan invalide." };
   }
-  if (!(input.planId in UBERLY_PLANS)) {
+  if (!(input.planId in DRIVEELY_PLANS)) {
     return { ok: false, message: "Plan inconnu." };
   }
 

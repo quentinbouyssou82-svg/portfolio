@@ -4,7 +4,7 @@
  * - Production : Stripe uniquement (renouvellement automatique)
  */
 
-import type { UberlyPlanId } from "@/lib/margeo/plans";
+import type { DriveelyPlanId } from "@/lib/margeo/plans";
 
 /** Stripe = seul PSP prévu. `simulated` = mode bêta sans facturation réelle. */
 export type PaymentProviderId = "simulated" | "stripe";
@@ -13,7 +13,7 @@ export type BillingPeriod = "monthly" | "yearly";
 
 export type CheckoutIntent = {
   userId: string;
-  planId: UberlyPlanId;
+  planId: DriveelyPlanId;
   billingPeriod: BillingPeriod;
   successUrl: string;
   cancelUrl: string;

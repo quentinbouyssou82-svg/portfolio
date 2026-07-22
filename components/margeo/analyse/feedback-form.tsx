@@ -22,7 +22,7 @@ const REASONS_REFUSE = [
   { id: "too_low", label: "Trop faible" },
   { id: "too_far", label: "Trop loin" },
   { id: "bad_zone", label: "Mauvaise zone" },
-  { id: "uberly_right", label: "Uberly avait raison" },
+  { id: "driveely_right", label: "Driveely avait raison" },
   { id: "other", label: "Autre" },
 ] as const;
 
@@ -44,7 +44,7 @@ export function FeedbackForm({ analysis }: { analysis: RideAnalysis }) {
   const submit = async (didAccept: boolean, selectedReason?: string | null) => {
     setLoading(true);
     try {
-      const res = await fetch("/api/uberly/feedback", {
+      const res = await fetch("/api/driveely/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

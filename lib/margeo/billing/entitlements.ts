@@ -3,10 +3,10 @@
  * Toutes les vérifications métier doivent passer par ici (serveur).
  */
 
-import type { UberlyPlanId } from "@/lib/margeo/plans";
+import type { DriveelyPlanId } from "@/lib/margeo/plans";
 
 export type PlanEntitlements = {
-  planId: UberlyPlanId;
+  planId: DriveelyPlanId;
   /** Peut lancer une analyse (dans la limite). */
   canAnalyze: boolean;
   /** null = illimité */
@@ -66,21 +66,21 @@ const ELITE: PlanEntitlements = {
   canBetaFeatures: true,
 };
 
-export const PLAN_ENTITLEMENTS: Record<UberlyPlanId, PlanEntitlements> = {
+export const PLAN_ENTITLEMENTS: Record<DriveelyPlanId, PlanEntitlements> = {
   discovery: DISCOVERY,
   pro: PRO,
   elite: ELITE,
 };
 
-export function getEntitlementsForPlan(planId: UberlyPlanId): PlanEntitlements {
+export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
   return PLAN_ENTITLEMENTS[planId] ?? DISCOVERY;
 }
 
-export function isPaidPlan(planId: UberlyPlanId): boolean {
+export function isPaidPlan(planId: DriveelyPlanId): boolean {
   return planId === "pro" || planId === "elite";
 }
 
-export function planRank(planId: UberlyPlanId): number {
+export function planRank(planId: DriveelyPlanId): number {
   switch (planId) {
     case "discovery":
       return 0;

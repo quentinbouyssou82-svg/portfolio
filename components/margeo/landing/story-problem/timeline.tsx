@@ -309,7 +309,7 @@ export function ProblemTimeline() {
       </ul>
 
       <p className="problem-constellation-caption mx-auto mt-8 max-w-md px-2 text-center text-xs leading-relaxed text-mg-faint sm:mt-10 sm:text-sm">
-        Uberly croise ces signaux en parallèle — pas un seul chiffre isolé —
+        Driveely croise ces signaux en parallèle — pas un seul chiffre isolé —
         avant de proposer un verdict.
       </p>
     </div>

@@ -39,7 +39,7 @@ export function useGeolocation(initial?: GeolocationInitial) {
   const syncToServer = useCallback(
     async (pos: GeoPosition | null, perm: GeoPermission) => {
       try {
-        const res = await fetch("/api/uberly/location", {
+        const res = await fetch("/api/driveely/location", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -53,10 +53,10 @@ export function useGeolocation(initial?: GeolocationInitial) {
           const data = (await res.json().catch(() => ({}))) as {
             error?: string;
           };
-          console.warn("[uberly/geo] sync failed:", data.error ?? res.status);
+          console.warn("[driveely/geo] sync failed:", data.error ?? res.status);
         }
       } catch (e) {
-        console.warn("[uberly/geo] sync error:", e);
+        console.warn("[driveely/geo] sync error:", e);
       }
     },
     [],
@@ -102,7 +102,7 @@ export function useGeolocation(initial?: GeolocationInitial) {
         setPermission("denied");
         setError(
           err.code === 1
-            ? "Permission refusée. Uberly ne peut pas optimiser les scores sans position."
+            ? "Permission refusée. Driveely ne peut pas optimiser les scores sans position."
             : err.code === 3
               ? "Délai dépassé. Réessaie en extérieur ou vérifie le GPS."
               : "Impossible d'obtenir ta position.",

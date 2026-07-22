@@ -1,5 +1,5 @@
 import { ApiError } from "./errors";
-import { UBERLY_LIMITS } from "../constants/limits";
+import { DRIVEELY_LIMITS } from "../constants/limits";
 
 const ALLOWED_MIME = new Set([
   "image/jpeg",
@@ -24,9 +24,9 @@ export function validateScreenshotFile(file: File): { ext: string } {
     throw new ApiError("Image vide", 400, "EMPTY_IMAGE");
   }
 
-  if (file.size > UBERLY_LIMITS.maxImageBytes) {
+  if (file.size > DRIVEELY_LIMITS.maxImageBytes) {
     throw new ApiError(
-      `Image trop lourde (max ${Math.round(UBERLY_LIMITS.maxImageBytes / 1024 / 1024)} Mo)`,
+      `Image trop lourde (max ${Math.round(DRIVEELY_LIMITS.maxImageBytes / 1024 / 1024)} Mo)`,
       413,
       "IMAGE_TOO_LARGE",
     );

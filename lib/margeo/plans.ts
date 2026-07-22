@@ -1,13 +1,13 @@
 /**
- * Offres Uberly — 3 niveaux.
+ * Offres Driveely — 3 niveaux.
  * Objectif : rendre l'offre Pro (intermédiaire) évidente.
  * Premium/Elite = confort avancé, jamais indispensable.
  */
 
-export type UberlyPlanId = "discovery" | "pro" | "elite";
+export type DriveelyPlanId = "discovery" | "pro" | "elite";
 
-export interface UberlyPlan {
-  id: UberlyPlanId;
+export interface DriveelyPlan {
+  id: DriveelyPlanId;
   /** Nom commercial impactant */
   name: string;
   /** Tagline courte sous le nom */
@@ -25,11 +25,11 @@ export interface UberlyPlan {
   missing?: string[];
 }
 
-export const UBERLY_PLANS: Record<UberlyPlanId, UberlyPlan> = {
+export const DRIVEELY_PLANS: Record<DriveelyPlanId, DriveelyPlan> = {
   discovery: {
     id: "discovery",
     name: "Découverte",
-    tagline: "Juste pour tester Uberly.",
+    tagline: "Juste pour tester Driveely.",
     priceMonthly: 0,
     dailyAnalyses: 2,
     historyDays: 3,
@@ -89,10 +89,10 @@ export const UBERLY_PLANS: Record<UberlyPlanId, UberlyPlan> = {
   },
 };
 
-export const UBERLY_PLAN_ORDER: UberlyPlanId[] = ["discovery", "pro", "elite"];
+export const DRIVEELY_PLAN_ORDER: DriveelyPlanId[] = ["discovery", "pro", "elite"];
 
 /** Copy pricing page */
-export const UBERLY_PRICING_COPY = {
+export const DRIVEELY_PRICING_COPY = {
   eyebrow: "Tarifs clairs",
   title: "Choisis ton rythme. Garde ton avantage.",
   subtitle:

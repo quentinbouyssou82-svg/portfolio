@@ -1,5 +1,5 @@
 /**
- * Vérifie la config Auth Supabase pour la bêta Uberly.
+ * Vérifie la config Auth Supabase pour la bêta Driveely.
  * Usage : set -a && source .env.local && set +a && node scripts/verify-supabase-auth-config.mjs
  */
 
@@ -38,7 +38,7 @@ function fail(label, detail = "") {
   allOk = false;
 }
 
-console.log("Uberly — vérification Auth Supabase\n", SUPABASE_URL, "\n");
+console.log("Driveely — vérification Auth Supabase\n", SUPABASE_URL, "\n");
 
 const settingsRes = await fetch(`${SUPABASE_URL}/auth/v1/settings`, {
   headers: { apikey: SECRET, Authorization: `Bearer ${SECRET}` },
@@ -91,11 +91,11 @@ if (ACCESS_TOKEN) {
 }
 
 console.log("\nTest signup (session immédiate attendue si autoconfirm ON) :");
-const testEmail = `uberly.verify.${Date.now()}@gmail.com`;
+const testEmail = `driveely.verify.${Date.now()}@gmail.com`;
 const signUpRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
   method: "POST",
   headers: { apikey: PUB, "Content-Type": "application/json" },
-  body: JSON.stringify({ email: testEmail, password: "TestUberly123!" }),
+  body: JSON.stringify({ email: testEmail, password: "TestDriveely123!" }),
 });
 const signUpBody = await signUpRes.json();
 if (signUpBody.access_token) {

@@ -3,8 +3,8 @@ import { ArrowUpRight } from "lucide-react";
 
 const demos = [
   {
-    href: "/demos/uberly",
-    name: "Uberly",
+    href: "/demos/driveely",
+    name: "Driveely",
     sector: "Copilote IA · Livraison",
     accent: "from-indigo-400/20 to-transparent",
     border: "border-indigo-400/25",

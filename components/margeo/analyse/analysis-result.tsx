@@ -108,7 +108,7 @@ export function AnalysisResult({ analysis, meta }: AnalysisResultProps) {
             {verdictMeta.description}
           </p>
           <p className="mt-3 text-[11px] leading-relaxed text-mg-faint">
-            Résultat estimatif basé sur ton profil et la capture fournie. Uberly
+            Résultat estimatif basé sur ton profil et la capture fournie. Driveely
             est une aide à la décision et ne garantit aucun gain.
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

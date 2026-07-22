@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { User } from "@supabase/supabase-js";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
 import { getMargeoServiceKey } from "@/lib/margeo/supabase/env";
@@ -192,7 +192,7 @@ async function signUpWithAdminApi(
       await repairUserForSignup(existingId, password, name, termsAcceptedAt);
     } else {
       if (process.env.NODE_ENV === "development") {
-        console.error("[uberly/auth] admin signup failed:", adminErr);
+        console.error("[driveely/auth] admin signup failed:", adminErr);
       }
       return {
         ok: false,
@@ -418,5 +418,5 @@ export async function signOutAction(): Promise<void> {
   } catch {
     // Déjà déconnecté
   }
-  redirect(UBERLY_PATHS.login);
+  redirect(DRIVEELY_PATHS.login);
 }

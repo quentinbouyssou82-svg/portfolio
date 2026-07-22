@@ -39,7 +39,7 @@ export const DEFAULT_ONBOARDING_DRAFT: OnboardingDraft = {
   weeklyHours: null,
 };
 
-export const ONBOARDING_STORAGE_KEY = "uberly-onboarding-draft";
+export const ONBOARDING_STORAGE_KEY = "driveely-onboarding-draft";
 
 export const VEHICLE_OPTIONS: {
   id: OnboardingVehicleId;

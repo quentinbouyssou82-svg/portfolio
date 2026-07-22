@@ -3,17 +3,18 @@ import { toBase64 } from "../image-encoding";
 import type { VisionProvider, VisionProviderResult } from "./types";
 
 const DEFAULT_MODEL =
-  process.env.UBERLY_GEMINI_VISION_MODEL?.trim() || "gemini-2.0-flash";
+  process.env.DRIVEELY_GEMINI_VISION_MODEL?.trim() || "gemini-2.0-flash";
 
 function getApiKey(): string {
   const apiKey =
+    process.env.DRIVEELY_GEMINI_API_KEY?.trim() ||
     process.env.UBERLY_GEMINI_API_KEY?.trim() ||
     process.env.GOOGLE_API_KEY?.trim() ||
     process.env.GEMINI_API_KEY?.trim();
 
   if (!apiKey) {
     throw new Error(
-      "Analyse IA non configurée. Ajoute UBERLY_GEMINI_API_KEY dans .env.local.",
+      "Analyse IA non configurée. Ajoute DRIVEELY_GEMINI_API_KEY dans .env.local.",
     );
   }
   return apiKey;

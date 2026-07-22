@@ -1,7 +1,7 @@
 import { resolveVisionProviderId } from "../vision/providers/resolve";
 import type { VisionProviderId } from "../vision/providers/types";
 
-/** Vérifie les variables critiques au démarrage d'une route Uberly. */
+/** Vérifie les variables critiques au démarrage d'une route Driveely. */
 export interface EnvStatus {
   supabase: boolean;
   serviceRole: boolean;
@@ -19,7 +19,8 @@ export interface EnvStatus {
 
 function hasGeminiKey(): boolean {
   return Boolean(
-    process.env.UBERLY_GEMINI_API_KEY?.trim() ||
+    process.env.DRIVEELY_GEMINI_API_KEY?.trim() ||
+      process.env.UBERLY_GEMINI_API_KEY?.trim() ||
       process.env.GOOGLE_API_KEY?.trim() ||
       process.env.GEMINI_API_KEY?.trim(),
   );
@@ -37,7 +38,7 @@ function resolveConfiguredVisionProvider(): VisionProviderId | null {
   }
 }
 
-export function checkUberlyEnv(): EnvStatus {
+export function checkDriveelyEnv(): EnvStatus {
   const missing: string[] = [];
 
   const hasClientKey = Boolean(
@@ -75,13 +76,15 @@ export function checkUberlyEnv(): EnvStatus {
 
   if (!vision) {
     const preferred =
-      process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase() || "mistral";
+      process.env.DRIVEELY_VISION_PROVIDER?.trim().toLowerCase() ||
+      process.env.UBERLY_VISION_PROVIDER?.trim().toLowerCase() ||
+      "mistral";
     if (preferred === "mistral" && !mistral) {
       missing.push("MISTRAL_API_KEY");
     } else if (preferred === "gemini" && !gemini) {
-      missing.push("UBERLY_GEMINI_API_KEY");
+      missing.push("DRIVEELY_GEMINI_API_KEY (ou UBERLY_GEMINI_API_KEY)");
     } else if (!mistral && !gemini) {
-      missing.push("MISTRAL_API_KEY ou UBERLY_GEMINI_API_KEY");
+      missing.push("MISTRAL_API_KEY ou DRIVEELY_GEMINI_API_KEY");
     }
   }
 

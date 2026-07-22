@@ -17,10 +17,10 @@ export function ProfileProvider({
   );
 }
 
-export function useUberlyProfile(): UserProfile {
+export function useDriveelyProfile(): UserProfile {
   const profile = useContext(ProfileContext);
   if (!profile) {
-    throw new Error("useUberlyProfile doit être utilisé dans ProfileProvider");
+    throw new Error("useDriveelyProfile doit être utilisé dans ProfileProvider");
   }
   return profile;
 }

@@ -41,7 +41,7 @@ export async function analyzeScreenshot(
 ): Promise<ScreenshotAnalysisResult> {
   const mode =
     options.provider ??
-    (process.env.UBERLY_VISION_PROVIDER === "mock" ? "mock" : "auto");
+    (process.env.DRIVEELY_VISION_PROVIDER === "mock" ? "mock" : "auto");
 
   if (mode === "mock") {
     return analyzeWithMock(image, options.seed);
@@ -61,7 +61,7 @@ export async function analyzeScreenshot(
     }
     return result;
   } catch (e) {
-    console.error("[uberly] Vision failed:", e);
+    console.error("[driveely] Vision failed:", e);
     const message =
       e instanceof Error ? e.message : "Analyse IA indisponible.";
     if (process.env.NODE_ENV === "development") {

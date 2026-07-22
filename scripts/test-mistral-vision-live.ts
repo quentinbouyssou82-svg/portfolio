@@ -23,7 +23,7 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-process.env.UBERLY_VISION_PROVIDER = "mistral";
+process.env.DRIVEELY_VISION_PROVIDER = "mistral";
 
 if (!process.env.MISTRAL_API_KEY?.trim()) {
   console.log("○ MISTRAL_API_KEY absent — test live ignoré");

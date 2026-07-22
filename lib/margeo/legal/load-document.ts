@@ -3,14 +3,14 @@ import path from "path";
 import {
   getLegalDocument,
   rewriteLegalMarkdownLinks,
-  type UberlyLegalDocId,
+  type DriveelyLegalDocId,
 } from "./documents";
 
-export function loadUberlyLegalMarkdown(id: UberlyLegalDocId): string {
+export function loadDriveelyLegalMarkdown(id: DriveelyLegalDocId): string {
   const doc = getLegalDocument(id);
   const fullPath = path.join(
     process.cwd(),
-    "content/uberly/legal",
+    "content/driveely/legal",
     doc.file,
   );
   const raw = fs.readFileSync(fullPath, "utf8");

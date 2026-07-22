@@ -52,7 +52,7 @@ export function FinalCta() {
               ))}
             </div>
             <p className="mx-auto mt-4 max-w-sm text-[10px] leading-relaxed text-mg-faint">
-              Captures prises en charge. Uberly n&apos;est affilié à aucune
+              Captures prises en charge. Driveely n&apos;est affilié à aucune
               plateforme de livraison.
             </p>
           </div>

@@ -1,4 +1,4 @@
-import { UBERLY_LIMITS } from "../constants/limits";
+import { DRIVEELY_LIMITS } from "../constants/limits";
 import { ApiError } from "../api/errors";
 import { createMargeoServerClient } from "../supabase/server";
 import {
@@ -32,7 +32,7 @@ export async function countAnalysesToday(userId: string): Promise<number> {
     .gte("analyzed_at", since);
 
   if (error) {
-    console.error("[uberly/quota] count failed:", error.message);
+    console.error("[driveely/quota] count failed:", error.message);
     return 0;
   }
 
@@ -44,7 +44,7 @@ export async function getQuotaStatus(userId: string): Promise<QuotaStatus> {
   const usedToday = await countAnalysesToday(userId);
   const unlimited = entitlements.canUnlimitedAnalysis;
   const dailyLimit =
-    entitlements.dailyAnalysisLimit ?? UBERLY_LIMITS.freeDailyAnalyses;
+    entitlements.dailyAnalysisLimit ?? DRIVEELY_LIMITS.freeDailyAnalyses;
   const base = buildQuotaStatus(unlimited, usedToday, dailyLimit);
   return {
     ...base,
@@ -65,7 +65,7 @@ export async function assertAnalysisQuota(userId: string): Promise<QuotaStatus> 
 
   const unlimited = entitlements.canUnlimitedAnalysis;
   const dailyLimit =
-    entitlements.dailyAnalysisLimit ?? UBERLY_LIMITS.freeDailyAnalyses;
+    entitlements.dailyAnalysisLimit ?? DRIVEELY_LIMITS.freeDailyAnalyses;
 
   // Premium / illimité : pas besoin de compter les analyses du jour
   if (unlimited) {
@@ -119,7 +119,7 @@ export function getFreeHistoryCutoffIso(
 ): string | null {
   if (!profile) {
     const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - UBERLY_LIMITS.freeHistoryDays);
+    cutoff.setDate(cutoff.getDate() - DRIVEELY_LIMITS.freeHistoryDays);
     cutoff.setHours(0, 0, 0, 0);
     return cutoff.toISOString();
   }
@@ -129,7 +129,7 @@ export function getFreeHistoryCutoffIso(
       const expires = new Date(profile.premiumUntil);
       if (expires.getTime() < Date.now()) {
         const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - UBERLY_LIMITS.freeHistoryDays);
+        cutoff.setDate(cutoff.getDate() - DRIVEELY_LIMITS.freeHistoryDays);
         cutoff.setHours(0, 0, 0, 0);
         return cutoff.toISOString();
       }
@@ -137,7 +137,7 @@ export function getFreeHistoryCutoffIso(
     return null;
   }
   const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - UBERLY_LIMITS.freeHistoryDays);
+  cutoff.setDate(cutoff.getDate() - DRIVEELY_LIMITS.freeHistoryDays);
   cutoff.setHours(0, 0, 0, 0);
   return cutoff.toISOString();
 }

@@ -7,7 +7,7 @@ import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
 import { Input } from "@/components/margeo/ui/input";
 import { resetPasswordAction } from "@/lib/margeo/auth/password";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 export function ForgotPasswordForm() {
   const [pending, startTransition] = useTransition();
@@ -28,7 +28,7 @@ export function ForgotPasswordForm() {
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="mb-8 text-center">
-        <Link href={UBERLY_PATHS.home}>
+        <Link href={DRIVEELY_PATHS.home}>
           <Logo />
         </Link>
         <h1 className="mt-6 text-2xl font-bold text-mg-foreground">
@@ -59,7 +59,7 @@ export function ForgotPasswordForm() {
       </form>
 
       <p className="mt-6 text-center text-sm text-mg-muted">
-        <Link href={UBERLY_PATHS.login} className="text-mg-accent hover:underline">
+        <Link href={DRIVEELY_PATHS.login} className="text-mg-accent hover:underline">
           Retour à la connexion
         </Link>
       </p>

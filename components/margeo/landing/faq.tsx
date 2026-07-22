@@ -8,19 +8,19 @@ import { cn } from "@/lib/margeo/utils";
 
 const FAQ_ITEMS = [
   {
-    question: "Comment Uberly lit ma capture ?",
+    question: "Comment Driveely lit ma capture ?",
     answer:
       "L'IA estime le gain, la distance, le temps et les adresses à partir de ton image. Tu déposes la capture, le verdict arrive en quelques secondes. Aucune saisie. L'IA peut se tromper : vérifie toujours les chiffres clés.",
   },
   {
     question: "Quelles captures sont prises en charge ?",
     answer:
-      "Les captures des apps de livraison courantes (Uber Eats, Deliveroo, Stuart, Amazon Flex). D'autres apps (Just Eat, Glovo…) sont sur la feuille de route selon la demande bêta. Uberly n'est affilié à aucune de ces plateformes.",
+      "Les captures des apps de livraison courantes (Uber Eats, Deliveroo, Stuart, Amazon Flex). D'autres apps (Just Eat, Glovo…) sont sur la feuille de route selon la demande bêta. Driveely n'est affilié à aucune de ces plateformes.",
   },
   {
     question: "Comment le gain net est estimé ?",
     answer:
-      "Uberly déduit tes coûts au km (carburant, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Le résultat est une estimation indicative, pas un compte comptable.",
+      "Driveely déduit tes coûts au km (carburant, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Le résultat est une estimation indicative, pas un compte comptable.",
   },
   {
     question: "Ça marche pendant le compte à rebours ?",
@@ -30,7 +30,7 @@ const FAQ_ITEMS = [
   {
     question: "Mes données sont partagées avec les plateformes ?",
     answer:
-      "Non. Tes captures et tes stats restent privées. Uberly est indépendant et n'est affilié à aucune plateforme de livraison.",
+      "Non. Tes captures et tes stats restent privées. Driveely est indépendant et n'est affilié à aucune plateforme de livraison.",
   },
   {
     question: "C'est gratuit ?",

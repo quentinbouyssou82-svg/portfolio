@@ -20,7 +20,7 @@ import {
   type SubscriptionStatus,
   type UserSubscription,
 } from "@/lib/margeo/billing/types";
-import type { UberlyPlanId } from "@/lib/margeo/plans";
+import type { DriveelyPlanId } from "@/lib/margeo/plans";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
 import {
@@ -130,11 +130,11 @@ function fromLegacyProfile(
     premium: boolean;
     premiumUntil?: string;
     premiumSource?: string;
-    planId?: UberlyPlanId;
+    planId?: DriveelyPlanId;
   },
 ): UserSubscription {
   const now = new Date().toISOString();
-  const planId: UberlyPlanId =
+  const planId: DriveelyPlanId =
     profile.planId && ["discovery", "pro", "elite"].includes(profile.planId)
       ? profile.planId
       : profile.premium
@@ -176,7 +176,7 @@ function fromLegacyProfile(
 
 async function syncProfilePlan(
   userId: string,
-  planId: UberlyPlanId,
+  planId: DriveelyPlanId,
   periodEnd: string | null,
   source: "manual" | "beta" | "stripe" | "trial",
 ) {
@@ -229,8 +229,8 @@ async function appendEvent(input: {
   userId: string;
   subscriptionId: string | null;
   eventType: SubscriptionEventType;
-  fromPlan: UberlyPlanId | null;
-  toPlan: UberlyPlanId | null;
+  fromPlan: DriveelyPlanId | null;
+  toPlan: DriveelyPlanId | null;
   fromStatus: string | null;
   toStatus: string | null;
   provider: string | null;
@@ -249,7 +249,7 @@ async function appendEvent(input: {
     payload: input.payload ?? {},
   });
   if (error && !isMissingRelation(error)) {
-    console.error("[uberly/subscription] event insert:", error.message);
+    console.error("[driveely/subscription] event insert:", error.message);
   }
 
   // Fallback historique dans auth metadata si table absente
@@ -284,7 +284,7 @@ async function appendEvent(input: {
   }
 }
 
-function resolveEffectivePlan(sub: UserSubscription): UberlyPlanId {
+function resolveEffectivePlan(sub: UserSubscription): DriveelyPlanId {
   if (sub.status === "expired" || sub.status === "canceled") {
     return "discovery";
   }
@@ -443,7 +443,7 @@ export async function listSubscriptionHistory(
   }
 
   if (error && !isMissingRelation(error)) {
-    console.error("[uberly/subscription] history:", error.message);
+    console.error("[driveely/subscription] history:", error.message);
   }
 
   // Fallback metadata
@@ -477,7 +477,7 @@ export async function listSubscriptionHistory(
 }
 
 type UpsertInput = {
-  planId: UberlyPlanId;
+  planId: DriveelyPlanId;
   status: SubscriptionStatus;
   autoRenew: boolean;
   cancelAtPeriodEnd: boolean;
@@ -488,7 +488,7 @@ type UpsertInput = {
   billingPeriod?: BillingPeriod;
   periodEnd?: string | null;
   eventType: SubscriptionEventType;
-  fromPlan: UberlyPlanId | null;
+  fromPlan: DriveelyPlanId | null;
   metadata?: Record<string, unknown>;
 };
 
@@ -590,7 +590,7 @@ async function upsertSubscription(
       .select("*")
       .single();
     if (error) {
-      console.error("[uberly/subscription] update:", error.message);
+      console.error("[driveely/subscription] update:", error.message);
       throw new Error("Impossible de mettre à jour l'abonnement.");
     }
     saved = data as MargeoSubscriptionRow;
@@ -601,7 +601,7 @@ async function upsertSubscription(
       .select("*")
       .single();
     if (error) {
-      console.error("[uberly/subscription] insert:", error.message);
+      console.error("[driveely/subscription] insert:", error.message);
       throw new Error("Impossible de créer l'abonnement.");
     }
     saved = data as MargeoSubscriptionRow;
@@ -637,7 +637,7 @@ async function upsertSubscription(
  */
 export async function checkoutAndActivatePlan(
   userId: string,
-  planId: UberlyPlanId,
+  planId: DriveelyPlanId,
   options?: {
     billingPeriod?: BillingPeriod;
     successUrl?: string;
@@ -690,7 +690,7 @@ export async function checkoutAndActivatePlan(
 
 export async function changePlan(
   userId: string,
-  planId: UberlyPlanId,
+  planId: DriveelyPlanId,
 ): Promise<UserSubscription> {
   const result = await checkoutAndActivatePlan(userId, planId);
   return result.subscription;

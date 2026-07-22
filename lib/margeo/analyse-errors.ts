@@ -81,7 +81,7 @@ export function getAnalysisErrorMessage(
     return {
       title: "Erreur temporaire",
       description:
-        "Uberly n'a pas pu analyser. Réessaie dans un instant.",
+        "Driveely n'a pas pu analyser. Réessaie dans un instant.",
     };
   }
 

@@ -21,7 +21,7 @@ export function LandingNav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-mg-border/80 bg-mg-background/75 backdrop-blur-xl pt-[env(safe-area-inset-top,0px)]">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Link href={margeoRoutes.home} aria-label="Uberly — accueil">
+        <Link href={margeoRoutes.home} aria-label="Driveely — accueil">
           <Logo />
         </Link>
 

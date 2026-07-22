@@ -1,0 +1,302 @@
+[
+  {
+    "capture": "Lyon 12,45€",
+    "ms": 3760,
+    "platform": "Autre",
+    "payout": 12.45,
+    "distanceKm": 7.4,
+    "durationMin": 28,
+    "emptyReturnKm": 0,
+    "grossGain": 12.45,
+    "estimatedCost": 1.84,
+    "netGain": 10.61,
+    "hourlyRate": 22.74,
+    "score": 98,
+    "verdict": "accept",
+    "explanation": "Bonne rémunération horaire : 22,74 €/h net, soit 4,74 € au-dessus de ton objectif. C'est une course à prendre.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Bonne rémunération horaire",
+        "detail": "22,74 €/h net, soit 4,74 € au-dessus de ton objectif.",
+        "impact": 12
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "1,68 €/km sur 7.4 km.",
+        "impact": 10
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net confortable",
+        "detail": "10,61 € nets pour 28 min de travail.",
+        "impact": 10
+      },
+      {
+        "label": "Au-dessus de ton minimum",
+        "detail": "4,61 € au-dessus de ton seuil de 6,00 €.",
+        "impact": 6
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  },
+  {
+    "capture": "Marseille 8,30€",
+    "ms": 2643,
+    "platform": "Autre",
+    "payout": 8.3,
+    "distanceKm": 6.1,
+    "durationMin": 25,
+    "emptyReturnKm": 0,
+    "grossGain": 8.3,
+    "estimatedCost": 1.55,
+    "netGain": 6.75,
+    "hourlyRate": 16.2,
+    "score": 69,
+    "verdict": "accept",
+    "explanation": "Retour à vide limité : 0 km à vide (0 % de la course). C'est une course à prendre.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Rémunération horaire faible",
+        "detail": "16,20 €/h net, soit 1,80 € sous ton objectif de 18 €/h.",
+        "impact": -5
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "1,36 €/km sur 6.1 km.",
+        "impact": 5
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net confortable",
+        "detail": "6,75 € nets pour 25 min de travail.",
+        "impact": 8
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  },
+  {
+    "capture": "Paris 6,20€",
+    "ms": 2260,
+    "platform": "Autre",
+    "payout": 6.2,
+    "distanceKm": 3.2,
+    "durationMin": 18,
+    "emptyReturnKm": 0,
+    "grossGain": 6.2,
+    "estimatedCost": 0.9,
+    "netGain": 5.3,
+    "hourlyRate": 17.67,
+    "score": 71,
+    "verdict": "accept",
+    "explanation": "Distance acceptable : 1,94 €/km sur 3.2 km. C'est une course à prendre.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Rémunération horaire faible",
+        "detail": "17,67 €/h net, soit 0,33 € sous ton objectif de 18 €/h.",
+        "impact": -1
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "1,94 €/km sur 3.2 km.",
+        "impact": 10
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net modeste",
+        "detail": "5,30 € nets pour 18 min de travail.",
+        "impact": 5
+      },
+      {
+        "label": "Sous ton bénéfice minimum",
+        "detail": "5,30 € net vs 6,00 € minimum souhaité.",
+        "impact": -4
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  },
+  {
+    "capture": "Toulouse 4,15€",
+    "ms": 2236,
+    "platform": "Autre",
+    "payout": 4.15,
+    "distanceKm": 2.1,
+    "durationMin": 16,
+    "emptyReturnKm": 0,
+    "grossGain": 4.15,
+    "estimatedCost": 0.67,
+    "netGain": 3.48,
+    "hourlyRate": 13.05,
+    "score": 49,
+    "verdict": "check",
+    "explanation": "Distance acceptable, mais rémunération horaire faible. À prendre seulement si tu peux enchaîner dans la zone.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Rémunération horaire faible",
+        "detail": "13,05 €/h net, soit 4,95 € sous ton objectif de 18 €/h.",
+        "impact": -12
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "1,98 €/km sur 2.1 km.",
+        "impact": 10
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net modeste",
+        "detail": "3,48 € nets pour 16 min de travail.",
+        "impact": 1
+      },
+      {
+        "label": "Sous ton bénéfice minimum",
+        "detail": "3,48 € net vs 6,00 € minimum souhaité.",
+        "impact": -6
+      },
+      {
+        "label": "Temps d'attente élevé",
+        "detail": "16 min pour 2,1 km — beaucoup d'attente au restaurant.",
+        "impact": -4
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  },
+  {
+    "capture": "Nice 3,30€",
+    "ms": 2238,
+    "platform": "Autre",
+    "payout": 3.3,
+    "distanceKm": 1.6,
+    "durationMin": 15,
+    "emptyReturnKm": 0,
+    "grossGain": 3.3,
+    "estimatedCost": 0.56,
+    "netGain": 2.74,
+    "hourlyRate": 10.96,
+    "score": 41,
+    "verdict": "refuse",
+    "explanation": "Rémunération horaire faible : 10,96 €/h net, soit 7,04 € sous ton objectif de 18 €/h. Refuse si tu as mieux.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Rémunération horaire faible",
+        "detail": "10,96 €/h net, soit 7,04 € sous ton objectif de 18 €/h.",
+        "impact": -18
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "2,06 €/km sur 1.6 km.",
+        "impact": 10
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net modeste",
+        "detail": "2,74 € nets pour 15 min de travail.",
+        "impact": -1
+      },
+      {
+        "label": "Sous ton bénéfice minimum",
+        "detail": "2,74 € net vs 6,00 € minimum souhaité.",
+        "impact": -8
+      },
+      {
+        "label": "Temps d'attente élevé",
+        "detail": "15 min pour 1,6 km — beaucoup d'attente au restaurant.",
+        "impact": -4
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  },
+  {
+    "capture": "Uber Eats 7,80€",
+    "ms": 2394,
+    "platform": "Uber Eats",
+    "payout": 7.8,
+    "distanceKm": 4.1,
+    "durationMin": 18,
+    "emptyReturnKm": 0,
+    "grossGain": 7.8,
+    "estimatedCost": 1.06,
+    "netGain": 6.74,
+    "hourlyRate": 22.47,
+    "score": 90,
+    "verdict": "accept",
+    "explanation": "Bonne rémunération horaire : 22,47 €/h net, soit 4,47 € au-dessus de ton objectif. C'est une course à prendre.",
+    "missingFields": [],
+    "confidence": 0.92,
+    "breakdown": [
+      {
+        "label": "Bonne rémunération horaire",
+        "detail": "22,47 €/h net, soit 4,47 € au-dessus de ton objectif.",
+        "impact": 11
+      },
+      {
+        "label": "Distance acceptable",
+        "detail": "1,9 €/km sur 4.1 km.",
+        "impact": 10
+      },
+      {
+        "label": "Retour à vide limité",
+        "detail": "0 km à vide (0 % de la course).",
+        "impact": 8
+      },
+      {
+        "label": "Gain net confortable",
+        "detail": "6,74 € nets pour 18 min de travail.",
+        "impact": 7
+      },
+      {
+        "label": "Zone active (Lyon)",
+        "detail": "Bonne densité de courses, retour facilité.",
+        "impact": 3
+      }
+    ]
+  }
+]

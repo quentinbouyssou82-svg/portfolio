@@ -20,7 +20,7 @@ export function Presentation() {
           </h2>
           <p className="mt-4 leading-relaxed text-mg-muted">
             Retour à vide, usure, attente au restaurant — une course « bien payée »
-            peut te coûter de l&apos;argent. Uberly fait le calcul à chaque
+            peut te coûter de l&apos;argent. Driveely fait le calcul à chaque
             proposition.
           </p>
         </Reveal>

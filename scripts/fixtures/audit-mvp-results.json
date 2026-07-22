@@ -1,0 +1,52 @@
+{
+  "email": "beta.qa.driveely.20260721@example.com",
+  "results": [
+    {
+      "file": "Capture_d_e_cran_2026-07-12_a__10.52.55-fed1f0f5-27e7-4d6a-a080-0711085da50a.png",
+      "status": 200,
+      "ms": 3044,
+      "score": 100,
+      "verdict": "accept",
+      "platform": "Uber Eats",
+      "payout": 12.45,
+      "explanation": "Bonne rémunération horaire : 23,29 €/h net, soit 7,29 € au-dessus de ton objectif. C'est une course à prendre.",
+      "id": "56bcbd3a-0eef-4d03-99cc-6e935d0c36e3"
+    },
+    {
+      "file": "Capture_d_e_cran_2026-07-12_a__10.53.11-8f26efc6-d0e9-469b-9f2a-8b2dd7a587f6.png",
+      "status": 200,
+      "ms": 2077,
+      "score": 78,
+      "verdict": "accept",
+      "platform": "Uber Eats",
+      "payout": 8.3,
+      "explanation": "Retour à vide limité : 0 km à vide (0 % de la course). C'est une course à prendre.",
+      "id": "7c569987-b38a-4a91-ae62-a54df5e08634"
+    },
+    {
+      "file": "Capture_d_e_cran_2026-07-12_a__10.53.56-3bb7c5d5-f3a5-4320-9342-f74296c5d042.png",
+      "status": 429,
+      "ms": 365,
+      "code": "DAILY_LIMIT_REACHED",
+      "message": "Limite Découverte atteinte : 2 analyses / jour. Passe en Pro pour des analyses illimitées.",
+      "explanation": ""
+    },
+    {
+      "file": "Capture_d_e_cran_2026-07-12_a__10.54.13-10b8afcd-6626-4cb0-b08c-b5af25d9bfaa.png",
+      "status": 429,
+      "ms": 388,
+      "code": "DAILY_LIMIT_REACHED",
+      "message": "Limite Découverte atteinte : 2 analyses / jour. Passe en Pro pour des analyses illimitées.",
+      "explanation": ""
+    },
+    {
+      "file": "Capture_d_e_cran_2026-07-12_a__10.54.25-b68f6b46-9c8f-4bfb-bcdf-842f624595c9.png",
+      "status": 429,
+      "ms": 356,
+      "code": "DAILY_LIMIT_REACHED",
+      "message": "Limite Découverte atteinte : 2 analyses / jour. Passe en Pro pour des analyses illimitées.",
+      "explanation": ""
+    }
+  ],
+  "at": "2026-07-21T19:08:16.188Z"
+}

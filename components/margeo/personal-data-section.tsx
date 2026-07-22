@@ -5,8 +5,8 @@ import { Download, Mail, Shield, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/margeo/ui/button";
 import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
-import { UBERLY_CONTACT_EMAIL } from "@/lib/margeo/brand";
-import { UBERLY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_CONTACT_EMAIL } from "@/lib/margeo/brand";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 const ACCOUNT_DELETION_MESSAGE =
   "La suppression complète de votre compte et de vos données peut être demandée par email.";
@@ -47,7 +47,7 @@ export function PersonalDataSection() {
         <p className="mt-2 text-[11px] leading-relaxed text-mg-faint">
           Les gains affichés sont des estimations indicatives. Détails dans la{" "}
           <Link
-            href={UBERLY_PATHS.confidentialite}
+            href={DRIVEELY_PATHS.confidentialite}
             className="font-medium text-mg-accent underline-offset-2 hover:underline"
           >
             politique de confidentialité
@@ -84,8 +84,8 @@ export function PersonalDataSection() {
           Demander la suppression de mon compte
         </Button>
         <a
-          href={`mailto:${UBERLY_CONTACT_EMAIL}?subject=${encodeURIComponent(
-            "Demande RGPD — Uberly",
+          href={`mailto:${DRIVEELY_CONTACT_EMAIL}?subject=${encodeURIComponent(
+            "Demande RGPD — Driveely",
           )}`}
           className="flex min-h-10 w-full items-center justify-start gap-2 rounded-xl border border-mg-border bg-[var(--mg-surface-muted)] px-3.5 text-xs font-medium text-mg-foreground transition-colors hover:bg-[var(--mg-nav-hover)]"
         >
@@ -99,16 +99,16 @@ export function PersonalDataSection() {
           L&apos;export automatique n&apos;est pas encore disponible. Envoie ta
           demande d&apos;accès / portabilité à{" "}
           <a
-            href={`mailto:${UBERLY_CONTACT_EMAIL}?subject=${encodeURIComponent(
-              "Export de mes données Uberly",
+            href={`mailto:${DRIVEELY_CONTACT_EMAIL}?subject=${encodeURIComponent(
+              "Export de mes données Driveely",
             )}`}
             className="font-medium text-mg-accent underline-offset-2 hover:underline"
           >
-            {UBERLY_CONTACT_EMAIL}
+            {DRIVEELY_CONTACT_EMAIL}
           </a>
           . Voir aussi la{" "}
           <Link
-            href={UBERLY_PATHS.demandesRgpd}
+            href={DRIVEELY_PATHS.demandesRgpd}
             className="font-medium text-mg-accent underline-offset-2 hover:underline"
           >
             gestion des demandes RGPD
@@ -123,12 +123,12 @@ export function PersonalDataSection() {
           <p className="mt-2">
             Contact :{" "}
             <a
-              href={`mailto:${UBERLY_CONTACT_EMAIL}?subject=${encodeURIComponent(
-                "Demande de suppression de compte Uberly",
+              href={`mailto:${DRIVEELY_CONTACT_EMAIL}?subject=${encodeURIComponent(
+                "Demande de suppression de compte Driveely",
               )}`}
               className="font-medium text-mg-accent underline-offset-2 hover:underline"
             >
-              {UBERLY_CONTACT_EMAIL}
+              {DRIVEELY_CONTACT_EMAIL}
             </a>
           </p>
         </div>

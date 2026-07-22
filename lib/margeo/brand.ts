@@ -1,10 +1,15 @@
-/** Identité produit Uberly (ex-Margeo). */
-export const PRODUCT_NAME = "Uberly";
+/** Identité produit Driveely (ex-Uberly / Margeo). */
+export const PRODUCT_NAME = "Driveely";
 export const PRODUCT_TAGLINE =
   "Estime si une course vaut le coup — avant d'accepter.";
 export const PRODUCT_DESCRIPTION =
-  "Capture ta proposition. Uberly estime ton gain net et t'aide à décider en ~2 secondes.";
+  "Capture ta proposition. Driveely estime ton gain net et t'aide à décider en ~2 secondes.";
 
 /** Contact support / demandes RGPD (surchargeable via env). */
-export const UBERLY_CONTACT_EMAIL =
-  process.env.NEXT_PUBLIC_UBERLY_CONTACT_EMAIL?.trim() || "contact@uberly.app";
+export const DRIVEELY_CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_DRIVEELY_CONTACT_EMAIL?.trim() ||
+  process.env.NEXT_PUBLIC_UBERLY_CONTACT_EMAIL?.trim() ||
+  "contact@driveely.app";
+
+/** @deprecated Alias transition Uberly → Driveely */
+export const UBERLY_CONTACT_EMAIL = DRIVEELY_CONTACT_EMAIL;

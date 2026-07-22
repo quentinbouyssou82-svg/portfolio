@@ -21,8 +21,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const PUB = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 const BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const CAPTURES = path.join(__dirname, "fixtures/captures");
-const email = "beta.qa.uberly.20260721@example.com";
-const password = "UberlyBeta2026!";
+const email = "beta.qa.driveely.20260721@example.com";
+const password = "DriveelyBeta2026!";
 
 function cookieHeader(access: string, refresh: string) {
   const ref = new URL(SUPABASE_URL).hostname.split(".")[0];
@@ -50,14 +50,14 @@ async function main() {
   const cookie = cookieHeader(tok.access_token, tok.refresh_token);
 
   // Force re-activate to invalidate cache path
-  const act = await fetch(`${BASE}/api/uberly/subscription/activate`, {
+  const act = await fetch(`${BASE}/api/driveely/subscription/activate`, {
     method: "POST",
     headers: { Cookie: cookie, "Content-Type": "application/json" },
     body: JSON.stringify({ planId: "pro" }),
   });
   console.log("activate", act.status, JSON.stringify(await act.json()));
 
-  const quota = await fetch(`${BASE}/api/uberly/quota`, {
+  const quota = await fetch(`${BASE}/api/driveely/quota`, {
     headers: { Cookie: cookie },
   }).then((r) => r.json());
   console.log("quota", JSON.stringify(quota));
@@ -73,7 +73,7 @@ async function main() {
     const form = new FormData();
     form.append("image", new Blob([buf], { type: "image/png" }), f);
     const t0 = Date.now();
-    const res = await fetch(`${BASE}/api/uberly/analyze`, {
+    const res = await fetch(`${BASE}/api/driveely/analyze`, {
       method: "POST",
       headers: { Cookie: cookie },
       body: form,
@@ -103,7 +103,7 @@ async function main() {
       new Blob(["not-an-image"], { type: "text/plain" }),
       "bad.txt",
     );
-    const res = await fetch(`${BASE}/api/uberly/analyze`, {
+    const res = await fetch(`${BASE}/api/driveely/analyze`, {
       method: "POST",
       headers: { Cookie: cookie },
       body: form,

@@ -1,6 +1,6 @@
-import { UBERLY_BASE } from "@/lib/margeo/routes";
+import { DRIVEELY_BASE } from "@/lib/margeo/routes";
 
-export type UberlyLegalDocId =
+export type DriveelyLegalDocId =
   | "mentions-legales"
   | "confidentialite"
   | "cgu"
@@ -15,26 +15,26 @@ export type UberlyLegalDocId =
   | "propriete-intellectuelle"
   | "charte-utilisation";
 
-export type UberlyLegalDocument = {
-  id: UberlyLegalDocId;
-  /** Nom de fichier dans content/uberly/legal */
+export type DriveelyLegalDocument = {
+  id: DriveelyLegalDocId;
+  /** Nom de fichier dans content/driveely/legal */
   file: string;
   title: string;
   description: string;
-  /** Chemin public sous /demos/uberly */
+  /** Chemin public sous /demos/driveely */
   path: string;
   /** Affiché dans le footer principal */
   inFooter?: boolean;
   footerLabel?: string;
 };
 
-export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
+export const DRIVEELY_LEGAL_DOCUMENTS: DriveelyLegalDocument[] = [
   {
     id: "mentions-legales",
     file: "01-mentions-legales.md",
     title: "Mentions légales",
-    description: "Informations légales sur l'éditeur du Service Uberly.",
-    path: `${UBERLY_BASE}/mentions-legales`,
+    description: "Informations légales sur l'éditeur du Service Driveely.",
+    path: `${DRIVEELY_BASE}/mentions-legales`,
     inFooter: true,
     footerLabel: "Mentions légales",
   },
@@ -43,8 +43,8 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     file: "02-politique-confidentialite.md",
     title: "Politique de confidentialité",
     description:
-      "Comment Uberly collecte, utilise et protège vos données personnelles (RGPD).",
-    path: `${UBERLY_BASE}/confidentialite`,
+      "Comment Driveely collecte, utilise et protège vos données personnelles (RGPD).",
+    path: `${DRIVEELY_BASE}/confidentialite`,
     inFooter: true,
     footerLabel: "Politique de confidentialité",
   },
@@ -52,8 +52,8 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     id: "cgu",
     file: "03-cgu.md",
     title: "Conditions générales d'utilisation",
-    description: "Conditions d'accès et d'utilisation du Service Uberly.",
-    path: `${UBERLY_BASE}/cgu`,
+    description: "Conditions d'accès et d'utilisation du Service Driveely.",
+    path: `${DRIVEELY_BASE}/cgu`,
     inFooter: true,
     footerLabel: "CGU",
   },
@@ -61,8 +61,8 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     id: "cgv",
     file: "04-cgv.md",
     title: "Conditions générales de vente",
-    description: "Conditions d'abonnement et de paiement Uberly.",
-    path: `${UBERLY_BASE}/cgv`,
+    description: "Conditions d'abonnement et de paiement Driveely.",
+    path: `${DRIVEELY_BASE}/cgv`,
     inFooter: true,
     footerLabel: "CGV",
   },
@@ -70,8 +70,8 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     id: "cookies",
     file: "05-politique-cookies.md",
     title: "Politique de cookies",
-    description: "Cookies et traceurs utilisés par Uberly.",
-    path: `${UBERLY_BASE}/cookies`,
+    description: "Cookies et traceurs utilisés par Driveely.",
+    path: `${DRIVEELY_BASE}/cookies`,
     inFooter: true,
     footerLabel: "Politique de cookies",
   },
@@ -79,8 +79,8 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     id: "conditions-beta",
     file: "06-conditions-beta-privee.md",
     title: "Conditions de participation à la bêta privée",
-    description: "Règles applicables aux utilisateurs de la bêta privée Uberly.",
-    path: `${UBERLY_BASE}/conditions-beta`,
+    description: "Règles applicables aux utilisateurs de la bêta privée Driveely.",
+    path: `${DRIVEELY_BASE}/conditions-beta`,
     inFooter: true,
     footerLabel: "Conditions bêta",
   },
@@ -88,64 +88,64 @@ export const UBERLY_LEGAL_DOCUMENTS: UberlyLegalDocument[] = [
     id: "remboursement",
     file: "07-politique-remboursement.md",
     title: "Politique de remboursement",
-    description: "Modalités de remboursement des abonnements Uberly.",
-    path: `${UBERLY_BASE}/remboursement`,
+    description: "Modalités de remboursement des abonnements Driveely.",
+    path: `${DRIVEELY_BASE}/remboursement`,
   },
   {
     id: "demandes-rgpd",
     file: "08-gestion-demandes-rgpd.md",
     title: "Gestion des demandes RGPD",
     description: "Comment exercer vos droits sur vos données personnelles.",
-    path: `${UBERLY_BASE}/demandes-rgpd`,
+    path: `${DRIVEELY_BASE}/demandes-rgpd`,
   },
   {
     id: "suppression-donnees",
     file: "09-politique-suppression-donnees.md",
     title: "Politique de suppression des données",
-    description: "Durées et modalités de suppression des données Uberly.",
-    path: `${UBERLY_BASE}/suppression-donnees`,
+    description: "Durées et modalités de suppression des données Driveely.",
+    path: `${DRIVEELY_BASE}/suppression-donnees`,
   },
   {
     id: "securite-donnees",
     file: "10-politique-securite-donnees.md",
     title: "Politique de sécurité des données",
-    description: "Mesures de sécurité mises en œuvre par Uberly.",
-    path: `${UBERLY_BASE}/securite-donnees`,
+    description: "Mesures de sécurité mises en œuvre par Driveely.",
+    path: `${DRIVEELY_BASE}/securite-donnees`,
   },
   {
     id: "abonnements-stripe",
     file: "11-mentions-abonnements-stripe.md",
     title: "Mentions relatives aux abonnements Stripe",
     description: "Informations sur le paiement et les abonnements via Stripe.",
-    path: `${UBERLY_BASE}/abonnements-stripe`,
+    path: `${DRIVEELY_BASE}/abonnements-stripe`,
   },
   {
     id: "propriete-intellectuelle",
     file: "12-politique-propriete-intellectuelle.md",
     title: "Politique de propriété intellectuelle",
-    description: "Droits de propriété intellectuelle relatifs au Service Uberly.",
-    path: `${UBERLY_BASE}/propriete-intellectuelle`,
+    description: "Droits de propriété intellectuelle relatifs au Service Driveely.",
+    path: `${DRIVEELY_BASE}/propriete-intellectuelle`,
   },
   {
     id: "charte-utilisation",
     file: "13-charte-utilisation-acceptable.md",
     title: "Charte d'utilisation acceptable",
-    description: "Règles d'usage acceptable du Service Uberly.",
-    path: `${UBERLY_BASE}/charte-utilisation`,
+    description: "Règles d'usage acceptable du Service Driveely.",
+    path: `${DRIVEELY_BASE}/charte-utilisation`,
   },
 ];
 
 /** Alias d'URL (ex. /beta → conditions-beta). */
-export const UBERLY_LEGAL_ALIASES: Record<string, UberlyLegalDocId> = {
+export const DRIVEELY_LEGAL_ALIASES: Record<string, DriveelyLegalDocId> = {
   beta: "conditions-beta",
 };
 
 const FILE_TO_PATH: Record<string, string> = Object.fromEntries(
-  UBERLY_LEGAL_DOCUMENTS.map((d) => [d.file, d.path]),
+  DRIVEELY_LEGAL_DOCUMENTS.map((d) => [d.file, d.path]),
 );
 
-export function getLegalDocument(id: UberlyLegalDocId): UberlyLegalDocument {
-  const doc = UBERLY_LEGAL_DOCUMENTS.find((d) => d.id === id);
+export function getLegalDocument(id: DriveelyLegalDocId): DriveelyLegalDocument {
+  const doc = DRIVEELY_LEGAL_DOCUMENTS.find((d) => d.id === id);
   if (!doc) throw new Error(`Unknown legal doc: ${id}`);
   return doc;
 }

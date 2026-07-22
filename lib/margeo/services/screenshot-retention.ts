@@ -1,9 +1,9 @@
 /**
- * Rétention des captures d'écran — 30 jours (UBERLY_LIMITS.screenshotRetentionDays).
- * Appelé par le cron Vercel /api/uberly/cron/purge-screenshots.
+ * Rétention des captures d'écran — 30 jours (DRIVEELY_LIMITS.screenshotRetentionDays).
+ * Appelé par le cron Vercel /api/driveely/cron/purge-screenshots.
  */
 
-import { UBERLY_LIMITS } from "@/lib/margeo/constants/limits";
+import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
 import { deleteScreenshots } from "@/lib/margeo/services/storage";
 
@@ -15,7 +15,7 @@ export type PurgeScreenshotsResult = {
   rowsCleared: number;
 };
 
-function retentionCutoffIso(days = UBERLY_LIMITS.screenshotRetentionDays): string {
+function retentionCutoffIso(days = DRIVEELY_LIMITS.screenshotRetentionDays): string {
   const d = new Date();
   d.setUTCDate(d.getUTCDate() - days);
   return d.toISOString();
@@ -28,7 +28,7 @@ function retentionCutoffIso(days = UBERLY_LIMITS.screenshotRetentionDays): strin
 export async function purgeExpiredScreenshots(
   options?: { limit?: number },
 ): Promise<PurgeScreenshotsResult> {
-  const retentionDays = UBERLY_LIMITS.screenshotRetentionDays;
+  const retentionDays = DRIVEELY_LIMITS.screenshotRetentionDays;
   const cutoffIso = retentionCutoffIso(retentionDays);
   const limit = options?.limit ?? 200;
 
@@ -72,7 +72,7 @@ export async function purgeExpiredScreenshots(
     .not("image_path", "is", null);
 
   if (updateError) {
-    console.warn("[uberly/retention] clear image_path:", updateError.message);
+    console.warn("[driveely/retention] clear image_path:", updateError.message);
   }
 
   return {

@@ -8,7 +8,7 @@ import {
 import { uploadAvatar } from "@/lib/margeo/services/storage";
 import type { UserProfile } from "@/lib/margeo/types";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
-import { UBERLY_LIMITS } from "@/lib/margeo/constants/limits";
+import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
 
 const AVATAR_MIME = new Set([
   "image/jpeg",
@@ -24,7 +24,7 @@ const EXT_BY_MIME: Record<string, string> = {
   "image/webp": "webp",
 };
 
-const MAX_AVATAR_BYTES = Math.min(UBERLY_LIMITS.maxImageBytes, 5 * 1024 * 1024);
+const MAX_AVATAR_BYTES = Math.min(DRIVEELY_LIMITS.maxImageBytes, 5 * 1024 * 1024);
 
 export async function updateProfileAction(
   input: Partial<UserProfile>,
@@ -107,7 +107,7 @@ export async function uploadAvatarAction(
   if (!uploaded) {
     return {
       ok: false,
-      message: "Upload impossible. Vérifie le bucket uberly-avatars.",
+      message: "Upload impossible. Vérifie le bucket driveely-avatars.",
     };
   }
 

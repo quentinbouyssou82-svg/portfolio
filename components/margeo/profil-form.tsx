@@ -11,7 +11,7 @@ import { NumericInput } from "@/components/margeo/ui/numeric-input";
 import { Switch } from "@/components/margeo/ui/switch";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { VehicleIcon } from "@/components/margeo/vehicle-icon";
-import { useUberlyTheme } from "@/components/margeo/theme-provider";
+import { useDriveelyTheme } from "@/components/margeo/theme-provider";
 import { PersonalDataSection } from "@/components/margeo/personal-data-section";
 import {
   removeAvatarAction,
@@ -19,9 +19,9 @@ import {
   uploadAvatarAction,
 } from "@/lib/margeo/actions/profile";
 import { getProfileInitials } from "@/lib/margeo/profile-display";
-import { ONBOARDING_PLATFORMS, UBERLY_PATHS } from "@/lib/margeo/constants";
-import { UBERLY_LIMITS } from "@/lib/margeo/constants/limits";
-import { UBERLY_PLANS } from "@/lib/margeo/plans";
+import { ONBOARDING_PLATFORMS, DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
+import { DRIVEELY_PLANS } from "@/lib/margeo/plans";
 import { VEHICLE_OPTIONS } from "@/lib/margeo/vehicle-costs";
 import {
   EMPTY_VEHICLE_DETAILS,
@@ -81,7 +81,7 @@ function hydrateVehicleDetails(
 }
 
 export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) {
-  const { theme, setTheme } = useUberlyTheme();
+  const { theme, setTheme } = useDriveelyTheme();
   const [profile, setProfile] = useState<UserProfile>(() => {
     const vehicleDetails = hydrateVehicleDetails(
       initialProfile.vehicle,
@@ -630,14 +630,14 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                     ? "Compte Elite"
                     : profile.premium || profile.planId === "pro"
                       ? "Compte Pro"
-                      : `Plan ${UBERLY_PLANS.discovery.name}`}
+                      : `Plan ${DRIVEELY_PLANS.discovery.name}`}
                 </p>
                 <p className="text-xs text-mg-muted">
                   {profile.premium ||
                   profile.planId === "pro" ||
                   profile.planId === "elite"
                     ? "Analyses illimitées."
-                    : `${UBERLY_LIMITS.freeDailyAnalyses} analyses/jour — passe en Pro pour lever la limite.`}
+                    : `${DRIVEELY_LIMITS.freeDailyAnalyses} analyses/jour — passe en Pro pour lever la limite.`}
                 </p>
               </div>
             </div>
@@ -657,7 +657,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
           </div>
 
           <a
-            href={UBERLY_PATHS.deconnexion}
+            href={DRIVEELY_PATHS.deconnexion}
             className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-mg-stop/30 bg-mg-stop-soft px-4 text-sm font-medium text-mg-stop transition-colors hover:border-mg-stop/50"
           >
             <LogOut className="size-4" />

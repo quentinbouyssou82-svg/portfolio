@@ -11,7 +11,7 @@ const STEPS = [
   {
     icon: Brain,
     step: "01",
-    title: "Uberly analyse",
+    title: "Driveely analyse",
     description:
       "L'IA lit ta capture : gain, distance, temps, zone. Tes coûts inclus (estimation).",
     accent: "from-mg-accent/20 via-transparent to-transparent",
@@ -106,7 +106,7 @@ export function StoryDecision() {
       id="solution"
       eyebrow="La solution"
       title="Un verdict clair. Avant le countdown."
-      description="Uberly transforme une capture en décision — avant l'expiration."
+      description="Driveely transforme une capture en décision — avant l'expiration."
       border
       className="py-20 sm:py-28 lg:py-36"
     >

@@ -320,7 +320,7 @@ export function InteractiveDemo() {
     <SectionShell
       id="demo"
       eyebrow="Démo interactive"
-      title="Teste Uberly en 15 secondes"
+      title="Teste Driveely en 15 secondes"
       description="Dépose une capture ou clique — le verdict s'affiche comme dans l'app."
       className="py-16 sm:py-24"
     >
