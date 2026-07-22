@@ -93,13 +93,14 @@ export function PlatformMarquee() {
   return (
     <section
       className="platform-marquee relative border-y border-mg-border/70 py-5 sm:py-6"
-      aria-label="Plateformes compatibles"
+      aria-label="Disclaimer plateformes"
     >
       <div className="platform-marquee-fade platform-marquee-fade-l" aria-hidden />
       <div className="platform-marquee-fade platform-marquee-fade-r" aria-hidden />
 
-      <p className="mb-4 text-center text-[10px] font-semibold tracking-[0.22em] text-mg-faint uppercase sm:mb-5">
-        Compatible avec tes apps de livraison
+      <p className="mx-auto mb-4 max-w-xl px-5 text-center text-[11px] leading-relaxed font-medium tracking-wide text-mg-faint sm:mb-5 sm:text-xs">
+        Uberly analyse les captures fournies. Aucun lien, partenariat ni
+        affiliation avec ces applications.
       </p>
 
       <div className="platform-marquee-viewport overflow-hidden">
