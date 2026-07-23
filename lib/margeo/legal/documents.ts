@@ -135,9 +135,9 @@ export const DRIVEELY_LEGAL_DOCUMENTS: DriveelyLegalDocument[] = [
   },
 ];
 
-/** Alias d'URL (ex. /beta → conditions-beta). */
+/** Alias d'URL historiques (conditions légales). /beta = page programme produit. */
 export const DRIVEELY_LEGAL_ALIASES: Record<string, DriveelyLegalDocId> = {
-  beta: "conditions-beta",
+  // volontairement vide : /beta n'est plus un alias légal
 };
 
 const FILE_TO_PATH: Record<string, string> = Object.fromEntries(

@@ -163,9 +163,16 @@ export function AppShell({
               </span>
             </span>
           </Link>
+          <Link
+            href={margeoRoutes.beta}
+            className="mt-1 flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-medium text-mg-muted transition-colors hover:bg-[var(--mg-nav-hover)] hover:text-mg-accent"
+          >
+            <span className="size-1.5 rounded-full bg-mg-go shadow-[0_0_0_3px_rgba(52,211,153,0.2)]" />
+            Programme Bêta
+          </Link>
           <nav
             aria-label="Informations légales"
-            className="mt-2 flex flex-wrap gap-x-2.5 gap-y-1 px-2.5 pb-1"
+            className="mt-1 flex flex-wrap gap-x-2.5 gap-y-1 px-2.5 pb-1"
           >
             <Link
               href={margeoRoutes.mentionsLegales}

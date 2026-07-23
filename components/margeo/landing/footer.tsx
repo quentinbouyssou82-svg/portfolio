@@ -12,6 +12,7 @@ const COLUMNS = [
       { label: "Commencer gratuitement", href: margeoRoutes.signup },
       { label: "Se connecter", href: margeoRoutes.login },
       { label: "Offres", href: margeoRoutes.premium },
+      { label: "Programme Bêta", href: margeoRoutes.beta },
       { label: "FAQ", href: "#faq" },
     ],
   },

@@ -24,7 +24,7 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/** Landing / login / signup / forgot — toujours sombre. */
+/** Landing / login / signup / forgot / beta — toujours sombre. */
 export function isDriveelyMarketingPath(pathname: string | null): boolean {
   if (!pathname) return true;
   const base = DRIVEELY_BASE.replace(/\/$/, "");
@@ -32,6 +32,7 @@ export function isDriveelyMarketingPath(pathname: string | null): boolean {
   if (pathname.startsWith(`${base}/login`)) return true;
   if (pathname.startsWith(`${base}/signup`)) return true;
   if (pathname.startsWith(`${base}/forgot-password`)) return true;
+  if (pathname.startsWith(`${base}/beta`)) return true;
   return false;
 }
 

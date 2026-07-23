@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Crown, LogOut, Moon, Save, Sun, Target } from "lucide-react";
+import { Camera, Crown, FlaskConical, LogOut, Moon, Save, Sun, Target } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -663,6 +663,24 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
               </Button>
             </Link>
           </div>
+
+          <Link
+            href={margeoRoutes.beta}
+            className="flex items-center gap-3 rounded-xl border border-mg-border bg-[var(--mg-surface-muted)] p-4 transition-colors hover:border-mg-accent/30 hover:bg-mg-accent-soft/20"
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-mg-border bg-mg-card">
+              <FlaskConical className="size-5 text-mg-accent" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-mg-foreground">
+                Programme Bêta
+              </span>
+              <span className="block text-xs text-mg-muted">
+                Mission, retours, tarif préférentiel · Beta 0.1
+              </span>
+            </span>
+            <span className="text-xs font-medium text-mg-accent">Voir →</span>
+          </Link>
 
           <a
             href={DRIVEELY_PATHS.deconnexion}
