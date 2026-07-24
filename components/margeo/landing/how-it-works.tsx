@@ -33,7 +33,7 @@ export function HowItWorks() {
             Comment ça marche
           </p>
           <h2 className="mt-3 text-2xl font-semibold tracking-tight text-mg-foreground sm:text-3xl">
-            3 gestes. ~2 secondes.
+            3 gestes. Quelques secondes.
           </h2>
         </Reveal>
 

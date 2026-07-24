@@ -40,19 +40,19 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(LEGACY_UBERLY_PREFIX, DRIVEELY_PREFIX);
-    return NextResponse.redirect(url, 308);
+    return NextResponse.redirect(url, 301);
   }
 
   if (pathname.startsWith(LEGACY_UBERLY_API)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(LEGACY_UBERLY_API, DRIVEELY_API);
-    return NextResponse.redirect(url, 308);
+    return NextResponse.redirect(url, 301);
   }
 
   if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(LEGACY_MARGEO_PREFIX, DRIVEELY_PREFIX);
-    return NextResponse.redirect(url, 308);
+    return NextResponse.redirect(url, 301);
   }
 
   if (pathname.startsWith(DRIVEELY_PREFIX)) {
@@ -225,5 +225,9 @@ export const config = {
     "/demos/maison/:path*",
     "/demos/margeo/:path*",
     "/demos/driveely/:path*",
+    "/demos/uberly",
+    "/demos/uberly/:path*",
+    "/api/uberly",
+    "/api/uberly/:path*",
   ],
 };

@@ -33,14 +33,22 @@ Ces documents sont rédigés sur la base de l'option **micro-entreprise dirigée
 
 ## Placeholders à compléter avant publication
 
-Recherche la mention `[...]` dans chaque fichier. Les principaux points à renseigner :
+**Source unique** : `lib/margeo/legal/entity.ts` (+ variables d'env optionnelles).
 
-- `[DATE À COMPLÉTER]` — date de mise en ligne de chaque document
-- `[ADRESSE PROFESSIONNELLE — À COMPLÉTER]` / `[ADRESSE — À COMPLÉTER]`
-- `[NOM DU TUTEUR LÉGAL — À COMPLÉTER]` — responsable légal de la micro-entreprise
-- `[SIREN]` / `[SIRET]`
-- `[NUMÉRO DE TVA]` (le cas échéant)
-- Adresses de Vercel Inc. et Supabase Inc. (à récupérer sur leurs pages légales respectives)
+Les fichiers markdown conservent des marqueurs `[…]`. Au chargement, `applyLegalEntityPlaceholders()` les remplace.
+
+| Marqueur / env | Usage |
+|---|---|
+| `DRIVEELY_LEGAL_SIREN` | SIREN |
+| `DRIVEELY_LEGAL_SIRET` | SIRET |
+| `DRIVEELY_LEGAL_ADDRESS` | Adresse professionnelle |
+| `DRIVEELY_LEGAL_DIRECTOR` | Nom du tuteur / responsable légal |
+| `DRIVEELY_LEGAL_VAT` | TVA (optionnel) |
+| `DRIVEELY_LEGAL_UPDATED_AT` | Date de mise à jour des docs |
+
+Adresses Vercel / Supabase : déjà renseignées (adresses publiques des hébergeurs).
+
+Recherche encore `[À COMPLÉTER]` / `EN COURS D'IMMATRICULATION` dans les .md tant que les env ne sont pas posées.
 
 ## Cohérence entre les documents
 

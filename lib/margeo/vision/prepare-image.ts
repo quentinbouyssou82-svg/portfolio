@@ -13,30 +13,59 @@ export interface PreparedImage {
 /** Plus petit = Vision plus rapide (chiffres UI restent lisibles à 768). */
 const MAX_EDGE = Number(process.env.DRIVEELY_VISION_MAX_EDGE ?? 768);
 const JPEG_QUALITY = Number(process.env.DRIVEELY_VISION_JPEG_QUALITY ?? 62);
+/** Photos perso lourdes : un cran plus agressif pour limiter la latence Mistral. */
+const HEAVY_BYTES = 1_200_000;
+const HEAVY_MAX_EDGE = Number(process.env.DRIVEELY_VISION_HEAVY_MAX_EDGE ?? 640);
+const HEAVY_JPEG_QUALITY = Number(
+  process.env.DRIVEELY_VISION_HEAVY_JPEG_QUALITY ?? 55,
+);
 
 /**
  * Redimensionne + compresse en JPEG pour accélérer l'appel Vision
  * sans dégrader la lisibilité des chiffres / textes UI.
+ * @throws Error Sharp sur buffer invalide — à mapper en ApiError côté route.
  */
 export async function prepareScreenshotForVision(
-  image: File | Blob | ArrayBuffer,
+  image: File | Blob | ArrayBuffer | Buffer,
 ): Promise<PreparedImage> {
   const input =
-    image instanceof ArrayBuffer
-      ? Buffer.from(image)
-      : Buffer.from(await image.arrayBuffer());
+    Buffer.isBuffer(image)
+      ? image
+      : image instanceof ArrayBuffer
+        ? Buffer.from(image)
+        : Buffer.from(await image.arrayBuffer());
 
-  // mozjpeg off : ~2× plus rapide, taille quasi identique pour screenshots UI
-  const prepared = await sharp(input)
-    .rotate()
-    .resize({
-      width: MAX_EDGE,
-      height: MAX_EDGE,
-      fit: "inside",
-      withoutEnlargement: true,
-    })
-    .jpeg({ quality: JPEG_QUALITY, mozjpeg: false, progressive: false })
-    .toBuffer();
+  if (input.byteLength === 0) {
+    throw new Error("Empty image buffer");
+  }
+
+  const heavy = input.byteLength >= HEAVY_BYTES;
+  const maxEdge = heavy ? HEAVY_MAX_EDGE : MAX_EDGE;
+  const quality = heavy ? HEAVY_JPEG_QUALITY : JPEG_QUALITY;
+
+  // Déjà petit JPEG (ex. préparé côté client) : éviter un 2e encode coûteux
+  const looksPreparedJpeg =
+    input.byteLength <= 420_000 &&
+    input[0] === 0xff &&
+    input[1] === 0xd8;
+
+  let prepared: Buffer;
+  if (looksPreparedJpeg && !heavy) {
+    // Déjà compressé côté client (orientation déjà appliquée via canvas)
+    prepared = input;
+  } else {
+    // mozjpeg off : ~2× plus rapide, taille quasi identique pour screenshots UI
+    prepared = await sharp(input, { failOn: "error" })
+      .rotate()
+      .resize({
+        width: maxEdge,
+        height: maxEdge,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality, mozjpeg: false, progressive: false })
+      .toBuffer();
+  }
 
   const contentHash = simpleHash(prepared);
 

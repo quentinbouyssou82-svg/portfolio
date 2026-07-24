@@ -1,34 +1,25 @@
 import { NextResponse } from "next/server";
 import { checkDriveelyEnv } from "@/lib/margeo/api/env-check";
-import { isDriveelyBetaMode } from "@/lib/margeo/api/beta-config";
-import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
 
-/** Santé backend — sans auth, pour monitoring beta. */
+/**
+ * Santé minimale pour monitoring / uptime.
+ * N'expose ni providers, ni flags techniques, ni liste de variables manquantes.
+ */
 export async function GET() {
   const env = checkDriveelyEnv();
+  const ok = env.supabase && env.serviceRole && env.vision;
 
-  return NextResponse.json({
-    ok: env.readyForBeta,
-    betaMode: isDriveelyBetaMode(),
-    checks: {
-      supabase: env.supabase,
-      serviceRole: env.serviceRole,
-      vision: env.vision,
-      visionProvider: env.visionProvider,
-      mistral: env.mistral,
-      gemini: env.gemini,
-      appUrl: env.appUrl,
+  return NextResponse.json(
+    {
+      ok,
+      status: ok ? "healthy" : "degraded",
+      timestamp: new Date().toISOString(),
     },
-    security: {
-      storagePrivate: true,
-      betaEventsServerOnly: true,
-      maxImageMb: DRIVEELY_LIMITS.maxImageBytes / 1024 / 1024,
-      freeDailyAnalyses: DRIVEELY_LIMITS.freeDailyAnalyses,
-      rateLimitAnalyzePerMin: 20,
-      visionKeyServerOnly: true,
+    {
+      status: ok ? 200 : 503,
+      headers: {
+        "Cache-Control": "no-store",
+      },
     },
-    readyForBeta: env.readyForBeta,
-    missing: env.missing,
-    timestamp: new Date().toISOString(),
-  });
+  );
 }

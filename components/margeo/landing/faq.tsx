@@ -25,7 +25,7 @@ const FAQ_ITEMS = [
   {
     question: "Ça marche pendant le compte à rebours ?",
     answer:
-      "Oui. L'analyse prend ~2 secondes en moyenne. Tu décides avant l'expiration de la proposition.",
+      "Oui. L'analyse prend en général quelques secondes. Tu décides avant l'expiration de la proposition.",
   },
   {
     question: "Mes données sont partagées avec les plateformes ?",

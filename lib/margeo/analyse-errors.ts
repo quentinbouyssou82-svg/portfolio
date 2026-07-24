@@ -20,6 +20,34 @@ export function getAnalysisErrorMessage(
   const { code } = input;
   const lower = message.toLowerCase();
 
+  if (
+    code === "EMPTY_IMAGE" ||
+    code === "CORRUPT_IMAGE" ||
+    code === "BLANK_IMAGE" ||
+    code === "IMAGE_TOO_SMALL" ||
+    code === "NOISY_IMAGE" ||
+    code === "INVALID_IMAGE" ||
+    code === "UNSUPPORTED_FORMAT" ||
+    code === "IMAGE_TOO_LARGE"
+  ) {
+    const titles: Record<string, string> = {
+      EMPTY_IMAGE: "Image vide",
+      CORRUPT_IMAGE: "Image illisible",
+      BLANK_IMAGE: "Image inexploitable",
+      IMAGE_TOO_SMALL: "Image trop petite",
+      NOISY_IMAGE: "Image inexploitable",
+      INVALID_IMAGE: "Fichier invalide",
+      UNSUPPORTED_FORMAT: "Format non supporté",
+      IMAGE_TOO_LARGE: "Image trop lourde",
+    };
+    return {
+      title: titles[code] ?? "Image invalide",
+      description:
+        message ||
+        "Envoie une capture JPEG/PNG nette de la proposition de course.",
+    };
+  }
+
   if (code === "EXTRACTION_FAILED" || lower.includes("montant non détecté")) {
     return {
       title: "Gain non détecté",

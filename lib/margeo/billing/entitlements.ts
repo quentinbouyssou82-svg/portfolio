@@ -83,12 +83,12 @@ export function getCatalogEntitlementsForPlan(
 
 /**
  * Entitlements effectifs pour l'environnement courant.
- * Mode bêta → Elite (tout débloqué), indépendamment du plan DB.
+ * Mode bêta → capacités Elite, planId catalogue (DB) conservé.
  */
 export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
   const feats = getAppFeatures();
   if (feats.allPremiumUnlocked || !feats.freemiumLimits) {
-    return { ...ELITE, planId: feats.allPremiumUnlocked ? "elite" : planId };
+    return { ...ELITE, planId };
   }
   return getCatalogEntitlementsForPlan(planId);
 }

@@ -23,7 +23,7 @@ export type PaywallSource =
 export type PaywallScreen = "vision" | "personalized" | "offer" | "exit";
 
 export const PAYWALL_RESULT_FEATURES = [
-  "Décide en ~2 secondes avant d'accepter",
+  "Décide en quelques secondes avant d'accepter",
   "Évite les courses qui mangent ton marge",
   "Vise ton objectif €/h sur chaque proposition",
   "Analyses illimitées, historique complet",

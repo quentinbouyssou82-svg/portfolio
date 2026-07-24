@@ -16,7 +16,7 @@ import { margeoRoutes } from "@/lib/margeo/routes";
 const BENEFITS = [
   { icon: TrendingUp, label: "Mieux filtrer pour le €/h", tone: "go" as const },
   { icon: Ban, label: "Moins de mauvaises courses", tone: "stop" as const },
-  { icon: Zap, label: "Verdict en ~2 secondes", tone: "accent" as const },
+  { icon: Zap, label: "Verdict en quelques secondes", tone: "accent" as const },
 ];
 
 const ease = [0.21, 0.47, 0.32, 0.98] as const;

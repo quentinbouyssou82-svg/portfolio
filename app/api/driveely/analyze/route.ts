@@ -3,6 +3,8 @@ import { logApi, jsonError, ApiError } from "@/lib/margeo/api/errors";
 import { checkDriveelyEnv } from "@/lib/margeo/api/env-check";
 import { requireAuthUser } from "@/lib/margeo/api/auth";
 import {
+  assertUsableScreenshot,
+  mapImageProcessingError,
   parseOptionalCoordinate,
   validateCoordinates,
   validateScreenshotFile,
@@ -65,9 +67,28 @@ export async function POST(request: Request) {
     }
     validateScreenshotFile(file);
 
-    // Auth parallèle : profil léger + quota
     const prepStarted = Date.now();
-    const [profileRaw, quota] = await Promise.all([
+    let imageMs = 0;
+    let validatedBuffer: Buffer;
+    try {
+      validatedBuffer = await assertUsableScreenshot(file);
+      imageMs = Date.now() - prepStarted;
+    } catch (error) {
+      throw mapImageProcessingError(error);
+    }
+
+    // Profil + quota + compression en parallèle (buffer déjà validé)
+    const prepareStarted = Date.now();
+    const preparedPromise = prepareScreenshotForVision(validatedBuffer)
+      .then((p) => {
+        imageMs += Date.now() - prepareStarted;
+        return p;
+      })
+      .catch((error) => {
+        throw mapImageProcessingError(error);
+      });
+
+    const [profileRaw, quota, prepared] = await Promise.all([
       getProfileForUser(user.id, {
         first_name:
           typeof user.user_metadata?.first_name === "string"
@@ -90,9 +111,11 @@ export async function POST(request: Request) {
           ),
       ),
       assertAnalysisQuota(user.id),
+      preparedPromise,
     ]);
     const profile = profileRaw;
     mark("prepMs", prepStarted);
+    timings.imageMs = imageMs;
 
     if (!profile) {
       throw new ApiError("Profil introuvable", 404, "PROFILE_NOT_FOUND");
@@ -112,11 +135,6 @@ export async function POST(request: Request) {
     if (lat != null && lng != null) {
       validateCoordinates(lat, lng);
     }
-
-    // Compression
-    const imageStarted = Date.now();
-    const prepared = await prepareScreenshotForVision(file);
-    mark("imageMs", imageStarted);
 
     // Chemin critique : Vision (+ calibration en parallèle, free si Vision > 200ms)
     const workStarted = Date.now();

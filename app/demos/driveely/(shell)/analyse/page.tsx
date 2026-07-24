@@ -24,6 +24,7 @@ import { getAnalysisErrorMessage } from "@/lib/margeo/analyse-errors";
 import type { AnalysisMeta } from "@/lib/margeo/analyse-meta";
 import { VERDICT_META, type RideAnalysis } from "@/lib/margeo/types";
 import { cn } from "@/lib/margeo/utils";
+import { prepareCaptureForUpload } from "@/lib/margeo/vision/prepare-capture-client";
 
 type Stage = "idle" | "scanning" | "result";
 
@@ -73,8 +74,10 @@ export default function AnalysePage() {
 
       // Pas d'attente artificielle : le verdict s'affiche dès la réponse API.
       try {
+        // Photo perso souvent 2–8 Mo : compresser ici accélère upload + Vision.
+        const uploadFile = await prepareCaptureForUpload(file);
         const formData = new FormData();
-        formData.append("image", file);
+        formData.append("image", uploadFile);
         if (geo.position) {
           formData.append("courierLat", String(geo.position.lat));
           formData.append("courierLng", String(geo.position.lng));
@@ -173,7 +176,7 @@ export default function AnalysePage() {
               Profil prêt
             </p>
             <p className="mt-0.5 text-xs leading-relaxed text-mg-muted">
-              Dépose ta première capture. Verdict en 8 secondes.
+              Dépose ta première capture. Verdict en quelques secondes.
             </p>
           </div>
           <button

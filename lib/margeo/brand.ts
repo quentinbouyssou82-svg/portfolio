@@ -3,7 +3,7 @@ export const PRODUCT_NAME = "Driveely";
 export const PRODUCT_TAGLINE =
   "Estime si une course vaut le coup — avant d'accepter.";
 export const PRODUCT_DESCRIPTION =
-  "Capture ta proposition. Driveely estime ton gain net et t'aide à décider en ~2 secondes.";
+  "Capture ta proposition. Driveely estime ton gain net et t'aide à décider en quelques secondes.";
 
 /** Contact support / demandes RGPD (surchargeable via env). */
 export const DRIVEELY_CONTACT_EMAIL =

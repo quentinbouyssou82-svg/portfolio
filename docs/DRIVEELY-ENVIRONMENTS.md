@@ -64,13 +64,31 @@ Aucune migration obligatoire pour activer le mode app.
 
 | Zone | Effet |
 |------|--------|
-| Entitlements | Elite pour tous |
-| Quota | Illimité |
+| Entitlements | Capacités Elite pour tous, **planId DB inchangé** (souvent `discovery`) |
+| Quota | Illimité (`quota.premium=true` = effectif, pas un abonnement) |
+| `premium.isPremium` | `false` sauf vrai abonnement |
+| `premium.effectivePremium` | `true` via `unlockSource: "app_mode"` |
+| Billing / freemium | Désactivés (`billingEnabled=false`, `freemiumLimits=false`) |
 | `/premium` | Page « Fonctionnalités débloquées » |
 | `/subscription`, checkout | Redirect → `/premium` |
 | Onboarding | → dashboard (pas paywall) |
 | Soft banner | Masqué |
 | `activatePlanAction` | Refusé (message clair) |
+
+**Pas d’incohérence** : en bêta, « premium effectif » ≠ « client payant ». Aucune écriture `premium=true` en base uniquement à cause du mode app.
+
+## Cron RGPD (captures 30 jours)
+
+Variable obligatoire sur chaque projet Vercel qui exécute le cron :
+
+```
+CRON_SECRET=<chaîne aléatoire longue>
+```
+
+- Route : `GET|POST /api/driveely/cron/purge-screenshots`
+- Auth : `Authorization: Bearer ${CRON_SECRET}`
+- Planifié dans `vercel.json` (`0 3 * * *`)
+- Sans `CRON_SECRET` → `503 CRON_NOT_CONFIGURED` (pas de purge silencieuse)
 
 ## Feedback (préparé)
 

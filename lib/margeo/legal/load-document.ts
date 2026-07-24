@@ -5,6 +5,7 @@ import {
   rewriteLegalMarkdownLinks,
   type DriveelyLegalDocId,
 } from "./documents";
+import { applyLegalEntityPlaceholders } from "./entity";
 
 export function loadDriveelyLegalMarkdown(id: DriveelyLegalDocId): string {
   const doc = getLegalDocument(id);
@@ -14,5 +15,5 @@ export function loadDriveelyLegalMarkdown(id: DriveelyLegalDocId): string {
     doc.file,
   );
   const raw = fs.readFileSync(fullPath, "utf8");
-  return rewriteLegalMarkdownLinks(raw);
+  return applyLegalEntityPlaceholders(rewriteLegalMarkdownLinks(raw));
 }
