@@ -1,9 +1,11 @@
 /**
  * Entitlements / feature flags — source de vérité par plan.
  * Toutes les vérifications métier doivent passer par ici (serveur).
+ * En mode app bêta : Elite pour tous via `getEntitlementsForPlan`.
  */
 
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
+import { getAppFeatures } from "@/lib/margeo/config";
 
 export type PlanEntitlements = {
   planId: DriveelyPlanId;
@@ -72,8 +74,23 @@ export const PLAN_ENTITLEMENTS: Record<DriveelyPlanId, PlanEntitlements> = {
   elite: ELITE,
 };
 
-export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
+/** Entitlements bruts du catalogue (sans override environnement). */
+export function getCatalogEntitlementsForPlan(
+  planId: DriveelyPlanId,
+): PlanEntitlements {
   return PLAN_ENTITLEMENTS[planId] ?? DISCOVERY;
+}
+
+/**
+ * Entitlements effectifs pour l'environnement courant.
+ * Mode bêta → Elite (tout débloqué), indépendamment du plan DB.
+ */
+export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
+  const feats = getAppFeatures();
+  if (feats.allPremiumUnlocked || !feats.freemiumLimits) {
+    return { ...ELITE, planId: feats.allPremiumUnlocked ? "elite" : planId };
+  }
+  return getCatalogEntitlementsForPlan(planId);
 }
 
 export function isPaidPlan(planId: DriveelyPlanId): boolean {

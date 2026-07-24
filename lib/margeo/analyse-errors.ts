@@ -1,5 +1,7 @@
 /** Messages d'erreur utilisateur pour l'analyse (frontend uniquement). */
 
+import { getAppFeatures } from "@/lib/margeo/config";
+
 export interface AnalysisErrorInput {
   message?: string;
   code?: string;
@@ -75,6 +77,13 @@ export function getAnalysisErrorMessage(
     lower.includes("limite découverte") ||
     lower.includes("analyses / jour")
   ) {
+    const feats = getAppFeatures();
+    if (!feats.freemiumLimits || !feats.paywall) {
+      return {
+        title: "Limite temporaire",
+        description: "Réessaie dans un instant.",
+      };
+    }
     return {
       title: "Limite du jour atteinte",
       description:
@@ -85,6 +94,12 @@ export function getAnalysisErrorMessage(
   }
 
   if (code === "PLAN_FORBIDDEN") {
+    if (!getAppFeatures().paywall) {
+      return {
+        title: "Analyse indisponible",
+        description: "Réessaie dans un instant.",
+      };
+    }
     return {
       title: "Plan insuffisant",
       description: "Ton offre actuelle ne permet pas d'analyser.",

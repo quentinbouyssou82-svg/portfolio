@@ -70,6 +70,16 @@ export async function activatePlanAction(input: {
 > {
   const auth = await requireUserId();
   if (!auth.ok) return auth;
+
+  const { getAppFeatures } = await import("@/lib/margeo/config");
+  if (!getAppFeatures().billing) {
+    return {
+      ok: false,
+      message:
+        "Les abonnements sont désactivés pendant la bêta. Toutes les fonctionnalités sont déjà débloquées.",
+    };
+  }
+
   if (!assertPlanId(input.planId)) {
     return { ok: false, message: "Plan invalide." };
   }

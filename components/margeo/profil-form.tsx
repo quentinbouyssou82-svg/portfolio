@@ -21,6 +21,7 @@ import {
 import { getProfileInitials } from "@/lib/margeo/profile-display";
 import { ONBOARDING_PLATFORMS, DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
+import { getAppFeatures } from "@/lib/margeo/config";
 import { DRIVEELY_PLANS } from "@/lib/margeo/plans";
 import { VEHICLE_OPTIONS } from "@/lib/margeo/vehicle-costs";
 import {
@@ -626,28 +627,34 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
               </span>
               <div>
                 <p className="text-sm font-semibold text-mg-foreground">
-                  {profile.planId === "elite"
-                    ? "Compte Elite"
-                    : profile.premium || profile.planId === "pro"
-                      ? "Compte Pro"
-                      : `Plan ${DRIVEELY_PLANS.discovery.name}`}
+                  {getAppFeatures().allPremiumUnlocked
+                    ? "Compte Bêta — tout débloqué"
+                    : profile.planId === "elite"
+                      ? "Compte Elite"
+                      : profile.premium || profile.planId === "pro"
+                        ? "Compte Pro"
+                        : `Plan ${DRIVEELY_PLANS.discovery.name}`}
                 </p>
                 <p className="text-xs text-mg-muted">
-                  {profile.premium ||
-                  profile.planId === "pro" ||
-                  profile.planId === "elite"
-                    ? "Analyses illimitées."
-                    : `${DRIVEELY_LIMITS.freeDailyAnalyses} analyses/jour — passe en Pro pour lever la limite.`}
+                  {getAppFeatures().allPremiumUnlocked
+                    ? "Analyses illimitées pendant la bêta privée."
+                    : profile.premium ||
+                        profile.planId === "pro" ||
+                        profile.planId === "elite"
+                      ? "Analyses illimitées."
+                      : `${DRIVEELY_LIMITS.freeDailyAnalyses} analyses/jour — passe en Pro pour lever la limite.`}
                 </p>
               </div>
             </div>
             <Link
               href={
-                profile.premium ||
-                profile.planId === "pro" ||
-                profile.planId === "elite"
-                  ? margeoRoutes.subscription
-                  : `${margeoRoutes.premium}?source=nav`
+                getAppFeatures().allPremiumUnlocked
+                  ? margeoRoutes.premium
+                  : profile.premium ||
+                      profile.planId === "pro" ||
+                      profile.planId === "elite"
+                    ? margeoRoutes.subscription
+                    : `${margeoRoutes.premium}?source=nav`
               }
             >
               <Button
@@ -655,11 +662,13 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
                 size="sm"
                 className="min-h-10 w-full sm:w-auto"
               >
-                {profile.premium ||
-                profile.planId === "pro" ||
-                profile.planId === "elite"
-                  ? "Gérer l'abonnement"
-                  : "Débloquer mon plan →"}
+                {getAppFeatures().allPremiumUnlocked
+                  ? "Fonctionnalités →"
+                  : profile.premium ||
+                      profile.planId === "pro" ||
+                      profile.planId === "elite"
+                    ? "Gérer l'abonnement"
+                    : "Débloquer mon plan →"}
               </Button>
             </Link>
           </div>

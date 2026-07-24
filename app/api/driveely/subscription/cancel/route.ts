@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { jsonError } from "@/lib/margeo/api/errors";
+import { jsonError, ApiError } from "@/lib/margeo/api/errors";
 import { requireAuthUser } from "@/lib/margeo/api/auth";
+import { getAppFeatures } from "@/lib/margeo/config";
 import {
   cancelSubscription,
   cancelSubscriptionImmediately,
@@ -9,6 +10,14 @@ import {
 /** POST — annuler (fin de période par défaut, ?immediate=1 pour immédiat) */
 export async function POST(request: Request) {
   try {
+    if (!getAppFeatures().billing) {
+      throw new ApiError(
+        "Les abonnements sont désactivés dans cet environnement.",
+        403,
+        "BILLING_DISABLED",
+      );
+    }
+
     const user = await requireAuthUser();
     const url = new URL(request.url);
     const immediate =

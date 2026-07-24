@@ -1,4 +1,6 @@
+import { BetaUnlockedPremiumPage } from "@/components/margeo/premium/beta-unlocked-page";
 import { PaywallFlow } from "@/components/margeo/paywall/paywall-flow";
+import { getAppFeatures } from "@/lib/margeo/config";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import type { PaywallSource } from "@/lib/margeo/paywall/config";
 import { getPaywallVariant } from "@/lib/margeo/paywall/variant";
@@ -28,6 +30,11 @@ export default async function PremiumPage({
 }) {
   const user = await getAuthUser();
   if (!user) redirect(DRIVEELY_PATHS.login);
+
+  const feats = getAppFeatures();
+  if (feats.premiumPageMode === "beta_unlocked" || !feats.paywall) {
+    return <BetaUnlockedPremiumPage />;
+  }
 
   const profile = await getCurrentProfile();
   const params = await searchParams;

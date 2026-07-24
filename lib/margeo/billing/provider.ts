@@ -1,12 +1,12 @@
 /**
  * Abstraction paiement.
- * - Bêta : simulated (activation immédiate sans prélèvement)
- * - Production : Stripe uniquement (renouvellement automatique)
+ * Pilotée par `getAppFeatures()` — pas de if(beta) dispersés.
  */
 
+import { getAppFeatures } from "@/lib/margeo/config";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 
-/** Stripe = seul PSP prévu. `simulated` = mode bêta sans facturation réelle. */
+/** Stripe = seul PSP prévu. `simulated` = sans facturation réelle. */
 export type PaymentProviderId = "simulated" | "stripe";
 
 export type BillingPeriod = "monthly" | "yearly";
@@ -22,7 +22,7 @@ export type CheckoutIntent = {
 
 /**
  * Résultat checkout.
- * - mode "activate" : activation immédiate (bêta / webhook Stripe déjà traité)
+ * - mode "activate" : activation immédiate (bêta app / webhook Stripe déjà traité)
  * - mode "redirect" : rediriger vers Stripe Checkout
  */
 export type CheckoutResult =
@@ -44,7 +44,7 @@ export interface PaymentProvider {
   createCheckout(intent: CheckoutIntent): Promise<CheckoutResult>;
 }
 
-/** Bêta : active immédiatement sans paiement réel. auto_renew reste géré côté abonnement. */
+/** Activation immédiate sans prélèvement. */
 export const simulatedPaymentProvider: PaymentProvider = {
   id: "simulated",
   async createCheckout(intent) {
@@ -59,12 +59,22 @@ export const simulatedPaymentProvider: PaymentProvider = {
 };
 
 /**
- * Point d'extension Stripe Checkout.
- * Quand STRIPE_SECRET_KEY est défini, brancher stripePaymentProvider ici.
- * Les abonnements Stripe sont en renouvellement automatique (subscription).
+ * Provider effectif selon l'environnement.
+ * - beta app / billing off → simulated
+ * - production + STRIPE_SECRET_KEY + stripe flag → Stripe (à brancher)
+ * - sinon simulated
  */
 export function getPaymentProvider(): PaymentProvider {
-  // Production :
+  const feats = getAppFeatures();
+  if (!feats.billing || !feats.stripe) {
+    return simulatedPaymentProvider;
+  }
+
+  // Production Stripe — brancher stripePaymentProvider quand prêt :
   // if (process.env.STRIPE_SECRET_KEY) return stripePaymentProvider;
   return simulatedPaymentProvider;
+}
+
+export function isBillingEnabled(): boolean {
+  return getAppFeatures().billing;
 }

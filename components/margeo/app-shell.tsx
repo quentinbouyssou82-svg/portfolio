@@ -14,15 +14,25 @@ import { PageTransition } from "@/components/margeo/page-transition";
 import { ProfileProvider } from "@/components/margeo/profile-context";
 import { getProfileInitials } from "@/lib/margeo/profile-display";
 import type { UserProfile } from "@/lib/margeo/types";
+import { getAppFeatures } from "@/lib/margeo/config";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
+
+const premiumNavLabel = getAppFeatures().premiumPageMode === "beta_unlocked"
+  ? "Bêta"
+  : null;
 
 const NAV_ITEMS = [
   { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
   { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
   { href: margeoRoutes.historique, label: "Histo", icon: History },
   { href: margeoRoutes.profil, label: "Profil", icon: User },
-  { href: `${margeoRoutes.premium}?source=nav`, label: "Plans", icon: Crown, match: margeoRoutes.premium },
+  {
+    href: `${margeoRoutes.premium}?source=nav`,
+    label: premiumNavLabel ?? "Plans",
+    icon: Crown,
+    match: margeoRoutes.premium,
+  },
 ];
 
 const NAV_ITEMS_DESKTOP = [
@@ -32,7 +42,7 @@ const NAV_ITEMS_DESKTOP = [
   { href: margeoRoutes.profil, label: "Profil", icon: User },
   {
     href: `${margeoRoutes.premium}?source=nav`,
-    label: "Offres",
+    label: premiumNavLabel ?? "Offres",
     icon: Crown,
     match: margeoRoutes.premium,
   },

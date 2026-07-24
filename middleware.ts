@@ -9,6 +9,7 @@ import {
   PUBLIC_DRIVEELY_PATHS,
   PROTECTED_DRIVEELY_PREFIXES,
 } from "@/lib/margeo/constants";
+import { getAppMode } from "@/lib/margeo/config";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
@@ -108,6 +109,7 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
   }
 
   let response = NextResponse.next({ request });
+  response.headers.set("x-driveely-app-mode", getAppMode());
 
   const supabase = createServerClient(url, key, {
     cookies: {

@@ -1,4 +1,5 @@
 import { PRODUCT_DESCRIPTION, PRODUCT_NAME } from "@/lib/margeo/brand";
+import { getAppMode } from "@/lib/margeo/config";
 import { DriveelyPostHogProvider } from "@/components/margeo/analytics/posthog-provider";
 import { DriveelyThemeProvider } from "@/components/margeo/theme-provider";
 import type { Metadata, Viewport } from "next";
@@ -17,10 +18,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const appMode = getAppMode();
+const modeSuffix = appMode === "beta" ? " · Bêta" : "";
+
 export const metadata: Metadata = {
   title: {
-    default: `${PRODUCT_NAME} — Gain net avant d'accepter`,
-    template: `%s · ${PRODUCT_NAME}`,
+    default: `${PRODUCT_NAME}${modeSuffix} — Gain net avant d'accepter`,
+    template: `%s · ${PRODUCT_NAME}${modeSuffix}`,
   },
   description: PRODUCT_DESCRIPTION,
   icons: {
@@ -31,7 +35,10 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: PRODUCT_NAME,
+    title: `${PRODUCT_NAME}${modeSuffix}`,
+  },
+  other: {
+    "driveely-app-mode": appMode,
   },
 };
 

@@ -4,6 +4,7 @@ import {
   DEFAULT_VEHICLE_COSTS,
   DRIVEELY_PATHS,
 } from "@/lib/margeo/constants";
+import { getAppFeatures } from "@/lib/margeo/config";
 import type { MargeoActionResult } from "@/lib/margeo/auth/actions";
 import { updateProfile } from "@/lib/margeo/services/profile";
 import type { OnboardingInput } from "@/lib/margeo/supabase/schema";
@@ -101,7 +102,12 @@ export async function completeOnboardingAction(
     },
   });
 
-  return { ok: true, redirectTo: `${DRIVEELY_PATHS.premium}?source=onboarding` };
+  return {
+    ok: true,
+    redirectTo: getAppFeatures().postOnboardingPaywall
+      ? `${DRIVEELY_PATHS.premium}?source=onboarding`
+      : DRIVEELY_PATHS.dashboard,
+  };
 }
 
 export async function completeOnboardingAndRedirect(

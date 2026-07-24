@@ -3,7 +3,13 @@ import { Logo } from "@/components/margeo/logo";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { LegalFooterLinks } from "@/components/margeo/legal-footer-links";
 import { DRIVEELY_CONTACT_EMAIL } from "@/lib/margeo/brand";
+import { getAppFeatures } from "@/lib/margeo/config";
 import { margeoRoutes } from "@/lib/margeo/routes";
+
+const premiumFooterLabel =
+  getAppFeatures().premiumPageMode === "beta_unlocked"
+    ? "Fonctionnalités"
+    : "Offres";
 
 const COLUMNS = [
   {
@@ -11,7 +17,7 @@ const COLUMNS = [
     links: [
       { label: "Commencer gratuitement", href: margeoRoutes.signup },
       { label: "Se connecter", href: margeoRoutes.login },
-      { label: "Offres", href: margeoRoutes.premium },
+      { label: premiumFooterLabel, href: margeoRoutes.premium },
       { label: "Programme Bêta", href: margeoRoutes.beta },
       { label: "FAQ", href: "#faq" },
     ],

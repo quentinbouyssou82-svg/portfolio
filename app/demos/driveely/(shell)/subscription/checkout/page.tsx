@@ -1,5 +1,6 @@
 import { CheckoutView } from "@/components/margeo/subscription/checkout-view";
 import type { BillingPeriod } from "@/lib/margeo/billing/provider";
+import { getAppFeatures } from "@/lib/margeo/config";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { getAuthUser } from "@/lib/margeo/auth/session";
@@ -23,6 +24,10 @@ export default async function SubscriptionCheckoutPage({
 }) {
   const user = await getAuthUser();
   if (!user) redirect(DRIVEELY_PATHS.login);
+
+  if (!getAppFeatures().billing) {
+    redirect(DRIVEELY_PATHS.premium);
+  }
 
   const params = await searchParams;
   const planId = parsePlan(params.plan);

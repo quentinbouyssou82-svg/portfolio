@@ -4,28 +4,30 @@ import { Crown, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/margeo/ui/button";
+import { getAppFeatures } from "@/lib/margeo/config";
 import { PAYWALL_STORAGE_BANNER_DISMISS } from "@/lib/margeo/paywall/config";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
-/** Banner soft dashboard pour utilisateurs free (dismissable). */
+/** Banner soft dashboard pour utilisateurs free (dismissable). Inactif en app bêta. */
 export function PaywallSoftBanner({
   isFreePlan,
 }: {
   isFreePlan: boolean;
 }) {
   const [visible, setVisible] = useState(false);
+  const showCommercial = getAppFeatures().paywallSoftBanner;
 
   useEffect(() => {
-    if (!isFreePlan) return;
+    if (!showCommercial || !isFreePlan) return;
     try {
       if (localStorage.getItem(PAYWALL_STORAGE_BANNER_DISMISS) === "1") return;
     } catch {
       // ignore
     }
     setVisible(true);
-  }, [isFreePlan]);
+  }, [isFreePlan, showCommercial]);
 
-  if (!visible) return null;
+  if (!showCommercial || !visible) return null;
 
   return (
     <div className="paywall-soft-banner flex items-start gap-3 rounded-2xl border border-mg-accent/25 bg-mg-accent-soft/40 px-4 py-3.5">
