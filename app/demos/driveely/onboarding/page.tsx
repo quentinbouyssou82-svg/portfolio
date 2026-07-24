@@ -43,7 +43,37 @@ export default async function MargeoOnboardingPage() {
     user.user_metadata?.name as string | undefined,
   );
   if (!profile) redirect(DRIVEELY_PATHS.login);
-  if (profile.onboardingCompleted) redirect(DRIVEELY_PATHS.dashboard);
+
+  const { resolveOnboardingStatus } = await import(
+    "@/lib/margeo/onboarding-status"
+  );
+  const { repairOnboardingCompletedIfNeeded } = await import(
+    "@/lib/margeo/onboarding-repair"
+  );
+  const status = resolveOnboardingStatus(
+    {
+      onboarding_completed: profile.onboardingCompleted,
+      vehicle: profile.vehicle,
+      target_hourly: profile.targetHourly,
+      empty_returns: profile.emptyReturns,
+      weekly_hours: profile.weeklyHours,
+    },
+    user,
+  );
+  if (status === "complete") {
+    await repairOnboardingCompletedIfNeeded(
+      user.id,
+      {
+        onboarding_completed: profile.onboardingCompleted,
+        vehicle: profile.vehicle,
+        target_hourly: profile.targetHourly,
+        empty_returns: profile.emptyReturns,
+        weekly_hours: profile.weeklyHours,
+      },
+      user,
+    );
+    redirect(DRIVEELY_PATHS.dashboard);
+  }
 
   return (
     <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">

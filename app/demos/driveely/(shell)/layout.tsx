@@ -1,6 +1,8 @@
 import { AppShell } from "@/components/margeo/app-shell";
 import { getAuthUser } from "@/lib/margeo/auth/session";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
+import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
+import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { redirect } from "next/navigation";
 
@@ -34,7 +36,34 @@ export default async function MargeoShellLayout({
     },
   );
   if (!profile) redirect(DRIVEELY_PATHS.login);
-  if (!profile.onboardingCompleted) redirect(DRIVEELY_PATHS.onboarding);
+
+  const status = resolveOnboardingStatus(
+    {
+      onboarding_completed: profile.onboardingCompleted,
+      vehicle: profile.vehicle,
+      target_hourly: profile.targetHourly,
+      empty_returns: profile.emptyReturns,
+      weekly_hours: profile.weeklyHours,
+    },
+    user,
+  );
+
+  if (status === "complete") {
+    await repairOnboardingCompletedIfNeeded(
+      user.id,
+      {
+        onboarding_completed: profile.onboardingCompleted,
+        vehicle: profile.vehicle,
+        target_hourly: profile.targetHourly,
+        empty_returns: profile.emptyReturns,
+        weekly_hours: profile.weeklyHours,
+      },
+      user,
+    );
+  } else if (status === "incomplete") {
+    redirect(DRIVEELY_PATHS.onboarding);
+  }
+  // unknown : ne pas reboucler — profil vient d'être assuré
 
   return <AppShell profile={profile}>{children}</AppShell>;
 }

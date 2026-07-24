@@ -1,6 +1,7 @@
 /** Messages d'erreur utilisateur pour l'analyse (frontend uniquement). */
 
 import { getAppFeatures } from "@/lib/margeo/config";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 export interface AnalysisErrorInput {
   message?: string;
@@ -93,10 +94,13 @@ export function getAnalysisErrorMessage(
     };
   }
 
-  if (code === "RATE_LIMITED" || lower.includes("trop de requêtes")) {
+  if (code === "RATE_LIMITED" || lower.includes("trop de requêtes") || lower.includes("trop d'analyses")) {
     return {
-      title: "Trop d'analyses",
-      description: "Réessaie dans quelques secondes.",
+      title: "Un peu trop vite",
+      description:
+        message.includes("Patiente")
+          ? message
+          : "Patiente quelques secondes avant de relancer une analyse.",
     };
   }
 
@@ -138,8 +142,11 @@ export function getAnalysisErrorMessage(
 
   if (code === "ONBOARDING_REQUIRED") {
     return {
-      title: "Profil incomplet",
-      description: "Termine la configuration avant d'analyser.",
+      title: "Configuration à terminer",
+      description:
+        "Indique ton véhicule et tes objectifs une seule fois, puis tu pourras analyser tes courses.",
+      href: DRIVEELY_PATHS.onboarding,
+      cta: "Terminer la configuration →",
     };
   }
 

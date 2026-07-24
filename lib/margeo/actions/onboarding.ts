@@ -88,6 +88,11 @@ export async function completeOnboardingAction(
     return { ok: false, message: "Impossible de sauvegarder le profil." };
   }
 
+  const { persistOnboardingCompletedMetadata } = await import(
+    "@/lib/margeo/onboarding-repair"
+  );
+  await persistOnboardingCompletedMetadata(user.id);
+
   await markBetaTester(user.id);
   await logBetaEvent({
     userId: user.id,

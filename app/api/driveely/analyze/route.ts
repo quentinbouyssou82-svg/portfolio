@@ -25,6 +25,8 @@ import {
 } from "@/lib/margeo/services/calibration";
 import { logBetaEvent, logFirstAnalysisIfNeeded } from "@/lib/margeo/services/beta-events";
 import { prepareScreenshotForVision } from "@/lib/margeo/vision/prepare-image";
+import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
+import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
 
 export async function POST(request: Request) {
   const startedAt = Date.now();
@@ -43,8 +45,12 @@ export async function POST(request: Request) {
 
     const burst = checkRateLimit(`analyze:${user.id}`, 60, 60_000);
     if (!burst.allowed) {
+      const waitSec = Math.max(
+        1,
+        Math.ceil((burst.resetAt - Date.now()) / 1000),
+      );
       throw new ApiError(
-        "Trop de requêtes. Réessaie dans quelques secondes.",
+        `Tu as lancé trop d'analyses d'affilée. Patiente ${waitSec} seconde${waitSec > 1 ? "s" : ""} puis réessaie.`,
         429,
         "RATE_LIMITED",
       );
@@ -120,9 +126,33 @@ export async function POST(request: Request) {
     if (!profile) {
       throw new ApiError("Profil introuvable", 404, "PROFILE_NOT_FOUND");
     }
-    if (!profile.onboardingCompleted) {
+
+    const onboardingStatus = resolveOnboardingStatus(
+      {
+        onboarding_completed: profile.onboardingCompleted,
+        vehicle: profile.vehicle,
+        target_hourly: profile.targetHourly,
+        empty_returns: profile.emptyReturns,
+        weekly_hours: profile.weeklyHours,
+      },
+      user,
+    );
+
+    if (onboardingStatus === "complete") {
+      await repairOnboardingCompletedIfNeeded(
+        user.id,
+        {
+          onboarding_completed: profile.onboardingCompleted,
+          vehicle: profile.vehicle,
+          target_hourly: profile.targetHourly,
+          empty_returns: profile.emptyReturns,
+          weekly_hours: profile.weeklyHours,
+        },
+        user,
+      );
+    } else if (onboardingStatus === "incomplete") {
       throw new ApiError(
-        "Termine l'onboarding avant d'analyser une course.",
+        "Termine d'abord la configuration de ton profil (véhicule et objectifs), puis réessaie ton analyse.",
         403,
         "ONBOARDING_REQUIRED",
       );

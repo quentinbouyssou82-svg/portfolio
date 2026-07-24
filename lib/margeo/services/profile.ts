@@ -177,23 +177,29 @@ export async function ensureProfileForUser(
     avatar_url: meta?.avatar_url ?? null,
   };
 
+  // Upsert : ne recrée jamais une ligne existante (évite les courses
+  // paralleles qui pourraient laisser un profil « neuf » incomplet).
   let { data, error } = await supabase
     .from("margeo_profiles")
-    .insert(fullPayload)
+    .upsert(fullPayload, { onConflict: "id", ignoreDuplicates: true })
     .select("*")
-    .single();
+    .maybeSingle();
 
   if (isMissingColumnError(error)) {
     const legacy = await supabase
       .from("margeo_profiles")
-      .insert({ id: userId, name: trimmed })
+      .upsert(
+        { id: userId, name: trimmed },
+        { onConflict: "id", ignoreDuplicates: true },
+      )
       .select("*")
-      .single();
+      .maybeSingle();
     data = legacy.data;
     error = legacy.error;
   }
 
-  if (error) {
+  // ignoreDuplicates → souvent pas de row retournée : relecture obligatoire
+  if (error || !data) {
     return getProfileForUser(userId, meta);
   }
 

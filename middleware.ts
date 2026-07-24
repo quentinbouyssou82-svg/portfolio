@@ -11,6 +11,7 @@ import {
 } from "@/lib/margeo/constants";
 import { getAppMode } from "@/lib/margeo/config";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
+import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -141,40 +142,61 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
   }
 
   if (user && isAuthPage) {
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("margeo_profiles")
-      .select("onboarding_completed")
+      .select(
+        "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
+      )
       .eq("id", user.id)
       .maybeSingle();
 
+    const status = resolveOnboardingStatus(profile, user, {
+      profileReadError: Boolean(profileError),
+    });
+
     const redirectUrl = request.nextUrl.clone();
+    // unknown → onboarding (nouveau compte sans ligne) plutôt que dashboard vide
     redirectUrl.pathname =
-      profile?.onboarding_completed === true
+      status === "complete"
         ? DRIVEELY_PATHS.dashboard
         : DRIVEELY_PATHS.onboarding;
     return NextResponse.redirect(redirectUrl);
   }
 
   if (user && (isProtected || isOnboarding)) {
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("margeo_profiles")
-      .select("onboarding_completed")
+      .select(
+        "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
+      )
       .eq("id", user.id)
       .maybeSingle();
 
-    const onboardingDone = profile?.onboarding_completed === true;
+    // Lecture profil en erreur : ne JAMAIS renvoyer vers onboarding
+    // (sinon analyse → onboarding → 403 alors que le compte est valide).
+    if (profileError) {
+      return response;
+    }
 
-    if (!onboardingDone && isProtected) {
+    const status = resolveOnboardingStatus(profile, user);
+
+    if (status === "complete") {
+      if (isOnboarding) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = DRIVEELY_PATHS.dashboard;
+        return NextResponse.redirect(redirectUrl);
+      }
+      return response;
+    }
+
+    // incomplete uniquement — pas unknown
+    if (status === "incomplete" && isProtected) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
       return NextResponse.redirect(redirectUrl);
     }
 
-    if (onboardingDone && isOnboarding) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = DRIVEELY_PATHS.dashboard;
-      return NextResponse.redirect(redirectUrl);
-    }
+    // unknown + protected : laisser le layout ensureProfile gérer
   }
 
   if (user && isPublic && pathname === DRIVEELY_PATHS.home) {
