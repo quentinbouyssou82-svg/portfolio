@@ -10,6 +10,12 @@ import {
   PROTECTED_DRIVEELY_PREFIXES,
 } from "@/lib/margeo/constants";
 import { getAppMode } from "@/lib/margeo/config";
+import {
+  DRIVEELY_INTERNAL_BASE,
+  isDriveelyProductHost,
+  toDriveelyInternalPath,
+  toDriveelyRelativePath,
+} from "@/lib/margeo/host";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
@@ -17,30 +23,34 @@ import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
 const CONTROL_TOWER_PREFIX = "/control-tower";
 const MAISON_PREFIX = "/demos/maison";
-const DRIVEELY_PREFIX = "/demos/driveely";
 const LEGACY_UBERLY_PREFIX = "/demos/uberly";
 const LEGACY_MARGEO_PREFIX = "/demos/margeo";
 const LEGACY_UBERLY_API = "/api/uberly";
 const DRIVEELY_API = "/api/driveely";
 
-/** Domaines Vercel du projet « margeo » (pas portfolio-omega-…). */
-function isMargeoProjectHost(hostname: string): boolean {
-  if (hostname === "margeo.vercel.app") return true;
-  return hostname.startsWith("margeo-") && hostname.endsWith(".vercel.app");
+function isPassthroughPath(pathname: string): boolean {
+  if (pathname.startsWith("/_next")) return true;
+  if (pathname.startsWith("/api/")) return true;
+  // Fichiers statiques (favicon, images, robots…)
+  if (/\.[a-zA-Z0-9]+$/.test(pathname)) return true;
+  return false;
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const hostname = request.nextUrl.hostname;
 
-  if (pathname === "/" && isMargeoProjectHost(request.nextUrl.hostname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = DRIVEELY_PATHS.home;
-    return NextResponse.redirect(url, 308);
+  // ── Produit Driveely (driveely.app, margeo.vercel.app, …) ─────────────
+  // Cause historique : "/" servait app/page.tsx (Nocta). Sur ces hôtes,
+  // on rewrite vers /demos/driveely tout en exposant des URLs racine.
+  if (isDriveelyProductHost(hostname)) {
+    return handleDriveelyProductHost(request, pathname);
   }
 
+  // ── Monorepo portfolio (Nocta + demos) ────────────────────────────────
   if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
     const url = request.nextUrl.clone();
-    url.pathname = pathname.replace(LEGACY_UBERLY_PREFIX, DRIVEELY_PREFIX);
+    url.pathname = pathname.replace(LEGACY_UBERLY_PREFIX, DRIVEELY_INTERNAL_BASE);
     return NextResponse.redirect(url, 301);
   }
 
@@ -52,12 +62,15 @@ export async function middleware(request: NextRequest) {
 
   if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
     const url = request.nextUrl.clone();
-    url.pathname = pathname.replace(LEGACY_MARGEO_PREFIX, DRIVEELY_PREFIX);
+    url.pathname = pathname.replace(LEGACY_MARGEO_PREFIX, DRIVEELY_INTERNAL_BASE);
     return NextResponse.redirect(url, 301);
   }
 
-  if (pathname.startsWith(DRIVEELY_PREFIX)) {
-    return handleDriveelyAuth(request, pathname);
+  if (
+    pathname === DRIVEELY_INTERNAL_BASE ||
+    pathname.startsWith(`${DRIVEELY_INTERNAL_BASE}/`)
+  ) {
+    return handleDriveelyAuth(request, pathname, pathname);
   }
 
   if (pathname.startsWith(MAISON_PREFIX)) {
@@ -89,28 +102,122 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-function isDriveelyProtected(pathname: string): boolean {
-  const relative = pathname.slice(DRIVEELY_PREFIX.length);
-  return PROTECTED_DRIVEELY_PREFIXES.some((p) => relative.startsWith(p));
-}
+async function handleDriveelyProductHost(
+  request: NextRequest,
+  pathname: string,
+) {
+  // Legacy API
+  if (pathname.startsWith(LEGACY_UBERLY_API)) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(LEGACY_UBERLY_API, DRIVEELY_API);
+    return NextResponse.redirect(url, 301);
+  }
 
-async function handleDriveelyAuth(request: NextRequest, pathname: string) {
-  const url = getMargeoSupabaseUrl();
-  const key = getMargeoClientKey();
+  // Legacy /demos/uberly → URL propre
+  if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
+    const rel = pathname.slice(LEGACY_UBERLY_PREFIX.length) || "/";
+    const url = request.nextUrl.clone();
+    url.pathname = rel;
+    return NextResponse.redirect(url, 301);
+  }
 
-  if (!url || !key) {
+  // /demos/margeo → URL propre
+  if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
+    const rel = pathname.slice(LEGACY_MARGEO_PREFIX.length) || "/";
+    const url = request.nextUrl.clone();
+    url.pathname = rel;
+    return NextResponse.redirect(url, 301);
+  }
+
+  // Canonique : /demos/driveely/* → /* (plus de préfixe public)
+  if (
+    pathname === DRIVEELY_INTERNAL_BASE ||
+    pathname.startsWith(`${DRIVEELY_INTERNAL_BASE}/`)
+  ) {
+    const clean = toDriveelyRelativePath(pathname);
+    const url = request.nextUrl.clone();
+    url.pathname = clean;
+    return NextResponse.redirect(url, 301);
+  }
+
+  // Nocta / autres apps du monorepo : non servis sur le domaine produit
+  if (
+    pathname.startsWith(MAISON_PREFIX) ||
+    pathname.startsWith(CONTROL_TOWER_PREFIX)
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 302);
+  }
+
+  if (isPassthroughPath(pathname)) {
     return NextResponse.next();
   }
 
-  if (pathname === `${DRIVEELY_PREFIX}/signup`) {
+  const internalPath = toDriveelyInternalPath(pathname);
+  return handleDriveelyAuth(request, pathname, internalPath);
+}
+
+function isDriveelyProtectedPublicPath(publicPathname: string): boolean {
+  const relative = toDriveelyRelativePath(publicPathname);
+  return PROTECTED_DRIVEELY_PREFIXES.some(
+    (p) => relative === p || relative.startsWith(`${p}/`),
+  );
+}
+
+function isDriveelyPublicPath(publicPathname: string): boolean {
+  const relative = toDriveelyRelativePath(publicPathname);
+  const asPublicHome = relative === "/" ? DRIVEELY_PATHS.home : relative;
+  // PUBLIC_DRIVEELY_PATHS contient les chemins publics (selon AT_ROOT)
+  if (PUBLIC_DRIVEELY_PATHS.has(publicPathname)) return true;
+  if (PUBLIC_DRIVEELY_PATHS.has(asPublicHome)) return true;
+  // Fallback relatif : /login, /cgu… même si la base publique change
+  const publicRelatives = new Set(
+    [...PUBLIC_DRIVEELY_PATHS].map((p) => toDriveelyRelativePath(p)),
+  );
+  return publicRelatives.has(relative);
+}
+
+/**
+ * @param publicPathname — URL vue par l'utilisateur (/login ou /demos/driveely/login)
+ * @param internalPath — chemin fichiers Next (/demos/driveely/…)
+ */
+async function handleDriveelyAuth(
+  request: NextRequest,
+  publicPathname: string,
+  internalPath: string,
+) {
+  const url = getMargeoSupabaseUrl();
+  const key = getMargeoClientKey();
+
+  const needsRewrite = publicPathname !== internalPath;
+
+  if (!url || !key) {
+    if (needsRewrite) {
+      const rewriteUrl = request.nextUrl.clone();
+      rewriteUrl.pathname = internalPath;
+      return NextResponse.rewrite(rewriteUrl);
+    }
+    return NextResponse.next();
+  }
+
+  const relative = toDriveelyRelativePath(publicPathname);
+
+  if (relative === "/signup") {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = DRIVEELY_PATHS.login;
     redirectUrl.searchParams.set("mode", "signup");
     return NextResponse.redirect(redirectUrl, 308);
   }
 
-  let response = NextResponse.next({ request });
+  const rewriteUrl = request.nextUrl.clone();
+  rewriteUrl.pathname = internalPath;
+
+  let response = needsRewrite
+    ? NextResponse.rewrite(rewriteUrl)
+    : NextResponse.next({ request });
   response.headers.set("x-driveely-app-mode", getAppMode());
+  response.headers.set("x-driveely-host-mode", "product");
 
   const supabase = createServerClient(url, key, {
     cookies: {
@@ -130,10 +237,12 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublic = PUBLIC_DRIVEELY_PATHS.has(pathname);
-  const isAuthPage = pathname === DRIVEELY_PATHS.login;
-  const isOnboarding = pathname === DRIVEELY_PATHS.onboarding;
-  const isProtected = isDriveelyProtected(pathname);
+  const isPublic = isDriveelyPublicPath(publicPathname);
+  const isAuthPage =
+    relative === "/login" || publicPathname === DRIVEELY_PATHS.login;
+  const isOnboarding =
+    relative === "/onboarding" || publicPathname === DRIVEELY_PATHS.onboarding;
+  const isProtected = isDriveelyProtectedPublicPath(publicPathname);
 
   if (!user && (isProtected || isOnboarding)) {
     const redirectUrl = request.nextUrl.clone();
@@ -155,7 +264,6 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
     });
 
     const redirectUrl = request.nextUrl.clone();
-    // unknown → onboarding (nouveau compte sans ligne) plutôt que dashboard vide
     redirectUrl.pathname =
       status === "complete"
         ? DRIVEELY_PATHS.dashboard
@@ -172,8 +280,6 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
       .eq("id", user.id)
       .maybeSingle();
 
-    // Lecture profil en erreur : ne JAMAIS renvoyer vers onboarding
-    // (sinon analyse → onboarding → 403 alors que le compte est valide).
     if (profileError) {
       return response;
     }
@@ -189,18 +295,11 @@ async function handleDriveelyAuth(request: NextRequest, pathname: string) {
       return response;
     }
 
-    // incomplete uniquement — pas unknown
     if (status === "incomplete" && isProtected) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
       return NextResponse.redirect(redirectUrl);
     }
-
-    // unknown + protected : laisser le layout ensureProfile gérer
-  }
-
-  if (user && isPublic && pathname === DRIVEELY_PATHS.home) {
-    // Landing accessible même connecté
   }
 
   return response;
@@ -210,7 +309,10 @@ async function handleMaisonAuth(request: NextRequest, pathname: string) {
   const session = await getMaisonSessionFromRequest(request);
   const isPublic = PUBLIC_MAISON_PATHS.has(pathname);
 
-  if (pathname === `${MAISON_PREFIX}/login` || pathname === `${MAISON_PREFIX}/signup`) {
+  if (
+    pathname === `${MAISON_PREFIX}/login` ||
+    pathname === `${MAISON_PREFIX}/signup`
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = MAISON_PATHS.connexion;
     return NextResponse.redirect(url);
@@ -242,14 +344,11 @@ async function handleMaisonAuth(request: NextRequest, pathname: string) {
 
 export const config = {
   matcher: [
+    /*
+     * Toutes les pages (hôte Driveely → rewrite racine).
+     * Exclut assets Next et fichiers avec extension.
+     */
+    "/((?!_next/static|_next/image|.*\\..*).*)",
     "/",
-    "/control-tower/:path*",
-    "/demos/maison/:path*",
-    "/demos/margeo/:path*",
-    "/demos/driveely/:path*",
-    "/demos/uberly",
-    "/demos/uberly/:path*",
-    "/api/uberly",
-    "/api/uberly/:path*",
   ],
 };

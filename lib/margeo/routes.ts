@@ -1,40 +1,58 @@
-export const DRIVEELY_BASE = "/demos/driveely";
+import {
+  getDriveelyPublicBase,
+  isDriveelyAtRoot,
+} from "@/lib/margeo/host";
+
+/**
+ * Base URL publique Driveely.
+ * - Produit (driveely.app) : "" → /login, /dashboard…
+ * - Démo monorepo : "/demos/driveely"
+ */
+export const DRIVEELY_BASE = getDriveelyPublicBase();
 
 /** @deprecated Utiliser DRIVEELY_BASE */
 export const MARGEO_BASE = DRIVEELY_BASE;
 
+function path(segment: string): string {
+  if (!segment) {
+    return DRIVEELY_BASE || "/";
+  }
+  return `${DRIVEELY_BASE}/${segment}`.replace(/\/{2,}/g, "/");
+}
+
 export const driveelyRoutes = {
-  home: DRIVEELY_BASE,
-  login: `${DRIVEELY_BASE}/login`,
-  signup: `${DRIVEELY_BASE}/login?mode=signup`,
-  onboarding: `${DRIVEELY_BASE}/onboarding`,
-  forgotPassword: `${DRIVEELY_BASE}/forgot-password`,
-  deconnexion: `${DRIVEELY_BASE}/deconnexion`,
-  dashboard: `${DRIVEELY_BASE}/dashboard`,
-  analyse: `${DRIVEELY_BASE}/analyse`,
-  historique: `${DRIVEELY_BASE}/historique`,
-  historiqueDetail: (id: string) => `${DRIVEELY_BASE}/historique/${id}`,
-  profil: `${DRIVEELY_BASE}/profil`,
-  premium: `${DRIVEELY_BASE}/premium`,
-  subscription: `${DRIVEELY_BASE}/subscription`,
-  subscriptionCheckout: `${DRIVEELY_BASE}/subscription/checkout`,
-  /** Pages juridiques — contenu à rédiger séparément. */
-  mentionsLegales: `${DRIVEELY_BASE}/mentions-legales`,
-  confidentialite: `${DRIVEELY_BASE}/confidentialite`,
-  cgu: `${DRIVEELY_BASE}/cgu`,
-  cgv: `${DRIVEELY_BASE}/cgv`,
-  cookies: `${DRIVEELY_BASE}/cookies`,
-  conditionsBeta: `${DRIVEELY_BASE}/conditions-beta`,
-  beta: `${DRIVEELY_BASE}/beta`,
-  remboursement: `${DRIVEELY_BASE}/remboursement`,
-  demandesRgpd: `${DRIVEELY_BASE}/demandes-rgpd`,
-  suppressionDonnees: `${DRIVEELY_BASE}/suppression-donnees`,
-  securiteDonnees: `${DRIVEELY_BASE}/securite-donnees`,
-  abonnementsStripe: `${DRIVEELY_BASE}/abonnements-stripe`,
-  proprieteIntellectuelle: `${DRIVEELY_BASE}/propriete-intellectuelle`,
-  charteUtilisation: `${DRIVEELY_BASE}/charte-utilisation`,
-  contact: `${DRIVEELY_BASE}/contact`,
+  home: path(""),
+  login: path("login"),
+  signup: `${path("login")}?mode=signup`,
+  onboarding: path("onboarding"),
+  forgotPassword: path("forgot-password"),
+  deconnexion: path("deconnexion"),
+  dashboard: path("dashboard"),
+  analyse: path("analyse"),
+  historique: path("historique"),
+  historiqueDetail: (id: string) => path(`historique/${id}`),
+  profil: path("profil"),
+  premium: path("premium"),
+  subscription: path("subscription"),
+  subscriptionCheckout: path("subscription/checkout"),
+  mentionsLegales: path("mentions-legales"),
+  confidentialite: path("confidentialite"),
+  cgu: path("cgu"),
+  cgv: path("cgv"),
+  cookies: path("cookies"),
+  conditionsBeta: path("conditions-beta"),
+  beta: path("beta"),
+  remboursement: path("remboursement"),
+  demandesRgpd: path("demandes-rgpd"),
+  suppressionDonnees: path("suppression-donnees"),
+  securiteDonnees: path("securite-donnees"),
+  abonnementsStripe: path("abonnements-stripe"),
+  proprieteIntellectuelle: path("propriete-intellectuelle"),
+  charteUtilisation: path("charte-utilisation"),
+  contact: path("contact"),
 } as const;
 
 /** Alias rétrocompatibilité */
 export const margeoRoutes = driveelyRoutes;
+
+export { isDriveelyAtRoot };

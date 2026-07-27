@@ -66,7 +66,7 @@ export default function DriveelyLayout({
         id="driveely-theme-boot"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
-          __html: `(function(){try{var p=location.pathname;var base="/demos/driveely";var marketing=p===base||p===base+"/"||p.indexOf(base+"/login")===0||p.indexOf(base+"/signup")===0||p.indexOf(base+"/forgot-password")===0;if(marketing){document.documentElement.style.colorScheme="dark";return;}var t=localStorage.getItem("driveely-theme");if(t==="light"||t==="dark"){var r=document.getElementById("driveely-theme-boot");var root=r&&r.parentElement;if(root&&root.classList.contains("driveely-root"))root.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
+          __html: `(function(){try{var p=location.pathname;var marketing=p==="/"||p==="/login"||p.indexOf("/login")===0||p==="/signup"||p.indexOf("/forgot-password")===0||p==="/demos/driveely"||p==="/demos/driveely/"||p.indexOf("/demos/driveely/login")===0||p.indexOf("/demos/driveely/signup")===0||p.indexOf("/demos/driveely/forgot-password")===0;if(marketing){document.documentElement.style.colorScheme="dark";return;}var t=localStorage.getItem("driveely-theme");if(t==="light"||t==="dark"){var r=document.getElementById("driveely-theme-boot");var root=r&&r.parentElement;if(root&&root.classList.contains("driveely-root"))root.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
         }}
       />
       <DriveelyThemeProvider>

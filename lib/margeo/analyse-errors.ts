@@ -1,6 +1,7 @@
 /** Messages d'erreur utilisateur pour l'analyse (frontend uniquement). */
 
 import { getAppFeatures } from "@/lib/margeo/config";
+import { driveelyRoutes } from "@/lib/margeo/routes";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 export interface AnalysisErrorInput {
@@ -120,7 +121,7 @@ export function getAnalysisErrorMessage(
       title: "Limite du jour atteinte",
       description:
         "2 analyses/jour en Découverte. Passe en Pro pour débloquer l'illimité.",
-      href: "/demos/driveely/premium?source=quota",
+      href: `${driveelyRoutes.premium}?source=quota`,
       cta: "Commencer mon essai gratuit →",
     };
   }
@@ -135,7 +136,7 @@ export function getAnalysisErrorMessage(
     return {
       title: "Plan insuffisant",
       description: "Ton offre actuelle ne permet pas d'analyser.",
-      href: "/demos/driveely/premium?source=quota",
+      href: `${driveelyRoutes.premium}?source=quota`,
       cta: "Voir mon plan →",
     };
   }
