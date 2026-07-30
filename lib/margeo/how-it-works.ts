@@ -64,10 +64,10 @@ export function isHowItWorksCookieValue(
   return value === "1";
 }
 
-export function hasSeenHowItWorksClient(): boolean {
+/** Cookie is the sole authority for “tour seen” (middleware + RSC). */
+export function hasHowItWorksCookieClient(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    if (localStorage.getItem(HOW_IT_WORKS_STORAGE_KEY) === "1") return true;
     return document.cookie.split(";").some((c) => {
       const part = c.trim();
       return part === `${HOW_IT_WORKS_COOKIE}=1`;
@@ -75,6 +75,15 @@ export function hasSeenHowItWorksClient(): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Routing alias — cookie only.
+ * localStorage is write-through after Passer/Commencer; it must never alone
+ * count as seen (that re-stamped the cookie and bounced the tour to dashboard).
+ */
+export function hasSeenHowItWorksClient(): boolean {
+  return hasHowItWorksCookieClient();
 }
 
 export function markHowItWorksSeenClient(): void {

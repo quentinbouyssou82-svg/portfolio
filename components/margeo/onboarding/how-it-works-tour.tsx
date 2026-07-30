@@ -28,7 +28,6 @@ import { Button } from "@/components/margeo/ui/button";
 import { VerdictBadge } from "@/components/margeo/verdict-badge";
 import { AnimatedCounter } from "@/components/margeo/animated-counter";
 import {
-  hasSeenHowItWorksClient,
   markHowItWorksSeenClient,
   resolveHowItWorksNext,
 } from "@/lib/margeo/how-it-works";
@@ -627,9 +626,9 @@ function StepVisual({
 export function HowItWorksTour({ nextPath }: { nextPath: string }) {
   const reduceMotion = useReducedMotion();
   const [step, setStep] = useState(0);
-  const [ready, setReady] = useState(false);
   const destination = resolveHowItWorksNext(nextPath);
 
+  /** Only Passer / Commencer / Escape mark seen — never on mount. */
   const finish = useCallback(async () => {
     markHowItWorksSeenClient();
     try {
@@ -650,19 +649,6 @@ export function HowItWorksTour({ nextPath }: { nextPath: string }) {
   }, [finish, step]);
 
   useEffect(() => {
-    if (hasSeenHowItWorksClient()) {
-      // localStorage may outlive a cleared cookie — re-stamp before leaving
-      markHowItWorksSeenClient();
-      void markHowItWorksSeenAction().finally(() => {
-        window.location.replace(destination);
-      });
-      return;
-    }
-    setReady(true);
-  }, [destination]);
-
-  useEffect(() => {
-    if (!ready) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -677,16 +663,7 @@ export function HowItWorksTour({ nextPath }: { nextPath: string }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [finish, goNext, ready]);
-
-  if (!ready) {
-    return (
-      <div className="relative flex min-h-dvh items-center justify-center bg-mg-background">
-        <LandingBackdrop />
-        <span className="relative z-10 text-sm text-mg-faint">Chargement…</span>
-      </div>
-    );
-  }
+  }, [finish, goNext]);
 
   const isLast = step === TOTAL - 1;
   const copy = STEPS[step];

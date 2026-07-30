@@ -12,6 +12,9 @@ import { buildDriveelyMetadata } from "@/lib/margeo/seo";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+/** Cookie-gated; never cache a seen→dashboard redirect for unseen users. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = buildDriveelyMetadata({
   title: "Comment ça marche",
   description: "Comment fonctionne Driveely — capture, analyse, décision.",
@@ -40,6 +43,7 @@ export default async function CommentCaMarchePage({
     : DRIVEELY_PATHS.onboarding;
   const nextPath = resolveHowItWorksNext(params.next, fallback);
 
+  // Backup: cookie only. Missing cookie ⇒ tour stays reachable.
   const jar = await cookies();
   if (isHowItWorksCookieValue(jar.get(HOW_IT_WORKS_COOKIE)?.value)) {
     redirect(nextPath);

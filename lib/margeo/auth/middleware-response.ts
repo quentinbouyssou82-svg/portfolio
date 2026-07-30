@@ -28,6 +28,10 @@ export function redirectPreservingCookies(
   if (hostMode) {
     redirectResponse.headers.set("x-driveely-host-mode", hostMode);
   }
+  const hiwDebug = source.headers.get("x-hiw-debug");
+  if (hiwDebug) {
+    redirectResponse.headers.set("x-hiw-debug", hiwDebug);
+  }
 
   return redirectResponse;
 }

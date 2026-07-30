@@ -3,21 +3,19 @@
 import { useEffect, useState } from "react";
 import {
   buildHowItWorksPath,
-  hasSeenHowItWorksClient,
-  markHowItWorksSeenClient,
+  hasHowItWorksCookieClient,
 } from "@/lib/margeo/how-it-works";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 /**
  * Backup client gate (server middleware + onboarding page also enforce).
- * Uses hard navigation — soft router.replace raced with post-auth cookies.
+ * Cookie-only — never promote localStorage to “seen” here.
  */
 export function HowItWorksGate({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (hasSeenHowItWorksClient()) {
-      markHowItWorksSeenClient();
+    if (hasHowItWorksCookieClient()) {
       setReady(true);
       return;
     }

@@ -49,6 +49,11 @@ async function main() {
   );
   assert.equal(howItWorksCookieSeen("other=1"), false);
 
+  // Routing contract: missing cookie ⇒ tour stays reachable (no skip).
+  assert.equal(isHowItWorksCookieValue(null), false);
+  assert.equal(howItWorksCookieSeen(""), false);
+  assert.equal(howItWorksCookieSeen(undefined), false);
+
   console.log("ok — how-it-works helpers");
 }
 
