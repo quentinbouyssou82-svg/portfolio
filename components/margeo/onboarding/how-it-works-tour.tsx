@@ -20,7 +20,6 @@ import {
   Upload,
   UtensilsCrossed,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
 import { Logo } from "@/components/margeo/logo";
@@ -33,6 +32,7 @@ import {
   markHowItWorksSeenClient,
   resolveHowItWorksNext,
 } from "@/lib/margeo/how-it-works";
+import { markHowItWorksSeenAction } from "@/lib/margeo/actions/how-it-works";
 import { cn } from "@/lib/margeo/utils";
 
 const TOTAL = 5;
@@ -625,20 +625,25 @@ function StepVisual({
 }
 
 export function HowItWorksTour({ nextPath }: { nextPath: string }) {
-  const router = useRouter();
   const reduceMotion = useReducedMotion();
   const [step, setStep] = useState(0);
   const [ready, setReady] = useState(false);
   const destination = resolveHowItWorksNext(nextPath);
 
-  const finish = useCallback(() => {
+  const finish = useCallback(async () => {
     markHowItWorksSeenClient();
-    router.replace(destination);
-  }, [destination, router]);
+    try {
+      await markHowItWorksSeenAction();
+    } catch {
+      // client cookie already set
+    }
+    // Hard nav: soft replace races with auth cookies on first visit post-login
+    window.location.assign(destination);
+  }, [destination]);
 
   const goNext = useCallback(() => {
     if (step >= TOTAL - 1) {
-      finish();
+      void finish();
       return;
     }
     setStep((s) => s + 1);
@@ -646,18 +651,22 @@ export function HowItWorksTour({ nextPath }: { nextPath: string }) {
 
   useEffect(() => {
     if (hasSeenHowItWorksClient()) {
-      router.replace(destination);
+      // localStorage may outlive a cleared cookie — re-stamp before leaving
+      markHowItWorksSeenClient();
+      void markHowItWorksSeenAction().finally(() => {
+        window.location.replace(destination);
+      });
       return;
     }
     setReady(true);
-  }, [destination, router]);
+  }, [destination]);
 
   useEffect(() => {
     if (!ready) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        finish();
+        void finish();
       } else if (e.key === "Enter" || e.key === "ArrowRight") {
         e.preventDefault();
         goNext();
@@ -697,7 +706,7 @@ export function HowItWorksTour({ nextPath }: { nextPath: string }) {
           <Logo size="sm" />
           <button
             type="button"
-            onClick={finish}
+            onClick={() => void finish()}
             className="min-h-11 rounded-xl px-3 text-[13px] font-medium text-mg-muted transition-colors hover:text-mg-foreground focus-visible:ring-2 focus-visible:ring-mg-accent/50 focus-visible:outline-none"
           >
             Passer

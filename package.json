@@ -11,7 +11,8 @@
     "build": "next build",
     "food-assets:fetch": "node scripts/fetch-food-assets-3d.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "qa:auth-cycles": "tsx scripts/qa-driveely-auth-cycles.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

@@ -9,6 +9,9 @@ export async function GET(request: NextRequest) {
   loginUrl.searchParams.set("loggedOut", "1");
   const response = NextResponse.redirect(loginUrl);
 
+  // Prevent bfcache / RSC reuse of an authenticated shell after logout
+  response.headers.set("Cache-Control", "no-store, max-age=0");
+
   try {
     const supabase = createMargeoRouteHandlerClient(request, response);
     await supabase.auth.signOut({ scope: "global" });

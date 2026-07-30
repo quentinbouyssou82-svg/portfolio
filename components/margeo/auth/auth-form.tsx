@@ -34,8 +34,15 @@ export function AuthForm({
   >(authAction, undefined);
 
   useEffect(() => {
-    if (state && !state.ok) {
+    if (!state) return;
+    if (!state.ok) {
       toast.error(state.message);
+      return;
+    }
+    // Hard navigation after auth — soft RSC redirects race with cookie
+    // refresh and surface as "This page couldn't load" on Vercel.
+    if (state.redirectTo) {
+      window.location.assign(state.redirectTo);
     }
   }, [state]);
 
@@ -206,9 +213,9 @@ export function AuthForm({
             type="submit"
             size="lg"
             className={cn("w-full", premium && "auth-submit-btn")}
-            loading={pending}
+            loading={pending || Boolean(state?.ok && state.redirectTo)}
           >
-            {pending
+            {pending || (state?.ok && state.redirectTo)
               ? "Un instant…"
               : isSignup
                 ? "Créer mon compte"

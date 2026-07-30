@@ -1,4 +1,3 @@
-import { HowItWorksGate } from "@/components/margeo/onboarding/how-it-works-gate";
 import { OnboardingWizard } from "@/components/margeo/onboarding/onboarding-wizard";
 import type {
   OnboardingDraft,
@@ -6,11 +5,17 @@ import type {
 } from "@/components/margeo/onboarding/onboarding-types";
 import { getAuthUser } from "@/lib/margeo/auth/session";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import {
+  buildHowItWorksPath,
+  HOW_IT_WORKS_COOKIE,
+  isHowItWorksCookieValue,
+} from "@/lib/margeo/how-it-works";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 import { buildDriveelyMetadata } from "@/lib/margeo/seo";
 import type { Vehicle } from "@/lib/margeo/types";
 import { normalizeVehicle } from "@/lib/margeo/vehicle-costs";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = buildDriveelyMetadata({
@@ -48,6 +53,12 @@ function profileToDraft(profile: {
 export default async function MargeoOnboardingPage() {
   const user = await getAuthUser();
   if (!user) redirect(DRIVEELY_PATHS.login);
+
+  // Server gate: tour before vehicle onboarding (client gate was skippable).
+  const jar = await cookies();
+  if (!isHowItWorksCookieValue(jar.get(HOW_IT_WORKS_COOKIE)?.value)) {
+    redirect(buildHowItWorksPath(DRIVEELY_PATHS.onboarding));
+  }
 
   const profile = await ensureProfileForUser(
     user.id,
@@ -87,10 +98,8 @@ export default async function MargeoOnboardingPage() {
   }
 
   return (
-    <HowItWorksGate>
-      <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-        <OnboardingWizard initial={profileToDraft(profile)} />
-      </div>
-    </HowItWorksGate>
+    <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
+      <OnboardingWizard initial={profileToDraft(profile)} />
+    </div>
   );
 }

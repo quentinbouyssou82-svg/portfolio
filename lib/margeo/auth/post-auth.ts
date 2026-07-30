@@ -3,6 +3,7 @@ import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import {
   buildHowItWorksPath,
   HOW_IT_WORKS_COOKIE,
+  isHowItWorksCookieValue,
 } from "@/lib/margeo/how-it-works";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 
@@ -18,12 +19,13 @@ export async function getPostAuthPath(
 
   try {
     const jar = await cookies();
-    if (jar.get(HOW_IT_WORKS_COOKIE)?.value === "1") {
+    if (isHowItWorksCookieValue(jar.get(HOW_IT_WORKS_COOKIE)?.value)) {
       return next;
     }
   } catch {
-    // hors contexte request
+    // hors contexte request — still send to tour (first-run safe)
   }
 
+  // First account / unseen tour: always land on /comment-ca-marche first.
   return buildHowItWorksPath(next);
 }

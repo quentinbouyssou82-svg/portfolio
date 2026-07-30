@@ -4,6 +4,7 @@ import { getAuthUser } from "@/lib/margeo/auth/session";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import {
   HOW_IT_WORKS_COOKIE,
+  isHowItWorksCookieValue,
   resolveHowItWorksNext,
 } from "@/lib/margeo/how-it-works";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
@@ -40,7 +41,7 @@ export default async function CommentCaMarchePage({
   const nextPath = resolveHowItWorksNext(params.next, fallback);
 
   const jar = await cookies();
-  if (jar.get(HOW_IT_WORKS_COOKIE)?.value === "1") {
+  if (isHowItWorksCookieValue(jar.get(HOW_IT_WORKS_COOKIE)?.value)) {
     redirect(nextPath);
   }
 

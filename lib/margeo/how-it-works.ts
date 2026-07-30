@@ -3,6 +3,8 @@ import { DRIVEELY_BASE } from "@/lib/margeo/routes";
 
 export const HOW_IT_WORKS_STORAGE_KEY = "driveely-how-it-works-seen";
 export const HOW_IT_WORKS_COOKIE = "driveely_hiw_seen";
+/** Max age ~400 days (Chrome caps persistent cookies). */
+export const HOW_IT_WORKS_COOKIE_MAX_AGE = 60 * 60 * 24 * 400;
 
 const ALLOWED_NEXT = new Set<string>([
   DRIVEELY_PATHS.onboarding,
@@ -44,13 +46,32 @@ export function buildHowItWorksPath(next: string): string {
   return `${base}${sep}next=${encodeURIComponent(safe)}`;
 }
 
+export function howItWorksCookieOptions(isSecure: boolean) {
+  return {
+    // Readable by client gate / tour (mirrors localStorage).
+    httpOnly: false,
+    sameSite: "lax" as const,
+    secure: isSecure,
+    path: "/",
+    maxAge: HOW_IT_WORKS_COOKIE_MAX_AGE,
+  };
+}
+
+/** Strict cookie value check (avoids prefix false-positives). */
+export function isHowItWorksCookieValue(
+  value: string | null | undefined,
+): boolean {
+  return value === "1";
+}
+
 export function hasSeenHowItWorksClient(): boolean {
   if (typeof window === "undefined") return false;
   try {
     if (localStorage.getItem(HOW_IT_WORKS_STORAGE_KEY) === "1") return true;
-    return document.cookie
-      .split(";")
-      .some((c) => c.trim().startsWith(`${HOW_IT_WORKS_COOKIE}=1`));
+    return document.cookie.split(";").some((c) => {
+      const part = c.trim();
+      return part === `${HOW_IT_WORKS_COOKIE}=1`;
+    });
   } catch {
     return false;
   }
@@ -64,8 +85,16 @@ export function markHowItWorksSeenClient(): void {
     // private mode
   }
   try {
-    const maxAge = 60 * 60 * 24 * 400;
-    document.cookie = `${HOW_IT_WORKS_COOKIE}=1; path=/; max-age=${maxAge}; SameSite=Lax`;
+    const secure =
+      typeof location !== "undefined" && location.protocol === "https:";
+    const parts = [
+      `${HOW_IT_WORKS_COOKIE}=1`,
+      "path=/",
+      `max-age=${HOW_IT_WORKS_COOKIE_MAX_AGE}`,
+      "SameSite=Lax",
+    ];
+    if (secure) parts.push("Secure");
+    document.cookie = parts.join("; ");
   } catch {
     // ignore
   }

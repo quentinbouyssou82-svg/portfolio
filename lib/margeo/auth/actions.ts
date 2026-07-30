@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { User } from "@supabase/supabase-js";
@@ -143,7 +142,7 @@ async function finalizeSignUpAndRedirect(
   user: User,
   name: string,
   termsAcceptedAt?: string,
-): Promise<never> {
+): Promise<MargeoActionResult> {
   if ((await getAppModeAsync()) === "beta") {
     await markBetaTester(user.id, { force: true });
   }
@@ -170,7 +169,10 @@ async function finalizeSignUpAndRedirect(
       ...(termsAcceptedAt ? { terms_accepted_at: termsAcceptedAt } : {}),
     },
   });
-  redirect(await getPostAuthPath(user.id, name));
+  return {
+    ok: true,
+    redirectTo: await getPostAuthPath(user.id, name),
+  };
 }
 
 /** Bêta : création via admin API (pas d'email envoyé → pas de rate limit). */
@@ -227,8 +229,7 @@ async function signUpWithAdminApi(
     };
   }
 
-  await finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
-  throw new Error("unreachable");
+  return finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
 }
 
 export async function signUpAction(
@@ -325,8 +326,7 @@ export async function signUpAction(
       };
     }
 
-    await finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
-    throw new Error("unreachable");
+    return finalizeSignUpAndRedirect(user, name, termsAcceptedAt);
   } catch (e) {
     if (isRedirectError(e)) throw e;
     return {
@@ -381,7 +381,7 @@ export async function signInAction(
               retry.data.user.id,
               retry.data.user.user_metadata?.name as string | undefined,
             );
-            redirect(redirectTo);
+            return { ok: true, redirectTo };
           }
         }
       }
@@ -402,7 +402,7 @@ export async function signInAction(
 
     const name = data.user.user_metadata?.name as string | undefined;
     const redirectTo = await getPostAuthPath(data.user.id, name);
-    redirect(redirectTo);
+    return { ok: true, redirectTo };
   } catch (e) {
     if (isRedirectError(e)) throw e;
     return {
@@ -414,12 +414,12 @@ export async function signInAction(
   }
 }
 
-export async function signOutAction(): Promise<void> {
+export async function signOutAction(): Promise<{ ok: true; redirectTo: string }> {
   try {
     const supabase = await createMargeoServerClient();
     await supabase.auth.signOut();
   } catch {
     // Déjà déconnecté
   }
-  redirect(DRIVEELY_PATHS.login);
+  return { ok: true, redirectTo: DRIVEELY_PATHS.login };
 }

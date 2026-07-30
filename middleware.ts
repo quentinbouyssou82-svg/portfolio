@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import type { User } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
 import {
   PIN_SESSION_COOKIE,
@@ -28,7 +29,10 @@ import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import {
   buildHowItWorksPath,
   HOW_IT_WORKS_COOKIE,
+  isHowItWorksCookieValue,
+  resolveHowItWorksNext,
 } from "@/lib/margeo/how-it-works";
+import { redirectPreservingCookies } from "@/lib/margeo/auth/middleware-response";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -266,17 +270,37 @@ async function handleDriveelyAuth(
         return request.cookies.getAll();
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
+        cookiesToSet.forEach(({ name, value }) => {
           request.cookies.set(name, value);
+        });
+        // Rebuild the response so refreshed auth cookies stick on the
+        // same object we may later convert into a redirect.
+        const nextHeaders = new Headers(request.headers);
+        nextHeaders.set(DRIVEELY_APP_MODE_HEADER, appMode);
+        response = needsRewrite
+          ? NextResponse.rewrite(rewriteUrl, {
+              request: { headers: nextHeaders },
+            })
+          : NextResponse.next({ request: { headers: nextHeaders } });
+        response = withAppModeHeaders(request, response, appMode);
+        cookiesToSet.forEach(({ name, value, options }) => {
           response.cookies.set(name, value, options);
         });
       },
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: User | null = null;
+  try {
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+  } catch (err) {
+    // Network / JWT refresh failure must not crash Edge → "This page couldn't load"
+    console.error("[driveely/middleware] getUser failed:", err);
+    return response;
+  }
 
   const isAuthPage =
     relative === "/login" || publicPathname === DRIVEELY_PATHS.login;
@@ -286,23 +310,38 @@ async function handleDriveelyAuth(
     relative === "/comment-ca-marche" ||
     publicPathname === DRIVEELY_PATHS.howItWorks;
   const isProtected = isDriveelyProtectedPublicPath(publicPathname);
-  const hiwSeen = request.cookies.get(HOW_IT_WORKS_COOKIE)?.value === "1";
+  const hiwSeen = isHowItWorksCookieValue(
+    request.cookies.get(HOW_IT_WORKS_COOKIE)?.value,
+  );
 
   if (!user && (isProtected || isOnboarding || isHowItWorks)) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = DRIVEELY_PATHS.login;
-    if (appMode === "beta") redirectUrl.searchParams.set("beta", "1");
-    return NextResponse.redirect(redirectUrl);
+    const search =
+      appMode === "beta" ? "?beta=1" : "";
+    return redirectPreservingCookies(
+      request,
+      response,
+      DRIVEELY_PATHS.login,
+      search,
+    );
   }
 
   if (user && isAuthPage) {
-    const { data: profile, error: profileError } = await supabase
-      .from("margeo_profiles")
-      .select(
-        "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
-      )
-      .eq("id", user.id)
-      .maybeSingle();
+    let profile = null;
+    let profileError = null;
+    try {
+      const result = await supabase
+        .from("margeo_profiles")
+        .select(
+          "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
+        )
+        .eq("id", user.id)
+        .maybeSingle();
+      profile = result.data;
+      profileError = result.error;
+    } catch (err) {
+      console.error("[driveely/middleware] profile read failed:", err);
+      return response;
+    }
 
     const status = resolveOnboardingStatus(profile, user, {
       profileReadError: Boolean(profileError),
@@ -312,16 +351,17 @@ async function handleDriveelyAuth(
       status === "complete"
         ? DRIVEELY_PATHS.dashboard
         : DRIVEELY_PATHS.onboarding;
-    const redirectUrl = request.nextUrl.clone();
+
     if (hiwSeen) {
-      redirectUrl.pathname = next;
-      redirectUrl.search = "";
-    } else {
-      const tour = new URL(buildHowItWorksPath(next), request.nextUrl.origin);
-      redirectUrl.pathname = tour.pathname;
-      redirectUrl.search = tour.search;
+      return redirectPreservingCookies(request, response, next, "");
     }
-    return NextResponse.redirect(redirectUrl);
+    const tour = new URL(buildHowItWorksPath(next), request.nextUrl.origin);
+    return redirectPreservingCookies(
+      request,
+      response,
+      tour.pathname,
+      tour.search,
+    );
   }
 
   // Tour produit : accessible aux comptes incomplets (comme onboarding)
@@ -330,13 +370,22 @@ async function handleDriveelyAuth(
   }
 
   if (user && (isProtected || isOnboarding)) {
-    const { data: profile, error: profileError } = await supabase
-      .from("margeo_profiles")
-      .select(
-        "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
-      )
-      .eq("id", user.id)
-      .maybeSingle();
+    let profile = null;
+    let profileError = null;
+    try {
+      const result = await supabase
+        .from("margeo_profiles")
+        .select(
+          "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
+        )
+        .eq("id", user.id)
+        .maybeSingle();
+      profile = result.data;
+      profileError = result.error;
+    } catch (err) {
+      console.error("[driveely/middleware] profile read failed:", err);
+      return response;
+    }
 
     if (profileError) {
       return response;
@@ -344,29 +393,43 @@ async function handleDriveelyAuth(
 
     const status = resolveOnboardingStatus(profile, user);
 
+    // Unseen tour: force /comment-ca-marche once (new signup + existing users).
+    if (!hiwSeen) {
+      const nextAfterTour =
+        status === "complete"
+          ? resolveHowItWorksNext(relative, DRIVEELY_PATHS.dashboard)
+          : DRIVEELY_PATHS.onboarding;
+      const tour = new URL(
+        buildHowItWorksPath(nextAfterTour),
+        request.nextUrl.origin,
+      );
+      return redirectPreservingCookies(
+        request,
+        response,
+        tour.pathname,
+        tour.search,
+      );
+    }
+
     if (status === "complete") {
       if (isOnboarding) {
-        const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = DRIVEELY_PATHS.dashboard;
-        return NextResponse.redirect(redirectUrl);
+        return redirectPreservingCookies(
+          request,
+          response,
+          DRIVEELY_PATHS.dashboard,
+          "",
+        );
       }
       return response;
     }
 
     if (status === "incomplete" && isProtected) {
-      const redirectUrl = request.nextUrl.clone();
-      if (hiwSeen) {
-        redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
-        redirectUrl.search = "";
-      } else {
-        const tour = new URL(
-          buildHowItWorksPath(DRIVEELY_PATHS.onboarding),
-          request.nextUrl.origin,
-        );
-        redirectUrl.pathname = tour.pathname;
-        redirectUrl.search = tour.search;
-      }
-      return NextResponse.redirect(redirectUrl);
+      return redirectPreservingCookies(
+        request,
+        response,
+        DRIVEELY_PATHS.onboarding,
+        "",
+      );
     }
   }
 

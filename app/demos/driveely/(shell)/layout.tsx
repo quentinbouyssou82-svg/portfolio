@@ -4,8 +4,14 @@ import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import {
+  HOW_IT_WORKS_COOKIE,
+  buildHowItWorksPath,
+  isHowItWorksCookieValue,
+} from "@/lib/margeo/how-it-works";
 import { buildDriveelyMetadata } from "@/lib/margeo/seo";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = buildDriveelyMetadata({
@@ -71,6 +77,10 @@ export default async function MargeoShellLayout({
       user,
     );
   } else if (status === "incomplete") {
+    const jar = await cookies();
+    if (!isHowItWorksCookieValue(jar.get(HOW_IT_WORKS_COOKIE)?.value)) {
+      redirect(buildHowItWorksPath(DRIVEELY_PATHS.onboarding));
+    }
     redirect(DRIVEELY_PATHS.onboarding);
   }
   // unknown : ne pas reboucler — profil vient d'être assuré
