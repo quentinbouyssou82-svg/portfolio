@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { JoinBetaCta } from "@/components/margeo/beta/join-beta-cta";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
 import { margeoRoutes } from "@/lib/margeo/routes";
@@ -43,12 +44,7 @@ export function LandingNav() {
               Se connecter
             </Button>
           </Link>
-          <Link href={margeoRoutes.signup}>
-            <Button size="sm" className="landing-cta-primary min-h-10">
-              Commencer gratuitement
-              <ArrowRight />
-            </Button>
-          </Link>
+          <JoinBetaCta size="sm" fullWidth={false} className="min-h-10" />
         </div>
 
         <button
@@ -91,12 +87,9 @@ export function LandingNav() {
                   Se connecter
                 </Button>
               </Link>
-              <Link href={margeoRoutes.signup} onClick={() => setOpen(false)}>
-                <Button className="landing-cta-primary w-full min-h-11">
-                  Commencer gratuitement
-                  <ArrowRight />
-                </Button>
-              </Link>
+              <div onClick={() => setOpen(false)}>
+                <JoinBetaCta className="w-full" />
+              </div>
             </div>
           </motion.div>
         )}

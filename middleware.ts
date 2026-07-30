@@ -9,7 +9,14 @@ import {
   PUBLIC_DRIVEELY_PATHS,
   PROTECTED_DRIVEELY_PREFIXES,
 } from "@/lib/margeo/constants";
-import { getAppMode } from "@/lib/margeo/config";
+import {
+  DRIVEELY_APP_MODE_COOKIE,
+  DRIVEELY_APP_MODE_HEADER,
+  appModeCookieOptions,
+  getDefaultAppMode,
+  normalizeMode,
+  type DriveelyAppMode,
+} from "@/lib/margeo/config";
 import {
   DRIVEELY_INTERNAL_BASE,
   isDriveelyProductHost,
@@ -31,23 +38,51 @@ const DRIVEELY_API = "/api/driveely";
 function isPassthroughPath(pathname: string): boolean {
   if (pathname.startsWith("/_next")) return true;
   if (pathname.startsWith("/api/")) return true;
-  // Fichiers statiques (favicon, images, robots…)
   if (/\.[a-zA-Z0-9]+$/.test(pathname)) return true;
   return false;
+}
+
+function resolveRequestAppMode(request: NextRequest): DriveelyAppMode {
+  const fromCookie = normalizeMode(
+    request.cookies.get(DRIVEELY_APP_MODE_COOKIE)?.value,
+  );
+  if (fromCookie) return fromCookie;
+  const betaQuery = request.nextUrl.searchParams.get("beta");
+  if (betaQuery === "1" || betaQuery === "true") return "beta";
+  return getDefaultAppMode();
+}
+
+function withAppModeHeaders(
+  request: NextRequest,
+  response: NextResponse,
+  mode: DriveelyAppMode,
+) {
+  response.headers.set(DRIVEELY_APP_MODE_HEADER, mode);
+  response.headers.set("x-driveely-host-mode", "product");
+  if (
+    mode === "beta" &&
+    normalizeMode(request.cookies.get(DRIVEELY_APP_MODE_COOKIE)?.value) !==
+      "beta"
+  ) {
+    const secure =
+      request.nextUrl.protocol === "https:" || process.env.VERCEL === "1";
+    response.cookies.set(
+      DRIVEELY_APP_MODE_COOKIE,
+      "beta",
+      appModeCookieOptions(secure),
+    );
+  }
+  return response;
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = request.nextUrl.hostname;
 
-  // ── Produit Driveely (driveely.app, margeo.vercel.app, …) ─────────────
-  // Cause historique : "/" servait app/page.tsx (Nocta). Sur ces hôtes,
-  // on rewrite vers /demos/driveely tout en exposant des URLs racine.
   if (isDriveelyProductHost(hostname)) {
     return handleDriveelyProductHost(request, pathname);
   }
 
-  // ── Monorepo portfolio (Nocta + demos) ────────────────────────────────
   if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(LEGACY_UBERLY_PREFIX, DRIVEELY_INTERNAL_BASE);
@@ -106,14 +141,12 @@ async function handleDriveelyProductHost(
   request: NextRequest,
   pathname: string,
 ) {
-  // Legacy API
   if (pathname.startsWith(LEGACY_UBERLY_API)) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.replace(LEGACY_UBERLY_API, DRIVEELY_API);
     return NextResponse.redirect(url, 301);
   }
 
-  // Legacy /demos/uberly → URL propre
   if (pathname.startsWith(LEGACY_UBERLY_PREFIX)) {
     const rel = pathname.slice(LEGACY_UBERLY_PREFIX.length) || "/";
     const url = request.nextUrl.clone();
@@ -121,7 +154,6 @@ async function handleDriveelyProductHost(
     return NextResponse.redirect(url, 301);
   }
 
-  // /demos/margeo → URL propre
   if (pathname.startsWith(LEGACY_MARGEO_PREFIX)) {
     const rel = pathname.slice(LEGACY_MARGEO_PREFIX.length) || "/";
     const url = request.nextUrl.clone();
@@ -129,7 +161,6 @@ async function handleDriveelyProductHost(
     return NextResponse.redirect(url, 301);
   }
 
-  // Canonique : /demos/driveely/* → /* (plus de préfixe public)
   if (
     pathname === DRIVEELY_INTERNAL_BASE ||
     pathname.startsWith(`${DRIVEELY_INTERNAL_BASE}/`)
@@ -140,7 +171,6 @@ async function handleDriveelyProductHost(
     return NextResponse.redirect(url, 301);
   }
 
-  // Nocta / autres apps du monorepo : non servis sur le domaine produit
   if (
     pathname.startsWith(MAISON_PREFIX) ||
     pathname.startsWith(CONTROL_TOWER_PREFIX)
@@ -168,20 +198,14 @@ function isDriveelyProtectedPublicPath(publicPathname: string): boolean {
 function isDriveelyPublicPath(publicPathname: string): boolean {
   const relative = toDriveelyRelativePath(publicPathname);
   const asPublicHome = relative === "/" ? DRIVEELY_PATHS.home : relative;
-  // PUBLIC_DRIVEELY_PATHS contient les chemins publics (selon AT_ROOT)
   if (PUBLIC_DRIVEELY_PATHS.has(publicPathname)) return true;
   if (PUBLIC_DRIVEELY_PATHS.has(asPublicHome)) return true;
-  // Fallback relatif : /login, /cgu… même si la base publique change
   const publicRelatives = new Set(
     [...PUBLIC_DRIVEELY_PATHS].map((p) => toDriveelyRelativePath(p)),
   );
   return publicRelatives.has(relative);
 }
 
-/**
- * @param publicPathname — URL vue par l'utilisateur (/login ou /demos/driveely/login)
- * @param internalPath — chemin fichiers Next (/demos/driveely/…)
- */
 async function handleDriveelyAuth(
   request: NextRequest,
   publicPathname: string,
@@ -189,16 +213,24 @@ async function handleDriveelyAuth(
 ) {
   const url = getMargeoSupabaseUrl();
   const key = getMargeoClientKey();
-
+  const appMode = resolveRequestAppMode(request);
   const needsRewrite = publicPathname !== internalPath;
 
   if (!url || !key) {
     if (needsRewrite) {
       const rewriteUrl = request.nextUrl.clone();
       rewriteUrl.pathname = internalPath;
-      return NextResponse.rewrite(rewriteUrl);
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set(DRIVEELY_APP_MODE_HEADER, appMode);
+      return withAppModeHeaders(
+        request,
+        NextResponse.rewrite(rewriteUrl, {
+          request: { headers: requestHeaders },
+        }),
+        appMode,
+      );
     }
-    return NextResponse.next();
+    return withAppModeHeaders(request, NextResponse.next(), appMode);
   }
 
   const relative = toDriveelyRelativePath(publicPathname);
@@ -207,17 +239,22 @@ async function handleDriveelyAuth(
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = DRIVEELY_PATHS.login;
     redirectUrl.searchParams.set("mode", "signup");
+    if (appMode === "beta") redirectUrl.searchParams.set("beta", "1");
     return NextResponse.redirect(redirectUrl, 308);
   }
 
   const rewriteUrl = request.nextUrl.clone();
   rewriteUrl.pathname = internalPath;
 
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(DRIVEELY_APP_MODE_HEADER, appMode);
+
   let response = needsRewrite
-    ? NextResponse.rewrite(rewriteUrl)
-    : NextResponse.next({ request });
-  response.headers.set("x-driveely-app-mode", getAppMode());
-  response.headers.set("x-driveely-host-mode", "product");
+    ? NextResponse.rewrite(rewriteUrl, {
+        request: { headers: requestHeaders },
+      })
+    : NextResponse.next({ request: { headers: requestHeaders } });
+  response = withAppModeHeaders(request, response, appMode);
 
   const supabase = createServerClient(url, key, {
     cookies: {
@@ -237,7 +274,6 @@ async function handleDriveelyAuth(
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isPublic = isDriveelyPublicPath(publicPathname);
   const isAuthPage =
     relative === "/login" || publicPathname === DRIVEELY_PATHS.login;
   const isOnboarding =
@@ -247,6 +283,7 @@ async function handleDriveelyAuth(
   if (!user && (isProtected || isOnboarding)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = DRIVEELY_PATHS.login;
+    if (appMode === "beta") redirectUrl.searchParams.set("beta", "1");
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -344,10 +381,6 @@ async function handleMaisonAuth(request: NextRequest, pathname: string) {
 
 export const config = {
   matcher: [
-    /*
-     * Toutes les pages (hôte Driveely → rewrite racine).
-     * Exclut assets Next et fichiers avec extension.
-     */
     "/((?!_next/static|_next/image|.*\\..*).*)",
     "/",
   ],

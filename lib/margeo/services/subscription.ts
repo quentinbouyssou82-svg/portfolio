@@ -1,11 +1,11 @@
 import {
-  getEntitlementsForPlan,
+  getEntitlementsForPlanAsync,
   isPaidPlan,
   planRank,
   type PlanEntitlements,
 } from "@/lib/margeo/billing/entitlements";
 import {
-  getPaymentProvider,
+  getPaymentProviderAsync,
   type BillingPeriod,
   type PaymentProviderId,
 } from "@/lib/margeo/billing/provider";
@@ -418,7 +418,7 @@ export async function getUserEntitlements(
   if (cached && Date.now() < cached.expires) return cached.value;
 
   const sub = await getCurrentSubscription(userId);
-  const value = getEntitlementsForPlan(resolveEffectivePlan(sub));
+  const value = await getEntitlementsForPlanAsync(resolveEffectivePlan(sub));
   entitlementsCache.set(userId, {
     value,
     expires: Date.now() + ENTITLEMENTS_TTL_MS,
@@ -646,7 +646,7 @@ export async function checkoutAndActivatePlan(
   },
 ): Promise<{ subscription: UserSubscription; redirectUrl?: string }> {
   const current = await getCurrentSubscription(userId);
-  const provider = getPaymentProvider();
+  const provider = await getPaymentProviderAsync();
   const checkout = await provider.createCheckout({
     userId,
     planId,
@@ -658,6 +658,10 @@ export async function checkoutAndActivatePlan(
 
   if (checkout.mode === "redirect") {
     return { subscription: current, redirectUrl: checkout.checkoutUrl };
+  }
+
+  if (checkout.mode === "blocked") {
+    throw new Error(checkout.message);
   }
 
   const rankDelta = planRank(planId) - planRank(current.planId);

@@ -15,7 +15,8 @@ export type BetaEventType =
   | "paywall_cta_click"
   | "paywall_trial_start"
   | "paywall_exit_offer"
-  | "paywall_dismiss";
+  | "paywall_dismiss"
+  | "beta_joined";
 
 export interface BetaEventInput {
   userId: string;

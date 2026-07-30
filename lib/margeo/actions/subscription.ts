@@ -71,12 +71,20 @@ export async function activatePlanAction(input: {
   const auth = await requireUserId();
   if (!auth.ok) return auth;
 
-  const { getAppFeatures } = await import("@/lib/margeo/config");
-  if (!getAppFeatures().billing) {
+  const { getAppFeaturesAsync } = await import("@/lib/margeo/config");
+  const feats = await getAppFeaturesAsync();
+  if (!feats.billing) {
     return {
       ok: false,
       message:
         "Les abonnements sont désactivés pendant la bêta. Toutes les fonctionnalités sont déjà débloquées.",
+    };
+  }
+  if (!feats.purchasesEnabled) {
+    return {
+      ok: false,
+      message:
+        "Ouverture prochaine. Le paiement sera activé dès que Stripe sera finalisé.",
     };
   }
 

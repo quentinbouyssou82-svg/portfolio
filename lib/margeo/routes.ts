@@ -42,6 +42,8 @@ export const driveelyRoutes = {
   cookies: path("cookies"),
   conditionsBeta: path("conditions-beta"),
   beta: path("beta"),
+  retour: path("retour"),
+  questionnaire: path("questionnaire"),
   remboursement: path("remboursement"),
   demandesRgpd: path("demandes-rgpd"),
   suppressionDonnees: path("suppression-donnees"),

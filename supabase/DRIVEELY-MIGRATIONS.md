@@ -12,6 +12,7 @@ Exécuter **dans l’ordre**, une seule fois par environnement (Supabase → SQL
 5. driveely-beta.sql       → champs nullable, beta_events, premium, vues
 6. driveely-beta-v2.sql    → funnel events, is_beta_tester, vues monitoring
 7. driveely-beta-v3.sql    → vue driveely_beta_vision_stats (geminiMs, corrections)
+8. driveely-survey-v1.sql  → questionnaire produit (surveys, questions, answers, vues NPS)
 ```
 
 ## Vérifications post-migration
@@ -39,6 +40,11 @@ select id, public from storage.buckets where id = 'driveely-screenshots';
 | margeo_feedback | soi | soi |
 | margeo_location_logs | soi | insert soi |
 | margeo_beta_events | soi | **interdit** (API service_role) |
+| margeo_surveys | actifs (auth) | **interdit** (seed / admin) |
+| margeo_survey_questions | actifs (auth) | **interdit** |
+| margeo_survey_responses | soi | insert/update soi |
+| margeo_survey_answers | via response soi | insert/update soi |
+| margeo_survey_answer_history | soi | insert soi |
 
 ## Idempotence
 

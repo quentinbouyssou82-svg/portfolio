@@ -2,16 +2,15 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowRight,
   Ban,
   Sparkles,
   TrendingUp,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { JoinBetaCta } from "@/components/margeo/beta/join-beta-cta";
 import { PhoneMock } from "@/components/margeo/landing/phone-mock";
 import { Button } from "@/components/margeo/ui/button";
-import { margeoRoutes } from "@/lib/margeo/routes";
 
 const BENEFITS = [
   { icon: TrendingUp, label: "Mieux filtrer pour le €/h", tone: "go" as const },
@@ -106,15 +105,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.3, ease }}
               className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start"
             >
-              <Link href={margeoRoutes.signup} className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  className="landing-cta-primary w-full min-h-12 px-7"
-                >
-                  Commencer gratuitement
-                  <ArrowRight />
-                </Button>
-              </Link>
+              <JoinBetaCta className="sm:min-w-[220px]" />
               <Link href="#solution" className="w-full sm:w-auto">
                 <Button
                   variant="secondary"
@@ -132,7 +123,7 @@ export function Hero() {
               transition={{ duration: 0.5, delay: 0.38 }}
               className="mt-5 text-xs text-mg-faint"
             >
-              Gratuit · 2 analyses/jour · Sans carte bancaire
+              Bêta ouverte · Tout débloqué · Sans carte bancaire
             </motion.p>
           </div>
 

@@ -6,37 +6,37 @@ import { DRIVEELY_CONTACT_EMAIL } from "@/lib/margeo/brand";
 import { getAppFeatures } from "@/lib/margeo/config";
 import { margeoRoutes } from "@/lib/margeo/routes";
 
-const premiumFooterLabel =
-  getAppFeatures().premiumPageMode === "beta_unlocked"
-    ? "Fonctionnalités"
-    : "Offres";
-
-const COLUMNS = [
-  {
-    title: "Produit",
-    links: [
-      { label: "Commencer gratuitement", href: margeoRoutes.signup },
-      { label: "Se connecter", href: margeoRoutes.login },
-      { label: premiumFooterLabel, href: margeoRoutes.premium },
-      { label: "Programme Bêta", href: margeoRoutes.beta },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    title: "Ressources",
-    links: [
-      { label: "Comment ça marche", href: "#fonctionnalites" },
-      { label: "Le problème", href: "#probleme" },
-      { label: "FAQ — plateformes", href: "#faq" },
-      {
-        label: "Contact",
-        href: `mailto:${DRIVEELY_CONTACT_EMAIL}`,
-      },
-    ],
-  },
-];
-
 export function Footer() {
+  const premiumFooterLabel =
+    getAppFeatures().premiumPageMode === "beta_unlocked"
+      ? "Fonctionnalités"
+      : "Offres";
+
+  const columns = [
+    {
+      title: "Produit",
+      links: [
+        { label: "Rejoindre la bêta", href: margeoRoutes.beta },
+        { label: "Se connecter", href: margeoRoutes.login },
+        { label: premiumFooterLabel, href: margeoRoutes.premium },
+        { label: "Programme Bêta", href: margeoRoutes.beta },
+        { label: "FAQ", href: "#faq" },
+      ],
+    },
+    {
+      title: "Ressources",
+      links: [
+        { label: "Comment ça marche", href: "#fonctionnalites" },
+        { label: "Le problème", href: "#probleme" },
+        { label: "FAQ — plateformes", href: "#faq" },
+        {
+          label: "Contact",
+          href: `mailto:${DRIVEELY_CONTACT_EMAIL}`,
+        },
+      ],
+    },
+  ];
+
   return (
     <footer className="relative z-[1] border-t border-mg-border pb-24 lg:pb-0">
       <div className="mx-auto max-w-6xl px-5 py-14">
@@ -60,7 +60,7 @@ export function Footer() {
             </p>
           </div>
 
-          {COLUMNS.map((column) => (
+          {columns.map((column) => (
             <div key={column.title}>
               <p className="text-sm font-semibold text-mg-foreground">
                 {column.title}

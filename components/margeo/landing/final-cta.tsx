@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import { JoinBetaCta } from "@/components/margeo/beta/join-beta-cta";
 import { PlatformLogo } from "@/components/margeo/platform-logo";
 import { Reveal } from "@/components/margeo/reveal";
 import { Button } from "@/components/margeo/ui/button";
@@ -30,12 +31,7 @@ export function FinalCta() {
               estimatif — à toi de décider.
             </p>
             <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-              <Link href={margeoRoutes.signup} className="w-full sm:w-auto">
-                <Button size="lg" className="landing-cta-primary min-h-12 w-full sm:min-w-[240px]">
-                  Commencer gratuitement
-                  <ArrowRight />
-                </Button>
-              </Link>
+              <JoinBetaCta className="sm:min-w-[240px]" />
               <Link href={margeoRoutes.login} className="w-full sm:w-auto">
                 <Button
                   variant="secondary"

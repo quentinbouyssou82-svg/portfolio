@@ -8,6 +8,7 @@ import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
 import { getMargeoServiceKey } from "@/lib/margeo/supabase/env";
+import { getAppModeAsync } from "@/lib/margeo/config";
 import { logBetaEvent } from "@/lib/margeo/services/beta-events";
 import { markBetaTester } from "@/lib/margeo/services/beta-user";
 import { resolveAuthError, type AuthErrorLike } from "./errors";
@@ -143,7 +144,9 @@ async function finalizeSignUpAndRedirect(
   name: string,
   termsAcceptedAt?: string,
 ): Promise<never> {
-  await markBetaTester(user.id);
+  if ((await getAppModeAsync()) === "beta") {
+    await markBetaTester(user.id, { force: true });
+  }
   if (termsAcceptedAt) {
     try {
       const admin = getMargeoAdminDb();

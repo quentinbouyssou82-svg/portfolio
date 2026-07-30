@@ -7,7 +7,7 @@ import { getAppFeatures } from "@/lib/margeo/config";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 
 /** Stripe = seul PSP prévu. `simulated` = sans facturation réelle. */
-export type PaymentProviderId = "simulated" | "stripe";
+export type PaymentProviderId = "simulated" | "stripe" | "blocked";
 
 export type BillingPeriod = "monthly" | "yearly";
 
@@ -20,11 +20,6 @@ export type CheckoutIntent = {
   customerEmail?: string;
 };
 
-/**
- * Résultat checkout.
- * - mode "activate" : activation immédiate (bêta app / webhook Stripe déjà traité)
- * - mode "redirect" : rediriger vers Stripe Checkout
- */
 export type CheckoutResult =
   | {
       mode: "activate";
@@ -37,6 +32,11 @@ export type CheckoutResult =
       mode: "redirect";
       provider: PaymentProviderId;
       checkoutUrl: string;
+    }
+  | {
+      mode: "blocked";
+      provider: "blocked";
+      message: string;
     };
 
 export interface PaymentProvider {
@@ -44,7 +44,6 @@ export interface PaymentProvider {
   createCheckout(intent: CheckoutIntent): Promise<CheckoutResult>;
 }
 
-/** Activation immédiate sans prélèvement. */
 export const simulatedPaymentProvider: PaymentProvider = {
   id: "simulated",
   async createCheckout(intent) {
@@ -58,16 +57,42 @@ export const simulatedPaymentProvider: PaymentProvider = {
   },
 };
 
+/** Mode public avant ouverture Stripe — conserve le code, bloque l'achat. */
+export const blockedPaymentProvider: PaymentProvider = {
+  id: "blocked",
+  async createCheckout() {
+    return {
+      mode: "blocked",
+      provider: "blocked",
+      message:
+        "Ouverture prochaine. Les abonnements seront disponibles dès que le paiement sera finalisé.",
+    };
+  },
+};
+
 /**
- * Provider effectif selon l'environnement.
- * - beta app / billing off → simulated
- * - production + STRIPE_SECRET_KEY + stripe flag → Stripe (à brancher)
- * - sinon simulated
+ * Provider effectif selon les feature flags.
+ * - beta → simulated (billing off en amont)
+ * - production sans purchasesEnabled → blocked
+ * - production + purchases + STRIPE_SECRET_KEY → Stripe (à brancher)
+ * - sinon simulated (dev)
  */
 export function getPaymentProvider(): PaymentProvider {
   const feats = getAppFeatures();
-  if (!feats.billing || !feats.stripe) {
+  return resolveProvider(feats);
+}
+
+export async function getPaymentProviderAsync(): Promise<PaymentProvider> {
+  const { getAppFeaturesAsync } = await import("@/lib/margeo/config");
+  return resolveProvider(await getAppFeaturesAsync());
+}
+
+function resolveProvider(feats: ReturnType<typeof getAppFeatures>): PaymentProvider {
+  if (!feats.billing) {
     return simulatedPaymentProvider;
+  }
+  if (!feats.purchasesEnabled) {
+    return blockedPaymentProvider;
   }
 
   // Production Stripe — brancher stripePaymentProvider quand prêt :
@@ -77,4 +102,8 @@ export function getPaymentProvider(): PaymentProvider {
 
 export function isBillingEnabled(): boolean {
   return getAppFeatures().billing;
+}
+
+export function arePurchasesEnabled(): boolean {
+  return getAppFeatures().purchasesEnabled;
 }

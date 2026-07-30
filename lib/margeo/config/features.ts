@@ -3,9 +3,9 @@
  * Toute logique commerciale / freemium doit lire ces flags — jamais APP_MODE en dur.
  */
 
-import { getAppMode, type DriveelyAppMode } from "./environment";
+import { getAppMode, getAppModeAsync, type DriveelyAppMode } from "./environment";
 
-export type PremiumPageMode = "commercial" | "beta_unlocked";
+export type PremiumPageMode = "commercial" | "beta_unlocked" | "coming_soon";
 
 export type DriveelyFeatures = {
   mode: DriveelyAppMode;
@@ -15,22 +15,27 @@ export type DriveelyFeatures = {
   paywallSoftBanner: boolean;
   /** Limites freemium (2 analyses/jour, historique court) */
   freemiumLimits: boolean;
-  /** Checkout / activation d'abonnement */
+  /** Surfaces billing / checkout présentes dans le code */
   billing: boolean;
-  /** Stripe Checkout (sinon simulated si billing actif) */
+  /** Tentative Stripe Checkout (quand clé + purchasesEnabled) */
   stripe: boolean;
+  /**
+   * Autorise un achat réel.
+   * false = code Stripe conservé, CTA → « Ouverture prochaine ».
+   */
+  purchasesEnabled: boolean;
   /** Essais 14 j / messaging trial */
   trials: boolean;
   /** Toutes les capacités Elite pour tout le monde */
   allPremiumUnlocked: boolean;
-  /** Page /premium : commercial flow ou message bêta */
+  /** Page /premium */
   premiumPageMode: PremiumPageMode;
   /** Après onboarding : envoyer vers paywall (sinon dashboard) */
   postOnboardingPaywall: boolean;
-  /**
-   * Feedback bêta — routes/actions préparées.
-   * UI complète à brancher plus tard ; flags prêts.
-   */
+  /** Badge UI « Bêta » */
+  showBetaBadge: boolean;
+  /** Message d’ouverture officielle */
+  officialComingSoon: boolean;
   feedback: {
     enabled: boolean;
     bugs: boolean;
@@ -39,6 +44,13 @@ export type DriveelyFeatures = {
   };
 };
 
+function purchasesFlagFromEnv(): boolean {
+  return (
+    process.env.DRIVEELY_PURCHASES_ENABLED === "true" ||
+    process.env.NEXT_PUBLIC_DRIVEELY_PURCHASES_ENABLED === "true"
+  );
+}
+
 const PRODUCTION_FEATURES: DriveelyFeatures = {
   mode: "production",
   paywall: true,
@@ -46,10 +58,13 @@ const PRODUCTION_FEATURES: DriveelyFeatures = {
   freemiumLimits: true,
   billing: true,
   stripe: true,
+  purchasesEnabled: purchasesFlagFromEnv(),
   trials: true,
   allPremiumUnlocked: false,
-  premiumPageMode: "commercial",
+  premiumPageMode: purchasesFlagFromEnv() ? "commercial" : "coming_soon",
   postOnboardingPaywall: true,
+  showBetaBadge: false,
+  officialComingSoon: !purchasesFlagFromEnv(),
   feedback: {
     enabled: false,
     bugs: false,
@@ -65,10 +80,13 @@ const BETA_FEATURES: DriveelyFeatures = {
   freemiumLimits: false,
   billing: false,
   stripe: false,
+  purchasesEnabled: false,
   trials: false,
   allPremiumUnlocked: true,
   premiumPageMode: "beta_unlocked",
   postOnboardingPaywall: false,
+  showBetaBadge: true,
+  officialComingSoon: false,
   feedback: {
     enabled: true,
     bugs: true,
@@ -78,7 +96,18 @@ const BETA_FEATURES: DriveelyFeatures = {
 };
 
 export function getAppFeatures(mode = getAppMode()): DriveelyFeatures {
-  return mode === "beta" ? BETA_FEATURES : PRODUCTION_FEATURES;
+  if (mode === "beta") return BETA_FEATURES;
+  // Re-evaluate purchases flag (env can change between builds)
+  return {
+    ...PRODUCTION_FEATURES,
+    purchasesEnabled: purchasesFlagFromEnv(),
+    premiumPageMode: purchasesFlagFromEnv() ? "commercial" : "coming_soon",
+    officialComingSoon: !purchasesFlagFromEnv(),
+  };
+}
+
+export async function getAppFeaturesAsync(): Promise<DriveelyFeatures> {
+  return getAppFeatures(await getAppModeAsync());
 }
 
 /** Raccourcis typés — préférer getAppFeatures() pour plusieurs flags. */
@@ -88,4 +117,5 @@ export const features = {
   billing: () => getAppFeatures().billing,
   freemiumLimits: () => getAppFeatures().freemiumLimits,
   allPremiumUnlocked: () => getAppFeatures().allPremiumUnlocked,
+  purchasesEnabled: () => getAppFeatures().purchasesEnabled,
 };

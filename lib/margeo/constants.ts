@@ -24,6 +24,8 @@ export const DRIVEELY_PATHS = {
   cookies: driveelyRoutes.cookies,
   conditionsBeta: driveelyRoutes.conditionsBeta,
   beta: driveelyRoutes.beta,
+  retour: driveelyRoutes.retour,
+  questionnaire: driveelyRoutes.questionnaire,
   remboursement: driveelyRoutes.remboursement,
   demandesRgpd: driveelyRoutes.demandesRgpd,
   suppressionDonnees: driveelyRoutes.suppressionDonnees,
@@ -68,6 +70,8 @@ export const PROTECTED_DRIVEELY_PREFIXES = [
   "/profil",
   "/premium",
   "/subscription",
+  "/retour",
+  "/questionnaire",
 ] as const;
 
 export const PROTECTED_MARGEO_PREFIXES = PROTECTED_DRIVEELY_PREFIXES;

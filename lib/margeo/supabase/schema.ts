@@ -127,3 +127,11 @@ export type OnboardingInput = {
   maxDistanceKm: number;
   weeklyHours: "under_10" | "10_20" | "20_30" | "30_40" | "over_40";
 };
+
+/** Réexport types questionnaire (source : lib/margeo/survey) */
+export type {
+  SurveyRow as MargeoSurveyRow,
+  SurveyQuestionRow as MargeoSurveyQuestionRow,
+  SurveyResponseRow as MargeoSurveyResponseRow,
+  SurveyAnswerRow as MargeoSurveyAnswerRow,
+} from "@/lib/margeo/survey/types";

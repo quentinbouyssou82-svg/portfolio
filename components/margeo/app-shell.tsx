@@ -18,35 +18,37 @@ import { getAppFeatures } from "@/lib/margeo/config";
 import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
-const premiumNavLabel = getAppFeatures().premiumPageMode === "beta_unlocked"
-  ? "Bêta"
-  : null;
+function getNavItems() {
+  const premiumNavLabel =
+    getAppFeatures().premiumPageMode === "beta_unlocked" ? "Bêta" : null;
 
-const NAV_ITEMS = [
-  { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
-  { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
-  { href: margeoRoutes.historique, label: "Histo", icon: History },
-  { href: margeoRoutes.profil, label: "Profil", icon: User },
-  {
-    href: `${margeoRoutes.premium}?source=nav`,
-    label: premiumNavLabel ?? "Plans",
-    icon: Crown,
-    match: margeoRoutes.premium,
-  },
-];
-
-const NAV_ITEMS_DESKTOP = [
-  { href: margeoRoutes.dashboard, label: "Dashboard", icon: LayoutDashboard },
-  { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
-  { href: margeoRoutes.historique, label: "Historique", icon: History },
-  { href: margeoRoutes.profil, label: "Profil", icon: User },
-  {
-    href: `${margeoRoutes.premium}?source=nav`,
-    label: premiumNavLabel ?? "Offres",
-    icon: Crown,
-    match: margeoRoutes.premium,
-  },
-];
+  return {
+    mobile: [
+      { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
+      { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
+      { href: margeoRoutes.historique, label: "Histo", icon: History },
+      { href: margeoRoutes.profil, label: "Profil", icon: User },
+      {
+        href: `${margeoRoutes.premium}?source=nav`,
+        label: premiumNavLabel ?? "Plans",
+        icon: Crown,
+        match: margeoRoutes.premium,
+      },
+    ],
+    desktop: [
+      { href: margeoRoutes.dashboard, label: "Dashboard", icon: LayoutDashboard },
+      { href: margeoRoutes.analyse, label: "Analyser", icon: ScanLine },
+      { href: margeoRoutes.historique, label: "Historique", icon: History },
+      { href: margeoRoutes.profil, label: "Profil", icon: User },
+      {
+        href: `${margeoRoutes.premium}?source=nav`,
+        label: premiumNavLabel ?? "Offres",
+        icon: Crown,
+        match: margeoRoutes.premium,
+      },
+    ],
+  };
+}
 
 function AvatarBubble({
   profile,
@@ -132,18 +134,26 @@ export function AppShell({
     [profile.firstName, profile.lastName].filter(Boolean).join(" ") ||
     "Livreur";
 
+  const { mobile: navItems, desktop: navItemsDesktop } = getNavItems();
+  const showBetaBadge = getAppFeatures().showBetaBadge;
+
   return (
     <ProfileProvider profile={profile}>
       <div className="min-h-dvh overflow-x-clip lg:flex">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-mg-border bg-mg-surface/80 backdrop-blur-xl lg:flex">
-        <div className="flex h-16 items-center border-b border-mg-border px-5">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-mg-border px-5">
           <Link href={margeoRoutes.home} aria-label="Retour à l'accueil">
             <Logo />
           </Link>
+          {showBetaBadge ? (
+            <span className="rounded-full border border-mg-accent/30 bg-mg-accent-soft px-2 py-0.5 text-[10px] font-semibold tracking-wide text-mg-accent uppercase">
+              Bêta
+            </span>
+          ) : null}
         </div>
 
         <nav className="flex-1 space-y-1 p-3">
-          {NAV_ITEMS_DESKTOP.map((item) => (
+          {navItemsDesktop.map((item) => (
             <NavLink
               key={item.href}
               {...item}
@@ -174,11 +184,11 @@ export function AppShell({
             </span>
           </Link>
           <Link
-            href={margeoRoutes.beta}
+            href={margeoRoutes.retour}
             className="mt-1 flex items-center gap-2 rounded-xl px-2.5 py-2 text-xs font-medium text-mg-muted transition-colors hover:bg-[var(--mg-nav-hover)] hover:text-mg-accent"
           >
             <span className="size-1.5 rounded-full bg-mg-go shadow-[0_0_0_3px_rgba(52,211,153,0.2)]" />
-            Programme Bêta
+            Retour
           </Link>
           <nav
             aria-label="Informations légales"
@@ -208,8 +218,13 @@ export function AppShell({
 
       <header className="fixed inset-x-0 top-0 z-40 border-b border-mg-border bg-mg-background/85 backdrop-blur-xl lg:hidden pt-[env(safe-area-inset-top,0px)]">
         <div className="flex h-14 items-center justify-between px-4">
-          <Link href={margeoRoutes.home} aria-label="Retour à l'accueil">
+          <Link href={margeoRoutes.home} aria-label="Retour à l'accueil" className="flex items-center gap-2">
             <Logo />
+            {showBetaBadge ? (
+              <span className="rounded-full border border-mg-accent/30 bg-mg-accent-soft px-1.5 py-0.5 text-[9px] font-semibold tracking-wide text-mg-accent uppercase">
+                Bêta
+              </span>
+            ) : null}
           </Link>
           <Link
             href={margeoRoutes.profil}
@@ -229,7 +244,7 @@ export function AppShell({
 
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/92 backdrop-blur-xl lg:hidden pb-[env(safe-area-inset-bottom,0px)]">
         <div className="mx-auto flex max-w-md items-stretch justify-around px-0.5 pt-1.5 pb-1">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const active = isActive(item.href, item.match);
             return (
               <Link

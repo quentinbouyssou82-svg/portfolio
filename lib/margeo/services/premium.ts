@@ -1,6 +1,12 @@
 import type { UserProfile } from "../types";
 import { isPaidPlan } from "@/lib/margeo/billing/entitlements";
-import { getAppFeatures, getAppMode } from "@/lib/margeo/config";
+import {
+  getAppFeatures,
+  getAppFeaturesAsync,
+  getAppMode,
+  getAppModeAsync,
+  type DriveelyFeatures,
+} from "@/lib/margeo/config";
 import { getCurrentSubscription } from "@/lib/margeo/services/subscription";
 
 export type PremiumSource = "manual" | "beta" | "stripe" | "trial" | "app_mode";
@@ -23,13 +29,15 @@ export interface PremiumStatus {
   freemiumLimits: boolean;
 }
 
-/** Compat legacy + abonnement. */
-export function resolvePremiumStatus(
-  profile: Pick<UserProfile, "premium" | "premiumUntil" | "premiumSource" | "planId">,
+function resolveWithFeatures(
+  profile: Pick<
+    UserProfile,
+    "premium" | "premiumUntil" | "premiumSource" | "planId"
+  >,
+  feats: DriveelyFeatures,
+  appMode: "production" | "beta",
 ): PremiumStatus {
-  const feats = getAppFeatures();
-  const planId =
-    profile.planId ?? (profile.premium ? "pro" : "discovery");
+  const planId = profile.planId ?? (profile.premium ? "pro" : "discovery");
 
   const base: PremiumStatus = {
     isPremium: false,
@@ -38,7 +46,7 @@ export function resolvePremiumStatus(
     source: null,
     expiresAt: null,
     planId: "discovery",
-    appMode: getAppMode(),
+    appMode,
     billingEnabled: feats.billing,
     freemiumLimits: feats.freemiumLimits,
   };
@@ -83,7 +91,7 @@ export function resolvePremiumStatus(
     isPremium: paid,
     effectivePremium: paid || feats.allPremiumUnlocked,
     unlockSource: paid
-      ? profile.premiumSource ?? "manual"
+      ? (profile.premiumSource ?? "manual")
       : feats.allPremiumUnlocked
         ? "app_mode"
         : null,
@@ -93,8 +101,21 @@ export function resolvePremiumStatus(
   };
 }
 
+/** Compat legacy + abonnement. Sync = client cookie / env default. */
+export function resolvePremiumStatus(
+  profile: Pick<
+    UserProfile,
+    "premium" | "premiumUntil" | "premiumSource" | "planId"
+  >,
+): PremiumStatus {
+  return resolveWithFeatures(profile, getAppFeatures(), getAppMode());
+}
+
 export function isUserPremium(
-  profile: Pick<UserProfile, "premium" | "premiumUntil" | "premiumSource" | "planId">,
+  profile: Pick<
+    UserProfile,
+    "premium" | "premiumUntil" | "premiumSource" | "planId"
+  >,
 ): boolean {
   return resolvePremiumStatus(profile).effectivePremium;
 }
@@ -102,7 +123,8 @@ export function isUserPremium(
 export async function resolvePremiumStatusForUser(
   userId: string,
 ): Promise<PremiumStatus> {
-  const feats = getAppFeatures();
+  const feats = await getAppFeaturesAsync();
+  const appMode = await getAppModeAsync();
   const sub = await getCurrentSubscription(userId);
   const paid = isPaidPlan(sub.planId);
   const source: PremiumSource | null = paid
@@ -118,7 +140,7 @@ export async function resolvePremiumStatusForUser(
     source,
     expiresAt: sub.currentPeriodEnd,
     planId: sub.planId,
-    appMode: getAppMode(),
+    appMode,
     billingEnabled: feats.billing,
     freemiumLimits: feats.freemiumLimits,
   };

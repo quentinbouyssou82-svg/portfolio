@@ -7,6 +7,7 @@
 const STATIC_DRIVEELY_HOSTS = new Set([
   "driveely.app",
   "www.driveely.app",
+  "beta.driveely.app",
   "margeo.vercel.app",
 ]);
 

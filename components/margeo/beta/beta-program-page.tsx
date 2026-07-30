@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { JoinBetaCta } from "@/components/margeo/beta/join-beta-cta";
 import { Logo } from "@/components/margeo/logo";
 import { Reveal } from "@/components/margeo/reveal";
 import { Button } from "@/components/margeo/ui/button";
@@ -232,10 +233,12 @@ export function BetaProgramPage() {
               pour les livreurs.
             </p>
             <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+              <JoinBetaCta label="Rejoindre la bêta" />
               <Link href={margeoRoutes.analyse} className="w-full sm:w-auto">
                 <Button
+                  variant="secondary"
                   size="lg"
-                  className="landing-cta-primary w-full min-h-12 sm:min-w-[220px]"
+                  className="w-full min-h-12 sm:min-w-[200px]"
                 >
                   Commencer les tests
                   <ArrowRight />

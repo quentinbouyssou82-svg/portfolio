@@ -5,7 +5,11 @@
  */
 
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
-import { getAppFeatures } from "@/lib/margeo/config";
+import {
+  getAppFeatures,
+  getAppFeaturesAsync,
+  type DriveelyFeatures,
+} from "@/lib/margeo/config";
 
 export type PlanEntitlements = {
   planId: DriveelyPlanId;
@@ -82,11 +86,23 @@ export function getCatalogEntitlementsForPlan(
 }
 
 /**
- * Entitlements effectifs pour l'environnement courant.
- * Mode bêta → capacités Elite, planId catalogue (DB) conservé.
+ * Entitlements effectifs. Sur le serveur, préférer `getEntitlementsForPlanAsync`.
+ * Sync OK côté client (cookie) ou scripts avec mode env.
  */
 export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
-  const feats = getAppFeatures();
+  return applyFeatureOverrides(planId, getAppFeatures());
+}
+
+export async function getEntitlementsForPlanAsync(
+  planId: DriveelyPlanId,
+): Promise<PlanEntitlements> {
+  return applyFeatureOverrides(planId, await getAppFeaturesAsync());
+}
+
+function applyFeatureOverrides(
+  planId: DriveelyPlanId,
+  feats: DriveelyFeatures,
+): PlanEntitlements {
   if (feats.allPremiumUnlocked || !feats.freemiumLimits) {
     return { ...ELITE, planId };
   }

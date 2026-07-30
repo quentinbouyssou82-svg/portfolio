@@ -1,106 +1,85 @@
-# Driveely — environnements (Beta vs Production)
+# Driveely — une app, deux modes (même domaine)
 
-Une **codebase**, deux **projets Vercel**. Aucune duplication de features métier.
+Une **codebase**, un **déploiement** (`driveely.app`).  
+Le mode **public / officiel** vs **bêta** est une préférence **cookie/session**, pas un second site Vercel.
 
 ## Modes
 
-| Variable | Valeurs | Où |
-|----------|---------|-----|
-| `DRIVEELY_APP_MODE` | `production` \| `beta` | Serveur (Vercel) |
-| `NEXT_PUBLIC_DRIVEELY_APP_MODE` | **identique** | Client + serveur |
+| Source | Valeurs | Rôle |
+|--------|---------|------|
+| Cookie `driveely_app_mode` | `production` \| `beta` | Préférence utilisateur (prioritaire) |
+| Header `x-driveely-app-mode` | idem | Injecté par le middleware pour le SSR |
+| `DRIVEELY_APP_MODE` / `NEXT_PUBLIC_DRIVEELY_APP_MODE` | idem | **Défaut** si aucun cookie |
+| Legacy `DRIVEELY_BETA_MODE=true` | — | Fallback défaut → beta (à éviter) |
 
-Les feature flags sont dérivés automatiquement via `lib/margeo/config` :
+Les feature flags sont dérivés via `lib/margeo/config` :
 
-- **production** : freemium, paywall, billing, Stripe (quand branché)
-- **beta** : tout débloqué, pas de paiement, pas de paywall, feedback prêt
+- **production (public)** : freemium, paywall, billing code présent ; achats réels seulement si `DRIVEELY_PURCHASES_ENABLED=true`
+- **beta** : tout débloqué, pas de paiement, badge Bêta, feedback
+
+## Parcours produit
+
+```
+Landing (driveely.app)
+  → CTA « Rejoindre la bêta »  (joinBetaAction → cookie=beta)
+  → Auth (/login?mode=signup&beta=1) si anonyme
+  → App en mode bêta (premium unlocked, pas Stripe)
+```
+
+Sortie bêta (optionnelle) : `leaveBetaAction` → cookie=`production`.
 
 ## Architecture
 
 ```
 lib/margeo/config/
-  environment.ts   # getAppMode()
-  features.ts      # getAppFeatures()
+  mode-cookie.ts     # cookie + header
+  environment.ts     # getAppMode / getAppModeAsync
+  features.ts        # getAppFeatures / getAppFeaturesAsync
   index.ts
 
-lib/margeo/feedback/   # stubs bug / idée / problème
+lib/margeo/actions/beta-mode.ts   # joinBetaAction / leaveBetaAction
+components/margeo/beta/join-beta-cta.tsx
 ```
 
-**Règle d'or** : ne jamais écrire `if (process.env…beta)` dans les composants.
-Toujours : `getAppFeatures().paywall`, `.billing`, `.allPremiumUnlocked`, etc.
+**Règle d'or** : ne jamais écrire `if (process.env…beta)` dans les composants.  
+Toujours : `getAppFeatures().paywall`, `.billing`, `.purchasesEnabled`, `.allPremiumUnlocked`, etc.  
+Sur le serveur, préférer `getAppFeaturesAsync()` / `getAppModeAsync()`.
 
-## Projets Vercel
-
-### 1. Production (ex. `driveely` / `uberly.app`)
+## Vercel (un seul projet)
 
 ```
 DRIVEELY_APP_MODE=production
 NEXT_PUBLIC_DRIVEELY_APP_MODE=production
-NEXT_PUBLIC_APP_URL=https://uberly.app   # ou domaine Driveely
-# + Supabase prod
-# + STRIPE_* quand prêt
+NEXT_PUBLIC_APP_URL=https://driveely.app
+NEXT_PUBLIC_DRIVEELY_AT_ROOT=true
+# Achats Stripe (officiel) — laisser false jusqu'à ouverture
+# DRIVEELY_PURCHASES_ENABLED=true
+# STRIPE_SECRET_KEY=
+# STRIPE_WEBHOOK_SECRET=
 ```
 
-### 2. Beta (ex. `driveely-beta` / `beta.uberly.app`)
+Plus besoin d'un projet `driveely-beta` / `beta.driveely.app` pour le mode app.  
+Les hôtes legacy beta peuvent rester dans `DRIVEELY_PRODUCT_HOSTS` si tu veux encore router le produit dessus.
 
-```
-DRIVEELY_APP_MODE=beta
-NEXT_PUBLIC_DRIVEELY_APP_MODE=beta
-NEXT_PUBLIC_APP_URL=https://beta.uberly.app
-# + même Supabase OU projet Supabase dédié (recommandé long terme)
-# PAS de STRIPE_SECRET_KEY
-```
+## Flip « ouverture officielle »
 
-Déploiements indépendants : push sur la même branche ou branches distinctes ; chaque projet Vercel a son propre set d'env.
+1. `DRIVEELY_PURCHASES_ENABLED=true` (+ clés Stripe)
+2. Les utilisateurs sans cookie restent en production (défaut)
+3. Les cookies `beta` continuent de débloquer la bêta tant qu'ils existent
+4. Aucun refactor de features métier
 
-## Supabase
+## Comportement
 
-- **Court terme** : même projet Supabase (auth + data inchangés).
-- **Moyen terme** : projet Supabase séparé pour la bêta (isolation totale).
-- Colonne `is_beta_tester` déjà présente ; les events `margeo_beta_events` peuvent porter `metadata.appMode`.
-
-Aucune migration obligatoire pour activer le mode app.
-
-## Comportement bêta
-
-| Zone | Effet |
-|------|--------|
-| Entitlements | Capacités Elite pour tous, **planId DB inchangé** (souvent `discovery`) |
-| Quota | Illimité (`quota.premium=true` = effectif, pas un abonnement) |
-| `premium.isPremium` | `false` sauf vrai abonnement |
-| `premium.effectivePremium` | `true` via `unlockSource: "app_mode"` |
-| Billing / freemium | Désactivés (`billingEnabled=false`, `freemiumLimits=false`) |
-| `/premium` | Page « Fonctionnalités débloquées » |
-| `/subscription`, checkout | Redirect → `/premium` |
-| Onboarding | → dashboard (pas paywall) |
-| Soft banner | Masqué |
-| `activatePlanAction` | Refusé (message clair) |
+| Zone | Production (achats off) | Bêta |
+|------|-------------------------|------|
+| Entitlements | Freemium | Elite effectif (`unlockSource: app_mode`) |
+| `/premium` | « Ouverture prochaine » | Fonctionnalités débloquées |
+| Checkout | Bloqué (« Ouverture prochaine ») | Désactivé |
+| Soft banner | Oui (si freemium) | Masqué |
+| Badge UI | Non | Oui |
 
 **Pas d’incohérence** : en bêta, « premium effectif » ≠ « client payant ». Aucune écriture `premium=true` en base uniquement à cause du mode app.
 
 ## Cron RGPD (captures 30 jours)
 
-Variable obligatoire sur chaque projet Vercel qui exécute le cron :
-
-```
-CRON_SECRET=<chaîne aléatoire longue>
-```
-
-- Route : `GET|POST /api/driveely/cron/purge-screenshots`
-- Auth : `Authorization: Bearer ${CRON_SECRET}`
-- Planifié dans `vercel.json` (`0 3 * * *`)
-- Sans `CRON_SECRET` → `503 CRON_NOT_CONFIGURED` (pas de purge silencieuse)
-
-## Feedback (préparé)
-
-`submitFeedbackAction({ kind: 'bug' \| 'idea' \| 'issue', title, body })`  
-UI à brancher plus tard ; flags `features.feedback.*` déjà actifs en mode beta.
-
-## Local
-
-```bash
-# .env.local — tester la bêta
-DRIVEELY_APP_MODE=beta
-NEXT_PUBLIC_DRIVEELY_APP_MODE=beta
-```
-
-Legacy : `DRIVEELY_BETA_MODE=true` bascule encore en mode beta (migration douce).
+Inchangé — `CRON_SECRET` + route cron Vercel. Voir le reste de la doc ops dans le repo.
