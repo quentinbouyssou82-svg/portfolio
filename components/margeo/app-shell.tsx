@@ -19,6 +19,8 @@ import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
 function getNavItems() {
+  const inBeta = getAppFeatures().showBetaBadge;
+
   return {
     mobile: [
       { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
@@ -26,10 +28,10 @@ function getNavItems() {
       { href: margeoRoutes.historique, label: "Histo", icon: History },
       { href: margeoRoutes.profil, label: "Profil", icon: User },
       {
-        href: `${margeoRoutes.premium}?source=nav`,
-        label: "Plans",
+        href: inBeta ? margeoRoutes.retour : `${margeoRoutes.premium}?source=nav`,
+        label: inBeta ? "Retour" : "Plans",
         icon: Crown,
-        match: margeoRoutes.premium,
+        match: inBeta ? margeoRoutes.retour : margeoRoutes.premium,
       },
     ],
     desktop: [
@@ -38,10 +40,10 @@ function getNavItems() {
       { href: margeoRoutes.historique, label: "Historique", icon: History },
       { href: margeoRoutes.profil, label: "Profil", icon: User },
       {
-        href: `${margeoRoutes.premium}?source=nav`,
-        label: "Offres",
+        href: inBeta ? margeoRoutes.retour : `${margeoRoutes.premium}?source=nav`,
+        label: inBeta ? "Retour" : "Offres",
         icon: Crown,
-        match: margeoRoutes.premium,
+        match: inBeta ? margeoRoutes.retour : margeoRoutes.premium,
       },
     ],
   };

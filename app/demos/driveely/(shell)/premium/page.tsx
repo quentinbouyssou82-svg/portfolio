@@ -1,4 +1,3 @@
-import { BetaUnlockedPremiumPage } from "@/components/margeo/premium/beta-unlocked-page";
 import { ComingSoonPremiumPage } from "@/components/margeo/premium/coming-soon-page";
 import { PaywallFlow } from "@/components/margeo/paywall/paywall-flow";
 import { getAppFeaturesAsync } from "@/lib/margeo/config";
@@ -34,7 +33,7 @@ export default async function PremiumPage({
 
   const feats = await getAppFeaturesAsync();
   if (feats.premiumPageMode === "beta_unlocked" || !feats.paywall) {
-    return <BetaUnlockedPremiumPage />;
+    redirect(DRIVEELY_PATHS.retour);
   }
   if (feats.premiumPageMode === "coming_soon" || !feats.purchasesEnabled) {
     return <ComingSoonPremiumPage />;

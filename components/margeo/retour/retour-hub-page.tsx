@@ -8,6 +8,7 @@ import {
   ClipboardList,
   MessageSquareHeart,
   MessageSquareWarning,
+  Sparkles,
   Target,
   Zap,
 } from "lucide-react";
@@ -16,6 +17,14 @@ import { Button } from "@/components/margeo/ui/button";
 import { DRIVEELY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
 import { getDriveelyAppVersion } from "@/lib/margeo/survey";
 import { margeoRoutes } from "@/lib/margeo/routes";
+
+const UNLOCKED = [
+  "Analyses illimitées",
+  "Historique complet",
+  "Dashboard & objectifs",
+  "Zones rentables",
+  "Insights & exports",
+] as const;
 
 const EXPECTATIONS = [
   {
@@ -45,8 +54,8 @@ const bugMailto = `mailto:${DRIVEELY_CONTACT_EMAIL}?subject=${encodeURIComponent
 )}`;
 
 /**
- * Section Retour (ex-Programme Bêta) — hub in-app.
- * Questionnaire = canal principal ; le reste du programme est conservé dessous.
+ * Section Retour — hub principal (questionnaire + programme + features débloquées).
+ * Affiché sur /retour et sur /premium en mode bêta.
  */
 export function RetourHubPage() {
   const reduceMotion = useReducedMotion();
@@ -68,16 +77,14 @@ export function RetourHubPage() {
           Tes retours construisent {PRODUCT_NAME}
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-mg-muted text-pretty sm:text-base">
-          Plus de Google Forms ni de Discord. Ici, tu envoies questionnaire et
-          signalements directement à l&apos;équipe — canal principal pendant la
-          bêta.
+          Plus de Google Forms ni de Discord. Questionnaire et signalements
+          directement ici — canal principal pendant la bêta.
         </p>
         <p className="mt-3 text-[11px] font-medium tracking-wide text-mg-faint uppercase">
           App v{version}
         </p>
       </motion.div>
 
-      {/* Primary: Questionnaire */}
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -109,7 +116,6 @@ export function RetourHubPage() {
         </Link>
       </motion.div>
 
-      {/* Secondary actions */}
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <a
           href={bugMailto}
@@ -137,13 +143,31 @@ export function RetourHubPage() {
         </Link>
       </div>
 
-      {/* Expectations — contenu programme conservé */}
-      <section className="mt-12">
+      <section className="mt-10 rounded-2xl border border-mg-border bg-[var(--mg-surface-muted)] p-5 sm:p-6">
+        <p className="flex items-center gap-2 text-sm font-semibold text-mg-foreground">
+          <Sparkles className="size-4 text-mg-accent" />
+          Tout est débloqué pendant la bêta
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-mg-muted">
+          Merci de participer. Utilise {PRODUCT_NAME} normalement et dis-nous ce
+          qui cloche via le questionnaire.
+        </p>
+        <ul className="mt-5 space-y-2.5">
+          {UNLOCKED.map((item) => (
+            <li key={item} className="flex gap-2.5 text-sm text-mg-foreground/90">
+              <Check className="mt-0.5 size-4 shrink-0 text-mg-go" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-10">
         <p className="text-xs font-semibold tracking-[0.18em] text-mg-accent uppercase">
           Ce qu&apos;on attend de toi
         </p>
         <h2 className="mt-2 text-xl font-bold tracking-tight text-mg-foreground">
-          Toujours le même programme
+          Mission bêta-testeur
         </h2>
         <ul className="mt-5 space-y-2.5">
           {EXPECTATIONS.map((item) => (
@@ -160,8 +184,7 @@ export function RetourHubPage() {
 
       <div className="mt-10 rounded-2xl border border-mg-border/70 px-4 py-4 text-center">
         <p className="text-xs leading-relaxed text-mg-faint">
-          Merci de participer à la création de {PRODUCT_NAME}. Chaque retour aide
-          directement au développement.
+          Chaque retour aide directement au développement de {PRODUCT_NAME}.
         </p>
         <Link href={margeoRoutes.dashboard} className="mt-3 inline-block">
           <Button variant="ghost" size="sm">
