@@ -73,19 +73,21 @@ function VerdictPill({
 
   return (
     <div
-      className="flex items-center justify-between rounded-xl border border-mg-border bg-mg-surface/50 px-3 py-2.5"
-      style={{ borderColor: `color-mix(in srgb, ${meta.color} 20%, transparent)` }}
+      className="verdict-pill flex items-center justify-between px-3 py-2.5"
+      style={{
+        borderColor: `color-mix(in srgb, ${meta.color} 22%, transparent)`,
+      }}
     >
       <span className="flex items-center gap-2 text-xs font-medium text-mg-foreground">
         <span
-          className="size-2 rounded-full"
+          className="size-1.5 rounded-full"
           style={{ backgroundColor: meta.color }}
         />
         {meta.label}
       </span>
-      <span className="text-xs font-semibold text-mg-muted">
+      <span className="text-xs font-semibold tabular-nums text-mg-muted">
         {count}{" "}
-        <span className="text-mg-faint">({pct}%)</span>
+        <span className="font-normal text-mg-faint">({pct}%)</span>
       </span>
     </div>
   );
@@ -136,7 +138,7 @@ export function DashboardView({
         <EmptyState
           icon={ScanLine}
           title="Prêt à analyser"
-          description="Dépose une capture. Verdict et gain net estimé en ~8 s."
+          description="Dépose une capture. Verdict et gain net estimé en quelques secondes."
           action={
             <Link href={margeoRoutes.analyse}>
               <Button size="lg">
@@ -203,13 +205,13 @@ export function DashboardView({
                 ].map((kpi) => (
                   <div
                     key={kpi.label}
-                    className="rounded-xl border border-mg-border bg-mg-background/50 px-3 py-2.5 text-center"
+                    className="dashboard-kpi-chip px-3 py-2.5 text-center"
                   >
-                    <p className="text-lg font-bold text-mg-foreground">
+                    <p className="text-lg font-bold tabular-nums text-mg-foreground">
                       {kpi.value}
                       {kpi.suffix}
                     </p>
-                    <p className="mt-0.5 text-[10px] text-mg-faint">
+                    <p className="mt-0.5 text-[10px] font-medium tracking-wide text-mg-faint uppercase">
                       {kpi.label}
                     </p>
                   </div>
@@ -301,33 +303,31 @@ export function DashboardView({
       )}
 
       {/* Historique récent */}
-      <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-semibold text-mg-foreground">
-            Dernières analyses
-          </h2>
-          {!isEmpty && (
+      {!isEmpty && (
+        <section>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="app-section-title">Dernières analyses</h2>
             <Link
               href={margeoRoutes.historique}
-              className="flex items-center gap-1 text-sm text-mg-muted transition-colors hover:text-mg-accent"
+              className="flex items-center gap-1 text-sm font-medium text-mg-muted transition-colors hover:text-mg-accent"
             >
               Tout voir
               <ArrowRight className="size-3.5" />
             </Link>
-          )}
-        </div>
-        <div className="space-y-3">
-          {recent.length > 0 ? (
-            recent.map((analysis) => (
-              <AnalysisCard key={analysis.id} analysis={analysis} />
-            ))
-          ) : (
-            <p className="py-6 text-center text-sm text-mg-faint">
-              Tes analyses s&apos;afficheront ici.
-            </p>
-          )}
-        </div>
-      </section>
+          </div>
+          <div className="space-y-2.5">
+            {recent.length > 0 ? (
+              recent.map((analysis) => (
+                <AnalysisCard key={analysis.id} analysis={analysis} />
+              ))
+            ) : (
+              <p className="rounded-xl border border-dashed border-mg-border py-6 text-center text-sm text-mg-faint">
+                Tes analyses s&apos;afficheront ici.
+              </p>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

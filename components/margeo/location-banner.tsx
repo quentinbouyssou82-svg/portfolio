@@ -21,17 +21,17 @@ export function LocationBanner({
   if (permission === "granted") return null;
 
   return (
-    <Card className="mb-6 border-mg-accent/20 bg-mg-accent-soft/20 p-4">
+    <Card className="location-banner mb-5 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-mg-accent-soft">
-            <MapPin className="size-4 text-mg-accent" />
+          <span className="location-banner-icon" aria-hidden>
+            <MapPin className="size-4" />
           </span>
           <div>
             <p className="text-sm font-medium text-mg-foreground">
               Active ta position
             </p>
-            <p className="mt-0.5 text-xs text-mg-muted">
+            <p className="mt-0.5 text-xs leading-relaxed text-mg-muted">
               Pour affiner la distance et le score de rentabilité.
             </p>
             {error && (
@@ -42,11 +42,13 @@ export function LocationBanner({
         <Button
           type="button"
           size="sm"
+          variant="secondary"
           onClick={onRequest}
           disabled={loading}
+          loading={loading}
           className="shrink-0"
         >
-          {loading ? "Localisation…" : "Activer"}
+          Activer
         </Button>
       </div>
     </Card>

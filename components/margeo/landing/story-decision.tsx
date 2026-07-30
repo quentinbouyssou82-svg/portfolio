@@ -106,7 +106,7 @@ export function StoryDecision() {
       id="solution"
       eyebrow="La solution"
       title="Un verdict clair. Avant le countdown."
-      description="Driveely transforme une capture en décision — avant l'expiration."
+      description="Driveely transforme une capture en décision rentable — gain net estimé avant l'expiration."
       border
       className="py-20 sm:py-28 lg:py-36"
     >

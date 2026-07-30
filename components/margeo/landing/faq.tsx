@@ -1,43 +1,13 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Reveal } from "@/components/margeo/reveal";
+import { DRIVEELY_FAQ_ITEMS } from "@/lib/margeo/landing-faq";
 import { cn } from "@/lib/margeo/utils";
 
-const FAQ_ITEMS = [
-  {
-    question: "Comment Driveely lit ma capture ?",
-    answer:
-      "L'IA estime le gain, la distance, le temps et les adresses à partir de ton image. Tu déposes la capture, le verdict arrive en quelques secondes. Aucune saisie. L'IA peut se tromper : vérifie toujours les chiffres clés.",
-  },
-  {
-    question: "Quelles captures sont prises en charge ?",
-    answer:
-      "Les captures des apps de livraison courantes (Uber Eats, Deliveroo, Stuart, Amazon Flex). D'autres apps (Just Eat, Glovo…) sont sur la feuille de route selon la demande bêta. Driveely n'est affilié à aucune de ces plateformes.",
-  },
-  {
-    question: "Comment le gain net est estimé ?",
-    answer:
-      "Driveely déduit tes coûts au km (carburant, usure, assurance) sur la distance totale — retour à vide inclus — plus le temps immobilisé. Le résultat est une estimation indicative, pas un compte comptable.",
-  },
-  {
-    question: "Ça marche pendant le compte à rebours ?",
-    answer:
-      "Oui. L'analyse prend en général quelques secondes. Tu décides avant l'expiration de la proposition.",
-  },
-  {
-    question: "Mes données sont partagées avec les plateformes ?",
-    answer:
-      "Non. Tes captures et tes stats restent privées. Driveely est indépendant et n'est affilié à aucune plateforme de livraison.",
-  },
-  {
-    question: "C'est gratuit ?",
-    answer:
-      "Oui pendant la bêta et sur le plan Découverte (2 analyses/jour). Pro (4,99 €/mois) et Elite débloquent davantage — sans prélèvement tant que le paiement Stripe n'est pas activé.",
-  },
-];
+const FAQ_ITEMS = DRIVEELY_FAQ_ITEMS;
 
 function FaqItem({
   question,
@@ -53,6 +23,7 @@ function FaqItem({
   return (
     <div className="border-b border-mg-border last:border-b-0">
       <button
+        type="button"
         onClick={onToggle}
         className="faq-item-btn flex min-h-11 w-full cursor-pointer items-center justify-between gap-4 py-4 text-left outline-none sm:py-5"
         aria-expanded={open}
@@ -72,21 +43,22 @@ function FaqItem({
           />
         </span>
       </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="overflow-hidden"
-          >
-            <p className="pb-5 pr-10 text-sm leading-relaxed text-mg-muted">
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Answers stay in the DOM for crawlers / GEO even when visually collapsed */}
+      <motion.div
+        initial={false}
+        animate={
+          open
+            ? { height: "auto", opacity: 1 }
+            : { height: 0, opacity: 0 }
+        }
+        transition={{ duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
+        className="overflow-hidden"
+        aria-hidden={!open}
+      >
+        <p className="pb-5 pr-10 text-sm leading-relaxed text-mg-muted">
+          {answer}
+        </p>
+      </motion.div>
     </div>
   );
 }
@@ -105,6 +77,10 @@ export function Faq() {
           <h2 className="text-gradient mt-3 text-2xl font-bold tracking-tight text-mg-foreground leading-[1.25] sm:text-4xl sm:leading-[1.2]">
             Questions fréquentes
           </h2>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-mg-muted sm:text-base">
+            Gain net, coût au km, Uber Eats / Deliveroo — réponses claires avant
+            de t&apos;inscrire.
+          </p>
         </Reveal>
 
         <Reveal delay={0.1} className="faq-panel mt-10 px-5 sm:mt-14 sm:px-7">

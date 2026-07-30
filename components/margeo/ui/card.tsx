@@ -9,8 +9,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-[border-color,background-color,transform,box-shadow] duration-200",
-        "bg-gradient-to-br from-white/[0.035] to-transparent",
+        "app-card-surface rounded-2xl border border-mg-border bg-mg-card shadow-mg-card transition-[border-color,background-color,transform,box-shadow] duration-200",
         interactive && "card-interactive cursor-pointer",
         className,
       )}

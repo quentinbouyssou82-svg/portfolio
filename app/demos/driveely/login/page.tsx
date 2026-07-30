@@ -1,6 +1,16 @@
 import { AuthErrorBanner } from "@/components/margeo/auth/auth-error-banner";
 import { AuthForm } from "@/components/margeo/auth/auth-form";
 import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = buildDriveelyMetadata({
+  title: "Connexion",
+  description: "Connecte-toi à Driveely pour analyser tes propositions de course.",
+  path: "/login",
+  index: false,
+  follow: false,
+});
 
 export default async function MargeoLoginPage({
   searchParams,

@@ -40,9 +40,9 @@ export function Hero() {
         <div className="grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
           <div className="text-center lg:text-left">
             <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease }}
+              transition={{ duration: 0.45, ease }}
             >
               <span className="hero-badge inline-flex items-center gap-2 rounded-full border border-mg-accent/35 bg-mg-accent-soft/90 px-3.5 py-1.5 text-xs font-medium text-mg-accent backdrop-blur-md">
                 <Sparkles className="size-3.5 animate-pulse" />
@@ -51,30 +51,22 @@ export function Hero() {
               </span>
             </motion.div>
 
-            <motion.h1
-              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.08, ease }}
-              className="text-gradient mt-7 text-[2.35rem] leading-[1.15] font-bold tracking-tight text-balance sm:text-5xl sm:leading-[1.12] lg:text-[3.4rem]"
-            >
+            {/* H1 + lead visible immediately (LCP) — no opacity:0 entrance */}
+            <h1 className="text-gradient mt-7 text-[2.35rem] leading-[1.15] font-bold tracking-tight text-balance sm:text-5xl sm:leading-[1.12] lg:text-[3.4rem]">
               Accepte les bonnes courses.{" "}
               <span className="text-gradient-accent">Refuse</span> le reste.
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.16, ease }}
-              className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:text-lg lg:mx-0"
-            >
-              Capture ta proposition. Driveely estime ton gain net (frais inclus)
-              et t&apos;aide à décider — avant la fin du compte à rebours.
-            </motion.p>
+            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-mg-muted text-pretty sm:text-lg lg:mx-0">
+              Capture ta proposition Uber Eats, Deliveroo ou Stuart. Driveely
+              estime ton gain net (coût au km inclus) et t&apos;aide à décider —
+              avant la fin du compte à rebours.
+            </p>
 
             <motion.ul
-              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.22, ease }}
+              transition={{ duration: 0.45, delay: 0.08, ease }}
               className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start"
             >
               {BENEFITS.map(({ icon: Icon, label, tone }, i) => (
@@ -99,12 +91,7 @@ export function Hero() {
               ))}
             </motion.ul>
 
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3, ease }}
-              className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start"
-            >
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
               <JoinBetaCta className="sm:min-w-[220px]" />
               <Link href="#solution" className="w-full sm:w-auto">
                 <Button
@@ -115,16 +102,11 @@ export function Hero() {
                   Voir comment ça marche
                 </Button>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.p
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.38 }}
-              className="mt-5 text-xs text-mg-faint"
-            >
+            <p className="mt-5 text-xs text-mg-faint">
               Bêta ouverte · Tout débloqué · Sans carte bancaire
-            </motion.p>
+            </p>
           </div>
 
           <motion.div

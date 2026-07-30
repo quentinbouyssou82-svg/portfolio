@@ -24,11 +24,11 @@ export function FinalCta() {
               Beta ouverte
             </span>
             <h2 className="text-gradient mt-5 text-3xl font-bold tracking-tight text-balance leading-[1.2] sm:text-5xl sm:leading-[1.15]">
-              Ne devine plus. Estime ton gain avant d&apos;accepter.
+              Ne devine plus. Estime ton gain net avant d&apos;accepter.
             </h2>
             <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mg-muted sm:text-lg">
-              Compte gratuit. Première analyse en 30 secondes. Résultat
-              estimatif — à toi de décider.
+              Compte gratuit. Première analyse en 30 secondes. Optimise tes
+              courses — résultat estimatif, à toi de décider.
             </p>
             <div className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
               <JoinBetaCta className="sm:min-w-[240px]" />

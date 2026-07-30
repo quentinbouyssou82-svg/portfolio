@@ -4,7 +4,17 @@ import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = buildDriveelyMetadata({
+  title: "App",
+  description: "Espace Driveely — analyses et tableau de bord.",
+  path: "/dashboard",
+  index: false,
+  follow: false,
+});
 
 export default async function MargeoShellLayout({
   children,

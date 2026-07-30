@@ -37,7 +37,7 @@ export default function RootLayout({
       lang="fr"
       data-theme="dark"
       suppressHydrationWarning
-      className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
+      className={`h-full antialiased ${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable}`}
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ResponsivePreviewShell>{children}</ResponsivePreviewShell>

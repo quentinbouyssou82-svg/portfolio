@@ -1,4 +1,9 @@
+import { cookies } from "next/headers";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import {
+  buildHowItWorksPath,
+  HOW_IT_WORKS_COOKIE,
+} from "@/lib/margeo/how-it-works";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
 
 /** Destination après signup / login selon l'état onboarding. */
@@ -7,8 +12,18 @@ export async function getPostAuthPath(
   name?: string,
 ): Promise<string> {
   const profile = await ensureProfileForUser(userId, name);
-  if (profile?.onboardingCompleted) {
-    return DRIVEELY_PATHS.dashboard;
+  const next = profile?.onboardingCompleted
+    ? DRIVEELY_PATHS.dashboard
+    : DRIVEELY_PATHS.onboarding;
+
+  try {
+    const jar = await cookies();
+    if (jar.get(HOW_IT_WORKS_COOKIE)?.value === "1") {
+      return next;
+    }
+  } catch {
+    // hors contexte request
   }
-  return DRIVEELY_PATHS.onboarding;
+
+  return buildHowItWorksPath(next);
 }

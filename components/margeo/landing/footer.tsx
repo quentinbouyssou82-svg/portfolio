@@ -18,19 +18,19 @@ export function Footer() {
       links: [
         { label: "Rejoindre la bêta", href: margeoRoutes.signup + "&beta=1" },
         { label: "Se connecter", href: margeoRoutes.login },
-        { label: premiumFooterLabel, href: margeoRoutes.premium },
-        { label: "Retour", href: margeoRoutes.retour },
+        { label: premiumFooterLabel, href: "#solution" },
         { label: "FAQ", href: "#faq" },
+        { label: "Contact", href: margeoRoutes.contact },
       ],
     },
     {
       title: "Ressources",
       links: [
-        { label: "Comment ça marche", href: "#fonctionnalites" },
+        { label: "Comment ça marche", href: "#solution" },
         { label: "Le problème", href: "#probleme" },
         { label: "FAQ — plateformes", href: "#faq" },
         {
-          label: "Contact",
+          label: "Écrire à l'équipe",
           href: `mailto:${DRIVEELY_CONTACT_EMAIL}`,
         },
       ],

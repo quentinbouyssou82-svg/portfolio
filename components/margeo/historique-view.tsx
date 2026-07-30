@@ -52,24 +52,21 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
   }, [analyses, filter, search]);
 
   const grouped = useMemo(() => groupAnalysesByDate(filtered), [filtered]);
+  const hasActiveFilters = filter !== "all" || search.trim().length > 0;
 
   return (
-    <div className="animate-mg-fade-up space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-medium tracking-wide text-mg-faint uppercase">
-            Historique
+    <div className="app-page">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <header className="app-page-header">
+          <p className="app-page-eyebrow">Historique</p>
+          <h1 className="app-page-title">Tes courses</h1>
+          <p className="app-page-desc">
+            {analyses.length} course{analyses.length !== 1 ? "s" : ""} analysée
+            {analyses.length !== 1 ? "s" : ""}
           </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-mg-foreground sm:text-3xl">
-            Historique
-          </h1>
-          <p className="mt-1 text-sm text-mg-muted">
-            {analyses.length} course{analyses.length !== 1 ? "s" : ""}{" "}
-            analysée{analyses.length !== 1 ? "s" : ""}
-          </p>
-        </div>
-        <Link href={margeoRoutes.analyse} className="w-full sm:w-auto">
-          <Button className="app-cta-primary w-full min-h-11 sm:w-auto">
+        </header>
+        <Link href={margeoRoutes.analyse} className="w-full shrink-0 sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <ScanLine />
             Analyser
           </Button>
@@ -85,12 +82,13 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Plateforme, lieu, score…"
               className="min-h-11 pl-10"
+              aria-label="Rechercher dans l'historique"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-mg-faint hover:text-mg-foreground"
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-1 text-mg-faint transition-colors hover:text-mg-foreground"
                 aria-label="Effacer la recherche"
               >
                 <X className="size-4" />
@@ -98,21 +96,25 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
             )}
           </div>
 
-          <div className="mg-scroll-x flex gap-2 overflow-x-auto pb-1">
+          <div
+            className="mg-filter-row mg-scroll-x flex gap-1.5 overflow-x-auto pb-0.5"
+            role="tablist"
+            aria-label="Filtrer par verdict"
+          >
             {FILTERS.map((f) => (
               <button
                 key={f.value}
                 type="button"
+                role="tab"
+                aria-selected={filter === f.value}
                 onClick={() => setFilter(f.value)}
                 className={cn(
-                  "shrink-0 cursor-pointer rounded-full border px-3.5 py-2.5 text-xs font-medium transition-colors min-h-11 outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
-                  filter === f.value
-                    ? "border-mg-accent/40 bg-mg-accent-soft text-mg-accent"
-                    : "border-mg-border text-mg-muted hover:border-mg-border-strong",
+                  "mg-filter-chip",
+                  filter === f.value && "mg-filter-chip-active",
                 )}
               >
                 {f.label}
-                <span className="ml-1.5 text-mg-faint">
+                <span className="mg-filter-chip-count">
                   {f.value === "all"
                     ? analyses.length
                     : analyses.filter((a) => a.verdict === f.value).length}
@@ -126,11 +128,11 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
       {analyses.length === 0 ? (
         <EmptyState
           icon={ScanLine}
-          title="Aucune analyse"
+          title="Aucune analyse pour l’instant"
           description="Chaque course analysée apparaît ici avec verdict, score et gain net."
           action={
             <Link href={margeoRoutes.analyse}>
-              <Button className="app-cta-primary min-h-11">
+              <Button size="lg">
                 <ScanLine />
                 Analyser une course
               </Button>
@@ -141,19 +143,30 @@ export function HistoriqueView({ analyses }: { analyses: RideAnalysis[] }) {
         <EmptyState
           icon={Search}
           title="Aucun résultat"
-          description="Autre mot-clé ou filtre."
+          description="Essaie un autre mot-clé ou réinitialise les filtres."
+          action={
+            hasActiveFilters ? (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setFilter("all");
+                  setSearch("");
+                }}
+              >
+                Réinitialiser
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-7">
           {grouped.map((group) => (
             <section key={group.key}>
-              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-mg-muted">
+              <h2 className="app-date-group">
                 {group.label}
-                <span className="rounded-full bg-mg-border px-2 py-0.5 text-[10px] font-medium text-mg-faint">
-                  {group.items.length}
-                </span>
+                <span className="app-date-group-count">{group.items.length}</span>
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {group.items.map((analysis) => (
                   <AnalysisCard key={analysis.id} analysis={analysis} />
                 ))}

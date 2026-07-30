@@ -1,0 +1,89 @@
+{
+  "at": "2026-07-24T14:31:12.821Z",
+  "base": "https://margeo.vercel.app",
+  "total": 17,
+  "passed": 17,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "auth.create",
+      "ok": true
+    },
+    {
+      "id": "onboarding.complete_db",
+      "ok": true
+    },
+    {
+      "id": "auth.signin",
+      "ok": true
+    },
+    {
+      "id": "simulate.flag_false_keep_signals",
+      "ok": true
+    },
+    {
+      "id": "refresh.no_onboarding_bounce",
+      "ok": true,
+      "detail": "https://margeo.vercel.app/demos/driveely/analyse"
+    },
+    {
+      "id": "page.dashboard",
+      "ok": true
+    },
+    {
+      "id": "page.historique",
+      "ok": true
+    },
+    {
+      "id": "page.profil",
+      "ok": true
+    },
+    {
+      "id": "page.premium",
+      "ok": true
+    },
+    {
+      "id": "multitab.ok",
+      "ok": true
+    },
+    {
+      "id": "ia.Capture_d_e_cran_2026-07-12_",
+      "ok": true,
+      "detail": "status=200 4151ms score=100"
+    },
+    {
+      "id": "ia.Capture_d_e_cran_2026-07-12_",
+      "ok": true,
+      "detail": "status=200 3464ms score=84"
+    },
+    {
+      "id": "ia.Capture_d_e_cran_2026-07-12_",
+      "ok": true,
+      "detail": "status=200 2535ms score=83"
+    },
+    {
+      "id": "ia.Capture_d_e_cran_2026-07-12_",
+      "ok": true,
+      "detail": "status=200 4089ms score=61"
+    },
+    {
+      "id": "engine.cost_sensitivity",
+      "ok": true,
+      "detail": "voitureScore=100 veloScore=100 delta=0"
+    },
+    {
+      "id": "desktop.refresh.stable",
+      "ok": true
+    },
+    {
+      "id": "auth.logout",
+      "ok": true
+    }
+  ],
+  "scores": [
+    100,
+    84,
+    83,
+    61
+  ]
+}

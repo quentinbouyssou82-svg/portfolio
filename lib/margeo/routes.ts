@@ -25,6 +25,7 @@ export const driveelyRoutes = {
   login: path("login"),
   signup: `${path("login")}?mode=signup`,
   onboarding: path("onboarding"),
+  howItWorks: path("comment-ca-marche"),
   forgotPassword: path("forgot-password"),
   deconnexion: path("deconnexion"),
   dashboard: path("dashboard"),

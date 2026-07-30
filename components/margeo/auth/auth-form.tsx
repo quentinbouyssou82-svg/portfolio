@@ -41,7 +41,7 @@ export function AuthForm({
 
   const cardClass = premium
     ? "auth-card app-fade-in space-y-5 rounded-[1.35rem] p-6 sm:p-8"
-    : "space-y-4 rounded-2xl border border-mg-border bg-mg-card p-6";
+    : "auth-card-basic app-fade-in space-y-4 p-6";
 
   return (
     <div className={cn("mx-auto w-full", premium ? "max-w-[420px]" : "max-w-md")}>

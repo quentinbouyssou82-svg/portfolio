@@ -241,8 +241,8 @@ export function AppShell({
         </div>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/92 backdrop-blur-xl lg:hidden pb-[env(safe-area-inset-bottom,0px)]">
-        <div className="mx-auto flex max-w-md items-stretch justify-around px-0.5 pt-1.5 pb-1">
+      <nav className="app-shell-nav-mobile fixed inset-x-0 bottom-0 z-40 border-t border-mg-border bg-mg-background/92 backdrop-blur-xl lg:hidden pb-[env(safe-area-inset-bottom,0px)]">
+        <div className="mx-auto flex max-w-md items-stretch justify-around px-0.5 pt-1 pb-1">
           {navItems.map((item) => {
             const active = isActive(item.href, item.match);
             return (
@@ -252,16 +252,16 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 aria-label={item.label}
                 className={cn(
-                  "relative flex min-h-[52px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-0.5 py-1 text-[10px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-mg-accent/40",
-                  active ? "text-mg-accent" : "text-mg-faint",
+                  "app-shell-tab",
+                  active && "app-shell-tab-active",
                   item.href === margeoRoutes.analyse &&
                     !active &&
                     "text-mg-muted",
                 )}
               >
-                {active && (
-                  <span className="absolute top-0.5 size-1 rounded-full bg-mg-accent" />
-                )}
+                {active ? (
+                  <span className="app-shell-tab-indicator" aria-hidden />
+                ) : null}
                 <item.icon
                   className="size-[1.35rem]"
                   strokeWidth={active ? 2.25 : 1.75}

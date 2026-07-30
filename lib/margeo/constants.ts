@@ -8,6 +8,7 @@ export const DRIVEELY_PATHS = {
   login: driveelyRoutes.login,
   signup: driveelyRoutes.signup,
   onboarding: driveelyRoutes.onboarding,
+  howItWorks: driveelyRoutes.howItWorks,
   forgotPassword: driveelyRoutes.forgotPassword,
   deconnexion: driveelyRoutes.deconnexion,
   dashboard: driveelyRoutes.dashboard,

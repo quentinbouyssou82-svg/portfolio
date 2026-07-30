@@ -25,6 +25,10 @@ import {
 } from "@/lib/margeo/host";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
+import {
+  buildHowItWorksPath,
+  HOW_IT_WORKS_COOKIE,
+} from "@/lib/margeo/how-it-works";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -278,9 +282,13 @@ async function handleDriveelyAuth(
     relative === "/login" || publicPathname === DRIVEELY_PATHS.login;
   const isOnboarding =
     relative === "/onboarding" || publicPathname === DRIVEELY_PATHS.onboarding;
+  const isHowItWorks =
+    relative === "/comment-ca-marche" ||
+    publicPathname === DRIVEELY_PATHS.howItWorks;
   const isProtected = isDriveelyProtectedPublicPath(publicPathname);
+  const hiwSeen = request.cookies.get(HOW_IT_WORKS_COOKIE)?.value === "1";
 
-  if (!user && (isProtected || isOnboarding)) {
+  if (!user && (isProtected || isOnboarding || isHowItWorks)) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = DRIVEELY_PATHS.login;
     if (appMode === "beta") redirectUrl.searchParams.set("beta", "1");
@@ -300,12 +308,25 @@ async function handleDriveelyAuth(
       profileReadError: Boolean(profileError),
     });
 
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname =
+    const next =
       status === "complete"
         ? DRIVEELY_PATHS.dashboard
         : DRIVEELY_PATHS.onboarding;
+    const redirectUrl = request.nextUrl.clone();
+    if (hiwSeen) {
+      redirectUrl.pathname = next;
+      redirectUrl.search = "";
+    } else {
+      const tour = new URL(buildHowItWorksPath(next), request.nextUrl.origin);
+      redirectUrl.pathname = tour.pathname;
+      redirectUrl.search = tour.search;
+    }
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // Tour produit : accessible aux comptes incomplets (comme onboarding)
+  if (user && isHowItWorks) {
+    return response;
   }
 
   if (user && (isProtected || isOnboarding)) {
@@ -334,7 +355,17 @@ async function handleDriveelyAuth(
 
     if (status === "incomplete" && isProtected) {
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
+      if (hiwSeen) {
+        redirectUrl.pathname = DRIVEELY_PATHS.onboarding;
+        redirectUrl.search = "";
+      } else {
+        const tour = new URL(
+          buildHowItWorksPath(DRIVEELY_PATHS.onboarding),
+          request.nextUrl.origin,
+        );
+        redirectUrl.pathname = tour.pathname;
+        redirectUrl.search = tour.search;
+      }
       return NextResponse.redirect(redirectUrl);
     }
   }

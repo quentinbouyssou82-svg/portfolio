@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, ScanLine, Sparkles, X, Check } from "lucide-react";
+import { RotateCcw, Sparkles, X, Check } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -169,9 +169,9 @@ export default function AnalysePage() {
       />
 
       {showWelcome && stage === "idle" && (
-        <div className="app-fade-in flex items-start gap-3 rounded-2xl border border-mg-go/25 bg-mg-go-soft p-4">
-          <Sparkles className="mt-0.5 size-4 shrink-0 text-mg-go" />
-          <div className="flex-1 min-w-0">
+        <div className="app-status-banner app-status-banner-success app-fade-in">
+          <Sparkles className="mt-0.5 size-4 shrink-0 text-mg-go" aria-hidden />
+          <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-mg-foreground">
               Profil prêt
             </p>
@@ -191,10 +191,7 @@ export default function AnalysePage() {
       )}
 
       <header className="app-page-header text-center">
-        <span className="app-page-eyebrow mx-auto inline-flex items-center gap-2 rounded-full border border-mg-accent/20 bg-mg-accent-soft px-3 py-1 normal-case tracking-normal text-mg-accent">
-          <ScanLine className="size-3.5" />
-          Analyse IA · Driveely
-        </span>
+        <span className="app-page-eyebrow mx-auto">Analyse</span>
 
         {stage !== "idle" && (
           <div className="app-stage-steps mx-auto mt-4 max-w-xs">

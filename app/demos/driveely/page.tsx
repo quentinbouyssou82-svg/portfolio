@@ -7,6 +7,11 @@ import { LandingBackdrop } from "@/components/margeo/landing/landing-backdrop";
 import { LandingNav } from "@/components/margeo/landing/nav";
 import { PlatformMarquee } from "@/components/margeo/landing/platform-marquee";
 import { LandingStickyCta } from "@/components/margeo/landing/sticky-cta";
+import { JsonLd } from "@/components/margeo/seo/json-ld";
+import { PRODUCT_DESCRIPTION } from "@/lib/margeo/brand";
+import { driveelyLandingJsonLdGraph } from "@/lib/margeo/json-ld";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
+import type { Metadata } from "next";
 
 const StoryProblem = dynamic(
   () =>
@@ -31,9 +36,15 @@ const TrustSection = dynamic(
   { ssr: true },
 );
 
+export const metadata: Metadata = buildDriveelyMetadata({
+  description: PRODUCT_DESCRIPTION,
+  path: "/",
+});
+
 export default function LandingPage() {
   return (
     <>
+      <JsonLd id="driveely-ld-landing" data={driveelyLandingJsonLdGraph()} />
       <LandingBackdrop />
       <LandingNav />
       <main className="landing-page relative z-[1]">

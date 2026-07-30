@@ -1,3 +1,4 @@
+import { HowItWorksGate } from "@/components/margeo/onboarding/how-it-works-gate";
 import { OnboardingWizard } from "@/components/margeo/onboarding/onboarding-wizard";
 import type {
   OnboardingDraft,
@@ -6,9 +7,19 @@ import type {
 import { getAuthUser } from "@/lib/margeo/auth/session";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { ensureProfileForUser } from "@/lib/margeo/services/profile";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
 import type { Vehicle } from "@/lib/margeo/types";
 import { normalizeVehicle } from "@/lib/margeo/vehicle-costs";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = buildDriveelyMetadata({
+  title: "Onboarding",
+  description: "Configure ton profil livreur Driveely (véhicule, coûts, objectifs).",
+  path: "/onboarding",
+  index: false,
+  follow: false,
+});
 
 function toOnboardingVehicle(vehicle: Vehicle): OnboardingVehicleId {
   const id = normalizeVehicle(vehicle);
@@ -76,8 +87,10 @@ export default async function MargeoOnboardingPage() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
-      <OnboardingWizard initial={profileToDraft(profile)} />
-    </div>
+    <HowItWorksGate>
+      <div className="flex min-h-dvh items-center justify-center p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))]">
+        <OnboardingWizard initial={profileToDraft(profile)} />
+      </div>
+    </HowItWorksGate>
   );
 }

@@ -102,6 +102,13 @@
   --mg-glass-border: rgba(255, 255, 255, 0.1);
   --mg-glass-highlight: rgba(255, 255, 255, 0.06);
   --mg-inset-light: rgba(255, 255, 255, 0.04);
+  --mg-spinner-track: rgba(255, 255, 255, 0.12);
+  --mg-skeleton-base: rgba(255, 255, 255, 0.045);
+  --mg-skeleton-shine: rgba(255, 255, 255, 0.11);
+  --mg-card-sheen: rgba(255, 255, 255, 0.035);
+  --mg-elev-y: -1px;
+  --mg-elev-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 10px 28px rgba(0, 0, 0, 0.28);
 
   background: var(--color-mg-background);
   color: var(--color-mg-foreground);
@@ -152,6 +159,13 @@
   --mg-glass-border: rgba(24, 24, 27, 0.1);
   --mg-glass-highlight: rgba(255, 255, 255, 0.9);
   --mg-inset-light: rgba(24, 24, 27, 0.04);
+  --mg-spinner-track: rgba(24, 24, 27, 0.12);
+  --mg-skeleton-base: rgba(24, 24, 27, 0.06);
+  --mg-skeleton-shine: rgba(24, 24, 27, 0.12);
+  --mg-card-sheen: rgba(24, 24, 27, 0.02);
+  --mg-elev-y: -1px;
+  --mg-elev-shadow: 0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 10px 24px rgba(24, 24, 27, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -693,7 +707,7 @@
 .margeo-root .mg-spinner {
   width: 1.125rem;
   height: 1.125rem;
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid var(--mg-spinner-track);
   border-top-color: var(--color-mg-accent);
   border-radius: 50%;
   animation: mg-spin 0.65s linear infinite;
@@ -751,7 +765,7 @@
 .margeo-root .app-page {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.375rem;
 }
 
 .driveely-root .app-page-header,
@@ -931,7 +945,7 @@
 .margeo-root .app-stage-line {
   width: 1rem;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-mg-border-strong);
 }
 
 .driveely-root .app-scan-progress,
@@ -939,14 +953,18 @@
   height: 3px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--mg-surface-muted);
 }
 
 .driveely-root .app-scan-progress-fill,
 .margeo-root .app-scan-progress-fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  background: linear-gradient(
+    90deg,
+    var(--color-mg-accent-strong),
+    var(--color-mg-accent)
+  );
   transition: width 0.15s linear;
 }
 
@@ -956,8 +974,8 @@
   flex-direction: column;
   align-items: center;
   border-radius: var(--radius-mg-2xl);
-  border: 1px solid rgba(248, 113, 113, 0.22);
-  background: rgba(248, 113, 113, 0.06);
+  border: 1px solid color-mix(in srgb, var(--color-mg-stop) 22%, transparent);
+  background: var(--color-mg-stop-soft);
   padding: 1.5rem 1.25rem;
   text-align: center;
 }
@@ -970,7 +988,7 @@
   width: 2.75rem;
   height: 2.75rem;
   border-radius: var(--radius-mg-lg);
-  background: rgba(248, 113, 113, 0.12);
+  background: color-mix(in srgb, var(--color-mg-stop) 14%, transparent);
   color: var(--color-mg-stop);
 }
 
@@ -1001,19 +1019,24 @@
 @keyframes app-fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.985);
-    filter: blur(4px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
+    transform: translateY(0);
   }
 }
 
 .driveely-root .app-fade-in,
 .margeo-root .app-fade-in {
-  animation: app-fade-in 0.45s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+  animation: app-fade-in 0.38s cubic-bezier(0.21, 0.47, 0.32, 0.98) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .app-fade-in,
+  .margeo-root .app-fade-in {
+    animation: none;
+  }
 }
 
 /* ── Polish global ── */
@@ -3411,11 +3434,10 @@
 .margeo-root .analysis-hero-card {
   position: relative;
   overflow: hidden;
-  border-radius: 1.5rem;
+  border-radius: var(--radius-mg-2xl);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 20px 56px rgba(0, 0, 0, 0.4),
-    0 0 48px rgba(99, 102, 241, 0.08);
+    0 1px 0 var(--mg-inset-light) inset,
+    0 16px 40px rgba(0, 0, 0, 0.32);
 }
 
 .driveely-root .analysis-hero-card::before,
@@ -3426,54 +3448,50 @@
   background: linear-gradient(
     115deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.06) 50%,
+    var(--mg-card-sheen) 50%,
     transparent 60%
   );
-  animation: phone-shine 8s ease-in-out infinite;
+  animation: phone-shine 10s ease-in-out infinite;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .driveely-root .analysis-metric,
 .margeo-root .analysis-metric {
   position: relative;
   overflow: hidden;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-mg-lg);
+  border: 1px solid var(--color-mg-border);
   background: linear-gradient(
     155deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.01)
+    color-mix(in srgb, var(--color-mg-foreground) 4.5%, transparent),
+    transparent
   );
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  box-shadow: 0 1px 0 var(--mg-inset-light) inset;
   transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 @media (hover: hover) {
   .driveely-root .analysis-metric:hover,
   .margeo-root .analysis-metric:hover {
-    transform: translateY(-3px);
-    border-color: rgba(255, 255, 255, 0.14);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.06) inset,
-      0 12px 28px rgba(0, 0, 0, 0.3);
+    transform: translateY(var(--mg-elev-y));
+    border-color: var(--color-mg-border-strong);
+    box-shadow: var(--mg-elev-shadow);
   }
 }
 
 .driveely-root .analysis-metric-highlight,
 .margeo-root .analysis-metric-highlight {
-  border-color: rgba(129, 140, 248, 0.3);
+  border-color: color-mix(in srgb, var(--color-mg-accent) 28%, transparent);
   background: linear-gradient(
     155deg,
-    rgba(129, 140, 248, 0.14),
-    rgba(129, 140, 248, 0.03)
+    var(--color-mg-accent-soft),
+    transparent
   );
-  box-shadow:
-    0 0 28px rgba(99, 102, 241, 0.12),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  box-shadow: 0 1px 0 var(--mg-inset-light) inset;
 }
 
 /* Scan overlay premium */
@@ -3482,11 +3500,10 @@
   position: relative;
   overflow: hidden;
   border-radius: 1.35rem;
-  border: 1px solid rgba(129, 140, 248, 0.3);
+  border: 1px solid color-mix(in srgb, var(--color-mg-accent) 28%, transparent);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.4) inset,
-    0 20px 48px rgba(0, 0, 0, 0.45),
-    0 0 40px rgba(99, 102, 241, 0.15);
+    0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+    0 16px 40px rgba(0, 0, 0, 0.38);
 }
 
 .driveely-root .scan-preview-frame::after,
@@ -3514,14 +3531,9 @@
   border-radius: inherit;
   background: linear-gradient(
     90deg,
-    #4f46e5,
-    #818cf8,
-    #a78bfa,
-    #818cf8
+    var(--color-mg-accent-strong),
+    var(--color-mg-accent)
   );
-  background-size: 200% 100%;
-  animation: scan-progress-shimmer 2s linear infinite;
-  box-shadow: 0 0 12px rgba(129, 140, 248, 0.45);
   transition: width 0.15s linear;
 }
 
@@ -3587,36 +3599,34 @@
 /* Premium glass cards (app) */
 .driveely-root .app-glass-surface,
 .margeo-root .app-glass-surface {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--mg-glass-border);
   background: linear-gradient(
     160deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.015) 100%
+    color-mix(in srgb, var(--color-mg-foreground) 5.5%, transparent) 0%,
+    transparent 100%
   );
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 12px 32px rgba(0, 0, 0, 0.28);
+    0 1px 0 var(--mg-inset-light) inset,
+    0 12px 32px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
 }
 
 .driveely-root .card-interactive,
 .margeo-root .card-interactive {
   transition:
-    border-color 0.25s ease,
-    background-color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 @media (hover: hover) {
   .driveely-root .card-interactive:hover,
   .margeo-root .card-interactive:hover {
-    border-color: rgba(255, 255, 255, 0.16);
+    border-color: var(--color-mg-border-strong);
     background-color: var(--color-mg-card-hover);
-    transform: translateY(-3px);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.06) inset,
-      0 16px 40px rgba(0, 0, 0, 0.35);
+    transform: translateY(var(--mg-elev-y));
+    box-shadow: var(--mg-elev-shadow);
   }
 }
 
@@ -5403,4 +5413,676 @@
   border-color: rgba(24, 24, 27, 0.08);
   background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 8px 24px rgba(24, 24, 27, 0.06);
+}
+
+/* ═══════════════════════════════════════════
+   Mature product polish (surgical, token-first)
+   ═══════════════════════════════════════════ */
+
+.driveely-root .app-section-title,
+.margeo-root .app-section-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-mg-foreground);
+}
+
+.driveely-root .app-section-meta,
+.margeo-root .app-section-meta {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .app-page-header,
+.margeo-root .app-page-header {
+  gap: 0.3125rem;
+}
+
+.driveely-root .app-page-eyebrow,
+.margeo-root .app-page-eyebrow {
+  letter-spacing: 0.09em;
+}
+
+.driveely-root .app-page-title,
+.margeo-root .app-page-title {
+  letter-spacing: -0.03em;
+  line-height: 1.18;
+}
+
+/* Cards: token sheen instead of hard white */
+.driveely-root .app-card-surface,
+.margeo-root .app-card-surface {
+  background-image: linear-gradient(
+    160deg,
+    var(--mg-card-sheen) 0%,
+    transparent 55%
+  );
+}
+
+.driveely-root .mg-skeleton,
+.margeo-root .mg-skeleton {
+  background-image: linear-gradient(
+    110deg,
+    var(--mg-skeleton-base) 40%,
+    var(--mg-skeleton-shine) 50%,
+    var(--mg-skeleton-base) 60%
+  );
+  background-size: 200% 100%;
+}
+
+/* Empty states — calm, actionable, no glow theatre */
+.driveely-root .app-empty-state,
+.margeo-root .app-empty-state {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-mg-2xl);
+  border: 1px solid var(--color-mg-border);
+  background: var(--color-mg-card);
+  box-shadow: var(--shadow-mg-card);
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .driveely-root .app-empty-state,
+  .margeo-root .app-empty-state {
+    padding: 3rem 1.5rem;
+  }
+}
+
+.driveely-root .app-empty-state::before,
+.margeo-root .app-empty-state::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background: radial-gradient(
+    ellipse 65% 42% at 50% 0%,
+    var(--color-mg-accent-soft),
+    transparent 72%
+  );
+}
+
+.driveely-root .app-empty-state-icon,
+.margeo-root .app-empty-state-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-mg-lg);
+  border: 1px solid color-mix(in srgb, var(--color-mg-accent) 22%, transparent);
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .app-empty-state-title,
+.margeo-root .app-empty-state-title {
+  position: relative;
+  margin-top: 1.125rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-mg-foreground);
+}
+
+.driveely-root .app-empty-state-desc,
+.margeo-root .app-empty-state-desc {
+  position: relative;
+  margin-top: 0.5rem;
+  max-width: 22rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-mg-muted);
+  text-wrap: pretty;
+}
+
+.driveely-root .app-empty-state-action,
+.margeo-root .app-empty-state-action {
+  position: relative;
+  margin-top: 1.375rem;
+}
+
+/* Filter chips — product density, not pill cluster */
+.driveely-root .mg-filter-chip,
+.margeo-root .mg-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-mg-lg);
+  border: 1px solid var(--color-mg-border);
+  background: transparent;
+  color: var(--color-mg-muted);
+  font-size: 0.75rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+  outline: none;
+}
+
+.driveely-root .mg-filter-chip:hover,
+.margeo-root .mg-filter-chip:hover {
+  border-color: var(--color-mg-border-strong);
+  color: var(--color-mg-foreground);
+}
+
+.driveely-root .mg-filter-chip:focus-visible,
+.margeo-root .mg-filter-chip:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-mg-accent-soft);
+}
+
+.driveely-root .mg-filter-chip-active,
+.margeo-root .mg-filter-chip-active {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 40%, transparent);
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .mg-filter-chip-count,
+.margeo-root .mg-filter-chip-count {
+  color: var(--color-mg-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.driveely-root .mg-filter-chip-active .mg-filter-chip-count,
+.margeo-root .mg-filter-chip-active .mg-filter-chip-count {
+  color: color-mix(in srgb, var(--color-mg-accent) 75%, var(--color-mg-faint));
+}
+
+/* KPI cells inside hero */
+.driveely-root .app-kpi-cell,
+.margeo-root .app-kpi-cell {
+  border-radius: var(--radius-mg-md);
+  border: 1px solid var(--color-mg-border);
+  background: color-mix(in srgb, var(--color-mg-background) 70%, transparent);
+  padding: 0.625rem 0.75rem;
+  text-align: center;
+}
+
+.driveely-root .app-kpi-value,
+.margeo-root .app-kpi-value {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-mg-foreground);
+  line-height: 1.2;
+}
+
+.driveely-root .app-kpi-label,
+.margeo-root .app-kpi-label {
+  margin-top: 0.2rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-mg-faint);
+}
+
+/* Soft banners / notices */
+.driveely-root .paywall-soft-banner,
+.margeo-root .paywall-soft-banner {
+  margin-bottom: 0;
+  border-radius: var(--radius-mg-xl);
+  border: 1px solid color-mix(in srgb, var(--color-mg-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--color-mg-accent-soft) 55%, transparent);
+  box-shadow: 0 1px 0 var(--mg-inset-light) inset;
+}
+
+.driveely-root .app-notice,
+.margeo-root .app-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-radius: var(--radius-mg-xl);
+  border: 1px solid var(--color-mg-border);
+  background: var(--mg-surface-muted);
+  padding: 0.875rem 1rem;
+}
+
+.driveely-root .app-notice-go,
+.margeo-root .app-notice-go {
+  border-color: color-mix(in srgb, var(--color-mg-go) 28%, transparent);
+  background: var(--color-mg-go-soft);
+}
+
+/* Mobile tab active — clearer presence without noise */
+.driveely-root .app-shell-tab,
+.margeo-root .app-shell-tab {
+  position: relative;
+  display: flex;
+  min-height: 52px;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  border-radius: var(--radius-mg-md);
+  padding: 0.25rem 0.125rem;
+  font-size: 10px;
+  font-weight: 550;
+  transition: color 0.18s ease, background-color 0.18s ease;
+  outline: none;
+}
+
+.driveely-root .app-shell-tab-active,
+.margeo-root .app-shell-tab-active {
+  color: var(--color-mg-accent);
+  background: var(--color-mg-accent-soft);
+}
+
+.driveely-root .app-shell-tab:not(.app-shell-tab-active),
+.margeo-root .app-shell-tab:not(.app-shell-tab-active) {
+  color: var(--color-mg-faint);
+}
+
+.driveely-root .app-shell-tab:focus-visible,
+.margeo-root .app-shell-tab:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-mg-accent-soft);
+}
+
+/* Spinner refinement */
+.driveely-root .mg-spinner,
+.margeo-root .mg-spinner {
+  border-right-color: color-mix(in srgb, var(--color-mg-accent) 32%, transparent);
+  animation: mg-spin 0.7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+/* Upload: less glow theatre, more product */
+.driveely-root .app-upload-icon,
+.margeo-root .app-upload-icon {
+  box-shadow: 0 1px 0 var(--mg-inset-light) inset;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  border: 1px solid color-mix(in srgb, var(--color-mg-accent) 18%, transparent);
+}
+
+@media (hover: hover) {
+  .driveely-root .app-upload-zone:hover,
+  .margeo-root .app-upload-zone:hover {
+    border-color: color-mix(in srgb, var(--color-mg-accent) 42%, transparent);
+    box-shadow: 0 0 0 3px var(--color-mg-accent-soft);
+  }
+
+  .driveely-root .app-upload-zone:hover .app-upload-icon,
+  .margeo-root .app-upload-zone:hover .app-upload-icon {
+    transform: scale(1.04);
+    box-shadow: none;
+  }
+}
+
+/* Glass + interactive: token elevation (overrides hard rgba) */
+.driveely-root .app-glass-surface,
+.margeo-root .app-glass-surface {
+  border: 1px solid var(--mg-glass-border);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--mg-glass-highlight) 55%, transparent) 0%,
+    var(--mg-surface-muted) 100%
+  );
+  box-shadow: var(--mg-elev-shadow);
+  backdrop-filter: blur(16px);
+}
+
+@media (hover: hover) {
+  .driveely-root .card-interactive:hover,
+  .margeo-root .card-interactive:hover {
+    border-color: var(--color-mg-border-strong);
+    background-color: var(--color-mg-card-hover);
+    transform: translateY(var(--mg-elev-y));
+    box-shadow: var(--mg-elev-shadow);
+  }
+}
+
+.driveely-root[data-theme="light"] .app-glass-surface,
+.margeo-root[data-theme="light"] .app-glass-surface {
+  border-color: var(--color-mg-border);
+  background: linear-gradient(160deg, #ffffff, #f8f8f9);
+  box-shadow: var(--shadow-mg-card);
+}
+
+.driveely-root[data-theme="light"] .card-interactive:hover,
+.margeo-root[data-theme="light"] .card-interactive:hover {
+  border-color: var(--color-mg-border-strong);
+  box-shadow: var(--mg-elev-shadow);
+}
+
+/* Date group label */
+.driveely-root .app-date-group,
+.margeo-root .app-date-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-mg-muted);
+}
+
+.driveely-root .app-date-group-count,
+.margeo-root .app-date-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--mg-surface-muted);
+  border: 1px solid var(--color-mg-border);
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-mg-faint);
+}
+
+/* Analysis card score tile */
+.driveely-root .analysis-score-tile,
+.margeo-root .analysis-score-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-mg-md);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Auth non-premium card parity */
+.driveely-root .auth-card-basic,
+.margeo-root .auth-card-basic {
+  border-radius: var(--radius-mg-2xl);
+  border: 1px solid var(--color-mg-border);
+  background: var(--color-mg-card);
+  box-shadow: var(--shadow-mg-card);
+  background-image: linear-gradient(
+    160deg,
+    var(--mg-card-sheen) 0%,
+    transparent 55%
+  );
+}
+
+/* Location / soft prompt cards */
+.driveely-root .app-prompt-card,
+.margeo-root .app-prompt-card {
+  border-radius: var(--radius-mg-xl);
+  border: 1px solid color-mix(in srgb, var(--color-mg-accent) 20%, transparent);
+  background: color-mix(in srgb, var(--color-mg-accent-soft) 45%, var(--color-mg-card));
+  box-shadow: none;
+}
+
+/* Verdict distribution rows */
+.driveely-root .verdict-dist-row,
+.margeo-root .verdict-dist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius-mg-md);
+  border: 1px solid var(--color-mg-border);
+  background: color-mix(in srgb, var(--color-mg-surface) 50%, transparent);
+  padding: 0.625rem 0.75rem;
+}
+
+/* Focus rings use accent token */
+.driveely-root a:focus-visible,
+.margeo-root a:focus-visible,
+.driveely-root button:focus-visible,
+.margeo-root button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-mg-accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* ── Orphan class wiring (components → tokens) ── */
+
+.driveely-root .mg-filter-chip,
+.margeo-root .mg-filter-chip {
+  font-weight: 500;
+}
+
+.driveely-root .app-shell-tab,
+.margeo-root .app-shell-tab {
+  font-weight: 500;
+}
+
+.driveely-root .mg-filter-row,
+.margeo-root .mg-filter-row {
+  margin: 0;
+}
+
+.driveely-root .dashboard-kpi-chip,
+.margeo-root .dashboard-kpi-chip {
+  border-radius: var(--radius-mg-md);
+  border: 1px solid var(--color-mg-border);
+  background: color-mix(in srgb, var(--color-mg-background) 72%, transparent);
+}
+
+.driveely-root .analysis-list-card,
+.margeo-root .analysis-list-card {
+  position: relative;
+}
+
+.driveely-root .analysis-list-card-accent,
+.margeo-root .analysis-list-card-accent {
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  width: 2px;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+.driveely-root .location-banner,
+.margeo-root .location-banner {
+  border-color: color-mix(in srgb, var(--color-mg-accent) 20%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-mg-accent-soft) 50%,
+    var(--color-mg-card)
+  );
+  box-shadow: none;
+}
+
+.driveely-root .location-banner-icon,
+.margeo-root .location-banner-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-mg-md);
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .paywall-soft-banner,
+.margeo-root .paywall-soft-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0;
+  padding: 0.875rem 1rem;
+}
+
+.driveely-root .paywall-soft-banner-icon,
+.margeo-root .paywall-soft-banner-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  border-radius: var(--radius-mg-md);
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+.driveely-root .paywall-soft-banner-dismiss,
+.margeo-root .paywall-soft-banner-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-mg-md);
+  color: var(--color-mg-faint);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.driveely-root .paywall-soft-banner-dismiss:hover,
+.margeo-root .paywall-soft-banner-dismiss:hover {
+  color: var(--color-mg-foreground);
+  background: var(--mg-nav-hover);
+}
+
+.driveely-root .app-shell-tab-indicator,
+.margeo-root .app-shell-tab-indicator {
+  position: absolute;
+  top: 0.2rem;
+  width: 1rem;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--color-mg-accent);
+}
+
+.driveely-root .app-shell-nav-mobile a.app-shell-tab-active,
+.margeo-root .app-shell-nav-mobile a.app-shell-tab-active,
+.driveely-root a.app-shell-tab.app-shell-tab-active,
+.margeo-root a.app-shell-tab.app-shell-tab-active {
+  background: var(--color-mg-accent-soft);
+  color: var(--color-mg-accent);
+}
+
+/* Skeleton motion + status banners (unique wiring) */
+.driveely-root .mg-skeleton,
+.margeo-root .mg-skeleton {
+  animation: mg-shimmer 1.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .mg-skeleton,
+  .margeo-root .mg-skeleton {
+    animation: none;
+    background: var(--mg-skeleton-base);
+    background-image: none;
+  }
+}
+
+.driveely-root .app-status-banner,
+.margeo-root .app-status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-mg-xl);
+  border: 1px solid var(--color-mg-border);
+  background: var(--color-mg-card);
+}
+
+.driveely-root .app-status-banner-success,
+.margeo-root .app-status-banner-success {
+  border-color: color-mix(in srgb, var(--color-mg-go) 24%, transparent);
+  background: var(--color-mg-go-soft);
+}
+
+.driveely-root .verdict-pill,
+.margeo-root .verdict-pill {
+  border-radius: var(--radius-mg-md);
+  border: 1px solid var(--color-mg-border);
+  background: var(--mg-surface-muted);
+}
+
+.driveely-root .stat-card-icon,
+.margeo-root .stat-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-mg-md);
+  background: var(--mg-surface-muted);
+  color: var(--color-mg-muted);
+}
+
+.driveely-root .mg-filter-row,
+.margeo-root .mg-filter-row {
+  padding: 0.2rem;
+  border-radius: var(--radius-mg-lg);
+  border: 1px solid var(--color-mg-border);
+  background: var(--mg-surface-muted);
+}
+
+.driveely-root .mg-filter-row .mg-filter-chip,
+.margeo-root .mg-filter-row .mg-filter-chip {
+  border-color: transparent;
+  min-height: 2.25rem;
+  border-radius: calc(var(--radius-mg-lg) - 0.1rem);
+}
+
+.driveely-root .mg-filter-row .mg-filter-chip-active,
+.margeo-root .mg-filter-row .mg-filter-chip-active {
+  background: var(--color-mg-card);
+  color: var(--color-mg-foreground);
+  border-color: var(--color-mg-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.driveely-root[data-theme="light"] .mg-filter-row .mg-filter-chip-active,
+.margeo-root[data-theme="light"] .mg-filter-row .mg-filter-chip-active {
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.06);
+}
+
+.driveely-root[data-theme="light"] .analysis-hero-card,
+.margeo-root[data-theme="light"] .analysis-hero-card {
+  box-shadow:
+    0 1px 0 var(--mg-inset-light) inset,
+    0 12px 28px rgba(24, 24, 27, 0.07);
+}
+
+.driveely-root[data-theme="light"] .app-stage-dot-idle,
+.margeo-root[data-theme="light"] .app-stage-dot-idle {
+  border-color: rgba(24, 24, 27, 0.12);
+}
+
+.driveely-root[data-theme="light"] .app-stage-line,
+.margeo-root[data-theme="light"] .app-stage-line {
+  background: rgba(24, 24, 27, 0.12);
+}
+
+/* ── How-it-works product tour ── */
+.driveely-root .hiw-phone {
+  filter: drop-shadow(0 28px 48px rgba(0, 0, 0, 0.45));
+}
+
+.driveely-root .hiw-phone-content {
+  z-index: 2;
+}
+
+.driveely-root .hiw-progress {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driveely-root .hiw-phone .phone-mock-ambient {
+    animation: none !important;
+  }
 }

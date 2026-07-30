@@ -26,14 +26,14 @@ export function StatCard({
   className,
 }: StatCardProps) {
   return (
-    <Card interactive className={cn("p-5", className)}>
+    <Card className={cn("stat-card p-5", className)}>
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-mg-muted">{label}</p>
-        <span className="flex size-8 items-center justify-center rounded-xl bg-[var(--mg-surface-muted)]">
-          <Icon className="size-4 text-mg-muted" />
+        <span className="stat-card-icon">
+          <Icon className="size-4" strokeWidth={1.75} />
         </span>
       </div>
-      <div className="mt-3 text-3xl font-bold tracking-tight text-mg-foreground">
+      <div className="mt-2.5 text-[1.75rem] font-bold tracking-tight text-mg-foreground tabular-nums sm:text-3xl">
         {children}
       </div>
       {(delta || footer) && (

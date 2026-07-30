@@ -33,20 +33,22 @@ export function Logo({
         style={{ width: iconSize, height: iconSize }}
       >
         <Image
-          src="/driveely/icon.png"
+          src="/driveely/icon-64.png"
           alt=""
           width={iconSize}
           height={iconSize}
           className="driveely-logo-icon driveely-logo-icon-dark absolute inset-0 size-full object-cover"
           priority
+          sizes={`${iconSize}px`}
         />
         <Image
-          src="/driveely/icon-light.png"
+          src="/driveely/icon-light-64.png"
           alt=""
           width={iconSize}
           height={iconSize}
           className="driveely-logo-icon driveely-logo-icon-light absolute inset-0 size-full object-cover"
           priority
+          sizes={`${iconSize}px`}
         />
       </span>
       {withText && (
@@ -75,18 +77,20 @@ export function LogoIcon({
       style={{ width: size, height: size }}
     >
       <Image
-        src="/driveely/icon.png"
+        src="/driveely/icon-64.png"
         alt={PRODUCT_NAME}
         width={size}
         height={size}
         className="driveely-logo-icon driveely-logo-icon-dark absolute inset-0 size-full rounded-lg object-cover"
+        sizes={`${size}px`}
       />
       <Image
-        src="/driveely/icon-light.png"
+        src="/driveely/icon-light-64.png"
         alt={PRODUCT_NAME}
         width={size}
         height={size}
         className="driveely-logo-icon driveely-logo-icon-light absolute inset-0 size-full rounded-lg object-cover"
+        sizes={`${size}px`}
       />
     </span>
   );

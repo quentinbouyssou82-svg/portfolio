@@ -5,14 +5,17 @@ import {
   type DriveelyLegalDocId,
 } from "@/lib/margeo/legal/documents";
 import { loadDriveelyLegalMarkdown } from "@/lib/margeo/legal/load-document";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
 
 export function buildLegalMetadata(id: DriveelyLegalDocId): Metadata {
   const doc = getLegalDocument(id);
-  return {
+  return buildDriveelyMetadata({
     title: doc.title,
     description: doc.description,
-    robots: { index: false, follow: false },
-  };
+    path: `/${id}`,
+    index: false,
+    follow: false,
+  });
 }
 
 export function DriveelyLegalPage({ id }: { id: DriveelyLegalDocId }) {

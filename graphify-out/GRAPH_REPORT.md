@@ -1,16 +1,16 @@
-# Graph Report - portfolio  (2026-07-22)
+# Graph Report - portfolio  (2026-07-24)
 
 ## Corpus Check
-- 877 files · ~1,045,180 words
+- 906 files · ~1,056,221 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5088 nodes · 10159 edges · 370 communities (330 shown, 40 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 233 edges (avg confidence: 0.69)
+- 5230 nodes · 10570 edges · 371 communities (334 shown, 37 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 237 edges (avg confidence: 0.69)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e5b9dcad`
+- Built from commit: `f4d3fbd9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -368,35 +368,36 @@
 - [[_COMMUNITY_Community 367|Community 367]]
 - [[_COMMUNITY_Community 368|Community 368]]
 - [[_COMMUNITY_Community 369|Community 369]]
+- [[_COMMUNITY_Community 370|Community 370]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `str` - 65 edges
-2. `usePrefersReducedMotion()` - 43 edges
-3. `createMargeoServerClient()` - 42 edges
-4. `getMaisonDb()` - 42 edges
-5. `cn()` - 41 edges
-6. `Button` - 40 edges
+2. `Button` - 49 edges
+3. `cn()` - 46 edges
+4. `createMargeoServerClient()` - 44 edges
+5. `usePrefersReducedMotion()` - 43 edges
+6. `getMaisonDb()` - 42 edges
 7. `cn()` - 36 edges
-8. `requireMaisonSession()` - 31 edges
-9. `execute_pipeline()` - 30 edges
-10. `Card()` - 27 edges
+8. `getAppFeatures()` - 32 edges
+9. `requireMaisonSession()` - 31 edges
+10. `execute_pipeline()` - 30 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `PlatformLogoProps` --references--> `Platform`  [EXTRACTED]
-  components/margeo/platform-logo.tsx → lib/margeo/types.ts
+- `DashboardPage()` --calls--> `getCurrentProfile()`  [INFERRED]
+  app/demos/uberly/(shell)/dashboard/page.tsx → lib/margeo/services/profile.ts
+- `ProfilPage()` --calls--> `getCurrentProfile()`  [INFERRED]
+  app/demos/uberly/(shell)/profil/page.tsx → lib/margeo/services/profile.ts
 - `AnimatedCounter()` --calls--> `useInView()`  [INFERRED]
   components/margeo/animated-counter.tsx → hooks/use-in-view.ts
 - `AnimatedCounter()` --calls--> `useInView()`  [INFERRED]
   margeo/components/animated-counter.tsx → hooks/use-in-view.ts
-- `ProfilPage()` --calls--> `getCurrentProfile()`  [INFERRED]
-  app/demos/uberly/(shell)/profil/page.tsx → lib/margeo/services/profile.ts
-- `MaisonOnboardingPage()` --calls--> `getMaisonSession()`  [INFERRED]
-  app/demos/maison/onboarding/page.tsx → lib/maison/auth/session.ts
+- `FakeScan` --references--> `Verdict`  [EXTRACTED]
+  components/margeo/landing/screens.tsx → lib/margeo/types.ts
 
 ## Import Cycles
 - 2-file cycle: `lib/maison/grocery-providers/oauth.ts -> lib/maison/grocery-providers/service.ts -> lib/maison/grocery-providers/oauth.ts`
 
-## Communities (370 total, 40 thin omitted)
+## Communities (371 total, 37 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.06
@@ -431,12 +432,12 @@ Cohesion: 0.09
 Nodes (22): dependencies, class-variance-authority, clsx, framer-motion, gsap, lenis, lucide-react, next (+14 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.07
-Nodes (34): clientBrief, CONTACT_SUBJECTS, NAV_LINKS, PALAN_COLORS, PALAN_HERO_IMAGE, PALAN_MARQUEE, AudienceBlock, AudienceSection (+26 more)
+Cohesion: 0.09
+Nodes (24): POST(), clientBrief, NAV_LINKS, PALAN_COLORS, PALAN_HERO_IMAGE, PALAN_MARQUEE, ContactPayload, sendContactEmails() (+16 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.10
-Nodes (22): PricingSection(), PriorityListSection(), V2_EASE, V2_MOTION, PageSection(), PageSectionProps, V2About(), V2Background() (+14 more)
+Cohesion: 0.21
+Nodes (10): PriorityListSection(), PageSection(), PageSectionProps, CardHoverGlow(), CardHoverGlowProps, V2About(), V2Contact(), V2Reveal() (+2 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.19
@@ -455,12 +456,12 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.08
-Nodes (57): activatePlanAction(), assertPlanId(), cancelSubscriptionAction(), changePlanAction(), getSubscriptionAction(), getSubscriptionHistoryAction(), requireUserId(), PlanEntitlements (+49 more)
+Cohesion: 0.07
+Nodes (69): activatePlanAction(), assertPlanId(), cancelSubscriptionAction(), changePlanAction(), getSubscriptionAction(), getSubscriptionHistoryAction(), requireUserId(), DISCOVERY (+61 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.11
-Nodes (13): sizes, variants, McnDocumentsPanel(), McnDocumentsPanelProps, McnOnboardingForm(), priorityOptions, McnOnboardingPage(), McnButton (+5 more)
+Cohesion: 0.07
+Nodes (30): adminCreateUser(), confirmUserEmail(), establishSessionAfterSignUp(), finalizeSignUpAndRedirect(), findUserIdByEmail(), isSignupRateLimit(), MargeoActionResult, repairUserForSignup() (+22 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.06
@@ -475,16 +476,16 @@ Cohesion: 0.15
 Nodes (12): inter, spaceGrotesk, geistMono, metadata, previewEnabled, ResponsivePreviewInner(), ResponsivePreviewShell(), isPreviewFrame() (+4 more)
 
 ### Community 19 - "Community 19"
-Cohesion: 0.10
-Nodes (35): AVATAR_MIME, EXT_BY_MIME, MAX_AVATAR_BYTES, removeAvatarAction(), updateProfileAction(), uploadAvatarAction(), DashboardPage(), HistoriquePage() (+27 more)
+Cohesion: 0.09
+Nodes (34): AVATAR_MIME, EXT_BY_MIME, MAX_AVATAR_BYTES, removeAvatarAction(), updateProfileAction(), uploadAvatarAction(), HistoriquePage(), ProfilPage() (+26 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.09
-Nodes (17): AnalysisCard(), AnimatedCounter(), AnimatedCounterProps, formatValue(), EarningsChart(), EarningsChartProps, StatCard(), StatCardProps (+9 more)
+Cohesion: 0.17
+Nodes (19): AppShell(), MARGEO_PATHS, persistOnboardingCompletedMetadata(), repairOnboardingCompletedIfNeeded(), hasCompletionSignals(), metadataOnboardingCompleted(), needsOnboardingRepair(), OnboardingProfileSignal (+11 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.13
-Nodes (23): DISCOVERY, ELITE, getEntitlementsForPlan(), isPaidPlan(), PLAN_ENTITLEMENTS, PRO, GET(), discovery (+15 more)
+Cohesion: 0.22
+Nodes (15): GET(), isUserPremium(), PremiumSource, PremiumStatus, resolvePremiumStatus(), resolvePremiumStatusForUser(), getProfileForUser(), assertAnalysisQuota() (+7 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.14
@@ -847,8 +848,8 @@ Cohesion: 0.20
 Nodes (6): geistSans, geistMono, metadata, geistMono, geistSans, metadata
 
 ### Community 112 - "Community 112"
-Cohesion: 0.09
-Nodes (18): metadata, metadata, metadata, metadata, metadata, metadata, FILE_TO_PATH, getLegalDocument() (+10 more)
+Cohesion: 0.07
+Nodes (23): metadata, metadata, metadata, metadata, metadata, metadata, DRIVEELY_LEGAL_ALIASES, DRIVEELY_LEGAL_DOCUMENTS (+15 more)
 
 ### Community 113 - "Community 113"
 Cohesion: 0.40
@@ -862,17 +863,21 @@ Nodes (14): MeridianApproach(), steps, MeridianCredibility(), stats, MeridianCta
 Cohesion: 0.12
 Nodes (16): views, EmptyState(), ImportGmailBanner(), ViewContainer(), iconTabs, tabs, TopNav(), CHAT_PROMPTS (+8 more)
 
+### Community 128 - "Community 128"
+Cohesion: 0.50
+Nodes (3): appRoot, nextConfig, securityHeaders
+
 ### Community 135 - "Community 135"
-Cohesion: 0.07
-Nodes (23): AnalysisResult(), parsePlan(), SubscriptionCheckoutPage(), PUBLIC_MAISON_PATHS, ALL_PLATFORMS, MARGEO_PATHS, ONBOARDING_PLATFORMS, PROTECTED_MARGEO_PREFIXES (+15 more)
+Cohesion: 0.10
+Nodes (31): analyzeScreenshot(), AnalyzeScreenshotOptions, analyzeWithMock(), ScreenshotAnalysisResult, ScreenshotAnalysisSource, RideOffer, buf, __dirname (+23 more)
 
 ### Community 136 - "Community 136"
-Cohesion: 0.09
-Nodes (22): checkUberlyEnv(), EnvStatus, hasGeminiKey(), hasMistralKey(), resolveConfiguredVisionProvider(), GET(), geminiVisionProvider, mistralVisionProvider (+14 more)
+Cohesion: 0.17
+Nodes (11): formatPrice(), PricingPlanCard(), PricingSectionProps, useThrottledScroll(), BillingMode, comparisonRows, pricingFaqs, PricingPlan (+3 more)
 
 ### Community 137 - "Community 137"
 Cohesion: 0.14
-Nodes (19): adminCreateUser(), confirmUserEmail(), establishSessionAfterSignUp(), finalizeSignUpAndRedirect(), findUserIdByEmail(), isSignupRateLimit(), MargeoActionResult, repairUserForSignup() (+11 more)
+Nodes (18): DriveelyAppMode, getAppMode(), isBetaApp(), isProductionApp(), normalizeMode(), BETA_FEATURES, DriveelyFeatures, features (+10 more)
 
 ### Community 138 - "Community 138"
 Cohesion: 0.33
@@ -1015,8 +1020,8 @@ Cohesion: 0.10
 Nodes (19): CtModal(), CtModalProps, DashboardPipelineProps, PLACEHOLDER_VALUES, DashboardSessionsProps, PLACEHOLDER_SESSIONS, DashboardTodayProps, DisplayTask (+11 more)
 
 ### Community 174 - "Community 174"
-Cohesion: 0.08
-Nodes (30): Input, DeleteAccountSection(), UBERLY_PLAN_ORDER, UBERLY_PLANS, UBERLY_PRICING_COPY, UberlyPlan, UberlyPlanId, hydrateVehicleDetails() (+22 more)
+Cohesion: 0.06
+Nodes (32): Input, DeleteAccountSection(), hydrateVehicleDetails(), ProfilForm(), DriveelyTheme, DriveelyThemeProvider(), isDriveelyMarketingPath(), ThemeContext (+24 more)
 
 ### Community 176 - "Community 176"
 Cohesion: 0.08
@@ -1039,8 +1044,8 @@ Cohesion: 0.09
 Nodes (36): load_enriched_index(), append_csv_row(), apply_row_limit(), fetch_contact_pages(), fetch_url(), index_rows_by_place(), install_fast_routes(), is_enriched_complete() (+28 more)
 
 ### Community 182 - "Community 182"
-Cohesion: 0.10
-Nodes (20): ACTIONS, ACHIEVEMENTS, LifeOSActivityRing(), LifeOSActivityRings(), RingProps, LifeOSQuestRow(), mainNav, worldNav (+12 more)
+Cohesion: 0.19
+Nodes (8): ACTIONS, ACHIEVEMENTS, mainNav, worldNav, LifeOSStreakChip(), LifeOSTopBar(), LifeOSXpBar(), PROJECTS
 
 ### Community 183 - "Community 183"
 Cohesion: 0.20
@@ -1052,7 +1057,7 @@ Nodes (8): requireAuth(), authRouter, loginSchema, ollamaRouter, workoutsRouter,
 
 ### Community 185 - "Community 185"
 Cohesion: 0.08
-Nodes (27): SPRING, DEDUCTIONS, EASE, ProblemComparison(), ProblemStats(), BADGE_TONE, BadgeTone, mapStepTone() (+19 more)
+Nodes (28): SPRING, StoryProblem(), DEDUCTIONS, EASE, ProblemComparison(), ProblemStats(), BADGE_TONE, BadgeTone (+20 more)
 
 ### Community 186 - "Community 186"
 Cohesion: 0.08
@@ -1075,8 +1080,8 @@ Cohesion: 0.27
 Nodes (17): ActionResult, addBusinessMetric(), createSession(), createTask(), cycleTaskStatus(), deleteTask(), MetricsInput, revalidateDashboard() (+9 more)
 
 ### Community 192 - "Community 192"
-Cohesion: 0.09
-Nodes (38): ApexApproach(), splitNarrativeLines(), useApexScroll(), ApexPhotoLayer(), ApexPhotoLayerProps, ApexPhotoLayerVariant, cn(), ApexReveal() (+30 more)
+Cohesion: 0.13
+Nodes (24): ApexApproach(), splitNarrativeLines(), useApexScroll(), ApexReveal(), ApexRevealProps, EASE, variants, ApexScrollReveal() (+16 more)
 
 ### Community 193 - "Community 193"
 Cohesion: 0.05
@@ -1095,24 +1100,24 @@ Cohesion: 0.09
 Nodes (25): DAY_LABELS, MEAL_TYPE_LABELS, NUTRITION_GOAL_LABELS, GenerationStepId, MaisonMealGenerationOverlay(), Props, STEPS, MaisonPlanningClient() (+17 more)
 
 ### Community 200 - "Community 200"
-Cohesion: 0.12
-Nodes (18): useMcnStore(), cn(), McnDashboardOverview(), McnPageSkeleton(), McnPageSkeletonProps, McnRecapPanel(), McnTasksPanel(), McnTasksPanelProps (+10 more)
+Cohesion: 0.13
+Nodes (13): useMcnStore(), McnDashboardOverview(), McnRecapPanel(), McnTasksPanel(), McnBadge(), McnBadgeProps, variants, McnCardDescription() (+5 more)
 
 ### Community 201 - "Community 201"
-Cohesion: 0.15
-Nodes (17): ApexCta(), ApexScrollRevealProps, ApexHeadlineReveal(), ApexTextReveal(), APEX_DURATION, APEX_EASE, APEX_SCROLL, initApexScrollStory() (+9 more)
+Cohesion: 0.16
+Nodes (16): ApexScrollRevealProps, ApexHeadlineReveal(), ApexTextReveal(), APEX_DURATION, APEX_EASE, APEX_SCROLL, initApexScrollStory(), registerGsap() (+8 more)
 
 ### Community 202 - "Community 202"
 Cohesion: 0.11
-Nodes (26): buildHouseholdDietConstraints(), MealGenerationError, MealType, buildMealPlanPrompt(), buildMemberSummary(), buildPreferenceConstraints(), buildWeekDays(), GROCERY_CATEGORIES (+18 more)
+Nodes (16): documentCategories, FeatureItem, landingFeatures, landingIcons, landingStats, onboardingSteps, McnAuthFormProps, McnDocumentsPanel() (+8 more)
 
 ### Community 203 - "Community 203"
 Cohesion: 0.23
 Nodes (22): Business, Business, load_businesses_csv(), merge_business_lists(), int, Path, Fusionne par fiche Maps (maps_place_key), conserve l'existant., save_businesses_csv() (+14 more)
 
 ### Community 204 - "Community 204"
-Cohesion: 0.08
-Nodes (28): FeedbackForm(), REASONS_ACCEPT, REASONS_REFUSE, Step, AnalysePage(), Stage, STAGE_LABELS, STAGE_ORDER (+20 more)
+Cohesion: 0.09
+Nodes (27): FeedbackForm(), REASONS_ACCEPT, REASONS_REFUSE, Step, AnalysePage(), Stage, STAGE_LABELS, STAGE_ORDER (+19 more)
 
 ### Community 205 - "Community 205"
 Cohesion: 0.32
@@ -1127,28 +1132,28 @@ Cohesion: 0.22
 Nodes (14): classify_business_type(), extract_category_from_maps_line(), _normalize_text(), notion_select_options(), pc_bonus_for_type(), float, str, Classification métier (business_type) + bonus score prospection (PC). (+6 more)
 
 ### Community 208 - "Community 208"
-Cohesion: 0.12
-Nodes (18): computeMetrics(), DashboardView(), DashboardViewProps, EarningsChart(), EarningsChartProps, ProgressRing(), ProgressRingProps, StatCard() (+10 more)
+Cohesion: 0.11
+Nodes (19): headlineWords, HeroSection(), HeroSectionProps, socialProofItems, headlineWords, PriorityListHero(), fadeUp, HeroHeadline() (+11 more)
 
 ### Community 209 - "Community 209"
 Cohesion: 0.06
 Nodes (34): dependencies, @cali/stats-engine, @cali/timer-engine, @cali/types, @cali/ui, @cali/utils, @cali/workout-engine, framer-motion (+26 more)
 
 ### Community 210 - "Community 210"
-Cohesion: 0.14
-Nodes (25): completeOnboardingAction(), completeOnboardingAndRedirect(), betaLog(), isBetaVerboseLogging(), isUberlyBetaMode(), GET(), handleUberlyAuth(), BetaEventInput (+17 more)
+Cohesion: 0.12
+Nodes (26): completeOnboardingAction(), completeOnboardingAndRedirect(), draftToPatch(), saveOnboardingProgressAction(), ALLOWED, logPaywallEventAction(), betaLog(), isBetaVerboseLogging() (+18 more)
 
 ### Community 211 - "Community 211"
-Cohesion: 0.38
-Nodes (4): STATS, AnimatedCounter(), AnimatedCounterProps, formatValue()
+Cohesion: 0.11
+Nodes (21): DashboardPage(), computeMetrics(), DashboardView(), DashboardViewProps, EarningsChart(), EarningsChartProps, ProgressRing(), ProgressRingProps (+13 more)
 
 ### Community 212 - "Community 212"
-Cohesion: 0.15
-Nodes (10): container, item, previewReveal, categories, chipVariants, groupVariants, rowVariants, taskDefs (+2 more)
+Cohesion: 0.16
+Nodes (10): container, item, previewReveal, categories, chipVariants, groupVariants, LiveAppPreview(), rowVariants (+2 more)
 
 ### Community 213 - "Community 213"
-Cohesion: 0.10
-Nodes (22): CaseStudyModal(), CaseStudyModalProps, CodeModal(), CodeModalProps, ModalShellProps, tokenClasses, filterByProjectId, filterProjects() (+14 more)
+Cohesion: 0.09
+Nodes (26): CaseStudyModal(), CaseStudyModalProps, CodeModal(), CodeModalProps, ModalShellProps, tokenClasses, ConceptProjectsSectionProps, filterByProjectId (+18 more)
 
 ### Community 214 - "Community 214"
 Cohesion: 0.07
@@ -1156,7 +1161,7 @@ Nodes (28): dependencies, class-variance-authority, clsx, framer-motion, lucide-
 
 ### Community 215 - "Community 215"
 Cohesion: 0.20
-Nodes (11): McnCguPage(), metadata, McnConfidentialitePage(), metadata, McnDpaPage(), MCN_PATHS, McnPageHeader(), McnPageHeaderProps (+3 more)
+Nodes (10): McnCguPage(), metadata, McnConfidentialitePage(), metadata, McnDpaPage(), McnPageHeader(), McnPageHeaderProps, McnSettingsPanel() (+2 more)
 
 ### Community 216 - "Community 216"
 Cohesion: 0.14
@@ -1171,16 +1176,16 @@ Cohesion: 0.21
 Nodes (13): bodySchema, debugRouter, callOllamaGenerate(), isTimeoutError(), OllamaApiResponse, OllamaGenerateParams, OllamaGenerateResult, OllamaGenerateTimings (+5 more)
 
 ### Community 219 - "Community 219"
-Cohesion: 0.16
-Nodes (8): MENU_ITEMS, NAV, TESTIMONIALS, TIME_SLOTS, Reveal(), RevealProps, variants, images
+Cohesion: 0.20
+Nodes (9): MCN_PATHS, navItems, McnAuthForm(), McnFooter(), McnMobileNav(), McnSidebar(), McnSidebarProps, McnSeparator() (+1 more)
 
 ### Community 220 - "Community 220"
-Cohesion: 0.16
-Nodes (10): navItems, McnAuthForm(), McnAuthFormProps, McnLogo(), McnLogoProps, McnMobileNav(), McnSidebar(), McnSidebarProps (+2 more)
+Cohesion: 0.33
+Nodes (5): sizes, variants, McnButtonProps, sizes, variants
 
 ### Community 221 - "Community 221"
-Cohesion: 0.15
-Nodes (10): features, sizes, variants, Feature, proofPoints, ButtonLink(), CommonProps, Size (+2 more)
+Cohesion: 0.14
+Nodes (11): features, sizes, variants, Feature, proofPoints, ButtonLink(), CommonProps, Size (+3 more)
 
 ### Community 222 - "Community 222"
 Cohesion: 0.40
@@ -1191,8 +1196,8 @@ Cohesion: 0.25
 Nodes (12): signInWithPin(), signOutAction(), ControlTowerHomePage(), clearPinSessionCookie(), constantTimeEqual(), createSessionToken(), getSessionSecret(), hmacBase64Url() (+4 more)
 
 ### Community 225 - "Community 225"
-Cohesion: 0.18
-Nodes (7): DemoNotice(), DemoNoticeProps, images, MENU_ITEMS, NAV, TESTIMONIALS, TIME_SLOTS
+Cohesion: 0.29
+Nodes (7): FormState, initialForm, priorityListReassurance, PriorityListResponse, PriorityListSubmission, submitPriorityList(), Textarea
 
 ### Community 226 - "Community 226"
 Cohesion: 0.33
@@ -1211,20 +1216,20 @@ Cohesion: 0.25
 Nodes (9): adminCreateUser(), adminHeaders(), analyze(), cookieHeader(), __dirname, envPath, feedback(), patchOnboarding() (+1 more)
 
 ### Community 233 - "Community 233"
-Cohesion: 0.09
-Nodes (28): ApexCredibility(), ApexFooter(), ApexHero(), ApexLangSwitcher(), useApexLocale(), ApexLogo(), ApexLogoProps, ApexLogoTone (+20 more)
+Cohesion: 0.10
+Nodes (22): ApexCredibility(), ApexCta(), ApexFooter(), ApexHero(), ApexLangSwitcher(), useApexLocale(), ApexLogo(), ApexLogoProps (+14 more)
 
 ### Community 234 - "Community 234"
 Cohesion: 0.11
-Nodes (18): services, services, ConceptProjectsSection(), ConceptProjectsSectionProps, navLinks, SiteHeader(), SiteHeaderProps, CinematicReveal() (+10 more)
+Nodes (15): services, services, ConceptProjectsSection(), PricingSection(), navLinks, SiteHeader(), SiteHeaderProps, ScanOverlayProps (+7 more)
 
 ### Community 235 - "Community 235"
 Cohesion: 0.22
 Nodes (8): hasClientKey, hasServerKey, hasVisionKey, optional, required, supabaseClientKeys, supabaseServerKeys, visionKeys
 
 ### Community 238 - "Community 238"
-Cohesion: 0.12
-Nodes (31): analyzeOffer(), buildRecommendation(), clamp(), computeScoreWithBreakdown(), DENSE_CITIES, isCarVehicle(), isDenseZone(), PLATFORM_ADJUSTMENT (+23 more)
+Cohesion: 0.21
+Nodes (19): adminHeaders(), auditAnalysisConsistency(), baseProfile(), CAPTURE_FIXTURES, CAPTURES, cookieHeader(), __dirname, envPath (+11 more)
 
 ### Community 239 - "Community 239"
 Cohesion: 0.10
@@ -1243,16 +1248,16 @@ Cohesion: 0.18
 Nodes (9): loadStoredSession(), generateSessionToken(), hashPin(), verifyPin(), formatDuration(), isSessionExpired(), STORAGE_KEYS, LiveStatsBar() (+1 more)
 
 ### Community 244 - "Community 244"
-Cohesion: 0.10
-Nodes (35): analyzeScreenshot(), AnalyzeScreenshotOptions, analyzeWithMock(), analyzeWithVisionProvider(), ScreenshotAnalysisResult, ScreenshotAnalysisSource, Platform, RideOffer (+27 more)
+Cohesion: 0.08
+Nodes (27): checkUberlyEnv(), EnvStatus, hasGeminiKey(), hasMistralKey(), resolveConfiguredVisionProvider(), GET(), analyzeWithVisionProvider(), geminiVisionProvider (+19 more)
 
 ### Community 245 - "Community 245"
 Cohesion: 0.31
 Nodes (8): ASSETS, __dirname, downloadFluent(), fluentFileName(), fluentUrl(), main(), OUT_DIR, ROOT
 
 ### Community 246 - "Community 246"
-Cohesion: 0.17
-Nodes (9): coaches, faqItems, getBmiCategory(), Goal, navItems, plans, programmes, TitanFitnessPage() (+1 more)
+Cohesion: 0.11
+Nodes (26): buildHouseholdDietConstraints(), MealGenerationError, MealType, buildMealPlanPrompt(), buildMemberSummary(), buildPreferenceConstraints(), buildWeekDays(), GROCERY_CATEGORIES (+18 more)
 
 ### Community 247 - "Community 247"
 Cohesion: 0.29
@@ -1268,15 +1273,15 @@ Nodes (3): orgId, projectId, projectName
 
 ### Community 250 - "Community 250"
 Cohesion: 0.09
-Nodes (23): CardOption, computeSteps(), DOMAIN_OPTIONS, DomainOption, MAIL_ORG_OPTIONS, proposedFolders(), STEP_DEFS, StepDef (+15 more)
+Nodes (23): computeSteps(), DOMAIN_OPTIONS, DomainOption, MAIL_ORG_OPTIONS, proposedFolders(), STEP_DEFS, StepDef, StepId (+15 more)
 
 ### Community 252 - "Community 252"
-Cohesion: 0.10
-Nodes (15): Faq(), FAQ_ITEMS, FinalCta(), PLATFORMS, LandingNav(), LINKS, LandingStickyCta(), StoryProblem() (+7 more)
+Cohesion: 0.06
+Nodes (50): BillingPeriod, parsePeriod(), parsePlan(), SubscriptionCheckoutPage(), FUNNEL_STEPS, FunnelStep, MargeoEvent, maybeMarkActiveUser() (+42 more)
 
 ### Community 253 - "Community 253"
-Cohesion: 0.10
-Nodes (14): metadata, metadata, metadata, metadata, metadata, AudiencePageContent, audiencePages, cabinetContent (+6 more)
+Cohesion: 0.08
+Nodes (25): metadata, metadata, metadata, metadata, metadata, AudienceBlock, AudiencePageContent, audiencePages (+17 more)
 
 ### Community 254 - "Community 254"
 Cohesion: 0.07
@@ -1284,7 +1289,7 @@ Nodes (27): dependencies, @cali/ai-engine, @cali/database, @cali/prompts, @cali/
 
 ### Community 255 - "Community 255"
 Cohesion: 0.15
-Nodes (6): L(), TimerEngine, TimerListener, TimerMode, TimerSnapshot, TimerStatus
+Nodes (5): TimerEngine, TimerListener, TimerMode, TimerSnapshot, TimerStatus
 
 ### Community 256 - "Community 256"
 Cohesion: 0.10
@@ -1296,11 +1301,11 @@ Nodes (17): getPhoneScreen(), getPhoneScreenConfig(), PHONE_SCREEN_CONFIG, Phone
 
 ### Community 258 - "Community 258"
 Cohesion: 0.12
-Nodes (11): AuthCard(), GoogleButton(), LoginForm(), BaseProps, PasswordField(), TextField(), cn(), WizardHeader() (+3 more)
+Nodes (11): AuthCard(), GoogleButton(), LoginForm(), BaseProps, PasswordField(), TextField(), cn(), CardOption (+3 more)
 
 ### Community 259 - "Community 259"
-Cohesion: 0.21
-Nodes (11): McnStore, buildDashboardData(), defaultDocuments, defaultProfile, defaultTasks, demoDashboardData, McnActionResult, McnDashboardData (+3 more)
+Cohesion: 0.18
+Nodes (13): McnStore, McnTasksPanelProps, priorityLabels, buildDashboardData(), defaultDocuments, defaultProfile, defaultTasks, demoDashboardData (+5 more)
 
 ### Community 261 - "Community 261"
 Cohesion: 0.25
@@ -1315,8 +1320,8 @@ Cohesion: 0.10
 Nodes (20): devDependencies, concurrently, typescript, engines, node, name, private, scripts (+12 more)
 
 ### Community 264 - "Community 264"
-Cohesion: 0.21
-Nodes (11): useInView(), useIsMobile(), useMotionEnabled(), usePageVisible(), LiveAppPreview(), AmbientParticles(), Particle, Particle (+3 more)
+Cohesion: 0.16
+Nodes (15): useInView(), useHeavyMotionEnabled(), useIsBelowDesktop(), useIsMobile(), useMotionEnabled(), usePageVisible(), AmbientParticles(), Particle (+7 more)
 
 ### Community 265 - "Community 265"
 Cohesion: 0.11
@@ -1343,16 +1348,16 @@ Cohesion: 0.12
 Nodes (17): dependencies, @cali/types, @cali/utils, devDependencies, typescript, vitest, exports, import (+9 more)
 
 ### Community 271 - "Community 271"
-Cohesion: 0.10
-Nodes (17): STEPS, FEATURES, DEMO_ANALYSIS, DemoStage, EASE, InteractiveDemo(), SCAN_STEPS, LandingCta() (+9 more)
+Cohesion: 0.09
+Nodes (14): STATS, BENEFITS, ease, Hero(), TONE_CLASS, FLOAT_LEFT, FLOAT_RIGHT, KPI_ITEMS (+6 more)
 
 ### Community 272 - "Community 272"
 Cohesion: 0.12
 Nodes (16): compilerOptions, baseUrl, isolatedModules, jsx, lib, module, moduleResolution, noEmit (+8 more)
 
 ### Community 273 - "Community 273"
-Cohesion: 0.08
-Nodes (29): AnalysisConfidence(), AnalysisConfidenceProps, AnalysisResultProps, MetricProps, FakeScan, SCANS, VERDICT_COLOR, AnalysisMeta (+21 more)
+Cohesion: 0.07
+Nodes (39): AnalysisCard(), NAV_ITEMS, NAV_ITEMS_DESKTOP, PLATFORM_COLORS, DATE_GROUP_LABELS, DateGroupKey, getDateGroup(), groupAnalysesByDate() (+31 more)
 
 ### Community 274 - "Community 274"
 Cohesion: 0.12
@@ -1375,8 +1380,8 @@ Cohesion: 0.33
 Nodes (4): __dirname, envPath, TABLES, VIEWS
 
 ### Community 279 - "Community 279"
-Cohesion: 0.13
-Nodes (13): PlatformBadge(), ProgressRing(), ProgressRingProps, VerdictBadge(), VerdictBadgeProps, Verdict, VERDICT_META, container (+5 more)
+Cohesion: 0.11
+Nodes (13): AnalysisCard(), EarningsChart(), EarningsChartProps, StatCard(), StatCardProps, Filter, FILTERS, useFakeLoading() (+5 more)
 
 ### Community 280 - "Community 280"
 Cohesion: 0.14
@@ -1391,8 +1396,8 @@ Cohesion: 0.15
 Nodes (13): devDependencies, typescript, exports, import, main, name, private, scripts (+5 more)
 
 ### Community 283 - "Community 283"
-Cohesion: 0.17
-Nodes (9): coaches, faqItems, getBmiCategory(), Goal, navItems, plans, programmes, TitanFitnessPage() (+1 more)
+Cohesion: 0.20
+Nodes (6): EXERCISES, PRS, FITNESS_MAP_NODES, PIANO_MAP_NODES, LifeOSMapPath(), MAP_WORLDS
 
 ### Community 285 - "Community 285"
 Cohesion: 0.30
@@ -1484,15 +1489,15 @@ Nodes (18): TaskModal(), MAIL_CATEGORIES_SOCLE, MAIL_PACK_PARTICULIER, MAIL_PACK
 
 ### Community 309 - "Community 309"
 Cohesion: 0.08
-Nodes (43): POST(), POST(), requireAuthUser(), ApiError, jsonError(), logApi(), checkRateLimit(), cleanup() (+35 more)
+Nodes (45): POST(), POST(), requireAuthUser(), ApiError, jsonError(), logApi(), checkRateLimit(), cleanup() (+37 more)
 
 ### Community 317 - "Community 317"
 Cohesion: 0.16
 Nodes (9): adminCreate(), adminHeaders(), CAPTURES, Check, checks, deleteUser(), __dirname, envPath (+1 more)
 
 ### Community 318 - "Community 318"
-Cohesion: 0.19
-Nodes (5): NAV_ITEMS, Logo(), DEMO_PROFILE, COLUMNS, LINKS
+Cohesion: 0.17
+Nodes (10): V2_EASE, V2_MOTION, V2Background(), navLinks, V2Header(), V2HeaderProps, V2Hero(), V2Pricing() (+2 more)
 
 ### Community 319 - "Community 319"
 Cohesion: 0.40
@@ -1503,8 +1508,8 @@ Cohesion: 0.14
 Nodes (13): name, private, scripts, build, dev, dev:share, food-assets:fetch, lint (+5 more)
 
 ### Community 321 - "Community 321"
-Cohesion: 0.19
-Nodes (5): Reveal(), RevealProps, FAQ_ITEMS, FEATURES, STEPS
+Cohesion: 0.11
+Nodes (9): Reveal(), RevealProps, variants, FEATURES, PlanFeature, FAQ_ITEMS, FEATURES, STEPS (+1 more)
 
 ### Community 322 - "Community 322"
 Cohesion: 0.26
@@ -1515,8 +1520,8 @@ Cohesion: 0.15
 Nodes (13): devDependencies, eslint, eslint-config-next, pg, tailwindcss, @tailwindcss/postcss, tsx, @types/node (+5 more)
 
 ### Community 324 - "Community 324"
-Cohesion: 0.15
-Nodes (11): COACH_MESSAGES, NAV_ITEMS, metadata, sans, icons, LifeOSBottomNav(), LifeOSCelebration(), LifeOSCoachPanel() (+3 more)
+Cohesion: 0.21
+Nodes (8): ProgressRing(), ProgressRingProps, VerdictBadge(), VerdictBadgeProps, Verdict, FakeScan, SCANS, VERDICT_COLOR
 
 ### Community 325 - "Community 325"
 Cohesion: 0.22
@@ -1527,28 +1532,36 @@ Cohesion: 0.31
 Nodes (7): REVIEWS, REVIEWS_ANCHOR, TrustSection(), useRelativeNow(), formatRelativeReviewDate(), rtf, startOfLocalDay()
 
 ### Community 328 - "Community 328"
-Cohesion: 0.12
-Nodes (22): DashboardStats, INCOMING_OFFERS, MINUTES_AGO, OFFERS, pickIncomingOffer(), PLATFORM_COLORS, analyzeOffer(), buildRecommendation() (+14 more)
+Cohesion: 0.10
+Nodes (21): PlatformBadge(), DashboardStats, DEMO_PROFILE, INCOMING_OFFERS, MINUTES_AGO, OFFERS, pickIncomingOffer(), PLATFORM_COLORS (+13 more)
 
 ### Community 329 - "Community 329"
-Cohesion: 0.16
-Nodes (11): metadata, COLUMNS, Footer(), UBERLY_LEGAL_DOCUMENTS, UberlyLegalDocument, LegalDocumentView(), LEGAL_FOOTER_LINKS, LegalFooterLinks() (+3 more)
+Cohesion: 0.17
+Nodes (19): PUBLIC_MAISON_PATHS, ALL_PLATFORMS, ONBOARDING_PLATFORMS, PROTECTED_MARGEO_PREFIXES, PROTECTED_UBERLY_PREFIXES, PUBLIC_MARGEO_PATHS, PUBLIC_UBERLY_PATHS, config (+11 more)
 
 ### Community 330 - "Community 330"
-Cohesion: 0.09
-Nodes (11): cn(), eur, formatKm(), formatMin(), formatRelativeDate(), Button, ButtonProps, buttonVariants (+3 more)
+Cohesion: 0.06
+Nodes (16): NAV_ITEMS, Logo(), cn(), eur, formatKm(), formatMin(), formatRelativeDate(), UploadZoneProps (+8 more)
+
+### Community 331 - "Community 331"
+Cohesion: 0.21
+Nodes (4): McnPageSkeleton(), McnPageSkeletonProps, McnSkeleton(), Skeleton()
 
 ### Community 332 - "Community 332"
-Cohesion: 0.10
-Nodes (9): CaptureGuide(), TIPS, UPLOAD_PLATFORMS, UploadZoneProps, MARQUEE_BRANDS, PlatformMarquee(), BRAND, PlatformLogo() (+1 more)
+Cohesion: 0.19
+Nodes (15): adminCreate(), analyze(), CAPTURES, Check, checks, completeOnboarding(), cookieParts(), delUser() (+7 more)
 
 ### Community 333 - "Community 333"
 Cohesion: 0.27
 Nodes (9): extractJsonPayload(), generateQwenJson(), getQwenConfig(), isQwenAvailable(), OllamaGenerateResponse, QwenConfig, QwenGenerateOptions, QwenUnavailableError (+1 more)
 
+### Community 334 - "Community 334"
+Cohesion: 0.10
+Nodes (16): DemoNotice(), DemoNoticeProps, images, MENU_ITEMS, NAV, TESTIMONIALS, TIME_SLOTS, coaches (+8 more)
+
 ### Community 335 - "Community 335"
-Cohesion: 0.11
-Nodes (5): ApexAbstractMotif(), ApexAbstractMotifProps, ApexHeroAtmosphere(), MOTIF_MAP, ApexAbstractMotif
+Cohesion: 0.07
+Nodes (19): ApexAbstractMotif(), ApexAbstractMotifProps, ApexHeroAtmosphere(), MOTIF_MAP, ApexPhotoLayer(), ApexPhotoLayerProps, ApexPhotoLayerVariant, cn() (+11 more)
 
 ### Community 336 - "Community 336"
 Cohesion: 0.22
@@ -1559,24 +1572,24 @@ Cohesion: 0.22
 Nodes (9): devDependencies, eslint, eslint-config-next, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom (+1 more)
 
 ### Community 338 - "Community 338"
-Cohesion: 0.67
-Nodes (3): EASE, fadeUp(), MeridianHero()
+Cohesion: 0.16
+Nodes (10): COACH_MESSAGES, NAV_ITEMS, metadata, sans, icons, LifeOSBottomNav(), LifeOSCoachPanel(), LifeOSShell() (+2 more)
 
 ### Community 339 - "Community 339"
 Cohesion: 0.40
 Nodes (4): compat, __dirname, eslintConfig, __filename
 
 ### Community 340 - "Community 340"
-Cohesion: 0.13
-Nodes (12): KEY, MargeoPostHogProvider, UberlyPostHogProvider(), isUberlyMarketingPath(), ThemeContext, ThemeContextValue, UberlyTheme, UberlyThemeProvider() (+4 more)
+Cohesion: 0.20
+Nodes (7): KEY, MargeoPostHogProvider, UberlyPostHogProvider(), geistMono, geistSans, metadata, viewport
 
 ### Community 341 - "Community 341"
-Cohesion: 0.18
-Nodes (14): DELETE(), assertCronAuth(), GET(), handle(), POST(), deleteAnalysisForUser(), purgeExpiredScreenshots(), PurgeScreenshotsResult (+6 more)
+Cohesion: 0.36
+Nodes (8): assertCronAuth(), GET(), handle(), POST(), purgeExpiredScreenshots(), PurgeScreenshotsResult, retentionCutoffIso(), deleteScreenshots()
 
 ### Community 342 - "Community 342"
-Cohesion: 0.11
-Nodes (23): EXERCISES, PRS, FITNESS_MAP_NODES, INITIAL_PROFILE, INITIAL_QUESTS, LIFEOS_COLORS, PIANO_MAP_NODES, WORLDS (+15 more)
+Cohesion: 0.17
+Nodes (17): INITIAL_PROFILE, INITIAL_QUESTS, LIFEOS_COLORS, WORLDS, Celebration, LifeOSContext, LifeOSContextValue, Achievement (+9 more)
 
 ### Community 343 - "Community 343"
 Cohesion: 0.33
@@ -1587,28 +1600,24 @@ Cohesion: 0.47
 Nodes (5): Check, checks, fail(), main(), ok()
 
 ### Community 345 - "Community 345"
-Cohesion: 0.12
-Nodes (10): BENEFITS, ease, Hero(), TONE_CLASS, FLOAT_LEFT, FLOAT_RIGHT, KPI_ITEMS, PhoneMock() (+2 more)
+Cohesion: 0.22
+Nodes (10): AnalysisConfidence(), AnalysisConfidenceProps, AnalysisResult(), AnalysisResultProps, MetricProps, AnalysisMeta, formatMissingFields(), getScoreLabel() (+2 more)
 
 ### Community 348 - "Community 348"
-Cohesion: 0.22
-Nodes (10): headlineWords, HeroSection(), HeroSectionProps, socialProofItems, headlineWords, HeroHeadline(), HeroHeadlineProps, WordToken (+2 more)
+Cohesion: 0.05
+Nodes (33): Faq(), FAQ_ITEMS, FEATURES, Footer(), STEPS, DEMO_ANALYSIS, DemoStage, EASE (+25 more)
 
 ### Community 349 - "Community 349"
-Cohesion: 0.20
-Nodes (10): PriorityListHero(), FormState, initialForm, priorityListReassurance, PriorityListResponse, PriorityListSubmission, submitPriorityList(), MagneticButton() (+2 more)
+Cohesion: 0.12
+Nodes (11): CaptureGuide(), TIPS, UPLOAD_PLATFORMS, UploadZone(), UploadZoneProps, FinalCta(), PLATFORMS, BRAND (+3 more)
 
 ### Community 353 - "Community 353"
-Cohesion: 0.53
-Nodes (4): POST(), ContactPayload, sendContactEmails(), sendResendEmail()
-
-### Community 354 - "Community 354"
-Cohesion: 0.21
-Nodes (7): documentCategories, FeatureItem, landingFeatures, landingIcons, landingStats, onboardingSteps, McnFooter()
+Cohesion: 0.16
+Nodes (8): MENU_ITEMS, NAV, TESTIMONIALS, TIME_SLOTS, Reveal(), RevealProps, variants, images
 
 ### Community 355 - "Community 355"
-Cohesion: 0.33
-Nodes (5): FUNNEL_STEPS, FunnelStep, MargeoEvent, maybeMarkActiveUser(), trackFunnelStep()
+Cohesion: 0.17
+Nodes (9): coaches, faqItems, getBmiCategory(), Goal, navItems, plans, programmes, TitanFitnessPage() (+1 more)
 
 ### Community 356 - "Community 356"
 Cohesion: 0.36
@@ -1630,44 +1639,52 @@ Nodes (5): CAPTURES, cookieHeader(), __dirname, envPath, main()
 Cohesion: 0.40
 Nodes (5): bad, DIR, __dirname, rewriteGeneric(), rewriteMentions()
 
+### Community 363 - "Community 363"
+Cohesion: 0.26
+Nodes (8): LifeOSCelebration(), LifeOSQuestRow(), LifeOSStreakHero(), LifeOSWorldCard(), LifeOSHomePage(), useLifeOS(), LifeOSProfilePage(), LifeOSQuestsPage()
+
 ### Community 364 - "Community 364"
-Cohesion: 0.23
-Nodes (8): formatPrice(), PricingPlanCard(), PricingSectionProps, BillingMode, comparisonRows, pricingFaqs, PricingPlan, pricingPlans
+Cohesion: 0.29
+Nodes (5): LifeOSActivityRing(), LifeOSActivityRings(), RingProps, MACROS, MEALS
 
 ### Community 365 - "Community 365"
-Cohesion: 0.32
-Nodes (6): Button, ButtonProps, ButtonProps, buttonVariants, sizeClasses, variantClasses
+Cohesion: 0.50
+Nodes (7): analyzeOffer(), buildRecommendation(), clamp(), computeScore(), round2(), scoreToVerdict(), formatEur()
 
 ### Community 366 - "Community 366"
-Cohesion: 0.29
-Nodes (4): AppShell(), NAV_ITEMS, NAV_ITEMS_DESKTOP, PageTransition()
+Cohesion: 0.38
+Nodes (4): AnimatedCounter(), AnimatedCounterProps, formatValue(), STATS
 
 ### Community 367 - "Community 367"
-Cohesion: 0.29
-Nodes (3): UploadZoneProps, fadeUp, Button
+Cohesion: 0.18
+Nodes (7): BENEFITS, BetaProgramPage(), EXPECTATIONS, FAQ_ITEMS, LIMITS, MISSION_STEPS, metadata
 
 ### Community 368 - "Community 368"
-Cohesion: 0.47
-Nodes (5): DATE_GROUP_LABELS, DateGroupKey, getDateGroup(), groupAnalysesByDate(), startOfDay()
+Cohesion: 0.62
+Nodes (4): submitFeedbackAction(), FeedbackKind, FeedbackPayload, FeedbackResult
+
+### Community 370 - "Community 370"
+Cohesion: 0.67
+Nodes (3): EASE, fadeUp(), MeridianHero()
 
 ## Knowledge Gaps
-- **1871 isolated node(s):** `SPRING`, `BubbleTone`, `Bubble`, `BUBBLES`, `CONNECTIONS` (+1866 more)
+- **1903 isolated node(s):** `AnalysisErrorInput`, `OnboardingStatus`, `ProfileMeta`, `config`, `__dirname` (+1898 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Playwright` connect `Community 336` to `Community 322`, `Community 188`, `Community 317`?**
-  _High betweenness centrality (0.076) - this node is a cross-community bridge._
-- **Why does `Button` connect `Community 367` to `Community 258`, `Community 135`, `Community 137`, `Community 14`, `Community 271`, `Community 273`, `Community 20`, `Community 174`, `Community 318`, `Community 321`, `Community 328`, `Community 204`, `Community 332`, `Community 208`, `Community 345`, `Community 348`, `Community 349`, `Community 234`, `Community 364`, `Community 365`, `Community 369`, `Community 250`, `Community 252`?**
-  _High betweenness centrality (0.052) - this node is a cross-community bridge._
-- **Why does `UBERLY_PATHS` connect `Community 135` to `Community 329`, `Community 137`, `Community 174`, `Community 14`, `Community 210`, `Community 19`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `Playwright` connect `Community 336` to `Community 322`, `Community 188`, `Community 317`, `Community 332`?**
+  _High betweenness centrality (0.096) - this node is a cross-community bridge._
+- **Why does `Button` connect `Community 208` to `Community 258`, `Community 136`, `Community 14`, `Community 15`, `Community 271`, `Community 273`, `Community 19`, `Community 279`, `Community 174`, `Community 321`, `Community 328`, `Community 330`, `Community 204`, `Community 211`, `Community 213`, `Community 348`, `Community 349`, `Community 234`, `Community 367`, `Community 250`, `Community 252`?**
+  _High betweenness centrality (0.070) - this node is a cross-community bridge._
+- **Why does `cn()` connect `Community 330` to `Community 192`, `Community 321`, `Community 324`, `Community 328`, `Community 233`, `Community 201`, `Community 8`, `Community 18`, `Community 338`, `Community 116`, `Community 342`, `Community 279`, `Community 182`, `Community 283`, `Community 253`?**
+  _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Are the 3 inferred relationships involving `createMargeoServerClient()` (e.g. with `GET()` and `getMargeoAnonKey()`) actually correct?**
   _`createMargeoServerClient()` has 3 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `SPRING`, `BubbleTone`, `Bubble` to the rest of the system?**
-  _1922 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `AnalysisErrorInput`, `OnboardingStatus`, `ProfileMeta` to the rest of the system?**
+  _1954 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.05759623861298854 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

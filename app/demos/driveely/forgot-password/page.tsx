@@ -1,4 +1,14 @@
 import { ForgotPasswordForm } from "@/components/margeo/auth/forgot-password-form";
+import { buildDriveelyMetadata } from "@/lib/margeo/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = buildDriveelyMetadata({
+  title: "Mot de passe oublié",
+  description: "Réinitialise ton mot de passe Driveely.",
+  path: "/forgot-password",
+  index: false,
+  follow: false,
+});
 
 export default function ForgotPasswordPage() {
   return (

@@ -3,7 +3,7 @@ export const PRODUCT_NAME = "Driveely";
 export const PRODUCT_TAGLINE =
   "Estime si une course vaut le coup — avant d'accepter.";
 export const PRODUCT_DESCRIPTION =
-  "Capture ta proposition. Driveely estime ton gain net et t'aide à décider en quelques secondes.";
+  "Estime le gain net d'une course Uber Eats, Deliveroo ou Stuart avant d'accepter — coût au km, retour à vide, €/h. Pour livreurs indépendants.";
 
 /** Contact support / demandes RGPD (surchargeable via env). */
 export const DRIVEELY_CONTACT_EMAIL =
