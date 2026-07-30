@@ -1,14 +1,10 @@
-import { BetaProgramPage } from "@/components/margeo/beta/beta-program-page";
-import { PRODUCT_NAME } from "@/lib/margeo/brand";
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
-export const metadata: Metadata = {
-  title: `Programme Bêta ${PRODUCT_NAME}`,
-  description:
-    "Rejoins la bêta privée Driveely : teste l'assistant IA pour livreurs, signale les bugs, influence le produit.",
-  robots: { index: false, follow: false },
-};
-
-export default function BetaPage() {
-  return <BetaProgramPage />;
+/**
+ * Ancienne URL publique « Programme Bêta ».
+ * La section s'appelle désormais Retour (in-app).
+ */
+export default function BetaRedirectPage() {
+  redirect(DRIVEELY_PATHS.retour);
 }

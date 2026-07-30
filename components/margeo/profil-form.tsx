@@ -674,7 +674,7 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
           </div>
 
           <Link
-            href={margeoRoutes.beta}
+            href={margeoRoutes.retour}
             className="flex items-center gap-3 rounded-xl border border-mg-border bg-[var(--mg-surface-muted)] p-4 transition-colors hover:border-mg-accent/30 hover:bg-mg-accent-soft/20"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-mg-border bg-mg-card">
@@ -682,10 +682,10 @@ export function ProfilForm({ initialProfile }: { initialProfile: UserProfile }) 
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-semibold text-mg-foreground">
-                Programme Bêta
+                Retour
               </span>
               <span className="block text-xs text-mg-muted">
-                Mission, retours, tarif préférentiel · Beta 0.1
+                Questionnaire produit · signaler un bug · mission bêta
               </span>
             </span>
             <span className="text-xs font-medium text-mg-accent">Voir →</span>

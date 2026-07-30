@@ -19,9 +19,6 @@ import { margeoRoutes } from "@/lib/margeo/routes";
 import { cn } from "@/lib/margeo/utils";
 
 function getNavItems() {
-  const premiumNavLabel =
-    getAppFeatures().premiumPageMode === "beta_unlocked" ? "Bêta" : null;
-
   return {
     mobile: [
       { href: margeoRoutes.dashboard, label: "Accueil", icon: LayoutDashboard },
@@ -30,7 +27,7 @@ function getNavItems() {
       { href: margeoRoutes.profil, label: "Profil", icon: User },
       {
         href: `${margeoRoutes.premium}?source=nav`,
-        label: premiumNavLabel ?? "Plans",
+        label: "Plans",
         icon: Crown,
         match: margeoRoutes.premium,
       },
@@ -42,7 +39,7 @@ function getNavItems() {
       { href: margeoRoutes.profil, label: "Profil", icon: User },
       {
         href: `${margeoRoutes.premium}?source=nav`,
-        label: premiumNavLabel ?? "Offres",
+        label: "Offres",
         icon: Crown,
         match: margeoRoutes.premium,
       },

@@ -66,9 +66,9 @@ export function BetaUnlockedPremiumPage() {
             <ArrowRight />
           </Button>
         </Link>
-        <Link href={margeoRoutes.beta} className="block">
+        <Link href={margeoRoutes.retour} className="block">
           <Button variant="secondary" className="w-full min-h-11">
-            Programme Bêta
+            Section Retour
           </Button>
         </Link>
         <p className="flex items-center justify-center gap-1.5 pt-2 text-xs text-mg-faint">

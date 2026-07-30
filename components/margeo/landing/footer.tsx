@@ -16,10 +16,10 @@ export function Footer() {
     {
       title: "Produit",
       links: [
-        { label: "Rejoindre la bêta", href: margeoRoutes.beta },
+        { label: "Rejoindre la bêta", href: margeoRoutes.signup + "&beta=1" },
         { label: "Se connecter", href: margeoRoutes.login },
         { label: premiumFooterLabel, href: margeoRoutes.premium },
-        { label: "Programme Bêta", href: margeoRoutes.beta },
+        { label: "Retour", href: margeoRoutes.retour },
         { label: "FAQ", href: "#faq" },
       ],
     },
