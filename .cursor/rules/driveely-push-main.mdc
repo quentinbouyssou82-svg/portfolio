@@ -1,0 +1,17 @@
+---
+description: Always commit and push Driveely/portfolio fixes to main
+alwaysApply: true
+---
+
+# Driveely / portfolio — always push to main
+
+When working on the Driveely product (`driveely.app`) in the `portfolio` repo:
+
+1. Target repo: `quentinbouyssou82-svg/portfolio`
+2. Target branch: **`main` only** (no feature branches unless explicitly requested)
+3. After any fix that should hit production: **commit and push to `main` in the same session**
+4. Do not stop at local-only changes or localhost verification alone
+5. Confirm on `https://driveely.app` when the change is auth/routing/middleware related
+6. Vercel project serving the product domain: **`margeo`** (same repo also has a `portfolio` Vercel project — product domain is `driveely.app`)
+
+Never leave production-critical Driveely fixes unpushed.
