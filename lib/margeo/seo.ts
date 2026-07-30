@@ -10,12 +10,14 @@ import { isDriveelyAtRoot } from "@/lib/margeo/host";
 export function getDriveelySiteOrigin(): string {
   const fromEnv = process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/$/, "");
   if (fromEnv && /^https?:\/\//i.test(fromEnv)) {
-    // Portfolio localhost / preview must not become the public canonical.
+    // Portfolio localhost / preview / dead legacy hosts must not become the public canonical.
     try {
       const host = new URL(fromEnv).hostname;
       if (
         host === "localhost" ||
         host === "127.0.0.1" ||
+        host === "margeo.vercel.app" ||
+        host === "www.margeo.vercel.app" ||
         host.endsWith(".ngrok-free.dev") ||
         host.endsWith(".ngrok-free.app") ||
         host.endsWith(".ngrok.app") ||

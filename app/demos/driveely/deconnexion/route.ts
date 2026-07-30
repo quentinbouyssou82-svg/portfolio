@@ -1,10 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
+import { resolveDriveelyRequestOrigin } from "@/lib/margeo/host";
 import { createMargeoRouteHandlerClient } from "@/lib/margeo/supabase/route-handler";
 
 /** Déconnexion Supabase — route GET. Cookies nettoyés via la response. */
 export async function GET(request: NextRequest) {
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+  // Stay on the host the user is visiting (driveely.app). Never trust a stale
+  // NEXT_PUBLIC_APP_URL pointing at margeo.vercel.app (DEPLOYMENT_NOT_FOUND).
+  const origin = resolveDriveelyRequestOrigin(request);
   const loginUrl = new URL(DRIVEELY_PATHS.login, origin);
   loginUrl.searchParams.set("loggedOut", "1");
   const response = NextResponse.redirect(loginUrl);

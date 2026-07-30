@@ -1,42 +1,36 @@
-# Driveely — Auth stability fix (2026-07-30)
+# Driveely — Auth stability fix (driveely.app)
 
-## Symptom
+## Target
 
-After login / logout / reconnect, intermittent:
+- Domain: **https://driveely.app**
+- Repo: `quentinbouyssou82-svg/portfolio` @ `main`
+- Vercel projects linked to this repo: `margeo` + `portfolio` (same push)
 
-> This page couldn't load
+## Prod reproduction (before fix)
 
-Also: blank screens during protected navigation.
-
-## Root causes
-
-1. **Middleware dropped refreshed auth cookies on redirect**  
-   `supabase.auth.getUser()` writes refreshed session cookies onto a `NextResponse` (rewrite/next). Auth redirects then returned a **new** `NextResponse.redirect()` **without** copying those cookies → inconsistent session on the next document/RSC request.
-
-2. **Soft RSC navigation after server-action auth**  
-   `signInAction` / `signUpAction` called `redirect()` while cookies were still settling. Next.js App Router soft-navigates the RSC payload → race → "This page couldn't load" (classic Supabase SSR + Next pattern).
-
-3. **Unhandled middleware exceptions**  
-   Network / JWT refresh failures in `getUser()` or profile reads could crash Edge middleware → same error page.
-
-## Fixes
-
-| Area | Change |
-|------|--------|
-| `middleware.ts` | Rebuild response on `setAll`; `redirectPreservingCookies`; try/catch around auth/profile |
-| `lib/margeo/auth/middleware-response.ts` | Cookie-preserving redirect helper |
-| `lib/margeo/auth/actions.ts` | Return `{ ok, redirectTo }` instead of `redirect()` |
-| `components/margeo/auth/auth-form.tsx` | `window.location.assign` on success (hard nav) |
-| `how-it-works-tour.tsx` | Hard nav after tour |
-| `deconnexion/route.ts` | `Cache-Control: no-store` |
-
-## Verification
-
-```bash
-set -a && source .env.local && set +a
-AUTH_CYCLES=5 npm run qa:auth-cycles
+```http
+GET https://driveely.app/deconnexion
+→ 307 Location: https://margeo.vercel.app/login?loggedOut=1
 ```
 
-Scenario per cycle: login → dashboard → refresh → logout → login → dashboard → logout.
+`margeo.vercel.app` returns `DEPLOYMENT_NOT_FOUND` → *"This page couldn't load"* after logout/reconnect.
 
-Expected: **0** "couldn't load", **0** blank pages, clean redirects to login / onboarding / dashboard.
+Root cause: `deconnexion` used `process.env.NEXT_PUBLIC_APP_URL` (stale `https://margeo.vercel.app`) instead of the live request origin (`https://driveely.app`).
+
+Secondary (already mitigated in middleware/auth form): soft RSC redirects dropping refreshed Supabase cookies.
+
+## Fix
+
+1. `resolveDriveelyRequestOrigin(request)` — always prefer request host on product domains
+2. `deconnexion/route.ts` uses that helper
+3. SEO canonical ignores `margeo.vercel.app`
+4. Auth form hard-nav + middleware cookie-preserving redirects
+
+## Verify
+
+```bash
+curl -sI https://driveely.app/deconnexion | rg -i location
+# expect: https://driveely.app/login?loggedOut=1  (NOT margeo.vercel.app)
+
+AUTH_CYCLES=5 npm run qa:auth-cycles
+```

@@ -1,13 +1,9 @@
 /**
- * Auth stability — login/logout/refresh cycles for Driveely.
- *
- * Reproduces (and asserts absence of) "This page couldn't load" during
- * auth transitions.
+ * Auth stability against production Driveely — https://driveely.app
  *
  * Usage:
  *   set -a && source .env.local && set +a
- *   NEXT_PUBLIC_APP_URL=https://margeo.vercel.app npx tsx scripts/qa-driveely-auth-cycles.ts
- *   AUTH_CYCLES=5 npx tsx scripts/qa-driveely-auth-cycles.ts   # default 5
+ *   AUTH_CYCLES=5 npx tsx scripts/qa-driveely-auth-cycles.ts
  */
 
 import fs from "fs";
@@ -35,16 +31,19 @@ const PUB =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SECRET =
   process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const BASE =
-  process.env.NEXT_PUBLIC_APP_URL ||
+
+/** Always prefer the live product domain unless explicitly overridden. */
+const BASE = (
   process.env.DRIVEELY_QA_BASE ||
-  "http://127.0.0.1:3000";
+  "https://driveely.app"
+).replace(/\/$/, "");
 const CYCLES = Math.max(1, Number(process.env.AUTH_CYCLES || 5));
 
 const FAIL_PATTERNS = [
   /This page couldn't load/i,
   /Application error/i,
   /Internal Server Error/i,
+  /DEPLOYMENT_NOT_FOUND/i,
   /Unhandled Runtime Error/i,
 ];
 
@@ -107,30 +106,35 @@ async function deleteUser(userId: string) {
 }
 
 async function assertPageHealthy(page: Page, label: string) {
-  // Allow client hydration after hard navigation
   await page.waitForLoadState("domcontentloaded");
   await page.waitForTimeout(800);
   const body = await page.locator("body").innerText().catch(() => "");
+  const url = page.url();
+
+  if (/margeo\.vercel\.app/i.test(url)) {
+    fail(label, `bounced to dead host ${url}`);
+    throw new Error(`${label}: stale margeo.vercel.app redirect`);
+  }
+
   for (const re of FAIL_PATTERNS) {
     if (re.test(body)) {
-      fail(label, `matched ${re} at ${page.url()}`);
+      fail(label, `matched ${re} at ${url}`);
       throw new Error(`${label}: fatal page content`);
     }
   }
-  // Blank / near-empty shell (ignore while React still mounting)
   if (body.trim().length < 20) {
     await page.waitForTimeout(2500);
     const again = await page.locator("body").innerText().catch(() => "");
     if (again.trim().length < 20) {
-      fail(label, `near-empty body at ${page.url()}`);
+      fail(label, `near-empty body at ${url}`);
       throw new Error(`${label}: blank page`);
     }
   }
-  pass(label, page.url());
+  pass(label, url);
 }
 
 async function uiLogin(page: Page, email: string, password: string) {
-  await page.goto(`${BASE}/demos/driveely/login`, {
+  await page.goto(`${BASE}/login`, {
     waitUntil: "domcontentloaded",
     timeout: 60_000,
   });
@@ -139,7 +143,7 @@ async function uiLogin(page: Page, email: string, password: string) {
   await page.getByLabel("Mot de passe").fill(password);
   await page.getByRole("button", { name: /Se connecter/i }).click();
   await page.waitForURL(
-    /\/(dashboard|onboarding|comment-ca-marche|analyse)/,
+    /driveely\.app\/(dashboard|onboarding|comment-ca-marche|analyse)/,
     { timeout: 60_000 },
   );
   await assertPageHealthy(page, "post-login destination");
@@ -147,26 +151,22 @@ async function uiLogin(page: Page, email: string, password: string) {
 
 async function skipHowItWorksIfNeeded(page: Page) {
   if (!page.url().includes("comment-ca-marche")) return;
-  // Prefer Escape / skip if present; else hard-assign cookie via evaluate + goto
-  const skip = page.getByRole("button", { name: /Passer|Continuer|Aller/i });
-  if (await skip.first().isVisible().catch(() => false)) {
-    // Advance until leave
-    for (let i = 0; i < 8; i++) {
-      if (!page.url().includes("comment-ca-marche")) break;
-      const btn = page.getByRole("button", {
-        name: /Passer|Continuer|Aller|Commencer|C'est compris/i,
-      });
-      if (await btn.first().isVisible().catch(() => false)) {
-        await btn.first().click();
-        await page.waitForTimeout(400);
-      } else break;
-    }
+  for (let i = 0; i < 8; i++) {
+    if (!page.url().includes("comment-ca-marche")) break;
+    const btn = page.getByRole("button", {
+      name: /Passer|Continuer|Aller|Commencer|C'est compris/i,
+    });
+    if (await btn.first().isVisible().catch(() => false)) {
+      await btn.first().click();
+      await page.waitForTimeout(400);
+    } else break;
   }
   if (page.url().includes("comment-ca-marche")) {
     await page.evaluate(() => {
-      document.cookie = "driveely_hiw_seen=1; path=/; max-age=31536000; SameSite=Lax";
+      document.cookie =
+        "driveely_hiw_seen=1; path=/; max-age=31536000; SameSite=Lax";
     });
-    await page.goto(`${BASE}/demos/driveely/dashboard`, {
+    await page.goto(`${BASE}/dashboard`, {
       waitUntil: "domcontentloaded",
       timeout: 60_000,
     });
@@ -176,22 +176,45 @@ async function skipHowItWorksIfNeeded(page: Page) {
 async function ensureDashboard(page: Page) {
   await skipHowItWorksIfNeeded(page);
   if (!page.url().includes("/dashboard")) {
-    await page.goto(`${BASE}/demos/driveely/dashboard`, {
+    await page.goto(`${BASE}/dashboard`, {
       waitUntil: "domcontentloaded",
       timeout: 60_000,
     });
   }
-  await page.waitForURL(/\/dashboard/, { timeout: 45_000 });
+  await page.waitForURL(/driveely\.app\/dashboard/, { timeout: 45_000 });
   await assertPageHealthy(page, "dashboard");
 }
 
 async function uiLogout(page: Page) {
-  await page.goto(`${BASE}/demos/driveely/deconnexion`, {
+  await page.goto(`${BASE}/deconnexion`, {
     waitUntil: "domcontentloaded",
     timeout: 60_000,
   });
-  await page.waitForURL(/\/login/, { timeout: 45_000 });
+  await page.waitForURL(/driveely\.app\/login/, { timeout: 45_000 });
+  if (/margeo\.vercel\.app/i.test(page.url())) {
+    fail("post-logout login", `redirected to ${page.url()}`);
+    throw new Error("logout bounced to margeo.vercel.app");
+  }
   await assertPageHealthy(page, "post-logout login");
+}
+
+async function assertLogoutHeader() {
+  const res = await fetch(`${BASE}/deconnexion`, { redirect: "manual" });
+  const loc = res.headers.get("location") ?? "";
+  if (res.status >= 300 && res.status < 400) {
+    if (/margeo\.vercel\.app/i.test(loc)) {
+      fail("logout Location header", loc);
+      throw new Error(`logout still points to dead host: ${loc}`);
+    }
+    if (/driveely\.app\/login/i.test(loc) || loc.startsWith("/login")) {
+      pass("logout Location header", loc);
+      return;
+    }
+    fail("logout Location header", `unexpected ${res.status} ${loc}`);
+    throw new Error(`unexpected logout redirect: ${loc}`);
+  }
+  fail("logout Location header", `status=${res.status}`);
+  throw new Error("logout did not redirect");
 }
 
 (async () => {
@@ -208,8 +231,9 @@ async function uiLogout(page: Page) {
   let userId = "";
 
   try {
+    await assertLogoutHeader();
+
     userId = await adminCreate(email, password, "Auth Cycle");
-    // Complete onboarding so login lands on dashboard path (after HIW)
     await patchProfile(userId, {
       vehicle: "velo",
       cost_per_km: 0.05,
@@ -229,17 +253,16 @@ async function uiLogout(page: Page) {
       isMobile: true,
       hasTouch: true,
     });
-    const page = await context.newPage();
-
-    // Skip product tour so cycles exercise auth↔dashboard only
     await context.addCookies([
       {
         name: "driveely_hiw_seen",
         value: "1",
-        domain: "127.0.0.1",
+        domain: "driveely.app",
         path: "/",
+        secure: true,
       },
     ]);
+    const page = await context.newPage();
 
     page.on("pageerror", (err) => {
       fail("pageerror", err.message);
@@ -252,7 +275,7 @@ async function uiLogout(page: Page) {
 
       await page.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
       await assertPageHealthy(page, `cycle ${i} refresh`);
-      await page.waitForURL(/\/dashboard/, { timeout: 30_000 });
+      await page.waitForURL(/driveely\.app\/dashboard/, { timeout: 30_000 });
 
       await uiLogout(page);
       await uiLogin(page, email, password);
@@ -261,7 +284,6 @@ async function uiLogout(page: Page) {
       pass(`cycle ${i} complete`);
     }
 
-    // Extra: tab-switch simulation (re-focus + reload)
     await uiLogin(page, email, password);
     await ensureDashboard(page);
     await page.evaluate(() => {
