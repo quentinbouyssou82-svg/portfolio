@@ -324,7 +324,7 @@ async function handleDriveelyAuth(
       search,
     );
     if (isHowItWorks) {
-      redirected.headers.set("x-hiw-debug", "redirect-unauth→login");
+      redirected.headers.set("x-hiw-debug", "redirect-unauth-login");
     }
     return redirected;
   }
@@ -410,7 +410,7 @@ async function handleDriveelyAuth(
       nextTarget,
       "",
     );
-    redirected.headers.set("x-hiw-debug", `redirect-seen-cookie→${nextTarget}`);
+    redirected.headers.set("x-hiw-debug", `redirect-seen-cookie:${nextTarget}`);
     return redirected;
   }
 
