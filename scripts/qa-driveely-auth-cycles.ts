@@ -45,6 +45,7 @@ const FAIL_PATTERNS = [
   /Internal Server Error/i,
   /DEPLOYMENT_NOT_FOUND/i,
   /Unhandled Runtime Error/i,
+  /Connexion impossible/i,
 ];
 
 type Check = { id: string; ok: boolean; detail?: string };
@@ -142,6 +143,36 @@ async function uiLogin(page: Page, email: string, password: string) {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Mot de passe").fill(password);
   await page.getByRole("button", { name: /Se connecter/i }).click();
+
+  // Continuing gate may flash "Connexion en cours…" before destination.
+  // Fail fast if Vercel Retry / Connexion impossible appear during settle.
+  const deadline = Date.now() + 60_000;
+  while (Date.now() < deadline) {
+    const body = await page.locator("body").innerText().catch(() => "");
+    if (/This page couldn't load/i.test(body) || /\bRetry\b/.test(body)) {
+      fail("post-login settle", "Vercel Retry / couldn't load during gate");
+      throw new Error("post-login: Vercel Retry page");
+    }
+    if (/Connexion impossible/i.test(body)) {
+      fail("post-login settle", "Connexion impossible during gate");
+      throw new Error("post-login: Connexion impossible");
+    }
+    const url = page.url();
+    if (
+      /driveely\.app\/(dashboard|onboarding|comment-ca-marche|analyse)/.test(
+        url,
+      )
+    ) {
+      break;
+    }
+    // Still on /login with continuing gate is OK
+    if (/Connexion en cours/i.test(body) || /Finalisation de ta session/i.test(body)) {
+      await page.waitForTimeout(400);
+      continue;
+    }
+    await page.waitForTimeout(400);
+  }
+
   await page.waitForURL(
     /driveely\.app\/(dashboard|onboarding|comment-ca-marche|analyse)/,
     { timeout: 60_000 },

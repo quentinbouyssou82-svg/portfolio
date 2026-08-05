@@ -33,6 +33,7 @@ import {
   resolveHowItWorksNext,
 } from "@/lib/margeo/how-it-works";
 import { redirectPreservingCookies } from "@/lib/margeo/auth/middleware-response";
+import { hasSupabaseAuthCookie } from "@/lib/margeo/auth/cookie-presence";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -315,6 +316,13 @@ async function handleDriveelyAuth(
   );
 
   if (!user && (isProtected || isOnboarding || isHowItWorks)) {
+    // Auth cookies present but getUser() briefly null (JWT refresh / settle race).
+    // Do NOT bounce to login — shell/pages retry session+profile instead of
+    // flashing Vercel Retry / "Connexion impossible".
+    if (hasSupabaseAuthCookie(request)) {
+      response.headers.set("x-driveely-auth-soft", "cookie-without-user");
+      return response;
+    }
     const search =
       appMode === "beta" ? "?beta=1" : "";
     const redirected = redirectPreservingCookies(

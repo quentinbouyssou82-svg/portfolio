@@ -5,6 +5,10 @@ import { type NextRequest, NextResponse } from "next/server";
  * Critical: supabase.auth.getUser() may refresh tokens onto `source`;
  * returning a brand-new NextResponse.redirect() without these cookies
  * drops the session mid-navigation → RSC "This page couldn't load".
+ *
+ * Prefer raw Set-Cookie header lines so Path / Secure / HttpOnly / Max-Age /
+ * SameSite survive. `cookies.getAll()` only exposes name+value and would
+ * rewrite refreshed JWTs as attribute-less cookies → intermittent auth loss.
  */
 export function redirectPreservingCookies(
   request: NextRequest,
@@ -17,8 +21,19 @@ export function redirectPreservingCookies(
   url.search = search;
   const redirectResponse = NextResponse.redirect(url);
 
-  for (const cookie of source.cookies.getAll()) {
-    redirectResponse.cookies.set(cookie.name, cookie.value);
+  const setCookieLines =
+    typeof source.headers.getSetCookie === "function"
+      ? source.headers.getSetCookie()
+      : [];
+
+  if (setCookieLines.length > 0) {
+    for (const line of setCookieLines) {
+      redirectResponse.headers.append("Set-Cookie", line);
+    }
+  } else {
+    for (const cookie of source.cookies.getAll()) {
+      redirectResponse.cookies.set(cookie.name, cookie.value);
+    }
   }
 
   // Preserve Driveely mode headers when present

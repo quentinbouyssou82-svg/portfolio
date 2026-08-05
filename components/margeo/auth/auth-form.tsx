@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { Check, Lock, Mail, User } from "lucide-react";
 import { toast } from "sonner";
+import { AuthContinuing } from "@/components/margeo/auth/auth-continuing";
 import { AuthField } from "@/components/margeo/auth/auth-field";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
@@ -21,9 +22,12 @@ type Mode = "login" | "signup";
 export function AuthForm({
   mode,
   premium = false,
+  resumeNext,
 }: {
   mode: Mode;
   premium?: boolean;
+  /** When set (e.g. ?resume=), show the continuing gate immediately. */
+  resumeNext?: string;
 }) {
   const isSignup = mode === "signup";
   const authAction = isSignup ? signUpAction : signInAction;
@@ -33,18 +37,22 @@ export function AuthForm({
     FormData
   >(authAction, undefined);
 
+  // Derive gate target — avoid setState-in-effect cascading renders.
+  // Immediate hard-nav races cookie/JWT settle → Vercel Retry /
+  // premature login bounce ("Connexion impossible").
+  const continuingTo =
+    (state?.ok && state.redirectTo ? state.redirectTo : null) ||
+    resumeNext?.trim() ||
+    null;
+
   useEffect(() => {
-    if (!state) return;
-    if (!state.ok) {
-      toast.error(state.message);
-      return;
-    }
-    // Hard navigation after auth — soft RSC redirects race with cookie
-    // refresh and surface as "This page couldn't load" on Vercel.
-    if (state.redirectTo) {
-      window.location.assign(state.redirectTo);
-    }
+    if (!state || state.ok) return;
+    toast.error(state.message);
   }, [state]);
+
+  if (continuingTo) {
+    return <AuthContinuing next={continuingTo} />;
+  }
 
   const cardClass = premium
     ? "auth-card app-fade-in space-y-5 rounded-[1.35rem] p-6 sm:p-8"
@@ -81,7 +89,7 @@ export function AuthForm({
             {[
               "Sais si ça vaut le coup avant d'accepter",
               "Gain net réel, pas le montant affiché",
-              "Verdict clair en ~8 s",
+              "Verdict clair en ~2,5 s",
             ].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <Check className="mt-0.5 size-3.5 shrink-0 text-mg-go" />

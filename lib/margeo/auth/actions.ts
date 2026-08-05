@@ -171,7 +171,9 @@ async function finalizeSignUpAndRedirect(
   });
   return {
     ok: true,
-    redirectTo: await getPostAuthPath(user.id, name),
+    redirectTo: await getPostAuthPath(user.id, name).catch(() =>
+      DRIVEELY_PATHS.dashboard,
+    ),
   };
 }
 
@@ -377,11 +379,16 @@ export async function signInAction(
         if (userId && (await confirmUserEmail(userId))) {
           const retry = await supabase.auth.signInWithPassword({ email, password });
           if (retry.data.user && retry.data.session) {
-            const redirectTo = await getPostAuthPath(
-              retry.data.user.id,
-              retry.data.user.user_metadata?.name as string | undefined,
-            );
-            return { ok: true, redirectTo };
+            const name =
+              retry.data.user.user_metadata?.name as string | undefined;
+            try {
+              return {
+                ok: true,
+                redirectTo: await getPostAuthPath(retry.data.user.id, name),
+              };
+            } catch {
+              return { ok: true, redirectTo: DRIVEELY_PATHS.dashboard };
+            }
           }
         }
       }
@@ -400,9 +407,18 @@ export async function signInAction(
       return { ok: false, message: "Connexion impossible." };
     }
 
+    // Session cookies are already set. Never fail the action for a
+    // transient post-auth path/profile race — the continuing gate waits.
     const name = data.user.user_metadata?.name as string | undefined;
-    const redirectTo = await getPostAuthPath(data.user.id, name);
-    return { ok: true, redirectTo };
+    try {
+      const redirectTo = await getPostAuthPath(data.user.id, name);
+      return { ok: true, redirectTo };
+    } catch (pathErr) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[driveely/auth] getPostAuthPath after sign-in:", pathErr);
+      }
+      return { ok: true, redirectTo: DRIVEELY_PATHS.dashboard };
+    }
   } catch (e) {
     if (isRedirectError(e)) throw e;
     return {

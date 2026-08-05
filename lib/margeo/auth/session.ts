@@ -9,9 +9,19 @@ export async function getAuthUser(): Promise<User | null> {
       data: { user },
       error,
     } = await supabase.auth.getUser();
-    if (error) return null;
+    // Transient JWT refresh / network blips: treat as null so callers can retry
+    // via waitForAuthUser instead of crashing the RSC tree.
+    if (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[driveely/auth] getUser:", error.message);
+      }
+      return null;
+    }
     return user;
-  } catch {
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[driveely/auth] getUser exception:", err);
+    }
     return null;
   }
 }

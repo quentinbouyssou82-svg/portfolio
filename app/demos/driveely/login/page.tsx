@@ -15,9 +15,9 @@ export const metadata: Metadata = buildDriveelyMetadata({
 export default async function MargeoLoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; mode?: string }>;
+  searchParams: Promise<{ error?: string; mode?: string; resume?: string }>;
 }) {
-  const { error, mode } = await searchParams;
+  const { error, mode, resume } = await searchParams;
   const isSignup = mode === "signup";
 
   return (
@@ -25,7 +25,11 @@ export default async function MargeoLoginPage({
       <LandingBackdrop />
       <AuthErrorBanner message={error} />
       <div className="auth-page relative z-[1] flex min-h-dvh items-center justify-center overflow-x-clip p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] sm:p-6">
-        <AuthForm mode={isSignup ? "signup" : "login"} premium />
+        <AuthForm
+          mode={isSignup ? "signup" : "login"}
+          premium
+          resumeNext={resume}
+        />
       </div>
     </>
   );
