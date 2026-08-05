@@ -328,7 +328,7 @@ function WelcomeStep() {
       />
       <ul className="onboarding-welcome-list mt-8 space-y-3 text-left">
         {[
-          "Verdict en ~8 s",
+          "Verdict en ~2,5 s",
           "Gain net, pas le montant affiché",
           "Adapté à ton rythme",
         ].map((item) => (

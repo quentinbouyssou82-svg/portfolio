@@ -5,7 +5,7 @@ import { AnimatedCounter } from "@/components/animated-counter";
 
 const STATS = [
   { value: 38, suffix: " %", label: "des courses proposées font perdre de l'argent une fois les frais déduits" },
-  { value: 2, suffix: " s", label: "pour obtenir un verdict clair, avant la fin du compte à rebours" },
+  { value: 2.5, suffix: " s", decimals: 1, label: "pour obtenir un verdict clair, avant la fin du compte à rebours" },
   { value: 214, prefix: "+", suffix: " €", label: "de gain net moyen récupéré par mois par nos livreurs actifs" },
 ];
 
@@ -38,6 +38,7 @@ export function Presentation() {
                   value={stat.value}
                   prefix={stat.prefix}
                   suffix={stat.suffix}
+                  decimals={stat.decimals}
                 />
               </p>
               <p className="mt-3 text-sm leading-relaxed text-muted">

@@ -5,7 +5,7 @@ import { AnimatedCounter } from "@/components/margeo/animated-counter";
 
 const STATS = [
   { value: 38, suffix: " %", label: "des courses proposées peuvent te faire perdre de l'argent après frais (estimation)" },
-  { value: 8, suffix: " s", label: "en moyenne pour obtenir un verdict avant la fin du compte à rebours" },
+  { value: 2.5, suffix: " s", decimals: 1, label: "en moyenne pour obtenir un verdict avant la fin du compte à rebours" },
   { value: 214, prefix: "~", suffix: " €", label: "de gain net estimé en moyenne par mois (bêta, résultats variables)" },
 ];
 
@@ -37,6 +37,7 @@ export function Presentation() {
                   value={stat.value}
                   prefix={stat.prefix}
                   suffix={stat.suffix}
+                  decimals={stat.decimals}
                 />
               </p>
               <p className="mt-3 text-sm leading-relaxed text-mg-muted">

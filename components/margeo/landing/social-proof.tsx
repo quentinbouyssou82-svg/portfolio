@@ -18,8 +18,9 @@ const STATS = [
   },
   {
     icon: Clock,
-    value: 8,
+    value: 2.5,
     suffix: " s",
+    decimals: 1,
     label: "Capture → verdict",
     detail: "en moyenne",
     bars: [30, 45, 60, 80, 95, 88, 100],
