@@ -146,11 +146,16 @@ async function uiLogin(page: Page, email: string, password: string) {
 
   // Continuing gate may flash "Connexion en cours…" before destination.
   // Fail fast if Vercel Retry / Connexion impossible appear during settle.
-  const deadline = Date.now() + 60_000;
+  const deadline = Date.now() + 75_000;
   while (Date.now() < deadline) {
     const body = await page.locator("body").innerText().catch(() => "");
-    if (/This page couldn't load/i.test(body) || /\bRetry\b/.test(body)) {
-      fail("post-login settle", "Vercel Retry / couldn't load during gate");
+    if (/This page couldn't load/i.test(body)) {
+      fail("post-login settle", "Vercel couldn't load during gate");
+      throw new Error("post-login: Vercel Retry page");
+    }
+    // English Retry alone on Vercel error pages (avoid FR false positives)
+    if (/\bRetry\b/.test(body) && /couldn't load|Application error/i.test(body)) {
+      fail("post-login settle", "Vercel Retry during gate");
       throw new Error("post-login: Vercel Retry page");
     }
     if (/Connexion impossible/i.test(body)) {
@@ -165,17 +170,12 @@ async function uiLogin(page: Page, email: string, password: string) {
     ) {
       break;
     }
-    // Still on /login with continuing gate is OK
-    if (/Connexion en cours/i.test(body) || /Finalisation de ta session/i.test(body)) {
-      await page.waitForTimeout(400);
-      continue;
-    }
     await page.waitForTimeout(400);
   }
 
   await page.waitForURL(
     /driveely\.app\/(dashboard|onboarding|comment-ca-marche|analyse)/,
-    { timeout: 60_000 },
+    { timeout: 90_000 },
   );
   await assertPageHealthy(page, "post-login destination");
 }

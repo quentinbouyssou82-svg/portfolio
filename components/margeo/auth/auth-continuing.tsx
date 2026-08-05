@@ -5,24 +5,41 @@ import Link from "next/link";
 import { Logo } from "@/components/margeo/logo";
 import { Button } from "@/components/margeo/ui/button";
 import { Spinner } from "@/components/margeo/ui/spinner";
-import {
-  probeAuthBootstrapAction,
-  type AuthBootstrapResult,
-} from "@/lib/margeo/auth/bootstrap";
 import { resolveSafePostAuthNext } from "@/lib/margeo/auth/safe-next";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { createMargeoBrowserClient } from "@/lib/margeo/supabase/client";
 import { cn } from "@/lib/margeo/utils";
 
-const MAX_PROBES = 10;
-const PROBE_GAP_MS = 350;
+const MAX_PROBES = 12;
+const PROBE_GAP_MS = 280;
 
 type Phase = "waiting" | "failed";
 
+type ReadyPayload =
+  | { status: "ready"; redirectTo: string }
+  | { status: "pending" }
+  | { status: "unauthenticated" };
+
+async function probeReady(next: string): Promise<ReadyPayload> {
+  try {
+    const res = await fetch(
+      `/api/driveely/auth/ready?next=${encodeURIComponent(next)}`,
+      { credentials: "same-origin", cache: "no-store" },
+    );
+    const data = (await res.json().catch(() => null)) as ReadyPayload | null;
+    if (!data || typeof data !== "object" || !("status" in data)) {
+      return { status: "pending" };
+    }
+    return data;
+  } catch {
+    return { status: "pending" };
+  }
+}
+
 /**
  * Post-auth gate: wait for session+profile with automatic retries.
- * Never shows Retry for the first transient failures — only after
- * several automatic attempts, and only as a return-to-login escape.
+ * Uses cookie-based `/api/driveely/auth/ready` (not a Server Action) so the
+ * jar set by sign-in is visible immediately. No Retry UI for transient races.
  */
 export function AuthContinuing({
   next,
@@ -41,38 +58,32 @@ export function AuthContinuing({
     started.current = true;
 
     let cancelled = false;
-    let lastStatus: AuthBootstrapResult["status"] | null = null;
+    let sawClientUser = false;
 
     async function run() {
-      // Give the browser a tick to apply Set-Cookie from the server action.
-      await new Promise((r) => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 60));
 
       for (let i = 0; i < MAX_PROBES; i++) {
         if (cancelled) return;
 
-        // Client cookie session first (cheap); then server profile probe.
+        let clientUser = false;
         try {
           const supabase = createMargeoBrowserClient();
           const { data } = await supabase.auth.getUser();
-          if (!data.user && i < 2) {
-            // Session cookie may still be settling — keep waiting silently.
-            setDetail("Connexion en cours…");
-            await new Promise((r) => setTimeout(r, PROBE_GAP_MS));
-            continue;
-          }
+          clientUser = Boolean(data.user);
+          if (clientUser) sawClientUser = true;
         } catch {
-          // Ignore client probe errors; server probe is authoritative.
+          /* keep trying */
         }
 
-        let result: AuthBootstrapResult;
-        try {
-          result = await probeAuthBootstrapAction(safeNext);
-        } catch {
+        let result = await probeReady(safeNext);
+
+        // Browser has session; API still 401 → cookie settle lag, keep waiting.
+        if (result.status === "unauthenticated" && (clientUser || sawClientUser)) {
           result = { status: "pending" };
         }
 
         if (cancelled) return;
-        lastStatus = result.status;
 
         if (result.status === "ready") {
           setDetail("Redirection…");
@@ -80,17 +91,25 @@ export function AuthContinuing({
           return;
         }
 
+        // Client session stable → navigate; shell waits for profile if needed.
+        if (clientUser && i >= 2) {
+          setDetail("Redirection…");
+          window.location.assign(safeNext);
+          return;
+        }
+
         setDetail(
           i < 4 ? "Connexion en cours…" : "Finalisation de ta session…",
         );
-
-        await new Promise((r) => setTimeout(r, PROBE_GAP_MS * (1 + Math.min(i, 3) * 0.25)));
+        await new Promise((r) =>
+          setTimeout(r, PROBE_GAP_MS * (1 + Math.min(i, 3) * 0.2)),
+        );
       }
 
       if (!cancelled) {
-        // Truly no session after all retries → back to login (no Resume loop).
-        if (lastStatus === "unauthenticated") {
-          window.location.assign(DRIVEELY_PATHS.login);
+        if (sawClientUser) {
+          setDetail("Redirection…");
+          window.location.assign(safeNext);
           return;
         }
         setPhase("failed");
