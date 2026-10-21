@@ -3,6 +3,7 @@ import type { UserProfile } from "../types";
 import { createMargeoServerClient } from "../supabase/server";
 import { buildDisplayName } from "../profile-display";
 import { getMargeoAdminDb } from "../supabase/admin";
+import { createMargeoRequestDb } from "../supabase/request-db";
 import { normalizeVehicle, toLegacyPersistedVehicle, toPersistedVehicle } from "../vehicle-costs";
 import { parseVehicleDetails } from "../vehicle-details";
 
@@ -28,6 +29,11 @@ function readMeta(meta: Record<string, unknown> | undefined): ProfileMeta {
         ? (meta.vehicle_details as Record<string, unknown>)
         : undefined,
   };
+}
+
+/** Bearer (iOS) → service role → cookie SSR. */
+async function profileDb() {
+  return createMargeoRequestDb();
 }
 
 export function rowToUserProfile(
@@ -144,7 +150,7 @@ export async function getProfileForUser(
   userId: string,
   meta?: ProfileMeta,
 ): Promise<UserProfile | null> {
-  const supabase = await createMargeoServerClient();
+  const supabase = await profileDb();
   const { data, error } = await supabase
     .from("margeo_profiles")
     .select("*")
@@ -167,7 +173,7 @@ export async function ensureProfileForUser(
   if (existing) return existing;
 
   const trimmed = name?.trim() || meta?.first_name?.trim() || "";
-  const supabase = await createMargeoServerClient();
+  const supabase = await profileDb();
 
   const fullPayload = {
     id: userId,

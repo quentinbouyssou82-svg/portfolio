@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Driveely (produit)
+
+- [Documentation système complète](../_cursor-ios-env-smoke/docs/DRIVEELY-SYSTEME-COMPLET.md)
+- [Plan optimisation coût & scalabilité](../_cursor-ios-env-smoke/docs/DRIVEELY-OPTIMISATION-PLAN.md)
+- [Plafond budget Mistral](./docs/DRIVEELY-MISTRAL-BUDGET.md)
+- [Environnements app](./docs/DRIVEELY-ENVIRONMENTS.md)
+
 ## Getting Started
 
 First, run the development server:

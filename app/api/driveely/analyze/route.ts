@@ -9,14 +9,18 @@ import {
   validateCoordinates,
   validateScreenshotFile,
 } from "@/lib/margeo/api/validate-image";
-import { checkRateLimit } from "@/lib/margeo/api/rate-limit";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
 import { analyzeScreenshot } from "@/lib/margeo/analyze-screenshot";
 import {
   ensureProfileForUser,
   getProfileForUser,
 } from "@/lib/margeo/services/profile";
 import { saveAnalysis } from "@/lib/margeo/services/analyses";
-import { assertAnalysisQuota } from "@/lib/margeo/services/quota";
+import {
+  assertAnalysisQuota,
+  reserveDailyAnalysisSlot,
+  type DailyAnalysisSlot,
+} from "@/lib/margeo/services/quota";
 import { uploadScreenshotBuffer } from "@/lib/margeo/services/storage";
 import {
   applyCalibrationToOffer,
@@ -28,10 +32,18 @@ import { prepareScreenshotForVision } from "@/lib/margeo/vision/prepare-image";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
 
+/**
+ * Budget d'exécution serveur. Le client iOS attend au plus ~58 s (APIClient) :
+ * le serveur doit laisser le temps au pipeline Vision de répondre dans cette fenêtre.
+ */
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const startedAt = Date.now();
   const timings: Record<string, number> = {};
   let userId: string | undefined;
+  /** Emplacement de quota réservé (plan gratuit), libéré si l'analyse échoue. */
+  let slot: DailyAnalysisSlot | null = null;
 
   const mark = (key: string, from: number) => {
     timings[key] = Date.now() - from;
@@ -43,7 +55,7 @@ export async function POST(request: Request) {
     userId = user.id;
     mark("authMs", authStarted);
 
-    const burst = checkRateLimit(`analyze:${user.id}`, 60, 60_000);
+    const burst = await checkRateLimitDistributed(`analyze:${user.id}`, 60, 60_000);
     if (!burst.allowed) {
       const waitSec = Math.max(
         1,
@@ -120,6 +132,12 @@ export async function POST(request: Request) {
       preparedPromise,
     ]);
     const profile = profileRaw;
+
+    // Réservation atomique du quota gratuit : évite le dépassement des 2 analyses/jour
+    // quand plusieurs requêtes arrivent simultanément.
+    if (!quota.premium && quota.dailyLimit != null) {
+      slot = await reserveDailyAnalysisSlot(user.id, quota.dailyLimit);
+    }
     mark("prepMs", prepStarted);
     timings.imageMs = imageMs;
 
@@ -330,28 +348,49 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    // Analyse non aboutie : on rend l'emplacement de quota réservé.
+    await slot?.release();
+    const mapped =
+      error instanceof ApiError
+        ? error
+        : error instanceof Error &&
+            (/Analyse IA|Vision|Mistral|Groq|Gemini|IMAGE_PIPELINE/i.test(
+              error.message,
+            ) ||
+              /rate[_ ]?limit|429/i.test(error.message))
+          ? new ApiError(
+              error.message.includes("429") || /rate[_ ]?limit/i.test(error.message)
+                ? "Analyse IA saturée temporairement. Réessaie dans quelques secondes."
+                : "Analyse IA indisponible temporairement. Réessaie dans un instant.",
+              503,
+              "VISION_UNAVAILABLE",
+            )
+          : error;
+
     if (
       userId &&
-      !(error instanceof ApiError && error.code === "EXTRACTION_FAILED")
+      !(mapped instanceof ApiError && mapped.code === "EXTRACTION_FAILED")
     ) {
       after(() => {
         void logBetaEvent({
           userId: userId!,
           eventType: "analysis_failed",
           durationMs: Date.now() - startedAt,
-          errorCode: error instanceof ApiError ? error.code : "UNKNOWN",
+          errorCode: mapped instanceof ApiError ? mapped.code : "UNKNOWN",
           metadata: {
-            message: error instanceof Error ? error.message : "unknown",
+            message: mapped instanceof Error ? mapped.message : "unknown",
             visionError:
-              error instanceof Error &&
-              (error.message.includes("Mistral Vision") ||
-                error.message.includes("Gemini Vision") ||
-                error.message.includes("Vision")),
+              mapped instanceof Error &&
+              (mapped.message.includes("Mistral Vision") ||
+                mapped.message.includes("Gemini Vision") ||
+                mapped.message.includes("Groq Vision") ||
+                mapped.message.includes("Vision") ||
+                mapped.message.includes("Analyse IA")),
             timings,
           },
         });
       });
     }
-    return jsonError(error);
+    return jsonError(mapped);
   }
 }

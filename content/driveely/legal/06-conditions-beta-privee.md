@@ -1,23 +1,23 @@
 # Conditions de participation à la bêta privée
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-Les présentes conditions complètent les [Conditions Générales d'Utilisation](./03-cgu.md) et s'appliquent spécifiquement aux Utilisateurs ayant reçu un accès anticipé au Service Driveely dans le cadre de sa phase de bêta privée (la « Bêta »). En cas de contradiction entre les présentes conditions et les CGU, les présentes conditions prévalent pour tout ce qui concerne spécifiquement la Bêta.
+Les présentes conditions complètent les [Conditions Générales d'Utilisation](./03-cgu.md) et s'appliquent spécifiquement aux Utilisateurs ayant reçu un accès anticipé au Service Driveely (application iPhone et, le cas échéant, interface web) dans le cadre de sa phase de bêta privée (la « Bêta »). En cas de contradiction entre les présentes conditions et les CGU, les présentes conditions prévalent pour tout ce qui concerne spécifiquement la Bêta.
 
 ## 2. Nature de la Bêta
 
-Le Service est, à ce stade, distribué exclusivement sur invitation. La participation à la Bêta a pour objet de permettre à Driveely de tester, ajuster et améliorer le Service avant sa commercialisation complète. En rejoignant la Bêta, l'Utilisateur reconnaît et accepte expressément que :
+La Bêta désigne la distribution TestFlight (ou invitation fondateur) destinée aux testeurs. L'application publique App Store est un service commercial distinct, soumis aux [Conditions Générales de Vente](./04-cgv.md). En rejoignant la Bêta, l'Utilisateur reconnaît et accepte expressément que :
 
 - le Service est en cours de développement et peut ne pas être exempt de bugs, dysfonctionnements ou interruptions ;
 - certaines fonctionnalités peuvent être modifiées, ajoutées, suspendues ou retirées sans préavis ;
 - les résultats produits par l'intelligence artificielle peuvent être moins stables ou moins précis que lors de la version commerciale définitive du Service ;
 - aucune garantie de disponibilité continue n'est apportée durant cette phase.
 
-## 3. Gratuité de la Bêta
+## 3. Accès TestFlight et paiements
 
-La participation à la Bêta privée ne nécessite, à ce stade, aucun paiement. Aucune donnée bancaire n'est collectée dans ce cadre. L'activation future des paiements sera annoncée préalablement aux Utilisateurs bêta, qui seront informés des modalités de transition vers une offre payante, conformément à l'article 5 ci-après.
+L'accès TestFlight peut être offert sans achat, à la discrétion de Driveely. Cela ne signifie pas que le Service public est gratuit. Sur l'App Store, l'offre Premium est payante selon les [CGV](./04-cgv.md). Driveely ne collecte aucune donnée bancaire : les achats iPhone sont facturés par Apple. Un code bêta n'est pas un moyen de paiement et n'est pas proposé comme contournement des achats intégrés sur l'App Store public.
 
 ## 4. Retours d'expérience
 
@@ -25,7 +25,7 @@ En participant à la Bêta, l'Utilisateur accepte que ses retours d'expérience 
 
 ## 5. Tarif préférentiel
 
-En contrepartie de leur participation à la Bêta et de leurs retours d'expérience, les Utilisateurs bêta pourront conserver un tarif préférentiel sur l'offre Premium, si une telle offre leur est proposée par Driveely au moment de l'activation des paiements. Cette faculté est laissée à la discrétion d'Driveely, qui communiquera aux Utilisateurs bêta concernés les modalités précises de ce tarif préférentiel (montant, durée d'application, conditions) en temps utile, avant toute activation de paiement les concernant.
+En contrepartie de leur participation à la Bêta et de leurs retours d'expérience, les Utilisateurs TestFlight pourront se voir proposer un accès temporaire ou un tarif préférentiel, à la seule discrétion de Driveely. Toute offre payante sur l'App Store public reste soumise aux CGV et aux achats Apple.
 
 ## 6. Confidentialité de la Bêta
 
@@ -41,4 +41,4 @@ Les dispositions relatives à la responsabilité prévues à l'article 9 des [Co
 
 ## 9. Contact
 
-Pour toute question relative à la Bêta privée : [contact@driveely.app](mailto:contact@driveely.app)
+Pour toute question relative à la Bêta privée : [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

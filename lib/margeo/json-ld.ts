@@ -58,14 +58,14 @@ export function driveelySoftwareApplicationJsonLd() {
       "@type": "Offer",
       price: "0",
       priceCurrency: "EUR",
-      description: "Bêta / plan Découverte — analyses limitées gratuites",
-      url: driveelyAbsoluteUrl("/login?mode=signup&beta=1"),
+      description: "2 analyses gratuites par jour — Premium optionnel",
+      url: driveelyAbsoluteUrl("/"),
     },
     featureList: [
-      "Estimation du gain net avant acceptation",
-      "Coûts au km et retour à vide",
-      "Uber Eats, Deliveroo, Stuart, Amazon Flex",
-      "Verdict en quelques secondes",
+      "Estimation du gain net après vos coûts",
+      "Score et verdict accepter / vérifier / refuser",
+      "Objectif du jour et historique",
+      "Back Tap et Centre de contrôle",
     ],
   };
 }

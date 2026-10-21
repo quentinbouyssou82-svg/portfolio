@@ -1,9 +1,15 @@
 /**
  * Feature flags dérivés du mode app.
- * Toute logique commerciale / freemium doit lire ces flags — jamais APP_MODE en dur.
+ * UI chrome : getAppFeatures / getAppFeaturesAsync (cookie OK).
+ * Billing / freemium / Elite unlock : getBillingFeatures* (env trusted only).
  */
 
-import { getAppMode, getAppModeAsync, type DriveelyAppMode } from "./environment";
+import {
+  getAppMode,
+  getAppModeAsync,
+  getTrustedAppMode,
+  type DriveelyAppMode,
+} from "./environment";
 
 export type PremiumPageMode = "commercial" | "beta_unlocked" | "coming_soon";
 
@@ -110,12 +116,26 @@ export async function getAppFeaturesAsync(): Promise<DriveelyFeatures> {
   return getAppFeatures(await getAppModeAsync());
 }
 
-/** Raccourcis typés — préférer getAppFeatures() pour plusieurs flags. */
+/**
+ * Flags commerciaux — mode serveur (env) uniquement.
+ * Ignore cookie `driveely_app_mode` et header `X-Driveely-App-Mode`.
+ */
+export function getBillingFeatures(
+  mode: DriveelyAppMode = getTrustedAppMode(),
+): DriveelyFeatures {
+  return getAppFeatures(mode);
+}
+
+export async function getBillingFeaturesAsync(): Promise<DriveelyFeatures> {
+  return getBillingFeatures(getTrustedAppMode());
+}
+
+/** Raccourcis typés — préférer getBillingFeatures() pour quotas / entitlements. */
 export const features = {
   get: getAppFeatures,
   paywall: () => getAppFeatures().paywall,
-  billing: () => getAppFeatures().billing,
-  freemiumLimits: () => getAppFeatures().freemiumLimits,
-  allPremiumUnlocked: () => getAppFeatures().allPremiumUnlocked,
-  purchasesEnabled: () => getAppFeatures().purchasesEnabled,
+  billing: () => getBillingFeatures().billing,
+  freemiumLimits: () => getBillingFeatures().freemiumLimits,
+  allPremiumUnlocked: () => getBillingFeatures().allPremiumUnlocked,
+  purchasesEnabled: () => getBillingFeatures().purchasesEnabled,
 };

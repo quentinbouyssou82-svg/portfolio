@@ -1,6 +1,6 @@
 import type { PreparedImage } from "../prepare-image";
 
-export type VisionProviderId = "mistral" | "gemini" | "mock";
+export type VisionProviderId = "mistral" | "groq" | "gemini" | "mock";
 
 export interface VisionProviderResult {
   rawJson: Record<string, unknown>;
@@ -17,10 +17,12 @@ export interface VisionProvider {
 
 export interface NormalizedVisionResult {
   offer: import("../../types").RideOffer;
+  fields: import("../extraction-types").StructuredVisionFields;
   confidence: number;
   warnings: string[];
   missingFields: string[];
   extractionQuality: import("../extraction-types").ExtractionQuality;
+  reliability: import("../extraction-types").ReliabilitySummary;
   visionDurationMs: number;
   visionProvider: VisionProviderId;
 }

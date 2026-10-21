@@ -1,7 +1,7 @@
 /**
  * Test analyse Vision end-to-end sur les 6 captures Driveely.
  * Usage : set -a && source .env.local && set +a && npx tsx scripts/test-driveely-vision-all.ts
- * Prod  : NEXT_PUBLIC_APP_URL=https://margeo.vercel.app npx tsx scripts/test-driveely-vision-all.ts
+ * Prod  : NEXT_PUBLIC_APP_URL=https://driveely.app npx tsx scripts/test-driveely-vision-all.ts
  */
 
 import fs from "fs";

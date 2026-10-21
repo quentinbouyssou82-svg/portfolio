@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { jsonError, ApiError } from "@/lib/margeo/api/errors";
 import { requireAuthUser } from "@/lib/margeo/api/auth";
-import { checkRateLimit } from "@/lib/margeo/api/rate-limit";
-import { validateCoordinates } from "@/lib/margeo/api/validate-image";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
+import { validateCoordinates } from "@/lib/margeo/api/validate-coords";
 import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
   try {
     const user = await requireAuthUser();
 
-    const limit = checkRateLimit(
+    const limit = await checkRateLimitDistributed(
       `location:${user.id}`,
       DRIVEELY_LIMITS.locationRequestsPerHour,
       3_600_000,

@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-08-20T11:17:42.054Z",
+  "failures": 0,
+  "monotonicOk": true,
+  "results": [
+    {
+      "id": "R01",
+      "label": "Capture parfaite",
+      "extractionScore": 100,
+      "calculationScore": 100,
+      "decisionConfidence": 98,
+      "profitabilityScore": 99,
+      "rawVerdict": "accept",
+      "finalVerdict": "accept",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R02",
+      "label": "Distance légèrement ambiguë",
+      "extractionScore": 92,
+      "calculationScore": 95,
+      "decisionConfidence": 93,
+      "profitabilityScore": 99,
+      "rawVerdict": "accept",
+      "finalVerdict": "accept",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R03",
+      "label": "Durée absente — payout élevé",
+      "extractionScore": 88,
+      "calculationScore": 90,
+      "decisionConfidence": 86,
+      "profitabilityScore": 83,
+      "rawVerdict": "accept",
+      "finalVerdict": "accept",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R04",
+      "label": "Distance estimée + retour à vide inconnu",
+      "extractionScore": 78,
+      "calculationScore": 74,
+      "decisionConfidence": 69,
+      "profitabilityScore": 74,
+      "rawVerdict": "accept",
+      "finalVerdict": "check",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R05",
+      "label": "Plusieurs offres détectées",
+      "extractionScore": 75,
+      "calculationScore": 82,
+      "decisionConfidence": 70,
+      "profitabilityScore": 75,
+      "rawVerdict": "accept",
+      "finalVerdict": "check",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R06",
+      "label": "Montant ambigu",
+      "extractionScore": 80,
+      "calculationScore": 90,
+      "decisionConfidence": 76,
+      "profitabilityScore": 75,
+      "rawVerdict": "accept",
+      "finalVerdict": "check",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R07",
+      "label": "Capture très dégradée",
+      "extractionScore": 70,
+      "calculationScore": 78,
+      "decisionConfidence": 67,
+      "profitabilityScore": 75,
+      "rawVerdict": "accept",
+      "finalVerdict": "check",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R08",
+      "label": "Bonne rentabilité + faible fiabilité",
+      "extractionScore": 72,
+      "calculationScore": 69,
+      "decisionConfidence": 71,
+      "profitabilityScore": 70,
+      "rawVerdict": "accept",
+      "finalVerdict": "check",
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "R09",
+      "label": "Mauvaise rentabilité + haute fiabilité",
+      "extractionScore": 100,
+      "calculationScore": 100,
+      "decisionConfidence": 98,
+      "profitabilityScore": 4,
+      "rawVerdict": "refuse",
+      "finalVerdict": "refuse",
+      "ok": true,
+      "notes": []
+    }
+  ]
+}

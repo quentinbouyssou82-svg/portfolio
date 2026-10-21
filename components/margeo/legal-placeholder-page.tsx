@@ -5,7 +5,8 @@ import { DRIVEELY_CONTACT_EMAIL, PRODUCT_NAME } from "@/lib/margeo/brand";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 
 /**
- * Placeholder pages juridiques — le contenu définitif sera intégré plus tard.
+ * Page générique de secours (ne plus utiliser pour les docs Driveely officiels).
+ * Les pages légales et /contact sont désormais des contenus définitifs.
  */
 export function LegalPlaceholderPage({
   title,

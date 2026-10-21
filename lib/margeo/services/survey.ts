@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { BETA_SURVEY_QUESTIONS } from "@/lib/margeo/survey/questions";
 import type {
@@ -31,6 +32,9 @@ function normalizeAnswerValue(raw: unknown): SurveyAnswerValue | null {
   if (!raw || typeof raw !== "object") return null;
   const obj = raw as Record<string, unknown>;
   if (typeof obj.choice === "string") return { choice: obj.choice };
+  if (Array.isArray(obj.choices) && obj.choices.every((item) => typeof item === "string")) {
+    return { choices: obj.choices as string[] };
+  }
   if (typeof obj.text === "string") return { text: obj.text };
   if (typeof obj.score === "number" && Number.isFinite(obj.score)) {
     return { score: obj.score };
@@ -87,8 +91,9 @@ function fallbackQuestions(surveyId: string): SurveyQuestionRow[] {
 export async function loadSurveyForUser(
   userId: string,
   surveySlug: string = BETA_SURVEY_SLUG,
+  supabaseClient?: SupabaseClient,
 ): Promise<SurveyLoadPayload | null> {
-  const supabase = await createMargeoServerClient();
+  const supabase = supabaseClient ?? (await createMargeoServerClient());
 
   const { data: surveyData, error: surveyError } = await supabase
     .from("margeo_surveys")
@@ -229,12 +234,13 @@ export async function saveSurveyAnswers(input: {
   answers: SurveyAnswerMap;
   device: SurveyDeviceInfo;
   finalize: boolean;
+  supabaseClient?: SupabaseClient;
 }): Promise<
   | { ok: true; responseId: string; status: "draft" | "submitted" }
   | { ok: false; message: string; code?: "UNAUTHORIZED" | "VALIDATION" | "ERROR" | "OFFLINE_SCHEMA" }
 > {
   const slug = input.surveySlug ?? BETA_SURVEY_SLUG;
-  const loaded = await loadSurveyForUser(input.userId, slug);
+  const loaded = await loadSurveyForUser(input.userId, slug, input.supabaseClient);
   if (!loaded) {
     return { ok: false, message: "Questionnaire introuvable.", code: "ERROR" };
   }
@@ -259,7 +265,7 @@ export async function saveSurveyAnswers(input: {
     }
   }
 
-  const supabase = await createMargeoServerClient();
+  const supabase = input.supabaseClient ?? (await createMargeoServerClient());
   const now = new Date().toISOString();
 
   const responsePayload = {

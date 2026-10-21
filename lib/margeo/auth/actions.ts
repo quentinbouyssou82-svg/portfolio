@@ -7,11 +7,14 @@ import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
 import { getMargeoServiceKey } from "@/lib/margeo/supabase/env";
-import { getAppModeAsync } from "@/lib/margeo/config";
 import { logBetaEvent } from "@/lib/margeo/services/beta-events";
 import { markBetaTester } from "@/lib/margeo/services/beta-user";
 import { resolveAuthError, type AuthErrorLike } from "./errors";
 import { getPostAuthPath } from "./post-auth";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
+import { assertBotIdOrThrow } from "@/lib/margeo/security/botid-guard";
+import { headers } from "next/headers";
+import { writeSecurityAuditLog } from "@/lib/margeo/security/audit-log";
 
 export type MargeoActionResult<T = void> =
   | { ok: true; data?: T; redirectTo?: string }
@@ -143,7 +146,9 @@ async function finalizeSignUpAndRedirect(
   name: string,
   termsAcceptedAt?: string,
 ): Promise<MargeoActionResult> {
-  if ((await getAppModeAsync()) === "beta") {
+  // Allowlist Elite : uniquement mode serveur trusted (env), jamais cookie spoof.
+  const { getTrustedAppMode } = await import("@/lib/margeo/config");
+  if (getTrustedAppMode() === "beta") {
     await markBetaTester(user.id, { force: true });
   }
   if (termsAcceptedAt) {
@@ -242,6 +247,39 @@ export async function signUpAction(
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "").trim();
   const acceptTerms = formData.get("acceptTerms");
+
+  try {
+    const h = await headers();
+    const req = new Request("https://driveely.local/auth/signup", {
+      headers: h,
+    });
+    await assertBotIdOrThrow(req);
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error) {
+      return { ok: false, message: "Inscription temporairement indisponible." };
+    }
+  }
+
+  const signupLimit = await checkRateLimitDistributed(
+    `auth-signup:${email.toLowerCase() || "unknown"}`,
+    5,
+    60 * 60_000,
+  );
+  const globalSignup = await checkRateLimitDistributed(
+    "auth-signup:global",
+    100,
+    60 * 60_000,
+  );
+  if (!signupLimit.allowed || !globalSignup.allowed) {
+    void writeSecurityAuditLog({
+      action: "auth.signup_rate_limited",
+      meta: { emailHash: email ? email.slice(0, 3) + "***" : null },
+    });
+    return {
+      ok: false,
+      message: "Trop de créations de compte. Réessaie plus tard.",
+    };
+  }
 
   if (!email || !password) {
     return { ok: false, message: "Email et mot de passe requis." };
@@ -364,6 +402,29 @@ export async function signInAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
+  try {
+    const h = await headers();
+    const req = new Request("https://driveely.local/auth/signin", {
+      headers: h,
+    });
+    await assertBotIdOrThrow(req);
+  } catch {
+    // BotID fail-open hors strict ; en strict assertBotIdOrThrow throw ApiError
+  }
+
+  const authLimit = await checkRateLimitDistributed(
+    `auth-signin:${email.toLowerCase() || "unknown"}`,
+    20,
+    60_000,
+  );
+  if (!authLimit.allowed) {
+    void writeSecurityAuditLog({
+      action: "auth.signin_failed",
+      meta: { reason: "rate_limited" },
+    });
+    return { ok: false, message: "Trop de tentatives. Réessaie dans une minute." };
+  }
+
   if (!email || !password) {
     return { ok: false, message: "Email et mot de passe requis." };
   }
@@ -373,6 +434,10 @@ export async function signInAction(
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
+      void writeSecurityAuditLog({
+        action: "auth.signin_failed",
+        meta: { reason: "invalid_credentials" },
+      });
       const isUnconfirmed = error.message?.toLowerCase().includes("email not confirmed");
       if (isUnconfirmed) {
         const userId = await findUserIdByEmail(email);

@@ -25,15 +25,7 @@ import {
   toDriveelyRelativePath,
 } from "@/lib/margeo/host";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
-import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
-import {
-  buildHowItWorksPath,
-  HOW_IT_WORKS_COOKIE,
-  isHowItWorksCookieValue,
-  resolveHowItWorksNext,
-} from "@/lib/margeo/how-it-works";
 import { redirectPreservingCookies } from "@/lib/margeo/auth/middleware-response";
-import { hasSupabaseAuthCookie } from "@/lib/margeo/auth/cookie-presence";
 import { MAISON_PATHS, PUBLIC_MAISON_PATHS } from "@/lib/maison/constants";
 import { getMaisonSessionFromRequest } from "@/lib/maison/household-session";
 
@@ -246,10 +238,20 @@ async function handleDriveelyAuth(
 
   if (relative === "/signup") {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = DRIVEELY_PATHS.login;
-    redirectUrl.searchParams.set("mode", "signup");
-    if (appMode === "beta") redirectUrl.searchParams.set("beta", "1");
+    redirectUrl.pathname = "/";
     return NextResponse.redirect(redirectUrl, 308);
+  }
+
+  // Web app retired — protect iOS API only; send old app URLs home.
+  if (
+    isDriveelyProtectedPublicPath(publicPathname) ||
+    relative === "/onboarding" ||
+    relative === "/comment-ca-marche"
+  ) {
+    const home = request.nextUrl.clone();
+    home.pathname = "/";
+    home.search = "";
+    return NextResponse.redirect(home, 308);
   }
 
   const rewriteUrl = request.nextUrl.clone();
@@ -305,190 +307,10 @@ async function handleDriveelyAuth(
 
   const isAuthPage =
     relative === "/login" || publicPathname === DRIVEELY_PATHS.login;
-  const isOnboarding =
-    relative === "/onboarding" || publicPathname === DRIVEELY_PATHS.onboarding;
-  const isHowItWorks =
-    relative === "/comment-ca-marche" ||
-    publicPathname === DRIVEELY_PATHS.howItWorks;
-  const isProtected = isDriveelyProtectedPublicPath(publicPathname);
-  const hiwSeen = isHowItWorksCookieValue(
-    request.cookies.get(HOW_IT_WORKS_COOKIE)?.value,
-  );
-
-  if (!user && (isProtected || isOnboarding || isHowItWorks)) {
-    // Auth cookies present but getUser() briefly null (JWT refresh / settle race).
-    // Do NOT bounce to login — shell/pages retry session+profile instead of
-    // flashing Vercel Retry / "Connexion impossible".
-    if (hasSupabaseAuthCookie(request)) {
-      response.headers.set("x-driveely-auth-soft", "cookie-without-user");
-      return response;
-    }
-    const search =
-      appMode === "beta" ? "?beta=1" : "";
-    const redirected = redirectPreservingCookies(
-      request,
-      response,
-      DRIVEELY_PATHS.login,
-      search,
-    );
-    if (isHowItWorks) {
-      redirected.headers.set("x-hiw-debug", "redirect-unauth-login");
-    }
-    return redirected;
-  }
 
   if (user && isAuthPage) {
-    let profile = null;
-    let profileError = null;
-    try {
-      const result = await supabase
-        .from("margeo_profiles")
-        .select(
-          "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
-        )
-        .eq("id", user.id)
-        .maybeSingle();
-      profile = result.data;
-      profileError = result.error;
-    } catch (err) {
-      console.error("[driveely/middleware] profile read failed:", err);
-      return response;
-    }
-
-    const status = resolveOnboardingStatus(profile, user, {
-      profileReadError: Boolean(profileError),
-    });
-
-    const next =
-      status === "complete"
-        ? DRIVEELY_PATHS.dashboard
-        : DRIVEELY_PATHS.onboarding;
-
-    if (hiwSeen) {
-      return redirectPreservingCookies(request, response, next, "");
-    }
-    const tour = new URL(buildHowItWorksPath(next), request.nextUrl.origin);
-    return redirectPreservingCookies(
-      request,
-      response,
-      tour.pathname,
-      tour.search,
-    );
-  }
-
-  // Tour: cookie missing → always allow. Cookie present → leave tour.
-  if (user && isHowItWorks) {
-    if (!hiwSeen) {
-      response.headers.set("x-hiw-debug", "allow-unseen");
-      return response;
-    }
-
-    let profile = null;
-    let profileError = null;
-    try {
-      const result = await supabase
-        .from("margeo_profiles")
-        .select(
-          "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
-        )
-        .eq("id", user.id)
-        .maybeSingle();
-      profile = result.data;
-      profileError = result.error;
-    } catch (err) {
-      console.error("[driveely/middleware] profile read failed:", err);
-      response.headers.set("x-hiw-debug", "allow-seen-profile-error");
-      return response;
-    }
-
-    const status = resolveOnboardingStatus(profile, user, {
-      profileReadError: Boolean(profileError),
-    });
-    const fallback =
-      status === "complete"
-        ? DRIVEELY_PATHS.dashboard
-        : DRIVEELY_PATHS.onboarding;
-    const nextTarget = resolveHowItWorksNext(
-      request.nextUrl.searchParams.get("next"),
-      fallback,
-    );
-    const redirected = redirectPreservingCookies(
-      request,
-      response,
-      nextTarget,
-      "",
-    );
-    redirected.headers.set("x-hiw-debug", `redirect-seen-cookie:${nextTarget}`);
-    return redirected;
-  }
-
-  if (user && (isProtected || isOnboarding)) {
-    let profile = null;
-    let profileError = null;
-    try {
-      const result = await supabase
-        .from("margeo_profiles")
-        .select(
-          "onboarding_completed, vehicle, target_hourly, empty_returns, weekly_hours",
-        )
-        .eq("id", user.id)
-        .maybeSingle();
-      profile = result.data;
-      profileError = result.error;
-    } catch (err) {
-      console.error("[driveely/middleware] profile read failed:", err);
-      return response;
-    }
-
-    if (profileError) {
-      return response;
-    }
-
-    const status = resolveOnboardingStatus(profile, user);
-
-    // Unseen tour: force /comment-ca-marche once (new signup + existing users).
-    if (!hiwSeen) {
-      const nextAfterTour =
-        status === "complete"
-          ? resolveHowItWorksNext(relative, DRIVEELY_PATHS.dashboard)
-          : DRIVEELY_PATHS.onboarding;
-      const tour = new URL(
-        buildHowItWorksPath(nextAfterTour),
-        request.nextUrl.origin,
-      );
-      const redirected = redirectPreservingCookies(
-        request,
-        response,
-        tour.pathname,
-        tour.search,
-      );
-      redirected.headers.set(
-        "x-hiw-debug",
-        `force-tour-from=${relative};next=${nextAfterTour}`,
-      );
-      return redirected;
-    }
-
-    if (status === "complete") {
-      if (isOnboarding) {
-        return redirectPreservingCookies(
-          request,
-          response,
-          DRIVEELY_PATHS.dashboard,
-          "",
-        );
-      }
-      return response;
-    }
-
-    if (status === "incomplete" && isProtected) {
-      return redirectPreservingCookies(
-        request,
-        response,
-        DRIVEELY_PATHS.onboarding,
-        "",
-      );
-    }
+    // Web app removed — keep /login as App Store handoff, not a session gateway.
+    return redirectPreservingCookies(request, response, "/", "");
   }
 
   return response;

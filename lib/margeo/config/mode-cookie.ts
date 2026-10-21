@@ -1,6 +1,7 @@
 /**
- * Cookie / header contract for Driveely app mode (single domain).
- * Beta is a runtime mode — not a second site.
+ * Cookie / header contract for Driveely UI app mode (single domain).
+ * Presentation only (badge, feedback chrome). Never trust for billing /
+ * quotas / entitlements — use getTrustedAppMode / getBillingFeatures.
  */
 
 export const DRIVEELY_APP_MODE_COOKIE = "driveely_app_mode";

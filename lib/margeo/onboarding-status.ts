@@ -26,14 +26,10 @@ function hasCompletionSignals(
 ): boolean {
   if (!row) return false;
   const vehicle = typeof row.vehicle === "string" ? row.vehicle.trim() : "";
-  const empty =
-    typeof row.empty_returns === "string" ? row.empty_returns.trim() : "";
-  const weekly =
-    typeof row.weekly_hours === "string" ? row.weekly_hours.trim() : "";
   const target = row.target_hourly == null ? 0 : Number(row.target_hourly);
-  return Boolean(
-    vehicle && empty && weekly && Number.isFinite(target) && target >= 5,
-  );
+  // empty_returns / weekly_hours are optional — iOS questionnaire persists them
+  // asynchronously. Blocking analyze on those fields caused mass 403s.
+  return Boolean(vehicle && Number.isFinite(target) && target >= 5);
 }
 
 export function metadataOnboardingCompleted(

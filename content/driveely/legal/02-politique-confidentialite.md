@@ -1,16 +1,16 @@
 # Politique de confidentialité
 
-**Dernière mise à jour : 1 octobre 2026**
+**Dernière mise à jour : 21 octobre 2026**
 
-Driveely (« nous », « notre », « Driveely »), édité par Driveely, micro-entreprise 453 945 750, attache une importance particulière à la protection des données personnelles de ses utilisateurs. La présente politique de confidentialité (la « Politique ») a pour objet de vous informer, conformément au Règlement (UE) 2016/679 du 27 avril 2016 (« RGPD ») et à la loi n° 78-17 du 6 janvier 1978 modifiée (« Loi Informatique et Libertés »), sur la manière dont vos données personnelles sont collectées, utilisées, conservées et protégées dans le cadre de votre utilisation du Service (application iPhone Driveely et, le cas échéant, interface web associée).
+Driveely (« nous », « notre », « Driveely »), édité sous la responsabilité de Quentin Bouyssou, attache une importance particulière à la protection des données personnelles de ses utilisateurs. La présente politique de confidentialité (la « Politique ») a pour objet de vous informer, conformément au Règlement (UE) 2016/679 du 27 avril 2016 (« RGPD ») et à la loi n° 78-17 du 6 janvier 1978 modifiée (« Loi Informatique et Libertés »), sur la manière dont vos données personnelles sont collectées, utilisées, conservées et protégées dans le cadre de votre utilisation du Service (application iPhone Driveely et, le cas échéant, interface web associée).
 
 ## 1. Responsable de traitement
 
 Le responsable du traitement des données personnelles est :
 
-Driveely, micro-entreprise en cours d'immatriculation
-1110 Avenue Henri Dunant, 82000 Montauban, France
+Quentin Bouyssou, éditeur du Service Driveely (enseigne Driveely)
 Contact : [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)
+Site : [https://www.driveely.app](https://www.driveely.app)
 
 Driveely n'a pas désigné de délégué à la protection des données (DPO) à ce stade, cette désignation n'étant pas obligatoire compte tenu de la nature et du volume des traitements actuels. Ce point sera réévalué à mesure de la croissance du Service.
 

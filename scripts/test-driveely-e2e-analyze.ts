@@ -21,121 +21,71 @@ for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
 }
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)!;
+const SERVICE_KEY = (process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SECRET_KEY)!;
 const BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 const email = `driveely-e2e-${Date.now()}@test.local`;
 const password = "TestDriveely123!";
 
 async function adminCreateUser() {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${SERVICE_KEY}`,
-      apikey: ANON_KEY,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: { name: "E2E Test" },
-    }),
+  const { createClient } = await import("@supabase/supabase-js");
+  const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`createUser: ${JSON.stringify(data)}`);
-  return data.id as string;
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { name: "E2E Test" },
+  });
+  if (error || !data.user) {
+    throw new Error(`createUser: ${error?.message ?? "no user"}`);
+  }
+  return data.user.id;
 }
 
 async function signIn() {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-    method: "POST",
-    headers: {
-      apikey: ANON_KEY,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
+  const { createClient } = await import("@supabase/supabase-js");
+  const client = createClient(SUPABASE_URL, ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`signIn: ${JSON.stringify(data)}`);
-  return data as {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
+  const { data, error } = await client.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error || !data.session) {
+    throw new Error(`signIn: ${error?.message ?? "no session"}`);
+  }
+  return {
+    access_token: data.session.access_token,
+    refresh_token: data.session.refresh_token,
+    expires_in: data.session.expires_in ?? 3600,
   };
 }
 
 async function completeOnboarding(userId: string) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/margeo_profiles`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${SERVICE_KEY}`,
-      apikey: ANON_KEY,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    },
-    body: JSON.stringify({
-      name: "E2E Test",
-      city: "Lyon",
-      vehicle: "scooter",
-      platforms: ["Uber Eats"],
-      target_hourly: 16,
-      daily_target: 90,
-      cost_per_km: 0.24,
-      onboarding_completed: true,
-    }),
-    // @ts-expect-error URL with filter
-  }).catch(() => null);
-
-  // Use proper upsert via REST with user_id filter
-  const upsert = await fetch(
-    `${SUPABASE_URL}/rest/v1/margeo_profiles?user_id=eq.${userId}`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${SERVICE_KEY}`,
-        apikey: ANON_KEY,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      body: JSON.stringify({
-        name: "E2E Test",
-        city: "Lyon",
-        vehicle: "scooter",
-        platforms: ["Uber Eats"],
-        target_hourly: 16,
-        daily_target: 90,
-        cost_per_km: 0.24,
-        onboarding_completed: true,
-      }),
-    },
-  );
-  if (!upsert.ok) {
-    const insert = await fetch(`${SUPABASE_URL}/rest/v1/margeo_profiles`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${SERVICE_KEY}`,
-        apikey: ANON_KEY,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      body: JSON.stringify({
-        user_id: userId,
-        name: "E2E Test",
-        city: "Lyon",
-        vehicle: "scooter",
-        platforms: ["Uber Eats"],
-        target_hourly: 16,
-        daily_target: 90,
-        cost_per_km: 0.24,
-        onboarding_completed: true,
-      }),
-    });
-    if (!insert.ok) {
-      throw new Error(`onboarding: ${await insert.text()}`);
-    }
-  }
+  const { createClient } = await import("@supabase/supabase-js");
+  const admin = createClient(SUPABASE_URL, SERVICE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const row = {
+    id: userId,
+    name: "E2E Test",
+    city: "Lyon",
+    vehicle: "velo",
+    platforms: ["Uber Eats"],
+    target_hourly: 16,
+    daily_target: 90,
+    cost_per_km: 0.05,
+    onboarding_completed: true,
+  };
+  const { error } = await admin.from("margeo_profiles").upsert(row, {
+    onConflict: "id",
+  });
+  if (error) throw new Error(`onboarding: ${error.message}`);
 }
 
 function buildTestScreenshotPng(): Buffer {
@@ -173,14 +123,16 @@ async function analyzeWithSession(
   const form = new FormData();
   form.append(
     "image",
-    new Blob([imageBuffer], { type: "image/png" }),
+    new Blob([new Uint8Array(imageBuffer)], { type: "image/png" }),
     "screenshot.png",
   );
 
   const res = await fetch(`${BASE}/api/driveely/analyze`, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${accessToken}`,
       Cookie: supabaseCookieHeader(accessToken, refreshToken),
+      "X-Driveely-Client": "e2e",
     },
     body: form,
   });

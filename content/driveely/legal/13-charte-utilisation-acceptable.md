@@ -1,14 +1,14 @@
 # Charte d'utilisation acceptable
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-La présente Charte d'utilisation acceptable (la « Charte ») précise les règles de bon usage du Service Driveely, en complément des [Conditions Générales d'Utilisation](./03-cgu.md). Elle s'applique à tout Utilisateur, y compris durant la bêta privée.
+La présente Charte d'utilisation acceptable (la « Charte ») précise les règles de bon usage du Service Driveely (application iPhone et, le cas échéant, interface web), en complément des [Conditions Générales d'Utilisation](./03-cgu.md). Elle s'applique à tout Utilisateur, y compris durant la bêta privée.
 
 ## 2. Usage conforme du Service
 
-L'Utilisateur s'engage à utiliser le Service Driveely conformément à sa destination : l'analyse de propositions de course réelles émises par des plateformes de livraison, dans le but d'obtenir une aide à la décision quant à l'acceptation ou au refus de ces courses.
+L'Utilisateur s'engage à utiliser le Service Driveely conformément à sa destination : l'analyse de propositions de course réelles émises par des plateformes de livraison, à partir de captures d'écran, dans le but d'obtenir une aide à la décision quant à l'acceptation ou au refus de ces courses.
 
 ## 3. Comportements interdits
 
@@ -43,7 +43,7 @@ L'Utilisateur s'engage à ne pas créer de comptes multiples dans le but de cont
 
 ## 5. Signalement d'un manquement
 
-Tout Utilisateur ou tiers constatant un manquement à la présente Charte peut le signaler à [contact@driveely.app](mailto:contact@driveely.app).
+Tout Utilisateur ou tiers constatant un manquement à la présente Charte peut le signaler à [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com).
 
 ## 6. Conséquences d'un manquement
 
@@ -61,4 +61,4 @@ Driveely se réserve le droit de modifier la présente Charte à tout moment, no
 
 ## 8. Contact
 
-[contact@driveely.app](mailto:contact@driveely.app)
+[contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

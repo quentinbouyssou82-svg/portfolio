@@ -1,14 +1,21 @@
-import type { Platform, RideOffer } from "../types";
-import type { ExtractionQuality } from "./extraction-types";
-import type { ParsedVisionExtraction } from "./parse-vision-response";
+import type { Platform, RideOffer, UserProfile } from "../types";
+import type {
+  ExtractionQuality,
+  ParsedVisionExtraction,
+  ReliabilitySummary,
+  StructuredVisionFields,
+} from "./extraction-types";
 import { normalizePlatform } from "./parse-vision-response";
+import { computeReliabilityScores } from "../reliability/compute";
 
 export interface OfferValidation {
   offer: RideOffer;
+  fields: StructuredVisionFields;
   confidence: number;
   warnings: string[];
   missingFields: string[];
   extractionQuality: ExtractionQuality;
+  reliability: ReliabilitySummary;
 }
 
 const PLATFORMS: Platform[] = [
@@ -29,10 +36,11 @@ function clamp(n: number, min: number, max: number): number {
  */
 export function validateExtractedOffer(
   parsed: ParsedVisionExtraction,
+  profile?: UserProfile,
+  options?: { extractionSource?: "vision" | "on_device_ocr" },
 ): OfferValidation {
-  const { raw, missingFields, quality } = parsed;
+  const { raw, fields, missingFields, quality } = parsed;
   const warnings: string[] = [];
-  let confidence = quality === "failed" ? 0.2 : quality === "partial" ? 0.65 : 0.92;
 
   const platform = PLATFORMS.includes(normalizePlatform(raw.platform))
     ? normalizePlatform(raw.platform)
@@ -40,24 +48,20 @@ export function validateExtractedOffer(
 
   if (missingFields.includes("platform")) {
     warnings.push("Plateforme non identifiée sur la capture.");
-    confidence -= 0.08;
   }
 
   const payout =
     raw.payout != null ? clamp(raw.payout, 0, 500) : undefined;
   if (payout == null) {
     warnings.push("Montant illisible — reprends une capture plus nette.");
-    confidence -= 0.4;
   } else if (payout < 2) {
     warnings.push("Montant très bas — vérifie l'extraction.");
-    confidence -= 0.12;
   }
 
   const distanceKm =
     raw.distanceKm != null ? clamp(raw.distanceKm, 0.1, 150) : undefined;
   if (distanceKm == null) {
     warnings.push("Distance non lue — le score sera moins précis.");
-    confidence -= 0.18;
   }
 
   const durationMin =
@@ -66,22 +70,29 @@ export function validateExtractedOffer(
       : undefined;
   if (durationMin == null) {
     warnings.push("Durée non lue — le €/h sera approximatif.");
-    confidence -= 0.15;
   }
 
   const emptyReturnKm =
-    raw.emptyReturnKm != null ? clamp(raw.emptyReturnKm, 0, 50) : 0;
+    raw.emptyReturnKm != null ? clamp(raw.emptyReturnKm, 0, 50) : undefined;
+  if (emptyReturnKm == null) {
+    warnings.push("Retour à vide inconnu — aucune hypothèse automatique.");
+  }
+
+  const pickupDistanceKm =
+    raw.pickupDistanceKm != null ? clamp(raw.pickupDistanceKm, 0, 50) : undefined;
 
   const pickup = raw.pickup?.trim() || undefined;
   const dropoff = raw.dropoff?.trim() || undefined;
 
   if (!pickup) {
     warnings.push("Lieu de récupération non identifié.");
-    confidence -= 0.1;
   }
   if (!dropoff) {
     warnings.push("Destination non identifiée.");
-    confidence -= 0.05;
+  }
+
+  if (fields.multipleOffersDetected) {
+    warnings.push("Plusieurs offres détectées sur la capture.");
   }
 
   if (
@@ -90,7 +101,6 @@ export function validateExtractedOffer(
     payout / Math.max(distanceKm, 0.5) > 8
   ) {
     warnings.push("Ratio €/km inhabituel — vérifie les valeurs.");
-    confidence -= 0.15;
   }
 
   const offer: RideOffer = {
@@ -102,14 +112,42 @@ export function validateExtractedOffer(
     distanceKm,
     durationMin,
     emptyReturnKm,
+    pickupDistanceKm,
   };
+
+  const defaultProfile: UserProfile = profile ?? {
+    name: "Audit",
+    firstName: "Audit",
+    lastName: "Test",
+    city: "Lyon",
+    vehicle: "scooter_thermique",
+    costPerKm: 0.18,
+    targetHourly: 18,
+    dailyTarget: 120,
+    platforms: ["Uber Eats"],
+    premium: true,
+    minBenefit: 6,
+    maxDistanceKm: 8,
+    emptyReturns: "short_only",
+  };
+
+  const reliability: ReliabilitySummary = computeReliabilityScores({
+    fields,
+    offer,
+    profile: defaultProfile,
+    warnings,
+    economics: null,
+    extractionSource: options?.extractionSource ?? "vision",
+  });
 
   return {
     offer,
-    confidence: clamp(Math.round(confidence * 100) / 100, 0, 1),
+    fields,
+    confidence: reliability.decisionConfidence / 100,
     warnings,
     missingFields,
     extractionQuality: quality,
+    reliability,
   };
 }
 
@@ -123,9 +161,70 @@ export function validateCompleteOffer(raw: RideOffer): OfferValidation {
       payout: raw.payout,
       distanceKm: raw.distanceKm ?? null,
       durationMin: raw.durationMin ?? null,
-      emptyReturnKm: raw.emptyReturnKm,
+      emptyReturnKm: raw.emptyReturnKm ?? null,
+      pickupDistanceKm: raw.pickupDistanceKm ?? null,
     },
     missingFields: [],
+    fields: {
+      platform: {
+        value: raw.platform,
+        confidence: 1,
+        source: "vision",
+        isVisible: true,
+        isEstimated: false,
+      },
+      pickup: {
+        value: raw.pickup,
+        confidence: 1,
+        source: "vision",
+        isVisible: true,
+        isEstimated: false,
+      },
+      dropoff: {
+        value: raw.dropoff,
+        confidence: 1,
+        source: "vision",
+        isVisible: true,
+        isEstimated: false,
+      },
+      payout: {
+        value: raw.payout,
+        confidence: 1,
+        source: "vision",
+        isVisible: true,
+        isEstimated: false,
+      },
+      distanceKm: {
+        value: raw.distanceKm ?? null,
+        confidence: raw.distanceKm != null ? 1 : 0,
+        source: raw.distanceKm != null ? "vision" : "unknown",
+        isVisible: raw.distanceKm != null,
+        isEstimated: false,
+      },
+      durationMin: {
+        value: raw.durationMin ?? null,
+        confidence: raw.durationMin != null ? 1 : 0,
+        source: raw.durationMin != null ? "vision" : "unknown",
+        isVisible: raw.durationMin != null,
+        isEstimated: false,
+      },
+      emptyReturnKm: {
+        value: raw.emptyReturnKm ?? null,
+        confidence: raw.emptyReturnKm != null ? 1 : 0,
+        source: raw.emptyReturnKm != null ? "vision" : "unknown",
+        isVisible: raw.emptyReturnKm != null,
+        isEstimated: false,
+      },
+      pickupDistanceKm: {
+        value: raw.pickupDistanceKm ?? null,
+        confidence: raw.pickupDistanceKm != null ? 1 : 0,
+        source: raw.pickupDistanceKm != null ? "vision" : "unknown",
+        isVisible: raw.pickupDistanceKm != null,
+        isEstimated: false,
+      },
+      multipleOffersDetected: false,
+      bonusIncluded: null,
+    },
     quality: "complete",
   });
 }

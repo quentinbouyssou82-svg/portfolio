@@ -20,6 +20,12 @@ import {
   type SubscriptionStatus,
   type UserSubscription,
 } from "@/lib/margeo/billing/types";
+import { mapIOSProductId } from "@/lib/margeo/billing/app-store-products";
+import {
+  verifySignedStoreKitTransaction,
+  type VerifiedStoreKitTransaction,
+} from "@/lib/margeo/billing/app-store-verify";
+import { parseEnforcementMode } from "@/lib/margeo/security/enforcement-mode";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 import { getMargeoAdminDb } from "@/lib/margeo/supabase/admin";
@@ -27,6 +33,7 @@ import {
   getProfileForUser,
   rowToUserProfile,
 } from "@/lib/margeo/services/profile";
+import { isBetaTester } from "@/lib/margeo/services/beta-user";
 import type { MargeoProfileRow } from "@/lib/margeo/supabase/schema";
 
 const ENTITLEMENTS_TTL_MS = 60_000;
@@ -178,10 +185,18 @@ async function syncProfilePlan(
   userId: string,
   planId: DriveelyPlanId,
   periodEnd: string | null,
-  source: "manual" | "beta" | "stripe" | "trial",
+  provider: PaymentProviderId | null,
+  status: SubscriptionStatus,
 ) {
   const supabase = await userDb();
   const paid = isPaidPlan(planId);
+  const source: "manual" | "beta" | "stripe" | "trial" = !paid
+    ? "manual"
+    : provider === "app_store" || provider === "stripe"
+      ? status === "trialing"
+        ? "trial"
+        : "stripe"
+      : "trial";
   const payload: Record<string, unknown> = {
     premium: paid,
     premium_until: paid ? periodEnd : null,
@@ -298,8 +313,7 @@ function resolveEffectivePlan(sub: UserSubscription): DriveelyPlanId {
   if (
     isPaidPlan(sub.planId) &&
     sub.currentPeriodEnd &&
-    new Date(sub.currentPeriodEnd).getTime() < Date.now() &&
-    !sub.autoRenew
+    new Date(sub.currentPeriodEnd).getTime() < Date.now()
   ) {
     return "discovery";
   }
@@ -418,7 +432,10 @@ export async function getUserEntitlements(
   if (cached && Date.now() < cached.expires) return cached.value;
 
   const sub = await getCurrentSubscription(userId);
-  const value = await getEntitlementsForPlanAsync(resolveEffectivePlan(sub));
+  const betaTester = await isBetaTester(userId);
+  const value = await getEntitlementsForPlanAsync(resolveEffectivePlan(sub), {
+    isBetaTester: betaTester,
+  });
   entitlementsCache.set(userId, {
     value,
     expires: Date.now() + ENTITLEMENTS_TTL_MS,
@@ -554,7 +571,8 @@ async function upsertSubscription(
       userId,
       input.planId,
       periodEnd,
-      input.provider === "stripe" ? "stripe" : "trial",
+      input.provider,
+      input.status,
     );
     await appendEvent({
       userId,
@@ -611,7 +629,8 @@ async function upsertSubscription(
     userId,
     input.planId,
     periodEnd,
-    input.provider === "stripe" ? "stripe" : "trial",
+    input.provider,
+    input.status,
   );
 
   await appendEvent({
@@ -630,10 +649,99 @@ async function upsertSubscription(
   return rowToSubscription(saved);
 }
 
+export type StoreKitActivationProof = {
+  signedTransactionInfo: string;
+};
+
+function getStoreKitVerificationMode() {
+  const productionDefault =
+    process.env.VERCEL_ENV === "production" ? "strict" : "log_only";
+  return parseEnforcementMode(
+    process.env.STOREKIT_VERIFICATION_MODE,
+    productionDefault,
+  );
+}
+
+async function activateFromVerifiedStoreKit(
+  userId: string,
+  verified: VerifiedStoreKitTransaction,
+  current: UserSubscription,
+): Promise<UserSubscription> {
+  const originalTransactionId = verified.originalTransactionId?.trim();
+  if (!originalTransactionId) {
+    const { ApiError } = await import("@/lib/margeo/api/errors");
+    throw new ApiError(
+      "Preuve App Store incomplète (transaction d'origine manquante).",
+      402,
+      "STOREKIT_PROOF_INVALID",
+    );
+  }
+
+  // Refuse la réutilisation d'un même originalTransactionId sur un autre compte.
+  const admin = getMargeoAdminDb();
+  const { data: existing, error: existingError } = await admin
+    .from("margeo_subscriptions")
+    .select("user_id, provider_subscription_id")
+    .eq("provider", "app_store")
+    .eq("provider_subscription_id", originalTransactionId)
+    .maybeSingle();
+
+  if (
+    !existingError &&
+    existing &&
+    (existing as { user_id: string }).user_id !== userId
+  ) {
+    const { ApiError } = await import("@/lib/margeo/api/errors");
+    throw new ApiError(
+      "Cet achat App Store est déjà lié à un autre compte Driveely.",
+      409,
+      "STOREKIT_ALREADY_BOUND",
+    );
+  }
+
+  const planId = verified.planId;
+  const rankDelta = planRank(planId) - planRank(current.planId);
+  const eventType: SubscriptionEventType =
+    current.planId === "discovery" && planId !== "discovery"
+      ? "activated"
+      : rankDelta > 0
+        ? "upgraded"
+        : rankDelta < 0
+          ? "downgraded"
+          : "reactivated";
+
+  const isTrial =
+    verified.expiresAt != null &&
+    new Date(verified.expiresAt).getTime() - Date.now() <
+      16 * 24 * 60 * 60 * 1000;
+
+  return upsertSubscription(userId, {
+    planId,
+    status: isTrial ? "trialing" : "active",
+    autoRenew: isPaidPlan(planId),
+    cancelAtPeriodEnd: false,
+    paymentStatus: "paid",
+    provider: "app_store",
+    providerCustomerId: null,
+    providerSubscriptionId: originalTransactionId,
+    billingPeriod: verified.billingPeriod,
+    periodEnd: verified.expiresAt,
+    eventType,
+    fromPlan: current.planId,
+    metadata: {
+      checkoutMode: "storekit",
+      transactionId: verified.transactionId,
+      productId: verified.productId,
+      environment: verified.environment,
+    },
+  });
+}
+
 /**
- * Active un plan via le provider de paiement.
- * - Bêta : simulated (activation immédiate)
- * - Production : Stripe Checkout + abonnement à renouvellement automatique
+ * Active un plan via StoreKit (iOS) ou provider web legacy.
+ * - iOS : JWS Apple vérifié (source de vérité)
+ * - Dev/preview : simulated si STOREKIT_VERIFICATION_MODE=log_only sans preuve
+ * - Production sans preuve valide : refus (mode strict) ou log (mode log_only legacy)
  */
 export async function checkoutAndActivatePlan(
   userId: string,
@@ -643,9 +751,61 @@ export async function checkoutAndActivatePlan(
     successUrl?: string;
     cancelUrl?: string;
     customerEmail?: string;
+    storeKit?: StoreKitActivationProof;
   },
 ): Promise<{ subscription: UserSubscription; redirectUrl?: string }> {
   const current = await getCurrentSubscription(userId);
+  const verificationMode = getStoreKitVerificationMode();
+
+  if (options?.storeKit?.signedTransactionInfo) {
+    const result = await verifySignedStoreKitTransaction(
+      options.storeKit.signedTransactionInfo,
+    );
+
+    if (result.ok) {
+      const subscription = await activateFromVerifiedStoreKit(
+        userId,
+        result.transaction,
+        current,
+      );
+      return { subscription };
+    }
+
+    console.warn("[driveely/subscription] storekit_verify_failed", {
+      userId,
+      reason: result.reason,
+      mode: verificationMode,
+    });
+
+    if (verificationMode === "strict") {
+      const { ApiError } = await import("@/lib/margeo/api/errors");
+      throw new ApiError(
+        "Impossible de valider l'achat App Store. Réessaie ou restaure tes achats.",
+        402,
+        "STOREKIT_VERIFICATION_FAILED",
+      );
+    }
+    // log_only : ne pas activer via simulated — conserver l'état serveur (iOS = StoreKit local)
+    return { subscription: current };
+  }
+
+  if (verificationMode === "strict" && process.env.VERCEL_ENV === "production") {
+    const { ApiError } = await import("@/lib/margeo/api/errors");
+    throw new ApiError(
+      "Preuve d'achat App Store requise. Mets à jour l'application.",
+      402,
+      "STOREKIT_PROOF_REQUIRED",
+    );
+  }
+
+  if (process.env.VERCEL_ENV === "production") {
+    console.warn("[driveely/subscription] storekit_proof_missing", {
+      userId,
+      mode: verificationMode,
+    });
+    return { subscription: current };
+  }
+
   const provider = await getPaymentProviderAsync();
   const checkout = await provider.createCheckout({
     userId,
@@ -686,7 +846,10 @@ export async function checkoutAndActivatePlan(
     billingPeriod: options?.billingPeriod ?? "monthly",
     eventType,
     fromPlan: current.planId,
-    metadata: { checkoutMode: "activate", beta: true },
+    metadata: {
+      checkoutMode: "activate",
+      legacySimulated: checkout.provider === "simulated",
+    },
   });
 
   return { subscription };
@@ -762,4 +925,90 @@ export async function assertEntitlement(
     );
   }
   return entitlements;
+}
+
+const ASN_REVOKE_TYPES = new Set([
+  "EXPIRED",
+  "REFUND",
+  "REVOKE",
+  "GRACE_PERIOD_EXPIRED",
+]);
+const ASN_RENEW_TYPES = new Set([
+  "DID_RENEW",
+  "SUBSCRIBED",
+  "OFFER_REDEEMED",
+  "REFUND_REVERSED",
+]);
+
+/** Met à jour l'abonnement Driveely à partir d'une notification App Store Server V2. */
+export async function applyAppStoreServerNotification(input: {
+  originalTransactionId: string;
+  productId?: string | null;
+  notificationType: string;
+  expiresAt: string | null;
+  environment: string;
+}): Promise<void> {
+  const admin = getMargeoAdminDb();
+  const { data, error } = await admin
+    .from("margeo_subscriptions")
+    .select("user_id, plan_id")
+    .eq("provider", "app_store")
+    .eq("provider_subscription_id", input.originalTransactionId)
+    .maybeSingle();
+
+  if (error || !data?.user_id) {
+    console.warn("[driveely/asn] subscription introuvable", {
+      originalTransactionId: input.originalTransactionId,
+      type: input.notificationType,
+    });
+    return;
+  }
+
+  const userId = data.user_id as string;
+  const mapping = input.productId ? mapIOSProductId(input.productId) : null;
+
+  if (ASN_REVOKE_TYPES.has(input.notificationType)) {
+    await upsertSubscription(userId, {
+      planId: "discovery",
+      status:
+        input.notificationType === "REFUND" || input.notificationType === "REVOKE"
+          ? "canceled"
+          : "expired",
+      autoRenew: false,
+      cancelAtPeriodEnd: false,
+      paymentStatus: "none",
+      provider: "app_store",
+      providerSubscriptionId: input.originalTransactionId,
+      periodEnd: input.expiresAt,
+      eventType: "expired",
+      fromPlan: (data.plan_id as DriveelyPlanId | undefined) ?? "pro",
+      metadata: {
+        source: "app_store_notification",
+        notificationType: input.notificationType,
+        environment: input.environment,
+      },
+    });
+    return;
+  }
+
+  if (ASN_RENEW_TYPES.has(input.notificationType) && mapping) {
+    await upsertSubscription(userId, {
+      planId: mapping.planId,
+      status: "active",
+      autoRenew: true,
+      cancelAtPeriodEnd: false,
+      paymentStatus: "paid",
+      provider: "app_store",
+      providerSubscriptionId: input.originalTransactionId,
+      billingPeriod: mapping.billingPeriod,
+      periodEnd: input.expiresAt,
+      eventType: "renewed",
+      fromPlan: (data.plan_id as DriveelyPlanId | undefined) ?? "discovery",
+      metadata: {
+        source: "app_store_notification",
+        notificationType: input.notificationType,
+        environment: input.environment,
+      },
+    });
+  }
 }

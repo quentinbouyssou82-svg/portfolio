@@ -1,4 +1,4 @@
-import sharp, { type Metadata, type Stats } from "sharp";
+import type { Metadata, Stats } from "sharp";
 import { ApiError } from "./errors";
 import { DRIVEELY_LIMITS } from "../constants/limits";
 
@@ -29,6 +29,24 @@ const MIN_PIXELS = 48 * 48;
  * écart-type de luminosité trop bas → pas une vraie capture UI.
  */
 const MIN_CHANNEL_STDEV = 4;
+
+type SharpFn = typeof import("sharp").default;
+
+let sharpModulePromise: Promise<SharpFn> | null = null;
+
+async function loadSharp(): Promise<SharpFn> {
+  if (!sharpModulePromise) {
+    sharpModulePromise = import("sharp")
+      .then((mod) => mod.default)
+      .catch((error) => {
+        sharpModulePromise = null;
+        const detail = error instanceof Error ? error.message : String(error);
+        console.error("[driveely] sharp import failed", detail);
+        throw new Error("IMAGE_PIPELINE_UNAVAILABLE");
+      });
+  }
+  return sharpModulePromise;
+}
 
 export function validateScreenshotFile(file: File): { ext: string } {
   if (!(file instanceof File)) {
@@ -79,6 +97,51 @@ export function validateScreenshotFile(file: File): { ext: string } {
   return { ext: EXT_BY_MIME[mime] ?? "jpg" };
 }
 
+function looksLikeJpeg(buf: Buffer): boolean {
+  return buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff;
+}
+
+function looksLikePng(buf: Buffer): boolean {
+  return (
+    buf.length >= 8 &&
+    buf[0] === 0x89 &&
+    buf[1] === 0x50 &&
+    buf[2] === 0x4e &&
+    buf[3] === 0x47
+  );
+}
+
+function looksLikeWebp(buf: Buffer): boolean {
+  return (
+    buf.length >= 12 &&
+    buf.toString("ascii", 0, 4) === "RIFF" &&
+    buf.toString("ascii", 8, 12) === "WEBP"
+  );
+}
+
+/**
+ * Fallback sans native sharp (ex. bundling Turbopack cassé) :
+ * accepte JPEG/PNG/WebP déjà préparés côté iOS avec contrôles légers.
+ */
+function assertUsableScreenshotWithoutSharp(input: Buffer): Buffer {
+  if (!(looksLikeJpeg(input) || looksLikePng(input) || looksLikeWebp(input))) {
+    throw new ApiError(
+      "Image illisible ou corrompue. Exporte une capture JPEG/PNG nette.",
+      422,
+      "CORRUPT_IMAGE",
+    );
+  }
+  // Captures iOS préprocessées : typiquement ≥ ~4 KB.
+  if (input.byteLength < 1_024) {
+    throw new ApiError(
+      "Image trop petite. Capture toute la proposition de course.",
+      422,
+      "IMAGE_TOO_SMALL",
+    );
+  }
+  return input;
+}
+
 /**
  * Décode et contrôle le contenu réel (corruption, taille, image unie / bruitée).
  * À appeler après validateScreenshotFile — avant Vision / quota lourd.
@@ -97,6 +160,16 @@ export async function assertUsableScreenshot(file: File): Promise<Buffer> {
 
   if (input.byteLength === 0) {
     throw new ApiError("Image vide", 400, "EMPTY_IMAGE");
+  }
+
+  let sharp: SharpFn;
+  try {
+    sharp = await loadSharp();
+  } catch {
+    console.warn(
+      "[driveely] sharp unavailable — using magic-byte screenshot checks",
+    );
+    return assertUsableScreenshotWithoutSharp(input);
   }
 
   let meta: Metadata;
@@ -167,6 +240,13 @@ export async function assertUsableScreenshot(file: File): Promise<Buffer> {
 export function mapImageProcessingError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
   const msg = error instanceof Error ? error.message.toLowerCase() : "";
+  if (msg.includes("image_pipeline_unavailable")) {
+    return new ApiError(
+      "Préparation image indisponible temporairement. Réessaie dans un instant.",
+      503,
+      "IMAGE_PIPELINE_UNAVAILABLE",
+    );
+  }
   if (
     msg.includes("unsupported") ||
     msg.includes("corrupt") ||

@@ -1,10 +1,10 @@
 # Politique de remboursement
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Champ d'application
 
-La présente politique de remboursement s'applique à l'abonnement Premium du Service Driveely, à compter de l'activation effective des paiements par carte bancaire via Stripe. **Elle ne s'applique pas durant la phase de bêta privée, celle-ci étant gratuite** (cf. [Conditions de participation à la bêta privée](./06-conditions-beta-privee.md)).
+La présente politique de remboursement s'applique à l'abonnement Premium du Service Driveely, souscrit via l'Apple App Store (application iPhone) ou, le cas échéant, via Stripe (site web). L'accès TestFlight offert sans achat n'ouvre pas droit à un remboursement, aucun paiement n'ayant été encaissé dans ce cas.
 
 ## 2. Principe général
 
@@ -21,17 +21,22 @@ Un remboursement, total ou partiel, pourra être accordé par Driveely dans les 
 
 ## 4. Modalités de demande
 
-Toute demande de remboursement doit être adressée à [contact@driveely.app](mailto:contact@driveely.app), en précisant :
+Toute demande de remboursement doit être adressée à [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com), en précisant :
 
 - l'adresse e-mail associée au compte ;
 - la date et le montant du prélèvement concerné ;
-- le motif de la demande.
+- le motif de la demande ;
+- le canal d'achat (site web / Stripe, ou application iPhone / App Store), le cas échéant.
 
 Driveely s'engage à répondre à toute demande de remboursement dans un délai raisonnable, et en tout état de cause dans un délai maximal de 30 jours.
 
+**Pour les abonnements souscrits via l'Apple App Store**, l'Utilisateur peut également demander un remboursement directement auprès d'Apple selon les procédures fournies par Apple (report a problem / support Apple). Driveely ne peut pas toujours traiter un remboursement App Store de manière autonome, le paiement étant géré par Apple.
+
 ## 5. Modalités de traitement
 
-Les remboursements, lorsqu'ils sont accordés, sont effectués via Stripe, sur le même moyen de paiement que celui utilisé lors du prélèvement initial, dans un délai habituel de 5 à 10 jours ouvrés après validation de la demande, ce délai pouvant varier selon l'établissement bancaire de l'Utilisateur.
+**Paiements Stripe (site web) :** les remboursements, lorsqu'ils sont accordés, sont effectués via Stripe, sur le même moyen de paiement que celui utilisé lors du prélèvement initial, dans un délai habituel de 5 à 10 jours ouvrés après validation de la demande, ce délai pouvant varier selon l'établissement bancaire de l'Utilisateur.
+
+**Paiements App Store (application iPhone) :** les remboursements, lorsqu'ils sont accordés, sont traités selon les modalités et délais d'Apple.
 
 ## 6. Résiliation sans remboursement au prorata
 
@@ -39,4 +44,4 @@ Sauf disposition contraire de la présente politique ou disposition légale imp�
 
 ## 7. Contact et réclamations
 
-Pour toute question relative à un remboursement : [contact@driveely.app](mailto:contact@driveely.app). Voir également l'article 11 des [Conditions Générales de Vente](./04-cgv.md) relatif à la médiation de la consommation.
+Pour toute question relative à un remboursement : [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com). Voir également l'article 11 des [Conditions Générales de Vente](./04-cgv.md) relatif à la médiation de la consommation.

@@ -113,7 +113,7 @@ export async function saveAnalysis(
     visionSource?: "mock" | "vision";
     visionConfidence?: number;
     missingFields?: string[];
-    extractionQuality?: "complete" | "partial" | "failed";
+    extractionQuality?: "complete" | "partial" | "failed" | "unsafe";
   },
 ): Promise<RideAnalysis | null> {
   const result = analyzeOffer(offer, profile);

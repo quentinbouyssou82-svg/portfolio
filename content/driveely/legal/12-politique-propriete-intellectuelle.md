@@ -1,16 +1,16 @@
 # Politique de propriété intellectuelle
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-La présente politique précise les droits de propriété intellectuelle attachés au Service Driveely, édité par Driveely, micro-entreprise [SIREN — EN COURS D'IMMATRICULATION], ainsi que les droits concédés à l'Utilisateur dans le cadre de son utilisation du Service.
+La présente politique précise les droits de propriété intellectuelle attachés au Service Driveely (application iPhone et, le cas échéant, interface web), édité par Driveely, édité sous la responsabilité de Quentin Bouyssou, ainsi que les droits concédés à l'Utilisateur dans le cadre de son utilisation du Service.
 
 ## 2. Éléments protégés
 
 Sont notamment protégés au titre du droit de la propriété intellectuelle et demeurent la propriété exclusive d'Driveely ou de ses concédants :
 
-- le **code source** et le code objet de l'application Driveely (frontend et backend) ;
+- le **code source** et le code objet de l'application Driveely (application iPhone, interface web et backend) ;
 - le **design** et l'interface utilisateur (UI/UX) du Service ;
 - les **textes**, contenus rédactionnels et documentations du Service ;
 - le **logo** et les éléments d'identité visuelle Driveely ;
@@ -21,7 +21,7 @@ Ces éléments sont protégés notamment par le droit d'auteur (Code de la propr
 
 ## 3. Précision relative au modèle d'IA sous-jacent
 
-Driveely utilise le modèle **Mistral Vision**, déployé localement via Ollama. Driveely ne revendique aucun droit de propriété intellectuelle sur le modèle de base Mistral Vision lui-même, dont les droits demeurent ceux de son éditeur d'origine et de sa licence propre. En revanche, Driveely revendique la propriété des développements, intégrations, paramétrages et éventuels ajustements spécifiques réalisés autour de ce modèle pour les besoins du Service.
+Driveely utilise le modèle **Mistral Vision** via l'**API Vision de Mistral AI** (sous-traitant technique). Driveely ne revendique aucun droit de propriété intellectuelle sur le modèle de base Mistral Vision lui-même, dont les droits demeurent ceux de son éditeur d'origine et de sa licence propre. En revanche, Driveely revendique la propriété des développements, intégrations, paramétrages et éventuels ajustements spécifiques réalisés autour de ce modèle pour les besoins du Service.
 
 ## 4. Droits concédés à l'Utilisateur
 
@@ -46,8 +46,8 @@ La dénomination « Driveely » ainsi que le logo associé constituent des élé
 
 ## 8. Signalement d'une atteinte
 
-Toute personne estimant que ses droits de propriété intellectuelle sont atteints par un contenu diffusé sur le Service peut le signaler à [contact@driveely.app](mailto:contact@driveely.app), en précisant les éléments permettant d'identifier le contenu concerné et les droits invoqués.
+Toute personne estimant que ses droits de propriété intellectuelle sont atteints par un contenu diffusé sur le Service peut le signaler à [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com), en précisant les éléments permettant d'identifier le contenu concerné et les droits invoqués.
 
 ## 9. Contact
 
-[contact@driveely.app](mailto:contact@driveely.app)
+[contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

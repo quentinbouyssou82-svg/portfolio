@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import { jsonError, ApiError } from "@/lib/margeo/api/errors";
 import { purgeExpiredScreenshots } from "@/lib/margeo/services/screenshot-retention";
 
@@ -16,8 +17,11 @@ function assertCronAuth(request: Request): void {
       "CRON_NOT_CONFIGURED",
     );
   }
-  const auth = request.headers.get("authorization");
-  if (auth !== `Bearer ${secret}`) {
+  const auth = request.headers.get("authorization") ?? "";
+  const expected = `Bearer ${secret}`;
+  const left = Buffer.from(auth, "utf8");
+  const right = Buffer.from(expected, "utf8");
+  if (left.length !== right.length || !timingSafeEqual(left, right)) {
     throw new ApiError("Non autorisé", 401, "UNAUTHORIZED");
   }
 }

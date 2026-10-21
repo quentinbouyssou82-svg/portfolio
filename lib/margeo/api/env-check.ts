@@ -1,4 +1,11 @@
-import { resolveVisionProviderId } from "../vision/providers/resolve";
+import { appleRootCAsAvailable } from "../billing/app-store-verify";
+import { isRedisConfigured } from "../redis/client";
+import {
+  hasGeminiKey,
+  hasGroqKey,
+  hasMistralKey,
+  resolveVisionProviderId,
+} from "../vision/providers/resolve";
 import type { VisionProviderId } from "../vision/providers/types";
 
 /** Vérifie les variables critiques au démarrage d'une route Driveely. */
@@ -7,6 +14,8 @@ export interface EnvStatus {
   serviceRole: boolean;
   /** Clé Gemini configurée (legacy). */
   gemini: boolean;
+  /** Clé Groq configurée (failover Vision). */
+  groq: boolean;
   /** Clé Mistral configurée. */
   mistral: boolean;
   /** Au moins un provider Vision utilisable. */
@@ -15,19 +24,6 @@ export interface EnvStatus {
   appUrl: boolean;
   readyForBeta: boolean;
   missing: string[];
-}
-
-function hasGeminiKey(): boolean {
-  return Boolean(
-    process.env.DRIVEELY_GEMINI_API_KEY?.trim() ||
-      process.env.UBERLY_GEMINI_API_KEY?.trim() ||
-      process.env.GOOGLE_API_KEY?.trim() ||
-      process.env.GEMINI_API_KEY?.trim(),
-  );
-}
-
-function hasMistralKey(): boolean {
-  return Boolean(process.env.MISTRAL_API_KEY?.trim());
 }
 
 function resolveConfiguredVisionProvider(): VisionProviderId | null {
@@ -65,6 +61,7 @@ export function checkDriveelyEnv(): EnvStatus {
   }
 
   const gemini = hasGeminiKey();
+  const groq = hasGroqKey();
   const mistral = hasMistralKey();
   let visionProvider: VisionProviderId | null = null;
   try {
@@ -81,25 +78,44 @@ export function checkDriveelyEnv(): EnvStatus {
       "mistral";
     if (preferred === "mistral" && !mistral) {
       missing.push("MISTRAL_API_KEY");
+    } else if (preferred === "groq" && !groq) {
+      missing.push("DRIVEELY_GROQ_API_KEY");
     } else if (preferred === "gemini" && !gemini) {
       missing.push("DRIVEELY_GEMINI_API_KEY (ou UBERLY_GEMINI_API_KEY)");
-    } else if (!mistral && !gemini) {
-      missing.push("MISTRAL_API_KEY ou DRIVEELY_GEMINI_API_KEY");
+    } else if (!mistral && !groq && !gemini) {
+      missing.push(
+        "MISTRAL_API_KEY, DRIVEELY_GROQ_API_KEY ou DRIVEELY_GEMINI_API_KEY",
+      );
     }
   }
 
   const appUrl = Boolean(process.env.NEXT_PUBLIC_APP_URL?.trim());
   if (!appUrl) missing.push("NEXT_PUBLIC_APP_URL");
+  // Sans cet identifiant, la vérification StoreKit serveur est indisponible en production :
+  // les achats ne peuvent plus activer Premium. On le signale explicitement.
+  if (process.env.VERCEL_ENV === "production") {
+    if (!process.env.APPLE_APP_STORE_APP_ID?.trim()) {
+      missing.push("APPLE_APP_STORE_APP_ID (vérification StoreKit en production)");
+    }
+    if (!appleRootCAsAvailable()) {
+      missing.push("Certificats racine Apple (lib/margeo/billing/certs)");
+    }
+    if (!isRedisConfigured()) {
+      missing.push("UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN");
+    }
+  }
 
   return {
     supabase,
     serviceRole,
     gemini,
+    groq,
     mistral,
     vision,
     visionProvider,
     appUrl,
-    readyForBeta: supabase && serviceRole && vision && (mistral || gemini),
+    readyForBeta:
+      supabase && serviceRole && vision && (mistral || groq || gemini),
     missing,
   };
 }

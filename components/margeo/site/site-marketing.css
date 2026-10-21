@@ -1,0 +1,268 @@
+/* Landing marketing — scoped utilities (Driveely dark tokens) */
+
+.hero-bg-video {
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Decorative scrub layer — never show native controls */
+  pointer-events: none;
+}
+
+.hero-bg-video.is-ready,
+.hero-bg-video.is-playing {
+  opacity: 1;
+}
+
+.hero-bg-video::-webkit-media-controls,
+.hero-bg-video::-webkit-media-controls-enclosure,
+.hero-bg-video::-webkit-media-controls-panel,
+.hero-bg-video::-webkit-media-controls-start-playback-button,
+.hero-bg-video::-webkit-media-controls-overlay-play-button,
+.hero-bg-video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-bg-poster {
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-bg-poster.is-hidden {
+  opacity: 0;
+}
+
+.site-card {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #121215;
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 40px rgba(0, 0, 0, 0.22);
+  transition:
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .site-card:hover {
+    border-color: rgba(255, 255, 255, 0.11);
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.05) inset,
+      0 16px 48px rgba(0, 0, 0, 0.28);
+  }
+}
+
+.site-card-accent {
+  border-color: rgba(129, 140, 248, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+.site-section-label {
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #818cf8;
+}
+
+.site-verdict-glow {
+  animation: site-verdict-pulse 4s ease-in-out infinite;
+}
+
+@keyframes site-verdict-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.08),
+      0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.18),
+      0 20px 60px rgba(99, 102, 241, 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-verdict-glow {
+    animation: none;
+  }
+
+  .hero-bg-video,
+  .hero-bg-poster {
+    transition: none;
+  }
+}
+
+.site-scroll-cue {
+  animation: site-scroll-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes site-scroll-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.85;
+  }
+}
+
+.site-sticky-cta {
+  transform: translateY(110%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-sticky-cta.is-visible {
+  transform: translateY(0);
+}
+
+/* Nav — class toggled by site-landing.js (same visual as before) */
+[data-site-nav] {
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    backdrop-filter 0.3s ease;
+}
+
+[data-site-nav].is-scrolled {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  background: rgba(9, 9, 11, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Hero entrance — CSS-only, no JS hydration gap */
+@keyframes site-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes site-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes site-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.site-hero-enter {
+  animation: site-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-hero-enter-d1 {
+  animation-delay: 0.05s;
+}
+
+.site-hero-enter-d2 {
+  animation-delay: 0.1s;
+}
+
+.site-hero-enter-d3 {
+  animation-delay: 0.18s;
+}
+
+.site-scroll-cue-enter {
+  opacity: 0;
+  animation: site-fade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both;
+}
+
+/* Scroll reveal — IntersectionObserver adds .is-visible */
+.site-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.site-reveal-scale {
+  transform: scale(0.97);
+}
+
+.site-reveal.is-visible {
+  animation: site-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.site-reveal-scale.is-visible {
+  animation: site-scale-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.site-reveal[data-reveal-delay="0.04"] {
+  animation-delay: 0.04s;
+}
+.site-reveal[data-reveal-delay="0.06"] {
+  animation-delay: 0.06s;
+}
+.site-reveal[data-reveal-delay="0.08"] {
+  animation-delay: 0.08s;
+}
+.site-reveal[data-reveal-delay="0.1"] {
+  animation-delay: 0.1s;
+}
+.site-reveal[data-reveal-delay="0.12"] {
+  animation-delay: 0.12s;
+}
+.site-reveal[data-reveal-delay="0.18"] {
+  animation-delay: 0.18s;
+}
+
+.site-reveal-item[data-reveal-index="1"] {
+  animation-delay: 0.06s;
+}
+.site-reveal-item[data-reveal-index="2"] {
+  animation-delay: 0.12s;
+}
+.site-reveal-item[data-reveal-index="3"] {
+  animation-delay: 0.18s;
+}
+
+/* Below-fold sections — faster initial paint, no visual change at rest */
+.site-below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-hero-enter,
+  .site-scroll-cue-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-reveal,
+  .site-reveal-scale {
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-reveal.is-visible,
+  .site-reveal-scale.is-visible {
+    animation: none;
+  }
+}

@@ -3,11 +3,15 @@
  * Pilotée par `getAppFeatures()` — pas de if(beta) dispersés.
  */
 
-import { getAppFeatures } from "@/lib/margeo/config";
+import { getBillingFeatures } from "@/lib/margeo/config";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 
-/** Stripe = seul PSP prévu. `simulated` = sans facturation réelle. */
-export type PaymentProviderId = "simulated" | "stripe" | "blocked";
+/** Stripe web (legacy). `app_store` = StoreKit iOS vérifié. `simulated` = dev/bêta uniquement. */
+export type PaymentProviderId =
+  | "simulated"
+  | "stripe"
+  | "app_store"
+  | "blocked";
 
 export type BillingPeriod = "monthly" | "yearly";
 
@@ -78,16 +82,20 @@ export const blockedPaymentProvider: PaymentProvider = {
  * - sinon simulated (dev)
  */
 export function getPaymentProvider(): PaymentProvider {
-  const feats = getAppFeatures();
+  const feats = getBillingFeatures();
   return resolveProvider(feats);
 }
 
 export async function getPaymentProviderAsync(): Promise<PaymentProvider> {
-  const { getAppFeaturesAsync } = await import("@/lib/margeo/config");
-  return resolveProvider(await getAppFeaturesAsync());
+  const { getBillingFeaturesAsync } = await import("@/lib/margeo/config");
+  return resolveProvider(await getBillingFeaturesAsync());
 }
 
-function resolveProvider(feats: ReturnType<typeof getAppFeatures>): PaymentProvider {
+function isProductionDeploy(): boolean {
+  return process.env.VERCEL_ENV === "production";
+}
+
+function resolveProvider(feats: ReturnType<typeof getBillingFeatures>): PaymentProvider {
   if (!feats.billing) {
     return simulatedPaymentProvider;
   }
@@ -95,15 +103,21 @@ function resolveProvider(feats: ReturnType<typeof getAppFeatures>): PaymentProvi
     return blockedPaymentProvider;
   }
 
-  // Production Stripe — brancher stripePaymentProvider quand prêt :
+  // iOS StoreKit : activation via JWS vérifié (route /subscription/activate).
+  // Le provider simulated ne doit jamais activer premium en production.
+  if (isProductionDeploy()) {
+    return blockedPaymentProvider;
+  }
+
+  // Production Stripe web — brancher stripePaymentProvider quand prêt :
   // if (process.env.STRIPE_SECRET_KEY) return stripePaymentProvider;
   return simulatedPaymentProvider;
 }
 
 export function isBillingEnabled(): boolean {
-  return getAppFeatures().billing;
+  return getBillingFeatures().billing;
 }
 
 export function arePurchasesEnabled(): boolean {
-  return getAppFeatures().purchasesEnabled;
+  return getBillingFeatures().purchasesEnabled;
 }

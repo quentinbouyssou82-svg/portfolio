@@ -1,15 +1,23 @@
 import type {
-  Platform,
+  DecisionState,
+  EconomicsBreakdown,
+  InsightCard,
   RideAnalysis,
   RideOffer,
   ScoreFactor,
   UserProfile,
   Verdict,
+  ReliabilitySummary,
 } from "./types";
+import { RELIABILITY_PENALTY_CONFIG } from "./reliability/config";
+import {
+  computeReliabilityScores,
+  fieldsFromOffer,
+} from "./reliability/compute";
+import type { StructuredVisionFields } from "./vision/extraction-types";
 import { normalizeVehicle } from "./vehicle-costs";
 import { formatEur } from "./utils";
 
-/** Coût du temps immobilisé (usure, opportunité) par minute selon le véhicule. */
 const TIME_COST_PER_MIN: Record<UserProfile["vehicle"], number> = {
   velo: 0.01,
   velo_electrique: 0.012,
@@ -25,7 +33,7 @@ const TIME_COST_PER_MIN: Record<UserProfile["vehicle"], number> = {
   voiture_electrique: 0.02,
 };
 
-const PLATFORM_ADJUSTMENT: Record<Platform, number> = {
+const PLATFORM_ADJUSTMENT: Record<RideOffer["platform"], number> = {
   "Uber Eats": 0,
   Deliveroo: -2,
   Stuart: 3,
@@ -33,7 +41,6 @@ const PLATFORM_ADJUSTMENT: Record<Platform, number> = {
   Autre: 0,
 };
 
-/** Zones denses = meilleur retour à vide estimé. */
 const DENSE_CITIES = new Set([
   "paris",
   "lyon",
@@ -47,6 +54,17 @@ const DENSE_CITIES = new Set([
   "nice",
 ]);
 
+export interface AnalysisContext {
+  fields?: StructuredVisionFields;
+  warnings?: string[];
+  captureDegraded?: boolean;
+  historicalAverageNetGain?: number | null;
+  historicalSamples?: number;
+  decisionFrequencyPerMonth?: number | null;
+  /** Durée d'itinéraire livreur → pickup (OSRM), en minutes. Jamais inventée. */
+  pickupTravelMin?: number | null;
+}
+
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
@@ -55,365 +73,308 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function isCarVehicle(vehicle: UserProfile["vehicle"]): boolean {
-  return normalizeVehicle(vehicle).startsWith("voiture");
-}
-
 function isDenseZone(city: string): boolean {
   return DENSE_CITIES.has(city.toLowerCase().trim());
 }
 
-/**
- * Moteur de rentabilité Margeo v2.
- * Score explicable basé sur véhicule, coût/km, objectif €/h, distance, temps, plateforme et zone.
- */
-export function analyzeOffer(
+function computeEconomics(
   offer: RideOffer,
   profile: UserProfile,
-  analyzedAt: string = new Date().toISOString(),
-): RideAnalysis {
-  const pickupKm = offer.pickupDistanceKm ?? 0;
-  const hasDistance = offer.distanceKm != null;
-  const hasDuration = offer.durationMin != null;
-  const distanceKm = offer.distanceKm ?? 0;
-  const durationMin = offer.durationMin ?? 0;
+  estimatedFields: string[],
+  pickupTravelMin: number | null = null,
+): EconomicsBreakdown {
   const vehicleId = normalizeVehicle(profile.vehicle);
+  const timeCostPerMin = TIME_COST_PER_MIN[vehicleId] ?? 0.018;
 
-  const totalKm = pickupKm + distanceKm + offer.emptyReturnKm;
-  const timeCost = TIME_COST_PER_MIN[vehicleId] ?? 0.018;
+  const deliveryDistanceKm = offer.distanceKm ?? null;
+  const pickupDistanceKm = offer.pickupDistanceKm ?? null;
+  const emptyReturnKm = offer.emptyReturnKm ?? null;
+  const platformDurationMin = offer.durationMin ?? null;
+  const pickupDurationMin =
+    pickupDistanceKm != null && pickupTravelMin != null && pickupTravelMin > 0
+      ? pickupTravelMin
+      : null;
+
+  const knownKm = round2(
+    [deliveryDistanceKm, pickupDistanceKm, emptyReturnKm]
+      .filter((value): value is number => value != null)
+      .reduce((sum, value) => sum + value, 0),
+  );
+
+  const totalKm =
+    deliveryDistanceKm != null && pickupDistanceKm != null && emptyReturnKm != null
+      ? knownKm
+      : null;
+  const travelKm =
+    deliveryDistanceKm != null && pickupDistanceKm != null
+      ? round2(deliveryDistanceKm + pickupDistanceKm)
+      : null;
+
+  const durationMin =
+    platformDurationMin != null
+      ? platformDurationMin + (pickupDurationMin ?? 0)
+      : null;
+
   const estimatedCost = round2(
-    totalKm * profile.costPerKm +
-      (hasDuration ? durationMin * timeCost : 0),
+    knownKm * profile.costPerKm +
+      (durationMin != null ? durationMin * timeCostPerMin : 0),
   );
-  const grossGain = offer.payout;
-  const netGain = round2(grossGain - estimatedCost);
-  const hourlyRate = hasDuration
-    ? round2(netGain / (durationMin / 60))
-    : 0;
+  const netGain = round2(offer.payout - estimatedCost);
+  const hourlyRate =
+    durationMin != null && durationMin > 0
+      ? round2(netGain / (durationMin / 60))
+      : null;
 
-  const { score, breakdown } = computeScoreWithBreakdown(
-    offer,
-    profile,
-    netGain,
-    hourlyRate,
-    { hasDistance, hasDuration },
-  );
-  let verdict = scoreToVerdict(score);
-  if (!hasDistance || !hasDuration) {
-    if (verdict === "accept") verdict = "check";
-  }
-  const { explanation, insights } = buildRecommendation(
-    offer,
-    profile,
-    netGain,
-    hourlyRate,
-    verdict,
-    breakdown,
-  );
+  const kmForPayout = travelKm ?? deliveryDistanceKm;
+  const payoutPerKm =
+    kmForPayout != null && kmForPayout > 0
+      ? round2(offer.payout / kmForPayout)
+      : null;
 
   return {
-    id: offer.id,
-    offer,
-    analyzedAt,
-    grossGain,
+    grossGain: offer.payout,
     estimatedCost,
     netGain,
     hourlyRate,
-    score,
-    verdict,
-    explanation,
-    insights,
-    scoreBreakdown: breakdown,
+    payoutPerKm,
+    knownKm,
+    totalKm,
+    travelKm,
+    deliveryDistanceKm,
+    pickupDistanceKm,
+    emptyReturnKm,
+    pickupDurationMin,
+    pickupIsEstimated: estimatedFields.includes("pickupDistanceKm"),
+    usedEstimatedValues: estimatedFields.length > 0,
   };
 }
 
-function computeScoreWithBreakdown(
+/** Verdict brut basé uniquement sur la rentabilité — sans modération fiabilité. */
+function computeProfitabilityState(
+  economics: EconomicsBreakdown,
+  profile: UserProfile,
+): DecisionState {
+  const minBenefit = profile.minBenefit ?? 6;
+  const hourlyFloor = profile.targetHourly;
+  const hourlyRate = economics.hourlyRate;
+  const maxDistanceKm = profile.maxDistanceKm ?? 8;
+  const missionKm = economics.travelKm;
+
+  if (economics.netGain <= 0) return "unprofitable";
+  if (hourlyRate != null && hourlyRate < hourlyFloor * 0.6) return "unprofitable";
+  if (economics.netGain < minBenefit * 0.45) return "unprofitable";
+
+  if (economics.pickupDistanceKm != null && economics.pickupDistanceKm >= 6) {
+    if (economics.netGain < minBenefit * 1.3) return "unprofitable";
+  }
+
+  if (missionKm != null && missionKm > maxDistanceKm * 1.15) {
+    if (missionKm >= maxDistanceKm * 1.8) return "unprofitable";
+    return "borderline";
+  }
+
+  if (
+    hourlyRate != null &&
+    hourlyRate >= hourlyFloor &&
+    economics.netGain >= minBenefit
+  ) {
+    return "profitable";
+  }
+
+  // Signal net fort même sans durée (€/h non calculable).
+  if (
+    hourlyRate == null &&
+    economics.netGain >= minBenefit * 1.75
+  ) {
+    return "profitable";
+  }
+
+  return "borderline";
+}
+
+function profitabilityStateToVerdict(state: DecisionState): Verdict {
+  switch (state) {
+    case "profitable":
+      return "accept";
+    case "unprofitable":
+      return "refuse";
+    case "borderline":
+    case "uncertain":
+      return "check";
+  }
+}
+
+export function moderateVerdictByReliability(
+  rawVerdict: Verdict,
+  reliability: ReliabilitySummary,
+  profitabilityScore: number,
+): Verdict {
+  const confidence = reliability.decisionConfidence;
+  const { acceptMinConfidence, refuseMinConfidence } =
+    RELIABILITY_PENALTY_CONFIG.thresholds;
+
+  if (rawVerdict === "accept" && confidence < acceptMinConfidence) {
+    return "check";
+  }
+
+  if (
+    rawVerdict === "refuse" &&
+    confidence < refuseMinConfidence &&
+    profitabilityScore > 35
+  ) {
+    return "check";
+  }
+
+  return rawVerdict;
+}
+
+function computeProfitabilityScore(
   offer: RideOffer,
   profile: UserProfile,
-  netGain: number,
-  hourlyRate: number,
-  flags: { hasDistance: boolean; hasDuration: boolean },
+  economics: EconomicsBreakdown,
 ): { score: number; breakdown: ScoreFactor[] } {
-  const breakdown: ScoreFactor[] = [];
   let score = 50;
-  const pickupKm = offer.pickupDistanceKm ?? 0;
-  const distanceKm = offer.distanceKm ?? 0;
-  const durationMin = offer.durationMin ?? 0;
+  const breakdown: ScoreFactor[] = [];
 
-  // 1. Taux horaire vs objectif (±25 pts)
-  if (flags.hasDuration) {
-    const hourlyDelta = hourlyRate - profile.targetHourly;
-    const hourlyImpact = clamp(hourlyDelta * 2.5, -25, 25);
-    score += hourlyImpact;
+  if (economics.hourlyRate != null) {
+    const hourlyDelta = economics.hourlyRate - profile.targetHourly;
+    const impact = clamp(hourlyDelta * 2.2, -24, 24);
+    score += impact;
     breakdown.push({
-      label:
-        hourlyDelta >= 0
-          ? "Bonne rémunération horaire"
-          : "Rémunération horaire faible",
-      impact: Math.round(hourlyImpact),
+      label: hourlyDelta >= 0 ? "Rémunération horaire" : "Rémunération horaire faible",
+      impact: Math.round(impact),
       detail:
         hourlyDelta >= 0
-          ? `${formatEur(hourlyRate)}/h net, soit ${formatEur(hourlyDelta)} au-dessus de ton objectif.`
-          : `${formatEur(hourlyRate)}/h net, soit ${formatEur(Math.abs(hourlyDelta))} sous ton objectif de ${profile.targetHourly} €/h.`,
+          ? `${formatEur(economics.hourlyRate)}/h net, au-dessus de ton objectif.`
+          : `${formatEur(economics.hourlyRate)}/h net, sous ton objectif de ${profile.targetHourly} €/h.`,
     });
-  } else {
-    breakdown.push({
-      label: "Durée non lue sur la capture",
-      impact: -8,
-      detail: "Le €/h n'a pas pu être calculé — verdict prudent.",
-    });
-    score -= 8;
   }
 
-  // 2. Distance / densité (±12 pts)
-  if (flags.hasDistance && offer.distanceKm != null) {
-    const payoutPerKm = offer.payout / Math.max(offer.distanceKm, 0.5);
-    let distanceImpact = 0;
-    if (payoutPerKm >= 1.5) {
-      distanceImpact = 10;
-    } else if (payoutPerKm >= 1.1) {
-      distanceImpact = 5;
-    } else if (payoutPerKm < 0.9) {
-      distanceImpact = -12;
-    } else {
-      distanceImpact = -4;
-    }
-    score += distanceImpact;
+  if (economics.payoutPerKm != null) {
+    let impact = 0;
+    if (economics.payoutPerKm >= 1.5) impact = 10;
+    else if (economics.payoutPerKm >= 1.1) impact = 4;
+    else if (economics.payoutPerKm < 0.9) impact = -10;
+    else impact = -4;
+    score += impact;
     breakdown.push({
-      label:
-        distanceImpact >= 0 ? "Distance acceptable" : "Distance peu rentable",
-      impact: distanceImpact,
-      detail: `${payoutPerKm.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} €/km sur ${offer.distanceKm} km.`,
+      label: impact >= 0 ? "Densité €/km" : "Densité €/km faible",
+      impact,
+      detail: `${economics.payoutPerKm.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} €/km.`,
     });
-  } else {
-    breakdown.push({
-      label: "Distance non lue sur la capture",
-      impact: -6,
-      detail: "Impossible d'évaluer la densité €/km.",
-    });
-    score -= 6;
   }
 
-  // 2b. Distance jusqu'au point de récupération (±12 pts)
-  if (pickupKm > 0) {
+  if (economics.pickupDistanceKm != null) {
     let pickupImpact = 0;
-    if (pickupKm <= 1.5) {
-      pickupImpact = 10;
-    } else if (pickupKm <= 3) {
-      pickupImpact = 2;
-    } else if (pickupKm <= 5) {
-      pickupImpact = -6;
-    } else {
-      pickupImpact = -12;
-    }
+    if (economics.pickupDistanceKm <= 0.8) pickupImpact = 6;
+    else if (economics.pickupDistanceKm <= 1.5) pickupImpact = 2;
+    else if (economics.pickupDistanceKm <= 3) pickupImpact = -4;
+    else if (economics.pickupDistanceKm <= 5) pickupImpact = -10;
+    else if (economics.pickupDistanceKm <= 8) pickupImpact = -16;
+    else pickupImpact = -22;
     score += pickupImpact;
     breakdown.push({
-      label:
-        pickupImpact >= 0
-          ? "Tu es proche du restaurant"
-          : "Restaurant éloigné de ta position",
+      label: pickupImpact >= 0 ? "Restaurant proche" : "Restaurant éloigné",
       impact: pickupImpact,
-      detail: `${pickupKm.toLocaleString("fr-FR")} km jusqu'au point de récupération.`,
+      detail: `${economics.pickupDistanceKm.toLocaleString("fr-FR")} km avant retrait.`,
     });
   }
 
-  // 3. Retour à vide (±15 pts) + préférence utilisateur
-  if (flags.hasDistance && offer.distanceKm != null) {
-    const emptyRatio = offer.emptyReturnKm / Math.max(offer.distanceKm, 1);
-    let emptyImpact = 0;
-    if (emptyRatio <= 0.25) {
-      emptyImpact = 8;
-    } else if (emptyRatio <= 0.45) {
-      emptyImpact = 0;
-    } else if (emptyRatio <= 0.7) {
-      emptyImpact = -8;
-    } else {
-      emptyImpact = -15;
+  if (economics.emptyReturnKm != null && economics.deliveryDistanceKm != null) {
+    const emptyRatio =
+      economics.emptyReturnKm / Math.max(economics.deliveryDistanceKm, 1);
+    let impact = 0;
+    if (emptyRatio <= 0.25) impact = 8;
+    else if (emptyRatio <= 0.45) impact = 0;
+    else if (emptyRatio <= 0.7) impact = -8;
+    else impact = -14;
+
+    const emptyPreference = profile.emptyReturns ?? "short_only";
+    if (emptyPreference === "no" && economics.emptyReturnKm > 1.5) {
+      impact -= 8;
+    } else if (emptyPreference === "short_only" && economics.emptyReturnKm > 3) {
+      impact -= 5;
+    } else if (emptyPreference === "yes" && emptyRatio <= 0.35) {
+      impact += 2;
     }
 
-    if (!isDenseZone(profile.city) && emptyRatio > 0.4) {
-      emptyImpact -= 3;
-    }
-
-    const emptyPref = profile.emptyReturns ?? "short_only";
-    if (emptyPref === "no" && offer.emptyReturnKm > 1.5) {
-      emptyImpact -= 10;
-    } else if (emptyPref === "short_only" && offer.emptyReturnKm > 3) {
-      emptyImpact -= 6;
-    } else if (emptyPref === "yes" && emptyRatio <= 0.35) {
-      emptyImpact += 2;
-    }
-
-    score += emptyImpact;
+    score += impact;
     breakdown.push({
-      label:
-        emptyImpact >= 0
-          ? "Retour à vide limité"
-          : "Retour difficile estimé",
-      impact: emptyImpact,
-      detail: `${offer.emptyReturnKm.toLocaleString("fr-FR")} km à vide (${Math.round(emptyRatio * 100)} % de la course).`,
+      label: impact >= 0 ? "Retour à vide limité" : "Retour à vide lourd",
+      impact,
+      detail: `${economics.emptyReturnKm.toLocaleString("fr-FR")} km à vide.`,
     });
   }
 
-  // 4. Gain net absolu (±10 pts)
-  const minBenefit = profile.minBenefit ?? 6;
-  const netImpact = clamp((netGain - 3) * 2, -10, 10);
+  const netImpact = clamp((economics.netGain - 3) * 2, -10, 10);
   score += netImpact;
-  if (netGain <= 0) {
-    breakdown.push({
-      label: "Gain net négatif",
-      impact: -10,
-      detail: `Après ${formatEur(offer.payout - netGain)} de coûts estimés, tu perds de l'argent.`,
-    });
-  } else {
-    breakdown.push({
-      label: netGain >= 6 ? "Gain net confortable" : "Gain net modeste",
-      impact: Math.round(netImpact),
-      detail: `${formatEur(netGain)} nets${flags.hasDuration && offer.durationMin != null ? ` pour ${offer.durationMin} min de travail` : ""}.`,
-    });
-  }
+  breakdown.push({
+    label: economics.netGain >= (profile.minBenefit ?? 6) ? "Gain net" : "Gain net faible",
+    impact: Math.round(netImpact),
+    detail: `${formatEur(economics.netGain)} net estimé.`,
+  });
 
-  // 4b. Bénéfice minimum utilisateur (±15 pts)
-  if (netGain < minBenefit) {
-    const deficit = minBenefit - netGain;
-    const minImpact = clamp(-deficit * 2.5, -15, -4);
-    score += minImpact;
-    breakdown.push({
-      label: "Sous ton bénéfice minimum",
-      impact: Math.round(minImpact),
-      detail: `${formatEur(netGain)} net vs ${formatEur(minBenefit)} minimum souhaité.`,
-    });
-  } else if (netGain >= minBenefit + 2) {
-    const bonus = clamp((netGain - minBenefit) * 1.2, 2, 8);
-    score += bonus;
-    breakdown.push({
-      label: "Au-dessus de ton minimum",
-      impact: Math.round(bonus),
-      detail: `${formatEur(netGain - minBenefit)} au-dessus de ton seuil de ${formatEur(minBenefit)}.`,
-    });
-  }
-
-  // 4c. Distance maximale souhaitée (±12 pts)
+  const missionKm =
+    economics.travelKm ??
+    (economics.deliveryDistanceKm != null ? economics.deliveryDistanceKm : null);
   const maxDistanceKm = profile.maxDistanceKm ?? 8;
-  const missionKm = pickupKm + distanceKm;
-  if (flags.hasDistance && missionKm > maxDistanceKm) {
+  if (missionKm != null && missionKm > maxDistanceKm) {
     const over = missionKm - maxDistanceKm;
-    const distImpact = clamp(-over * 2.5, -12, -3);
-    score += distImpact;
+    const impact = clamp(-over * 2.5, -12, -3);
+    score += impact;
     breakdown.push({
       label: "Course plus longue que ta limite",
-      impact: Math.round(distImpact),
+      impact: Math.round(impact),
       detail: `${missionKm.toLocaleString("fr-FR")} km au total vs ${maxDistanceKm} km max.`,
     });
   }
 
-  // 4d. Temps d'attente estimé (vitesse effective basse) (±8 pts)
-  if (flags.hasDuration && flags.hasDistance && missionKm > 0.3) {
-    const speedKmh = missionKm / (durationMin / 60);
-    if (speedKmh < 10) {
-      const waitImpact = speedKmh < 6 ? -8 : -4;
-      score += waitImpact;
-      breakdown.push({
-        label: "Temps d'attente élevé",
-        impact: waitImpact,
-        detail: `${durationMin} min pour ${missionKm.toLocaleString("fr-FR")} km — beaucoup d'attente au restaurant.`,
-      });
-    }
-  }
-
-  // 5. Plateforme (±5 pts)
-  const platformImpact = PLATFORM_ADJUSTMENT[offer.platform] ?? 0;
-  if (platformImpact !== 0) {
-    score += platformImpact;
-    breakdown.push({
-      label: `Plateforme ${offer.platform}`,
-      impact: platformImpact,
-      detail:
-        platformImpact > 0
-          ? "Historiquement favorable sur ce type de course."
-          : "Souvent plus d'attente ou de frais cachés.",
-    });
-  }
-
-  // 6. Véhicule vs durée (±5 pts) — courses longues pénalisent vélo
-  let vehicleImpact = 0;
-  const vehicleId = normalizeVehicle(profile.vehicle);
-  if (vehicleId === "velo" && offer.durationMin != null && offer.durationMin > 25) {
-    vehicleImpact = -5;
-    breakdown.push({
-      label: "Course longue en vélo",
-      impact: vehicleImpact,
-      detail: `${offer.durationMin} min estimées — fatigue accrue.`,
-    });
-  } else if (
-    (vehicleId === "velo" || vehicleId === "velo_electrique") &&
-    offer.durationMin != null &&
-    offer.durationMin > 35
-  ) {
-    vehicleImpact = -3;
-    breakdown.push({
-      label: "Course longue à vélo",
-      impact: vehicleImpact,
-      detail: `${offer.durationMin} min — prévois une pause hydratation.`,
-    });
-  } else if (
-    isCarVehicle(profile.vehicle) &&
-    offer.distanceKm != null &&
-    offer.distanceKm < 2
-  ) {
-    vehicleImpact = -4;
-    breakdown.push({
-      label: "Course courte en voiture",
-      impact: vehicleImpact,
-      detail: "Démarrage moteur peu rentable sur courte distance.",
-    });
-  }
-
-  score += vehicleImpact;
-
-  // 7. Zone dense bonus léger (+3)
+  score += PLATFORM_ADJUSTMENT[offer.platform] ?? 0;
   if (
     isDenseZone(profile.city) &&
-    flags.hasDistance &&
-    offer.distanceKm != null
+    economics.emptyReturnKm != null &&
+    economics.deliveryDistanceKm != null
   ) {
-    const emptyRatio = offer.emptyReturnKm / Math.max(offer.distanceKm, 1);
+    const emptyRatio =
+      economics.emptyReturnKm / Math.max(economics.deliveryDistanceKm, 1);
     if (emptyRatio < 0.5) {
-    score += 3;
-    breakdown.push({
-      label: `Zone active (${profile.city})`,
-      impact: 3,
-      detail: "Bonne densité de courses, retour facilité.",
-    });
+      score += 3;
+      breakdown.push({
+        label: `Zone active (${profile.city})`,
+        impact: 3,
+        detail: "Bonne densité potentielle de courses.",
+      });
     }
   }
 
   return {
     score: Math.round(clamp(score, 0, 100)),
-    breakdown: breakdown.filter((f) => f.impact !== 0).slice(0, 8),
+    breakdown: breakdown.filter((item) => item.impact !== 0).slice(0, 8),
   };
 }
 
-function scoreToVerdict(score: number): Verdict {
-  if (score >= 68) return "accept";
-  if (score >= 42) return "check";
-  return "refuse";
+function reliabilityInsightMode(
+  confidence: number,
+): "certain" | "cautious" | "indicative" {
+  const { insightCertainMin, insightCautionMax } =
+    RELIABILITY_PENALTY_CONFIG.thresholds;
+  if (confidence >= insightCertainMin) return "certain";
+  if (confidence >= insightCautionMax) return "cautious";
+  return "indicative";
 }
 
 function buildRecommendation(
-  offer: RideOffer,
+  economics: EconomicsBreakdown,
   profile: UserProfile,
-  netGain: number,
-  hourlyRate: number,
-  verdict: Verdict,
+  profitabilityState: DecisionState,
+  rawVerdict: Verdict,
+  finalVerdict: Verdict,
+  reliability: ReliabilitySummary,
   breakdown: ScoreFactor[],
-): { explanation: string; insights: string[] } {
+): { explanation: string; insights: string[]; insightCards: InsightCard[] } {
   const insights: string[] = [];
-  const hourlyDelta = round2(hourlyRate - profile.targetHourly);
-  const emptyRatio =
-    offer.emptyReturnKm / Math.max(offer.distanceKm ?? 1, 1);
-  const payoutPerKm = offer.payout / Math.max(offer.distanceKm ?? 1, 1);
-
+  const cards: InsightCard[] = [];
+  const mode = reliabilityInsightMode(reliability.decisionConfidence);
   const topPositive = breakdown
     .filter((f) => f.impact > 0)
     .sort((a, b) => b.impact - a.impact)[0];
@@ -421,58 +382,197 @@ function buildRecommendation(
     .filter((f) => f.impact < 0)
     .sort((a, b) => a.impact - b.impact)[0];
 
-  let explanation: string;
-  if (verdict === "accept") {
-    if (topPositive) {
-      explanation = `${topPositive.label} : ${topPositive.detail} D'après ton profil, cette course semble intéressante.`;
-    } else if (hourlyDelta >= 2) {
-      explanation = `Estimation : cette course dépasse ton objectif d'environ ${formatEur(hourlyDelta)} de l'heure.`;
-    } else {
-      explanation = `Estimation : gain net d'environ ${formatEur(netGain)}${offer.durationMin != null ? ` en ${offer.durationMin} min` : ""} — au-dessus de tes critères.`;
-    }
-  } else if (verdict === "check") {
-    if (topNegative && topPositive) {
-      explanation = `${topPositive.label}, mais ${topNegative.label.toLowerCase()}. À évaluer selon ta journée et la zone.`;
-    } else if (emptyRatio > 0.6) {
-      explanation = `Retour à vide estimé à ${offer.emptyReturnKm.toLocaleString("fr-FR")} km. À juger si une autre course peut suivre dans le secteur.`;
-    } else {
-      explanation = `Rentabilité estimée limite : environ ${formatEur(hourlyRate)}/h net. À toi de juger selon ta journée.`;
-    }
+  let explanation = "Analyse basée sur les informations disponibles.";
+
+  if (profitabilityState === "profitable") {
+    explanation =
+      finalVerdict === "check" && rawVerdict === "accept"
+        ? "La course semble rentable, mais certaines informations sont estimées ou incomplètes."
+        : topPositive
+          ? `${topPositive.label} : ${topPositive.detail}`
+          : `Cette course dépasse tes critères avec ${formatEur(economics.netGain)} net estimé.`;
+  } else if (profitabilityState === "unprofitable") {
+    explanation =
+      reliability.decisionConfidence >= 85
+        ? topNegative
+          ? `${topNegative.label} : ${topNegative.detail}`
+          : `Estimation défavorable : ${formatEur(economics.netGain)} net.`
+        : topNegative
+          ? `${topNegative.label}, mais vérifie les données estimées.`
+          : `Estimation défavorable — confirme les informations manquantes si besoin.`;
   } else {
-    if (netGain <= 0) {
-      explanation = `Après tes coûts estimés (${profile.vehicle}, ${profile.costPerKm} €/km), cette course semble peu rentable.`;
-    } else if (topNegative) {
-      explanation = `${topNegative.label} : ${topNegative.detail} Estimation défavorable si tu as mieux.`;
-    } else {
-      explanation = `Environ ${formatEur(hourlyRate)}/h net — loin de ton objectif de ${profile.targetHourly} €/h selon ton profil.`;
+    explanation =
+      topPositive && topNegative
+        ? `${topPositive.label}, mais ${topNegative.label.toLowerCase()}.`
+        : "Rentabilité estimée limite : vérifie selon ta journée et ta zone.";
+  }
+
+  if (finalVerdict === "check" && rawVerdict === "accept") {
+    cards.push({
+      kind: "caution",
+      title: "À vérifier",
+      body: "La course semble rentable, mais la fiabilité de l'analyse reste modérée.",
+      isEstimate: true,
+    });
+  }
+
+  if (profitabilityState === "unprofitable" && economics.netGain <= 0) {
+    const amount = formatEur(Math.abs(economics.netGain));
+    if (mode === "certain") {
+      cards.push({
+        kind: "savings",
+        title: "Tu viens d'économiser",
+        value: amount,
+        body: "En refusant cette course, tu évites un gain net négatif estimé.",
+        isEstimate: false,
+      });
+    } else if (mode === "cautious") {
+      cards.push({
+        kind: "savings",
+        title: "Économie potentielle",
+        value: `~${amount}`,
+        body: "Certaines données utilisées pour ce calcul sont estimées.",
+        isEstimate: true,
+      });
+    }
+  } else if (profitabilityState === "profitable" && economics.hourlyRate != null) {
+    if (mode === "certain") {
+      cards.push({
+        kind: "hourly",
+        title: "Bonne course",
+        value: `${formatEur(economics.hourlyRate)}/h`,
+        body: "Taux horaire net estimé pour cette course.",
+        isEstimate: false,
+      });
+    } else if (mode === "cautious") {
+      cards.push({
+        kind: "hourly",
+        title: "Rythme estimé",
+        value: `~${formatEur(economics.hourlyRate)}/h`,
+        body: "Le €/h dépend encore de données partiellement confirmées.",
+        isEstimate: true,
+      });
     }
   }
 
-  if (hourlyDelta >= 0) {
+  if (reliability.estimatedFields.length > 0) {
     insights.push(
-      `Taux horaire ${formatEur(hourlyDelta)} au-dessus de ton objectif.`,
+      `Données estimées : ${reliability.estimatedFields.join(", ")}.`,
     );
-  } else {
-    insights.push(
-      `Taux horaire ${formatEur(Math.abs(hourlyDelta))} sous ton objectif.`,
-    );
+  } else if (reliability.cautionFields.length > 0) {
+    insights.push("Certaines informations n'ont pas pu être confirmées.");
   }
 
-  if (emptyRatio > 0.5) {
+  if (economics.hourlyRate != null) {
+    const hourlyDelta = round2(economics.hourlyRate - profile.targetHourly);
     insights.push(
-      `Retour à vide : ${offer.emptyReturnKm.toLocaleString("fr-FR")} km (${Math.round(emptyRatio * 100)} %).`,
-    );
-  }
-
-  if (payoutPerKm >= 1.6) {
-    insights.push(
-      `Bonne densité : ${payoutPerKm.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} €/km.`,
+      hourlyDelta >= 0
+        ? `Environ ${formatEur(hourlyDelta)} au-dessus de ton objectif horaire.`
+        : `Environ ${formatEur(Math.abs(hourlyDelta))} sous ton objectif horaire.`,
     );
   }
 
-  if (offer.durationMin != null && offer.durationMin >= 35) {
-    insights.push("Course longue — vérifie l'attente au retrait.");
+  const pickupKm = economics.pickupDistanceKm;
+  const pickupReliable =
+    pickupKm != null &&
+    !economics.pickupIsEstimated &&
+    mode !== "indicative";
+  if (pickupReliable && pickupKm >= 2 && cards.length < 3) {
+    const pickupLabel = pickupKm.toLocaleString("fr-FR", {
+      maximumFractionDigits: 1,
+    });
+    if (pickupKm >= 4) {
+      cards.push({
+        kind: "pickup",
+        title: "Pickup éloigné",
+        value: `${pickupLabel} km`,
+        body: `Ces ${pickupLabel} km jusqu'au restaurant réduisent fortement la rentabilité de cette course.`,
+        isEstimate: false,
+      });
+    } else {
+      cards.push({
+        kind: "pickup",
+        title: "Restaurant",
+        value: `${pickupLabel} km`,
+        body: `Le restaurant est à ${pickupLabel} km.`,
+        isEstimate: false,
+      });
+    }
   }
 
-  return { explanation, insights: insights.slice(0, 3) };
+  return {
+    explanation,
+    insights: insights.slice(0, 3),
+    insightCards: cards.slice(0, 3),
+  };
+}
+
+export function analyzeOffer(
+  offer: RideOffer,
+  profile: UserProfile,
+  analyzedAt: string = new Date().toISOString(),
+  context: AnalysisContext = {},
+): RideAnalysis {
+  const fields = context.fields ?? fieldsFromOffer(offer);
+  const pickupTravelMin = context.pickupTravelMin ?? null;
+  const preliminaryEconomics = computeEconomics(
+    offer,
+    profile,
+    [],
+    pickupTravelMin,
+  );
+
+  const reliability = computeReliabilityScores({
+    fields,
+    offer,
+    profile,
+    warnings: context.warnings,
+    captureDegraded: context.captureDegraded,
+    economics: preliminaryEconomics,
+  });
+
+  const economics = computeEconomics(
+    offer,
+    profile,
+    reliability.estimatedFields,
+    pickupTravelMin,
+  );
+
+  const profitabilityState = computeProfitabilityState(economics, profile);
+  const rawVerdict = profitabilityStateToVerdict(profitabilityState);
+  const { score, breakdown } = computeProfitabilityScore(
+    offer,
+    profile,
+    economics,
+  );
+  const verdict = moderateVerdictByReliability(rawVerdict, reliability, score);
+
+  const { explanation, insights, insightCards } = buildRecommendation(
+    economics,
+    profile,
+    profitabilityState,
+    rawVerdict,
+    verdict,
+    reliability,
+    breakdown,
+  );
+
+  return {
+    id: offer.id,
+    offer,
+    analyzedAt,
+    grossGain: economics.grossGain,
+    estimatedCost: economics.estimatedCost,
+    netGain: economics.netGain,
+    hourlyRate: economics.hourlyRate ?? 0,
+    score,
+    verdict,
+    decisionState: profitabilityState,
+    reliability,
+    economics,
+    explanation,
+    insights,
+    insightCards,
+    scoreBreakdown: breakdown,
+  };
 }

@@ -64,7 +64,11 @@ export const DRIVEELY_SITEMAP_PAGES: ReadonlyArray<{
   priority: number;
 }> = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
-  { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/contact", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/confidentialite", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/cgu", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/cgv", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/mentions-legales", changeFrequency: "yearly", priority: 0.3 },
 ];
 
 /** App / auth paths that must stay out of the index. */
@@ -86,10 +90,6 @@ export const DRIVEELY_ROBOTS_DISALLOW = [
   "/api/",
   "/beta",
   "/conditions-beta",
-  "/mentions-legales",
-  "/confidentialite",
-  "/cgu",
-  "/cgv",
   "/cookies",
   "/remboursement",
   "/demandes-rgpd",
@@ -116,7 +116,7 @@ export function buildDriveelyTitle(
 ): string {
   const suffix = opts?.modeSuffix ?? "";
   if (!pageTitle) {
-    return `${PRODUCT_NAME}${suffix} — Gain net avant d'accepter`;
+    return `${PRODUCT_NAME}${suffix} — Le comptable intelligent du livreur`;
   }
   return `${pageTitle} · ${PRODUCT_NAME}${suffix}`;
 }
@@ -138,7 +138,8 @@ export function buildDriveelyMetadata({
   const pageTitle = title
     ? buildDriveelyTitle(title, { modeSuffix })
     : buildDriveelyTitle(undefined, { modeSuffix });
-  const shortTitle = title ?? `${PRODUCT_NAME}${modeSuffix} — Gain net avant d'accepter`;
+  const shortTitle =
+    title ?? `${PRODUCT_NAME}${modeSuffix} — Le comptable intelligent du livreur`;
 
   return {
     title: title
@@ -155,13 +156,13 @@ export function buildDriveelyMetadata({
     category: "productivity",
     keywords: [
       "Driveely",
-      "Uber Eats rentabilité",
-      "calculateur course livraison",
+      "comptable livreur",
+      "rentabilité livreur",
       "gain net livreur",
-      "Deliveroo rentabilité",
-      "Stuart livraison",
+      "analyse course livraison",
       "coût au km livreur",
-      "optimisation courses livraison",
+      "verdict course Uber Eats",
+      "Deliveroo rentabilité",
       "revenu livreur indépendant",
     ],
     metadataBase: new URL(getDriveelySiteOrigin()),

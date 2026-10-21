@@ -1,7 +1,10 @@
 /**
- * Corrige le statut juridique dans les documents Driveely :
- * SASU / Président mineur → micro-entreprise dirigée par le tuteur légal.
+ * OBSOLÈTE — ne plus exécuter tel quel.
+ * Identité actuelle : Quentin Bouyssou / Driveely (voir lib/margeo/legal/entity.ts).
+ * Ce script date de la transition SASU → micro-entreprise Mikael et réintroduirait
+ * d'anciens placeholders / rôles. Gardé uniquement pour historique.
  */
+
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

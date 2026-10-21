@@ -58,8 +58,8 @@ NEXT_PUBLIC_DRIVEELY_AT_ROOT=true
 # STRIPE_WEBHOOK_SECRET=
 ```
 
-Plus besoin d'un projet `driveely-beta` / `beta.driveely.app` pour le mode app.  
-Les hôtes legacy beta peuvent rester dans `DRIVEELY_PRODUCT_HOSTS` si tu veux encore router le produit dessus.
+Plus besoin d'un second projet Vercel pour le mode app.
+Ne jamais rattacher Driveely à `margeo.vercel.app` (autre produit).
 
 ## Flip « ouverture officielle »
 

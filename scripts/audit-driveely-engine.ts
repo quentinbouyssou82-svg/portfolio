@@ -116,15 +116,27 @@ function auditAnalysisConsistency(
     grossGain: number;
     explanation: string;
     offer: { distanceKm?: number; durationMin?: number };
+    reliability?: {
+      decisionConfidence?: number;
+      cautionFields?: string[];
+    };
   },
 ) {
   const v = expectedVerdict(analysis.score);
   let verdictOk = analysis.verdict === v;
+  const confidence = analysis.reliability?.decisionConfidence ?? 100;
+  const moderatedByReliability =
+    analysis.verdict === "check" &&
+    v === "accept" &&
+    confidence < 85;
   if (
     analysis.verdict === "check" &&
     v === "accept" &&
     (!analysis.offer.distanceKm || !analysis.offer.durationMin)
   ) {
+    verdictOk = true;
+  }
+  if (moderatedByReliability) {
     verdictOk = true;
   }
   if (!verdictOk) {
@@ -506,6 +518,10 @@ async function testVisionCaptures(access: string, refresh: string) {
       offer: {
         distanceKm: offer.distanceKm as number | undefined,
         durationMin: offer.durationMin as number | undefined,
+      },
+      reliability: analysis.reliability as {
+        decisionConfidence?: number;
+        cautionFields?: string[];
       },
     });
 

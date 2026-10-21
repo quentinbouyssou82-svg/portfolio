@@ -71,8 +71,8 @@ export async function activatePlanAction(input: {
   const auth = await requireUserId();
   if (!auth.ok) return auth;
 
-  const { getAppFeaturesAsync } = await import("@/lib/margeo/config");
-  const feats = await getAppFeaturesAsync();
+  const { getBillingFeaturesAsync } = await import("@/lib/margeo/config");
+  const feats = await getBillingFeaturesAsync();
   if (!feats.billing) {
     return {
       ok: false,

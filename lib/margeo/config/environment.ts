@@ -1,10 +1,10 @@
 /**
  * Runtime environment — Driveely (single app, dual mode)
  *
- * Mode = cookie/session preference on driveely.app (not a second deployment).
- * Default (no cookie) = production/public.
+ * UI mode (cookie / X-Driveely-App-Mode) = badges, feedback chrome, marketing copy.
+ * Trusted mode (env only) = billing, quotas, entitlements, premium unlock.
  *
- * Env vars DRIVEELY_APP_MODE / NEXT_PUBLIC_* only set the *default* when no cookie.
+ * Never derive commercial entitlements from cookie or client spoof headers.
  */
 
 import {
@@ -29,8 +29,18 @@ export function normalizeMode(
 }
 
 /**
- * Default when the user has not chosen a mode (no cookie).
+ * Server-trusted mode — env only. Never cookie / never client header.
+ * Use for billing, quotas, entitlements, OCR fail-closed, production gates.
+ */
+export function getTrustedAppMode(): DriveelyAppMode {
+  return getDefaultAppMode();
+}
+
+/**
+ * Default when the user has not chosen a UI mode (no cookie).
  * Prefer production on the single domain; local override via env.
+ * Sur Vercel production : ignore DRIVEELY_BETA_MODE / UBERLY_BETA_MODE
+ * (legacy flags that would unlock Elite for everyone).
  */
 export function getDefaultAppMode(): DriveelyAppMode {
   const fromPublic = normalizeMode(process.env.NEXT_PUBLIC_DRIVEELY_APP_MODE);
@@ -39,9 +49,11 @@ export function getDefaultAppMode(): DriveelyAppMode {
   const fromServer = normalizeMode(process.env.DRIVEELY_APP_MODE);
   if (fromServer) return fromServer;
 
+  const onVercelProduction = process.env.VERCEL_ENV === "production";
   if (
-    process.env.DRIVEELY_BETA_MODE === "true" ||
-    process.env.UBERLY_BETA_MODE === "true"
+    !onVercelProduction &&
+    (process.env.DRIVEELY_BETA_MODE === "true" ||
+      process.env.UBERLY_BETA_MODE === "true")
   ) {
     return "beta";
   }
@@ -59,8 +71,8 @@ function readBrowserCookie(name: string): string | null {
 }
 
 /**
- * Sync resolver — safe for client components & middleware.
- * Client: cookie. Server without async context: default env (prefer async below).
+ * Sync UI mode — client cookie or env default.
+ * Do NOT use for quotas / billing / entitlements (use getTrustedAppMode).
  */
 export function getAppMode(): DriveelyAppMode {
   const fromBrowser = normalizeMode(readBrowserCookie(DRIVEELY_APP_MODE_COOKIE));
@@ -69,8 +81,8 @@ export function getAppMode(): DriveelyAppMode {
 }
 
 /**
- * Server resolver — cookie + middleware header.
- * Use in Server Components, Route Handlers, Server Actions.
+ * Async UI mode — cookie + middleware header (presentation only).
+ * Do NOT use for quotas / billing / entitlements (use getTrustedAppMode).
  */
 export async function getAppModeAsync(): Promise<DriveelyAppMode> {
   try {
@@ -98,4 +110,13 @@ export function isProductionApp(): boolean {
 
 export async function isBetaAppAsync(): Promise<boolean> {
   return (await getAppModeAsync()) === "beta";
+}
+
+/** Trusted (env) beta — never from client spoof. */
+export function isTrustedBetaApp(): boolean {
+  return getTrustedAppMode() === "beta";
+}
+
+export function isTrustedProductionApp(): boolean {
+  return getTrustedAppMode() === "production";
 }

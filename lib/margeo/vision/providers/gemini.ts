@@ -2,8 +2,12 @@ import { VISION_EXTRACTION_PROMPT } from "../extraction-prompt";
 import { toBase64 } from "../image-encoding";
 import type { VisionProvider, VisionProviderResult } from "./types";
 
+/** gemini-2.0-flash déprécié (arrêt juin 2026) — fallback lite rapide. */
 const DEFAULT_MODEL =
-  process.env.DRIVEELY_GEMINI_VISION_MODEL?.trim() || "gemini-2.0-flash";
+  process.env.DRIVEELY_GEMINI_VISION_MODEL?.trim() ||
+  "gemini-2.5-flash-lite";
+
+const VISION_TIMEOUT_MS = 8_000;
 
 function getApiKey(): string {
   const apiKey =
@@ -29,28 +33,41 @@ export const geminiVisionProvider: VisionProvider = {
     const apiKey = getApiKey();
     const { base64, mimeType } = await toBase64(image);
     const started = Date.now();
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), VISION_TIMEOUT_MS);
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: VISION_EXTRACTION_PROMPT },
-                { inline_data: { mime_type: mimeType, data: base64 } },
-              ],
+    let res: Response;
+    try {
+      res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { text: VISION_EXTRACTION_PROMPT },
+                  { inline_data: { mime_type: mimeType, data: base64 } },
+                ],
+              },
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+              temperature: 0.05,
             },
-          ],
-          generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.05,
-          },
-        }),
-      },
-    );
+          }),
+        },
+      );
+    } catch (error) {
+      if (controller.signal.aborted) {
+        throw new Error("Gemini Vision : délai dépassé");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!res.ok) {
       const err = await res.text();

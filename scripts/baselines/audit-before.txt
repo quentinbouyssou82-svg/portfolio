@@ -1,0 +1,52 @@
+
+=== Audit moteur Driveely — http://localhost:3000 ===
+
+
+── Robustesse multi-profils ──
+
+✅ robustesse:costPerKm — 88 > 61
+✅ robustesse:targetHourly — 97 > 57
+✅ robustesse:minBenefit — 87 ≥ 69
+✅ robustesse:maxDistanceKm — 82 > 76
+✅ robustesse:emptyReturns — yes=60 > no=50
+✅ robustesse:waitTime — 93 > 52
+✅ robustesse:voiture_essence=voiture — 58
+✅ robustesse:base-score — 82
+
+── Géolocalisation ──
+
+✅ geo:GET — {"lat":null,"lng":null,"permission":"unknown","updatedAt":null,"city":"Lyon"}
+✅ geo:POST-granted
+✅ geo:persist — 45.764, 4.8357
+✅ geo:POST-denied
+
+── Analyses Vision (captures) ──
+
+✅ vision:Lyon 12,45€:payout — 12.45€
+✅ cohérence-verdict:Lyon 12,45€ — 98→accept
+✅ vision:Lyon 12,45€ — accept 98/100 · 2915ms · net=10.61€
+✅ vision:Marseille 8,30€:payout — 8.3€
+✅ cohérence-verdict:Marseille 8,30€ — 69→accept
+✅ vision:Marseille 8,30€ — accept 69/100 · 3072ms · net=6.75€
+✅ vision:Paris 6,20€:payout — 6.2€
+✅ cohérence-verdict:Paris 6,20€ — 69→accept
+✅ vision:Paris 6,20€ — accept 69/100 · 2592ms · net=5.3€
+✅ vision:Toulouse 4,15€:payout — 4.15€
+✅ cohérence-verdict:Toulouse 4,15€ — 49→check
+✅ vision:Toulouse 4,15€ — check 49/100 · 2404ms · net=3.48€
+✅ vision:Nice 3,30€:payout — 3.3€
+✅ cohérence-verdict:Nice 3,30€ — 41→refuse
+✅ vision:Nice 3,30€ — refuse 41/100 · 3820ms · net=2.74€
+✅ vision:Uber Eats 7,80€:payout — 7.8€
+✅ cohérence-verdict:Uber Eats 7,80€ — 90→accept
+✅ vision:Uber Eats 7,80€ — accept 90/100 · 719ms · net=6.74€
+✅ rapport-json — /Users/quentinbouyssou/Developer/driveely-web/scripts/audit-driveely-engine-report.json
+
+── Synthèse ──
+31 checks OK · 0 findings
+  errors: 0 · warns: 0
+npm notice
+npm notice New major version of npm available! 10.9.2 -> 12.0.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+npm notice To update run: npm install -g npm@12.0.2
+npm notice

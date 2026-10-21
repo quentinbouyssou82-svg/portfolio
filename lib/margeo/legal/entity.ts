@@ -1,23 +1,28 @@
 /**
- * Identité légale Driveely — source unique pour les placeholders des docs.
+ * Identité légale Driveely — source unique pour les marqueurs résiduels des docs.
  *
- * Quand la micro-entreprise est créée, renseigner les champs `value`
- * (ou les variables d'environnement documentées). Les markdown utilisent
- * les marqueurs `[…]` ; `applyLegalEntityPlaceholders()` les remplace au chargement.
+ * Éditeur / responsable confirmé : Quentin Bouyssou.
+ * Contact officiel : contactdriveelyai@gmail.com
+ *
+ * Ne pas réintroduire SIREN/SIRET/adresse/TVA tant que Quentin ne les a pas
+ * confirmés pour l'éditeur actuel (les anciennes valeurs Mikael / Montauban
+ * ne doivent plus être publiées).
+ *
+ * `applyLegalEntityPlaceholders()` remplace les marqueurs `[…]` s'ils
+ * réapparaissent. Les variables d'env optionnelles restent prioritaires.
  */
 
 export type LegalEntityField = {
   /** Marqueur exact tel qu'écrit dans les .md */
   marker: string;
-  /** Valeur affichée (placeholder tant que null / vide) */
+  /** Valeur affichée */
   value: string;
-  /** true = donnée provisoire à remplacer avant commercialisation */
+  /** true = donnée encore à confirmer par le responsable avant commercialisation */
   provisional: boolean;
   note?: string;
 };
 
 /**
- * Renseigner ici (ou via env) dès que l'immatriculation est faite.
  * Env optionnelles (prioritaires si définies) :
  * - DRIVEELY_LEGAL_SIREN
  * - DRIVEELY_LEGAL_SIRET
@@ -28,60 +33,66 @@ export type LegalEntityField = {
  */
 export const DRIVEELY_LEGAL_ENTITY = {
   tradeName: "Driveely",
-  projectLead: "Leandro Machado",
-  contactEmail: "contact@driveely.app",
-  siteUrl: "https://driveely.app",
+  commercialName: "Driveely",
+  publisher: "Quentin Bouyssou",
+  director: "Quentin Bouyssou",
+  contactEmail: "contactdriveelyai@gmail.com",
+  siteUrl: "https://www.driveely.app",
+  /** Non confirmés pour l'éditeur actuel — ne pas afficher de valeurs inventées */
+  siren: process.env.DRIVEELY_LEGAL_SIREN?.trim() || "",
+  siret: process.env.DRIVEELY_LEGAL_SIRET?.trim() || "",
+  professionalAddress: process.env.DRIVEELY_LEGAL_ADDRESS?.trim() || "",
+  vat: process.env.DRIVEELY_LEGAL_VAT?.trim() || "",
   fields: [
     {
       marker: "[DATE À COMPLÉTER]",
-      value:
-        process.env.DRIVEELY_LEGAL_UPDATED_AT?.trim() ||
-        "[DATE À COMPLÉTER]",
-      provisional: !process.env.DRIVEELY_LEGAL_UPDATED_AT?.trim(),
+      value: process.env.DRIVEELY_LEGAL_UPDATED_AT?.trim() || "21 octobre 2026",
+      provisional: false,
       note: "Date de mise à jour du document",
     },
     {
       marker: "[ADRESSE PROFESSIONNELLE — À COMPLÉTER]",
       value:
         process.env.DRIVEELY_LEGAL_ADDRESS?.trim() ||
-        "[ADRESSE PROFESSIONNELLE — À COMPLÉTER]",
+        "adresse professionnelle communiquée sur demande à contactdriveelyai@gmail.com",
       provisional: !process.env.DRIVEELY_LEGAL_ADDRESS?.trim(),
+      note: "À confirmer par Quentin avant publication commerciale",
     },
     {
       marker: "[ADRESSE — À COMPLÉTER]",
       value:
         process.env.DRIVEELY_LEGAL_ADDRESS?.trim() ||
-        "[ADRESSE — À COMPLÉTER]",
+        "adresse professionnelle communiquée sur demande à contactdriveelyai@gmail.com",
       provisional: !process.env.DRIVEELY_LEGAL_ADDRESS?.trim(),
     },
     {
       marker: "[SIREN — EN COURS D'IMMATRICULATION]",
       value:
         process.env.DRIVEELY_LEGAL_SIREN?.trim() ||
-        "[SIREN — EN COURS D'IMMATRICULATION]",
+        "à confirmer par le responsable avant publication",
       provisional: !process.env.DRIVEELY_LEGAL_SIREN?.trim(),
     },
     {
       marker: "[SIRET — EN COURS D'IMMATRICULATION]",
       value:
         process.env.DRIVEELY_LEGAL_SIRET?.trim() ||
-        "[SIRET — EN COURS D'IMMATRICULATION]",
+        "à confirmer par le responsable avant publication",
       provisional: !process.env.DRIVEELY_LEGAL_SIRET?.trim(),
     },
     {
       marker: "[NUMÉRO DE TVA — À COMPLÉTER, le cas échéant]",
       value:
         process.env.DRIVEELY_LEGAL_VAT?.trim() ||
-        "[NUMÉRO DE TVA — À COMPLÉTER, le cas échéant]",
+        "non communiqué (franchise en base possible — à confirmer)",
       provisional: !process.env.DRIVEELY_LEGAL_VAT?.trim(),
+      note: "Optionnel selon régime fiscal",
     },
     {
       marker: "[NOM DU TUTEUR LÉGAL — À COMPLÉTER]",
       value:
-        process.env.DRIVEELY_LEGAL_DIRECTOR?.trim() ||
-        "[NOM DU TUTEUR LÉGAL — À COMPLÉTER]",
-      provisional: !process.env.DRIVEELY_LEGAL_DIRECTOR?.trim(),
-      note: "Responsable légal de la micro-entreprise",
+        process.env.DRIVEELY_LEGAL_DIRECTOR?.trim() || "Quentin Bouyssou",
+      provisional: false,
+      note: "Responsable / éditeur / directeur de la publication",
     },
     {
       marker: "[ADRESSE DE VERCEL INC. — À COMPLÉTER]",

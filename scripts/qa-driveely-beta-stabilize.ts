@@ -3,7 +3,7 @@
  *
  * Usage :
  *   set -a && source .env.local && set +a
- *   NEXT_PUBLIC_APP_URL=https://margeo.vercel.app npx tsx scripts/qa-driveely-beta-stabilize.ts
+ *   NEXT_PUBLIC_APP_URL=https://driveely.app npx tsx scripts/qa-driveely-beta-stabilize.ts
  */
 
 import fs from "fs";
@@ -23,7 +23,7 @@ for (const line of fs.readFileSync(path.join(ROOT, ".env.local"), "utf8").split(
   if (!process.env[k]) process.env[k] = v;
 }
 
-const BASE = process.env.NEXT_PUBLIC_APP_URL || "https://margeo.vercel.app";
+const BASE = process.env.NEXT_PUBLIC_APP_URL || "https://driveely.app";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const PUB = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 const SECRET = process.env.SUPABASE_SECRET_KEY!;
