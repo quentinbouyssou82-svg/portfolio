@@ -8,7 +8,7 @@
     "tunnel": "bash scripts/tunnel.sh",
     "tunnel:url": "bash scripts/tunnel-url.sh",
     "ngrok:install": "bash scripts/install-ngrok.sh",
-    "build": "next build",
+    "build": "next build --webpack",
     "food-assets:fetch": "node scripts/fetch-food-assets-3d.mjs",
     "start": "next start",
     "lint": "eslint",
