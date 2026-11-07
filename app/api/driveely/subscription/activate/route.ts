@@ -4,6 +4,7 @@ import { requireAuthUser } from "@/lib/margeo/api/auth";
 import { getBillingFeatures } from "@/lib/margeo/config";
 import { checkoutAndActivatePlan } from "@/lib/margeo/services/subscription";
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
 
 /** POST — active un plan (production / futur Stripe). */
 export async function POST(request: Request) {
@@ -17,6 +18,10 @@ export async function POST(request: Request) {
     }
 
     const user = await requireAuthUser();
+    const rl = await checkRateLimitDistributed(`sub:activate:${user.id}`, 10, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "rate_limit" }, { status: 429 });
+    }
     const body = (await request.json().catch(() => ({}))) as {
       planId?: string;
       billingPeriod?: "monthly" | "yearly";

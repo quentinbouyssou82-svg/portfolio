@@ -6,11 +6,16 @@ import { getQuotaStatus } from "@/lib/margeo/services/quota";
 import { resolvePremiumStatusForUser } from "@/lib/margeo/services/premium";
 import { getUserEntitlements } from "@/lib/margeo/services/subscription";
 import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
 
 /** Statut plan + quotas + entitlements — contrat stable pour le frontend. */
 export async function GET() {
   try {
     const user = await requireAuthUser();
+    const rl = await checkRateLimitDistributed(`quota:${user.id}`, 60, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "rate_limit" }, { status: 429 });
+    }
     const feats = getAppFeatures();
     const [quota, premium, entitlements] = await Promise.all([
       getQuotaStatus(user.id),
