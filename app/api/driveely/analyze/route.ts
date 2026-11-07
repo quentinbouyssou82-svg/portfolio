@@ -10,7 +10,24 @@ import {
   validateScreenshotFile,
 } from "@/lib/margeo/api/validate-image";
 import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
-import { analyzeScreenshot } from "@/lib/margeo/analyze-screenshot";
+import {
+  analyzeFromOnDeviceOcr,
+  analyzeScreenshot,
+} from "@/lib/margeo/analyze-screenshot";
+import {
+  evaluateAppAttestRequest,
+  getAppAttestConfig,
+} from "@/lib/margeo/security/app-attest";
+import {
+  decideAnalyzeExtraction,
+  isVisionInfrastructureError,
+  readFormText,
+} from "@/lib/margeo/security/analyze-ocr-path";
+import {
+  logOcrTrustEvent,
+  resolveOcrTrust,
+  sha256Hex,
+} from "@/lib/margeo/security/ocr-trust";
 import {
   ensureProfileForUser,
   getProfileForUser,
@@ -184,13 +201,71 @@ export async function POST(request: Request) {
       validateCoordinates(lat, lng);
     }
 
-    // Chemin critique : Vision (+ calibration en parallèle, free si Vision > 200ms)
+    const sourceField = (await readFormText(formData, "source")) ?? "vision";
+    const ocrPayload = await readFormText(formData, "ocrPayload");
+    const ocrChallenge = await readFormText(formData, "ocrChallenge");
+    const ocrBinding = await readFormText(formData, "ocrBinding");
+    const attest = await evaluateAppAttestRequest(request, {
+      path: "/api/driveely/analyze",
+      userId: user.id,
+    });
+    const ocrTrust = await resolveOcrTrust({
+      sourceField,
+      ocrPayload,
+      hasImage: true,
+      imageSha256: sha256Hex(validatedBuffer),
+      ocrChallenge,
+      ocrBinding,
+      attest,
+      attestEnabled: getAppAttestConfig().enabled,
+    });
+    for (const event of ocrTrust.events) {
+      logOcrTrustEvent(event, {
+        reason: ocrTrust.reason,
+        userId: user.id,
+      });
+    }
+
+    // Vision d'abord. L'OCR client n'est jamais la vérité sans preuves bound.
     const workStarted = Date.now();
-    const [vision, calibration] = await Promise.all([
-      analyzeScreenshot(prepared, { contentHash: prepared.contentHash }),
+    const [visionSettled, calibration] = await Promise.all([
+      analyzeScreenshot(prepared, { contentHash: prepared.contentHash })
+        .then((result) => ({ ok: true as const, result }))
+        .catch((error: unknown) => ({ ok: false as const, error })),
       getUserCalibration(user.id).catch(() => getNeutralCalibration()),
     ]);
     mark("visionMs", workStarted);
+
+    let vision = visionSettled.ok ? visionSettled.result : null;
+    const visionUnavailable =
+      !visionSettled.ok && isVisionInfrastructureError(visionSettled.error);
+    if (!visionSettled.ok && !visionUnavailable) {
+      throw visionSettled.error;
+    }
+
+    const visionOk =
+      vision != null &&
+      vision.extractionQuality !== "failed" &&
+      vision.offer.payout > 0;
+    const extraction = decideAnalyzeExtraction({
+      trust: ocrTrust,
+      visionOk,
+      visionUnavailable,
+    });
+    timings.ocrPath = extraction.useClientOcr ? 1 : 0;
+
+    if (extraction.useClientOcr && ocrPayload) {
+      vision = await analyzeFromOnDeviceOcr(ocrPayload);
+    }
+
+    if (!vision) {
+      throw new ApiError(
+        "Analyse IA saturée temporairement. Réessaie dans quelques secondes.",
+        503,
+        "VISION_UNAVAILABLE",
+      );
+    }
+
     timings.visionOnlyMs = vision.fromCache
       ? 0
       : (vision.visionDurationMs ?? timings.visionMs);
@@ -237,8 +312,17 @@ export async function POST(request: Request) {
     mark("saveMs", saveStarted);
 
     if (!analysis) {
+      console.error("[driveely/analyze] SAVE_FAILED after Vision", {
+        userId: user.id,
+        source: vision.source,
+        quality: vision.extractionQuality,
+        missing: vision.missingFields,
+        payout: calibratedOffer.payout,
+        distanceKm: calibratedOffer.distanceKm ?? null,
+        durationMin: calibratedOffer.durationMin ?? null,
+      });
       throw new ApiError(
-        "Impossible d'enregistrer l'analyse",
+        "L'analyse a réussi mais n'a pas pu être enregistrée. Réessaie.",
         500,
         "SAVE_FAILED",
       );
@@ -294,6 +378,9 @@ export async function POST(request: Request) {
             timings,
             imageOriginalBytes: prepared.originalBytes,
             imagePreparedBytes: prepared.preparedBytes,
+            ocrTrustReason: ocrTrust.reason,
+            ocrExtractionReason: extraction.reason,
+            ocrUsed: extraction.useClientOcr,
           },
         });
         await logFirstAnalysisIfNeeded(user.id, analysis.id, {
@@ -325,6 +412,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       analysis,
       source: vision.source,
+      ocrUsed: extraction.useClientOcr,
       confidence: vision.confidence,
       warnings: vision.warnings,
       missingFields: vision.missingFields,

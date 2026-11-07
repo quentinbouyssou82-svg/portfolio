@@ -59,7 +59,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "profile",
     sectionLabel: "Ton profil",
     questionType: "single_choice",
-    label: "Depuis combien de temps fais-tu des livraisons ?",
+    label: "Depuis combien de temps tu livres ?",
     options: [
       { value: "lt_1m", label: "Moins d'un mois" },
       { value: "1_6m", label: "1 à 6 mois" },
@@ -74,7 +74,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "profile",
     sectionLabel: "Ton profil",
     questionType: "single_choice",
-    label: "Combien de temps conduis-tu généralement par jour ?",
+    label: "Combien de temps conduis-tu par jour ?",
     options: [
       { value: "lt_2", label: "Moins de 2 h" },
       { value: "2_4", label: "2 à 4 h" },
@@ -90,7 +90,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "profile",
     sectionLabel: "Ton profil",
     questionType: "single_choice",
-    label: "Combien d'heures tu livres en moyenne par semaine ?",
+    label: "Combien d'heures tu livres par semaine ?",
     options: [
       { value: "under_10", label: "Moins de 10 h" },
       { value: "10_20", label: "10 à 20 h" },
@@ -106,7 +106,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "habits",
     sectionLabel: "Tes courses",
     questionType: "single_choice",
-    label: "Quel est ton principal critère pour accepter une course ?",
+    label: "Ton principal critère pour accepter une course ?",
     options: [
       { value: "pay", label: "La rémunération" },
       { value: "distance", label: "La distance" },
@@ -121,7 +121,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "habits",
     sectionLabel: "Tes courses",
     questionType: "single_choice",
-    label: "Combien de kilomètres fais-tu généralement par jour ?",
+    label: "Combien de kilomètres fais-tu par jour ?",
     options: [
       { value: "lt_30", label: "Moins de 30 km" },
       { value: "30_60", label: "30 à 60 km" },
@@ -151,7 +151,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "habits",
     sectionLabel: "Tes courses",
     questionType: "single_choice",
-    label: "Sans Driveely, combien de temps tu prends pour juger une offre ?",
+    label: "Sans Driveely, tu juges une offre en combien de temps ?",
     options: [
       { value: "under_5s", label: "Moins de 5 secondes" },
       { value: "5_15s", label: "5 à 15 secondes" },
@@ -166,14 +166,14 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "habits",
     sectionLabel: "Tes courses",
     questionType: "multiple_choice",
-    label: "Qu'est-ce qui te fait hésiter avant d'accepter une course ?",
+    label: "Qu'est-ce qui te fait hésiter avant d'accepter ?",
     options: [
       { value: "distance", label: "Distance" },
       { value: "pay", label: "Rémunération" },
       { value: "duration", label: "Temps estimé" },
       { value: "empty_return", label: "Retour à vide" },
       { value: "restaurant_trip", label: "Trajet jusqu'au restaurant" },
-      { value: "profitability", label: "Je ne sais jamais si elle est rentable" },
+      { value: "profitability", label: "Rentabilité incertaine" },
     ],
     sortOrder: 10,
     stepIndex: 9,
@@ -183,7 +183,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "pain",
     sectionLabel: "Tes défis",
     questionType: "yes_no",
-    label: "Est-ce qu'il t'arrive d'accepter une course que tu regrettes ensuite ?",
+    label: "Tu regrettes parfois une course après l'avoir acceptée ?",
     options: [
       { value: "yes", label: "Oui" },
       { value: "no", label: "Non" },
@@ -196,7 +196,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "pain",
     sectionLabel: "Tes défis",
     questionType: "single_choice",
-    label: "Il t'arrive d'accepter une course puis de réaliser trop tard qu'elle n'était pas rentable ?",
+    label: "Tu réalises trop tard qu'une course n'était pas rentable ?",
     options: [
       { value: "often", label: "Souvent" },
       { value: "sometimes", label: "Parfois" },
@@ -240,7 +240,7 @@ export const BETA_SURVEY_QUESTIONS: SurveyQuestionDef[] = [
     sectionKey: "goals",
     sectionLabel: "Tes objectifs",
     questionType: "scale",
-    label: "À partir de combien €/h considères-tu qu'une course vaut le coup ?",
+    label: "À partir de combien €/h une course vaut le coup ?",
     sortOrder: 15,
     stepIndex: 14,
   },

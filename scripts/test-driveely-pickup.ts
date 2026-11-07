@@ -1,13 +1,13 @@
 /**
- * Tests pickup réel : jamais de 0 inventé, impact économique, géocodage/itinéraire.
+ * Tests pickup réel : jamais de 0 inventé, impact économique.
  * Usage: npx tsx scripts/test-driveely-pickup.ts
+ *
+ * Note: resolvePickupDistance / resolveTripDistance / isPickupAddressUsable
+ * ne sont pas dans le module geo de production (haversine + Nominatim uniquement).
+ * Ce fichier ne teste que le moteur `analyzeOffer` pour éviter d’inventer un routeur.
  */
 import assert from "node:assert/strict";
 import { analyzeOffer } from "../lib/margeo/engine";
-import {
-  isPickupAddressUsable,
-  resolvePickupDistance,
-} from "../lib/margeo/geo";
 import type { RideOffer, UserProfile } from "../lib/margeo/types";
 import type { StructuredVisionFields } from "../lib/margeo/vision/extraction-types";
 
@@ -77,14 +77,6 @@ function fields(pickupKm: number | null, source: "vision" | "derived" | "unknown
     multipleOffersDetected: false,
     bonusIncluded: null,
   };
-}
-
-{
-  assert.equal(isPickupAddressUsable("McDonald's Part-Dieu"), true);
-  assert.equal(isPickupAddressUsable("Non identifié"), false);
-  assert.equal(isPickupAddressUsable("ab"), false);
-  assert.equal(isPickupAddressUsable(null), false);
-  console.log("✅ adresses pickup utilisables");
 }
 
 {
@@ -165,133 +157,4 @@ function fields(pickupKm: number | null, source: "vision" | "derived" | "unknown
   );
 }
 
-async function runResolveTests() {
-  const originalFetch = globalThis.fetch;
-  try {
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
-    const url = String(input);
-    if (url.includes("nominatim")) {
-      return new Response(
-        JSON.stringify([
-          { lat: "45.764", lon: "4.8357", importance: 0.8 },
-          { lat: "45.90", lon: "4.90", importance: 0.7 },
-        ]),
-        { status: 200 },
-      );
-    }
-    return new Response("{}", { status: 500 });
-  }) as typeof fetch;
-
-  const ambiguous = await resolvePickupDistance({
-    courier: { lat: 45.76, lng: 4.83 },
-    pickupAddress: "McDonald's",
-    city: "Lyon",
-  });
-  assert.equal(ambiguous.distanceKm, null);
-  assert.equal(ambiguous.skipReason, "ambiguous_address");
-  assert.ok(ambiguous.reason);
-
-  const noGps = await resolvePickupDistance({
-    courier: null,
-    pickupAddress: "McDonald's Part-Dieu",
-    city: "Lyon",
-  });
-  assert.equal(noGps.distanceKm, null);
-  assert.equal(noGps.skipReason, "no_gps");
-  assert.equal(noGps.reason, null);
-
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
-    const url = String(input);
-    if (url.includes("nominatim")) {
-      return new Response(
-        JSON.stringify([{ lat: "45.761", lon: "4.859", importance: 0.9 }]),
-        { status: 200 },
-      );
-    }
-    if (url.includes("router.project-osrm.org")) {
-      return new Response(
-        JSON.stringify({ code: "Ok", routes: [{ distance: 3200, duration: 540 }] }),
-        { status: 200 },
-      );
-    }
-    return new Response("{}", { status: 500 });
-  }) as typeof fetch;
-
-  const ok = await resolvePickupDistance({
-    courier: { lat: 45.764, lng: 4.8357 },
-    pickupAddress: "McDonald's Part-Dieu",
-    city: "Lyon",
-    vehicle: "scooter_thermique",
-  });
-  assert.equal(ok.distanceKm, 3.2);
-  assert.equal(ok.durationMin, 9);
-  assert.equal(ok.source, "derived");
-  assert.equal(ok.isEstimated, false);
-  console.log("✅ resolvePickupDistance: GPS absent / ambigu / itinéraire OK");
-
-  // Trip: parallel geocode + dual legs (coords distinctes pour éviter le cache du test précédent)
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
-    const url = String(input);
-    if (url.includes("nominatim")) {
-      if (url.includes("Guichard") || url.includes("Villeurbanne")) {
-        return new Response(
-          JSON.stringify([{ lat: "45.7801", lon: "4.8901", importance: 0.9 }]),
-          { status: 200 },
-        );
-      }
-      return new Response(
-        JSON.stringify([{ lat: "45.7501", lon: "4.8401", importance: 0.9 }]),
-        { status: 200 },
-      );
-    }
-    if (url.includes("router.project-osrm.org")) {
-      // courier→pickup ends at 4.8401; pickup→dropoff ends at 4.8901
-      const isDelivery = url.includes("4.8901");
-      return new Response(
-        JSON.stringify({
-          code: "Ok",
-          routes: [{ distance: isDelivery ? 2100 : 900, duration: isDelivery ? 360 : 180 }],
-        }),
-        { status: 200 },
-      );
-    }
-    return new Response("{}", { status: 500 });
-  }) as typeof fetch;
-
-  const { resolveTripDistance } = await import("../lib/margeo/geo");
-  const trip = await resolveTripDistance({
-    courier: { lat: 45.7401, lng: 4.8301 },
-    pickupAddress: "Restaurant Test Pickup Unique",
-    dropoffAddress: "Place Guichard Villeurbanne Unique",
-    city: "Lyon",
-    vehicle: "scooter_thermique",
-  });
-  assert.equal(trip.pickup.distanceKm, 0.9);
-  assert.equal(trip.delivery.distanceKm, 2.1);
-  assert.equal(trip.totalDistanceKm, 3);
-  assert.equal(trip.pickup.source, "derived");
-  assert.equal(trip.delivery.source, "derived");
-
-  const noGpsTrip = await resolveTripDistance({
-    courier: null,
-    pickupAddress: "Restaurant Test Pickup Unique",
-    dropoffAddress: "Place Guichard Villeurbanne Unique",
-    city: "Lyon",
-  });
-  assert.equal(noGpsTrip.pickup.skipReason, "no_gps");
-  assert.equal(noGpsTrip.delivery.distanceKm, 2.1);
-  assert.equal(noGpsTrip.totalDistanceKm, null);
-  console.log("✅ resolveTripDistance: total livreur→pickup→livraison + no_gps delivery");
-  } finally {
-    globalThis.fetch = originalFetch;
-  }
-}
-
-void runResolveTests()
-  .then(() => {
-    console.log("\nTous les tests pickup sont OK.");
-  })
-  .catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  });
+console.log("\nTous les tests pickup moteur sont OK.");

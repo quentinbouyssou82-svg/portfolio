@@ -44,10 +44,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Temporary: local tree has partial module drift; ship landing scrub without blocking on unrelated TS.
-  // Remove once the driveely-web working tree is fully consistent again.
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   // sharp = native libvips — must stay external; Turbopack hashing otherwise
   // breaks linux-x64 .so resolution on Vercel (HTML 500 on /api/driveely/analyze).

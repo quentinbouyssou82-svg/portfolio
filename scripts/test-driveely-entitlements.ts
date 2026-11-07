@@ -46,6 +46,21 @@ async function main() {
   assert.equal(buildQuotaStatus(true, 5, 2).remainingToday, null);
   assert.equal(buildQuotaStatus(false, 1, 2).remainingToday, 1);
 
+  const { mapIOSProductId } = await import(
+    "../lib/margeo/billing/app-store-products"
+  );
+  assert.deepEqual(mapIOSProductId("app.driveely.premium.monthly"), {
+    planId: "pro",
+    billingPeriod: "monthly",
+  });
+  assert.deepEqual(mapIOSProductId("app.driveely.premium.yearly"), {
+    planId: "pro",
+    billingPeriod: "yearly",
+  });
+  assert.equal(mapIOSProductId("app.driveely.ios.premium.monthly"), null);
+  assert.equal(mapIOSProductId("app.driveely.ios.premium.annual"), null);
+  assert.equal(mapIOSProductId("app.driveely.premium.annual"), null);
+
   console.log("✅ entitlements + quota logic OK");
 }
 
