@@ -104,6 +104,17 @@ const nextConfig: NextConfig = {
         destination: "/api/driveely/:path*",
         statusCode: 301,
       },
+      // App Store Connect requires /privacy and /terms URLs
+      {
+        source: "/privacy",
+        destination: "/demos/driveely/confidentialite",
+        statusCode: 301,
+      },
+      {
+        source: "/terms",
+        destination: "/demos/driveely/cgu",
+        statusCode: 301,
+      },
     ];
   },
   async headers() {
