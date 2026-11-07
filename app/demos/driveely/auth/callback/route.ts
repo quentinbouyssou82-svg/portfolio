@@ -5,10 +5,7 @@ import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { getPostAuthPath } from "@/lib/margeo/auth/post-auth";
 import { getMargeoClientKey, getMargeoSupabaseUrl } from "@/lib/margeo/supabase/env";
 import { markBetaTester } from "@/lib/margeo/services/beta-user";
-import {
-  DRIVEELY_APP_MODE_COOKIE,
-  normalizeMode,
-} from "@/lib/margeo/config";
+import { getTrustedAppMode } from "@/lib/margeo/config";
 
 /**
  * OAuth / magic-link callback.
@@ -45,10 +42,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error && data.user) {
-      const mode = normalizeMode(
-        request.cookies.get(DRIVEELY_APP_MODE_COOKIE)?.value,
-      );
-      if (mode === "beta") {
+      if (getTrustedAppMode() === "beta") {
         await markBetaTester(data.user.id, { force: true });
       }
 
