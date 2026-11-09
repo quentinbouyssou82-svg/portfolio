@@ -6,19 +6,21 @@ Le monorepo sert **Nocta** via `app/page.tsx` à la racine `/`.
 
 Driveely vit sous `app/demos/driveely` → URL interne `/demos/driveely`.
 
-Le middleware ne redirigeait `/` vers Driveely **que** pour `margeo.vercel.app`.
+Le middleware ne redirigeait `/` vers Driveely **que** pour d’anciens hôtes.
 `driveely.app` n’était pas dans la liste → `/` = Nocta.
 
 ## Solution
 
-Sur les **hôtes produit** (`driveely.app`, `www.driveely.app`, `margeo.vercel.app`, `margeo-*.vercel.app`) :
+Sur les **hôtes produit** (`driveely.app`, `www.driveely.app`, `beta.driveely.app`) :
 
 1. Rewrite `/` → `/demos/driveely` (fichiers inchangés)
 2. Rewrite `/login`, `/dashboard`, `/analyse`, … → `/demos/driveely/…`
 3. Redirect 301 `/demos/driveely/*` → `/*` (URLs canoniques propres)
 4. Nocta / Maison / Control Tower non servis
 
-Variable Vercel (projet `margeo`) :
+`margeo.vercel.app` n’est **plus** un hôte Driveely (autre produit).
+
+Variable Vercel (projet Driveely) :
 
 ```
 NEXT_PUBLIC_DRIVEELY_AT_ROOT=true

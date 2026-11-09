@@ -12,10 +12,12 @@ export function normalizeVisionExtraction(
 
   return {
     offer: validated.offer,
+    fields: validated.fields,
     confidence: validated.confidence,
     warnings: validated.warnings,
     missingFields: validated.missingFields,
     extractionQuality: validated.extractionQuality,
+    reliability: validated.reliability,
     visionDurationMs: opts.durationMs,
     visionProvider: opts.provider,
   };

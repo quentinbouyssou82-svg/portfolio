@@ -13,8 +13,12 @@ export function buildLegalMetadata(id: DriveelyLegalDocId): Metadata {
     title: doc.title,
     description: doc.description,
     path: `/${id}`,
-    index: false,
-    follow: false,
+    index:
+      id === "confidentialite" ||
+      id === "cgu" ||
+      id === "cgv" ||
+      id === "mentions-legales",
+    follow: true,
   });
 }
 

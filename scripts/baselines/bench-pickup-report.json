@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-08-20T11:19:01.347Z",
+  "failures": 0,
+  "results": [
+    {
+      "id": "P01",
+      "label": "Pickup 0,5 km — impact faible",
+      "score": 90,
+      "verdict": "accept",
+      "pickupKm": 0.5,
+      "totalKm": 10,
+      "knownKm": 10,
+      "confidence": 88,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P02",
+      "label": "Pickup 4 km — impact important",
+      "score": 47,
+      "verdict": "check",
+      "pickupKm": 4,
+      "totalKm": 13.5,
+      "knownKm": 13.5,
+      "confidence": 88,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P03",
+      "label": "Pickup 8 km — potentiellement non rentable",
+      "score": 33,
+      "verdict": "refuse",
+      "pickupKm": 8,
+      "totalKm": 17.5,
+      "knownKm": 17.5,
+      "confidence": 88,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P04",
+      "label": "GPS absent — pickup inconnu, analyse continue",
+      "score": 88,
+      "verdict": "check",
+      "pickupKm": null,
+      "totalKm": null,
+      "knownKm": 9.5,
+      "confidence": 79,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P05",
+      "label": "Adresse ambiguë — pickup inconnu",
+      "score": 88,
+      "verdict": "check",
+      "pickupKm": null,
+      "totalKm": null,
+      "knownKm": 9.5,
+      "confidence": 79,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P06",
+      "label": "Pickup connu + bonne course",
+      "score": 100,
+      "verdict": "accept",
+      "pickupKm": 0.8,
+      "totalKm": 6,
+      "knownKm": 6,
+      "confidence": 98,
+      "ok": true,
+      "notes": []
+    },
+    {
+      "id": "P07",
+      "label": "Pickup inconnu + course limite",
+      "score": 55,
+      "verdict": "check",
+      "pickupKm": null,
+      "totalKm": null,
+      "knownKm": 6.5,
+      "confidence": 73,
+      "ok": true,
+      "notes": []
+    }
+  ]
+}

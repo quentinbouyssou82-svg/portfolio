@@ -5,6 +5,7 @@ import {
   buildQuotaStatus,
   isQuotaExceeded,
 } from "./quota-logic";
+import { getRedis } from "../redis/client";
 import { getUserEntitlements } from "./subscription";
 
 export interface QuotaStatus {
@@ -93,6 +94,58 @@ export async function assertAnalysisQuota(userId: string): Promise<QuotaStatus> 
     ...base,
     planId: entitlements.planId,
   };
+}
+
+export interface DailyAnalysisSlot {
+  release: () => Promise<void>;
+}
+
+const SLOT_TTL_SECONDS = 60 * 60 * 26;
+
+/**
+ * Réserve atomiquement un emplacement d'analyse du jour (plan gratuit).
+ * Corrige le dépassement de quota quand plusieurs requêtes arrivent en même temps :
+ * la vérification en base (count puis insert) n'est pas atomique, Redis INCR l'est.
+ *
+ * - Retourne `null` si Redis n'est pas configuré : la vérification en base reste la seule garde.
+ * - Libérer l'emplacement (`release`) si l'analyse échoue.
+ */
+export async function reserveDailyAnalysisSlot(
+  userId: string,
+  dailyLimit: number,
+): Promise<DailyAnalysisSlot | null> {
+  const redis = getRedis();
+  if (!redis) return null;
+
+  const day = new Date().toISOString().slice(0, 10);
+  const key = `driveely:quota:${userId}:${day}`;
+
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, SLOT_TTL_SECONDS);
+  }
+
+  let released = false;
+  const release = async () => {
+    if (released) return;
+    released = true;
+    try {
+      await redis.decr(key);
+    } catch (error) {
+      console.warn("[driveely/quota] release slot failed", error);
+    }
+  };
+
+  if (count > dailyLimit) {
+    await release();
+    throw new ApiError(
+      `Limite Découverte atteinte : ${dailyLimit} analyses / jour. Passe en Pro pour des analyses illimitées.`,
+      429,
+      "DAILY_LIMIT_REACHED",
+    );
+  }
+
+  return { release };
 }
 
 export async function getHistoryCutoffIsoForUser(

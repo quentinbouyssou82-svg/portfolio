@@ -1,4 +1,4 @@
-import type { Platform, Vehicle, Verdict } from "../types";
+import type { Vehicle, Verdict } from "../types";
 
 export interface MargeoProfileRow {
   id: string;
@@ -46,10 +46,10 @@ export interface MargeoRideRow {
   courier_lat: number | null;
   courier_lng: number | null;
   image_path: string | null;
-  vision_source: "mock" | "vision" | null;
+  vision_source: "mock" | "vision" | "on_device_ocr" | null;
   vision_confidence: number | null;
   missing_fields: string[];
-  extraction_quality: "complete" | "partial" | "failed";
+  extraction_quality: "complete" | "partial" | "failed" | "unsafe";
   created_at: string;
 }
 

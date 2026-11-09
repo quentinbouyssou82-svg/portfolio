@@ -1,5 +1,9 @@
 import type { MargeoFeedbackRow } from "../supabase/schema";
-import { createMargeoServerClient } from "../supabase/server";
+import { createMargeoRequestDb } from "../supabase/request-db";
+
+async function feedbackDb() {
+  return createMargeoRequestDb();
+}
 
 export interface FeedbackInput {
   analysisId: string;
@@ -13,7 +17,7 @@ export async function getFeedbackForAnalysis(
   userId: string,
   analysisId: string,
 ): Promise<MargeoFeedbackRow | null> {
-  const supabase = await createMargeoServerClient();
+  const supabase = await feedbackDb();
   const { data } = await supabase
     .from("margeo_feedback")
     .select("*")
@@ -28,7 +32,7 @@ export async function saveFeedback(
   userId: string,
   input: FeedbackInput,
 ): Promise<MargeoFeedbackRow | null> {
-  const supabase = await createMargeoServerClient();
+  const supabase = await feedbackDb();
 
   const { data, error } = await supabase
     .from("margeo_feedback")

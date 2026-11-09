@@ -7,6 +7,7 @@ export const BETA_SURVEY_SLUG = "beta_product_v1" as const;
 
 export type SurveyQuestionType =
   | "single_choice"
+  | "multiple_choice"
   | "text"
   | "scale"
   | "yes_no";
@@ -21,6 +22,7 @@ export type SurveyChoiceOption = {
 /** Valeur normalisée stockée en jsonb */
 export type SurveyAnswerValue =
   | { choice: string }
+  | { choices: string[] }
   | { text: string }
   | { score: number };
 

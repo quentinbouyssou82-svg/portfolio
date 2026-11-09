@@ -128,29 +128,30 @@
 .driveely-root[data-theme="light"],
 .margeo-root[data-theme="light"] {
   color-scheme: light;
-  --color-mg-background: #f4f4f5;
+  /* Aligné tokens iOS DriveelyColor (Cal AI light) */
+  --color-mg-background: #f2f2f7;
   --color-mg-surface: #ffffff;
   --color-mg-card: #ffffff;
-  --color-mg-card-hover: #fafafa;
-  --color-mg-border: rgba(24, 24, 27, 0.1);
-  --color-mg-border-strong: rgba(24, 24, 27, 0.18);
-  --color-mg-foreground: #18181b;
-  --color-mg-muted: #3f3f46;
-  --color-mg-faint: #71717a;
-  --color-mg-accent: #4f46e5;
-  --color-mg-accent-strong: #4338ca;
-  --color-mg-accent-soft: rgba(79, 70, 229, 0.1);
-  --color-mg-go: #047857;
-  --color-mg-go-soft: rgba(4, 120, 87, 0.1);
+  --color-mg-card-hover: #ebebf0;
+  --color-mg-border: rgba(0, 0, 0, 0.06);
+  --color-mg-border-strong: rgba(0, 0, 0, 0.12);
+  --color-mg-foreground: #000000;
+  --color-mg-muted: #636366;
+  --color-mg-faint: #8e8e93;
+  --color-mg-accent: #000000;
+  --color-mg-accent-strong: #000000;
+  --color-mg-accent-soft: rgba(0, 0, 0, 0.06);
+  --color-mg-go: #059669;
+  --color-mg-go-soft: rgba(5, 150, 105, 0.12);
   --color-mg-check: #b45309;
-  --color-mg-check-soft: rgba(180, 83, 9, 0.1);
+  --color-mg-check-soft: rgba(180, 83, 9, 0.12);
   --color-mg-stop: #dc2626;
-  --color-mg-stop-soft: rgba(220, 38, 38, 0.1);
+  --color-mg-stop-soft: rgba(220, 38, 38, 0.12);
   --shadow-mg-card: 0 1px 0 rgba(255, 255, 255, 1) inset,
-    0 1px 2px rgba(24, 24, 27, 0.04),
-    0 8px 24px rgba(24, 24, 27, 0.06);
-  --shadow-mg-glow: 0 0 0 1px rgba(79, 70, 229, 0.22),
-    0 8px 28px rgba(79, 70, 229, 0.12);
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-mg-glow: 0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 8px 28px rgba(0, 0, 0, 0.06);
   --mg-nav-hover: rgba(24, 24, 27, 0.05);
   --mg-surface-muted: rgba(24, 24, 27, 0.04);
   --mg-grid-line: rgba(24, 24, 27, 0.07);

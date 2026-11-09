@@ -9,14 +9,35 @@ import {
   validateCoordinates,
   validateScreenshotFile,
 } from "@/lib/margeo/api/validate-image";
-import { checkRateLimit } from "@/lib/margeo/api/rate-limit";
-import { analyzeScreenshot } from "@/lib/margeo/analyze-screenshot";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
+import {
+  analyzeFromOnDeviceOcr,
+  analyzeScreenshot,
+} from "@/lib/margeo/analyze-screenshot";
+import {
+  evaluateAppAttestRequest,
+  getAppAttestConfig,
+} from "@/lib/margeo/security/app-attest";
+import {
+  decideAnalyzeExtraction,
+  isVisionInfrastructureError,
+  readFormText,
+} from "@/lib/margeo/security/analyze-ocr-path";
+import {
+  logOcrTrustEvent,
+  resolveOcrTrust,
+  sha256Hex,
+} from "@/lib/margeo/security/ocr-trust";
 import {
   ensureProfileForUser,
   getProfileForUser,
 } from "@/lib/margeo/services/profile";
 import { saveAnalysis } from "@/lib/margeo/services/analyses";
-import { assertAnalysisQuota } from "@/lib/margeo/services/quota";
+import {
+  assertAnalysisQuota,
+  reserveDailyAnalysisSlot,
+  type DailyAnalysisSlot,
+} from "@/lib/margeo/services/quota";
 import { uploadScreenshotBuffer } from "@/lib/margeo/services/storage";
 import {
   applyCalibrationToOffer,
@@ -28,10 +49,18 @@ import { prepareScreenshotForVision } from "@/lib/margeo/vision/prepare-image";
 import { resolveOnboardingStatus } from "@/lib/margeo/onboarding-status";
 import { repairOnboardingCompletedIfNeeded } from "@/lib/margeo/onboarding-repair";
 
+/**
+ * Budget d'exécution serveur. Le client iOS attend au plus ~58 s (APIClient) :
+ * le serveur doit laisser le temps au pipeline Vision de répondre dans cette fenêtre.
+ */
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const startedAt = Date.now();
   const timings: Record<string, number> = {};
   let userId: string | undefined;
+  /** Emplacement de quota réservé (plan gratuit), libéré si l'analyse échoue. */
+  let slot: DailyAnalysisSlot | null = null;
 
   const mark = (key: string, from: number) => {
     timings[key] = Date.now() - from;
@@ -43,7 +72,7 @@ export async function POST(request: Request) {
     userId = user.id;
     mark("authMs", authStarted);
 
-    const burst = checkRateLimit(`analyze:${user.id}`, 60, 60_000);
+    const burst = await checkRateLimitDistributed(`analyze:${user.id}`, 60, 60_000);
     if (!burst.allowed) {
       const waitSec = Math.max(
         1,
@@ -120,6 +149,12 @@ export async function POST(request: Request) {
       preparedPromise,
     ]);
     const profile = profileRaw;
+
+    // Réservation atomique du quota gratuit : évite le dépassement des 2 analyses/jour
+    // quand plusieurs requêtes arrivent simultanément.
+    if (!quota.premium && quota.dailyLimit != null) {
+      slot = await reserveDailyAnalysisSlot(user.id, quota.dailyLimit);
+    }
     mark("prepMs", prepStarted);
     timings.imageMs = imageMs;
 
@@ -166,13 +201,71 @@ export async function POST(request: Request) {
       validateCoordinates(lat, lng);
     }
 
-    // Chemin critique : Vision (+ calibration en parallèle, free si Vision > 200ms)
+    const sourceField = (await readFormText(formData, "source")) ?? "vision";
+    const ocrPayload = await readFormText(formData, "ocrPayload");
+    const ocrChallenge = await readFormText(formData, "ocrChallenge");
+    const ocrBinding = await readFormText(formData, "ocrBinding");
+    const attest = await evaluateAppAttestRequest(request, {
+      path: "/api/driveely/analyze",
+      userId: user.id,
+    });
+    const ocrTrust = await resolveOcrTrust({
+      sourceField,
+      ocrPayload,
+      hasImage: true,
+      imageSha256: sha256Hex(validatedBuffer),
+      ocrChallenge,
+      ocrBinding,
+      attest,
+      attestEnabled: getAppAttestConfig().enabled,
+    });
+    for (const event of ocrTrust.events) {
+      logOcrTrustEvent(event, {
+        reason: ocrTrust.reason,
+        userId: user.id,
+      });
+    }
+
+    // Vision d'abord. L'OCR client n'est jamais la vérité sans preuves bound.
     const workStarted = Date.now();
-    const [vision, calibration] = await Promise.all([
-      analyzeScreenshot(prepared, { contentHash: prepared.contentHash }),
+    const [visionSettled, calibration] = await Promise.all([
+      analyzeScreenshot(prepared, { contentHash: prepared.contentHash })
+        .then((result) => ({ ok: true as const, result }))
+        .catch((error: unknown) => ({ ok: false as const, error })),
       getUserCalibration(user.id).catch(() => getNeutralCalibration()),
     ]);
     mark("visionMs", workStarted);
+
+    let vision = visionSettled.ok ? visionSettled.result : null;
+    const visionUnavailable =
+      !visionSettled.ok && isVisionInfrastructureError(visionSettled.error);
+    if (!visionSettled.ok && !visionUnavailable) {
+      throw visionSettled.error;
+    }
+
+    const visionOk =
+      vision != null &&
+      vision.extractionQuality !== "failed" &&
+      vision.offer.payout > 0;
+    const extraction = decideAnalyzeExtraction({
+      trust: ocrTrust,
+      visionOk,
+      visionUnavailable,
+    });
+    timings.ocrPath = extraction.useClientOcr ? 1 : 0;
+
+    if (extraction.useClientOcr && ocrPayload) {
+      vision = await analyzeFromOnDeviceOcr(ocrPayload);
+    }
+
+    if (!vision) {
+      throw new ApiError(
+        "Analyse IA saturée temporairement. Réessaie dans quelques secondes.",
+        503,
+        "VISION_UNAVAILABLE",
+      );
+    }
+
     timings.visionOnlyMs = vision.fromCache
       ? 0
       : (vision.visionDurationMs ?? timings.visionMs);
@@ -219,8 +312,17 @@ export async function POST(request: Request) {
     mark("saveMs", saveStarted);
 
     if (!analysis) {
+      console.error("[driveely/analyze] SAVE_FAILED after Vision", {
+        userId: user.id,
+        source: vision.source,
+        quality: vision.extractionQuality,
+        missing: vision.missingFields,
+        payout: calibratedOffer.payout,
+        distanceKm: calibratedOffer.distanceKm ?? null,
+        durationMin: calibratedOffer.durationMin ?? null,
+      });
       throw new ApiError(
-        "Impossible d'enregistrer l'analyse",
+        "L'analyse a réussi mais n'a pas pu être enregistrée. Réessaie.",
         500,
         "SAVE_FAILED",
       );
@@ -276,6 +378,9 @@ export async function POST(request: Request) {
             timings,
             imageOriginalBytes: prepared.originalBytes,
             imagePreparedBytes: prepared.preparedBytes,
+            ocrTrustReason: ocrTrust.reason,
+            ocrExtractionReason: extraction.reason,
+            ocrUsed: extraction.useClientOcr,
           },
         });
         await logFirstAnalysisIfNeeded(user.id, analysis.id, {
@@ -307,6 +412,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       analysis,
       source: vision.source,
+      ocrUsed: extraction.useClientOcr,
       confidence: vision.confidence,
       warnings: vision.warnings,
       missingFields: vision.missingFields,
@@ -330,28 +436,49 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    // Analyse non aboutie : on rend l'emplacement de quota réservé.
+    await slot?.release();
+    const mapped =
+      error instanceof ApiError
+        ? error
+        : error instanceof Error &&
+            (/Analyse IA|Vision|Mistral|Groq|Gemini|IMAGE_PIPELINE/i.test(
+              error.message,
+            ) ||
+              /rate[_ ]?limit|429/i.test(error.message))
+          ? new ApiError(
+              error.message.includes("429") || /rate[_ ]?limit/i.test(error.message)
+                ? "Analyse IA saturée temporairement. Réessaie dans quelques secondes."
+                : "Analyse IA indisponible temporairement. Réessaie dans un instant.",
+              503,
+              "VISION_UNAVAILABLE",
+            )
+          : error;
+
     if (
       userId &&
-      !(error instanceof ApiError && error.code === "EXTRACTION_FAILED")
+      !(mapped instanceof ApiError && mapped.code === "EXTRACTION_FAILED")
     ) {
       after(() => {
         void logBetaEvent({
           userId: userId!,
           eventType: "analysis_failed",
           durationMs: Date.now() - startedAt,
-          errorCode: error instanceof ApiError ? error.code : "UNKNOWN",
+          errorCode: mapped instanceof ApiError ? mapped.code : "UNKNOWN",
           metadata: {
-            message: error instanceof Error ? error.message : "unknown",
+            message: mapped instanceof Error ? mapped.message : "unknown",
             visionError:
-              error instanceof Error &&
-              (error.message.includes("Mistral Vision") ||
-                error.message.includes("Gemini Vision") ||
-                error.message.includes("Vision")),
+              mapped instanceof Error &&
+              (mapped.message.includes("Mistral Vision") ||
+                mapped.message.includes("Gemini Vision") ||
+                mapped.message.includes("Groq Vision") ||
+                mapped.message.includes("Vision") ||
+                mapped.message.includes("Analyse IA")),
             timings,
           },
         });
       });
     }
-    return jsonError(error);
+    return jsonError(mapped);
   }
 }

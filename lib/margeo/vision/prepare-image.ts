@@ -1,5 +1,3 @@
-import sharp from "sharp";
-
 export interface PreparedImage {
   buffer: Buffer;
   mimeType: "image/jpeg";
@@ -19,6 +17,17 @@ const HEAVY_MAX_EDGE = Number(process.env.DRIVEELY_VISION_HEAVY_MAX_EDGE ?? 640)
 const HEAVY_JPEG_QUALITY = Number(
   process.env.DRIVEELY_VISION_HEAVY_JPEG_QUALITY ?? 55,
 );
+
+async function loadSharp() {
+  try {
+    const mod = await import("sharp");
+    return mod.default;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error("[driveely] sharp import failed", detail);
+    throw new Error("IMAGE_PIPELINE_UNAVAILABLE");
+  }
+}
 
 /**
  * Redimensionne + compresse en JPEG pour accélérer l'appel Vision
@@ -45,7 +54,7 @@ export async function prepareScreenshotForVision(
 
   // Déjà petit JPEG (ex. préparé côté client) : éviter un 2e encode coûteux
   const looksPreparedJpeg =
-    input.byteLength <= 420_000 &&
+    input.byteLength <= 520_000 &&
     input[0] === 0xff &&
     input[1] === 0xd8;
 
@@ -54,17 +63,32 @@ export async function prepareScreenshotForVision(
     // Déjà compressé côté client (orientation déjà appliquée via canvas)
     prepared = input;
   } else {
-    // mozjpeg off : ~2× plus rapide, taille quasi identique pour screenshots UI
-    prepared = await sharp(input, { failOn: "error" })
-      .rotate()
-      .resize({
-        width: maxEdge,
-        height: maxEdge,
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .jpeg({ quality, mozjpeg: false, progressive: false })
-      .toBuffer();
+    try {
+      const sharp = await loadSharp();
+      // mozjpeg off : ~2× plus rapide, taille quasi identique pour screenshots UI
+      prepared = await sharp(input, { failOn: "error" })
+        .rotate()
+        .resize({
+          width: maxEdge,
+          height: maxEdge,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+        .jpeg({ quality, mozjpeg: false, progressive: false })
+        .toBuffer();
+    } catch (error) {
+      // Si sharp est cassé sur la plateforme mais l'image est déjà un JPEG
+      // utilisable (chemin iOS), ne pas bloquer l'analyse Vision.
+      if (looksPreparedJpeg || (input[0] === 0xff && input[1] === 0xd8)) {
+        console.warn(
+          "[driveely] sharp prepare failed — using original JPEG buffer",
+          error instanceof Error ? error.message : error,
+        );
+        prepared = input;
+      } else {
+        throw error;
+      }
+    }
   }
 
   const contentHash = simpleHash(prepared);

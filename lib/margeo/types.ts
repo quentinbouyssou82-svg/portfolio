@@ -20,6 +20,11 @@ export type Vehicle =
   | "voiture_electrique";
 
 export type Verdict = "accept" | "check" | "refuse";
+export type DecisionState =
+  | "profitable"
+  | "borderline"
+  | "unprofitable"
+  | "uncertain";
 
 /** Proposition de course telle qu'extraite d'une capture d'écran. */
 export interface RideOffer {
@@ -33,10 +38,71 @@ export interface RideOffer {
   distanceKm?: number;
   /** Durée totale estimée (attente + trajet), en minutes. Absent si non lu. */
   durationMin?: number;
-  /** Retour à vide estimé après la livraison, en km. */
-  emptyReturnKm: number;
+  /** Retour à vide estimé après la livraison, en km. Absent si inconnu. */
+  emptyReturnKm?: number;
   /** Distance du livreur jusqu'au point de récupération, en km. */
   pickupDistanceKm?: number;
+}
+
+export interface EconomicsBreakdown {
+  grossGain: number;
+  estimatedCost: number;
+  netGain: number;
+  hourlyRate: number | null;
+  payoutPerKm: number | null;
+  /** Somme des composantes connues — jamais de 0 de substitution. */
+  knownKm: number;
+  /** Pickup + course + retour à vide, seulement si les 3 sont connus. */
+  totalKm: number | null;
+  /** Pickup + course, seulement si les 2 sont connus. */
+  travelKm: number | null;
+  deliveryDistanceKm: number | null;
+  pickupDistanceKm: number | null;
+  emptyReturnKm: number | null;
+  pickupDurationMin: number | null;
+  pickupIsEstimated: boolean;
+  usedEstimatedValues: boolean;
+}
+
+export interface ReliabilityPenalty {
+  code: string;
+  points: number;
+  severity: "minor" | "moderate" | "major" | "critical";
+  field?: string;
+  reason?: string;
+}
+
+export interface ReliabilitySummary {
+  /** Legacy bucket — dérivé des scores. */
+  state: "complete" | "partial" | "unsafe";
+  /** 0–1 — alias decisionConfidence/100 pour compat API. */
+  confidence: number;
+  /** Fiabilité lecture capture (0–100). */
+  extractionScore: number;
+  /** Fiabilité calcul économique (0–100). */
+  calculationScore: number;
+  /** Confiance dans la recommandation — affichée à l'utilisateur (0–100). */
+  decisionConfidence: number;
+  label: "very_high" | "good" | "indicative" | "low";
+  penalties: ReliabilityPenalty[];
+  blockingFields: string[];
+  cautionFields: string[];
+  estimatedFields: string[];
+}
+
+export interface InsightCard {
+  kind:
+    | "savings"
+    | "hourly"
+    | "threshold"
+    | "history"
+    | "projection"
+    | "caution"
+    | "pickup";
+  title: string;
+  value?: string;
+  body: string;
+  isEstimate: boolean;
 }
 
 /** Facteur explicable du score de rentabilité. */
@@ -61,10 +127,14 @@ export interface RideAnalysis {
   /** Score de rentabilité, 0 à 100. */
   score: number;
   verdict: Verdict;
+  decisionState?: DecisionState;
+  reliability?: ReliabilitySummary;
+  economics?: EconomicsBreakdown;
   /** Explication principale, rédigée. */
   explanation: string;
   /** Points d'attention secondaires. */
   insights: string[];
+  insightCards?: InsightCard[];
   /** Décomposition explicable du score. */
   scoreBreakdown: ScoreFactor[];
 }

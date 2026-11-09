@@ -1,13 +1,17 @@
 /**
  * Entitlements / feature flags — source de vérité par plan.
  * Toutes les vérifications métier doivent passer par ici (serveur).
- * En mode app bêta : Elite pour tous via `getEntitlementsForPlan`.
+ *
+ * Elite « bêta » uniquement si :
+ * - mode serveur trusted (env APP_MODE=beta), OU
+ * - utilisateur allowlisté (`is_beta_tester`)
+ * Jamais via cookie / header client.
  */
 
 import type { DriveelyPlanId } from "@/lib/margeo/plans";
 import {
-  getAppFeatures,
-  getAppFeaturesAsync,
+  getBillingFeatures,
+  getBillingFeaturesAsync,
   type DriveelyFeatures,
 } from "@/lib/margeo/config";
 
@@ -85,25 +89,44 @@ export function getCatalogEntitlementsForPlan(
   return PLAN_ENTITLEMENTS[planId] ?? DISCOVERY;
 }
 
+export type EntitlementUnlockOptions = {
+  /** Allowlist serveur (`margeo_profiles.is_beta_tester`) — jamais dérivé du cookie. */
+  isBetaTester?: boolean;
+};
+
 /**
- * Entitlements effectifs. Sur le serveur, préférer `getEntitlementsForPlanAsync`.
- * Sync OK côté client (cookie) ou scripts avec mode env.
+ * Entitlements effectifs. Sync = mode env trusted uniquement (pas de cookie).
+ * Sur le serveur avec userId, préférer `getEntitlementsForPlanAsync` + allowlist.
  */
-export function getEntitlementsForPlan(planId: DriveelyPlanId): PlanEntitlements {
-  return applyFeatureOverrides(planId, getAppFeatures());
+export function getEntitlementsForPlan(
+  planId: DriveelyPlanId,
+  options?: EntitlementUnlockOptions,
+): PlanEntitlements {
+  return applyFeatureOverrides(planId, getBillingFeatures(), options);
 }
 
 export async function getEntitlementsForPlanAsync(
   planId: DriveelyPlanId,
+  options?: EntitlementUnlockOptions,
 ): Promise<PlanEntitlements> {
-  return applyFeatureOverrides(planId, await getAppFeaturesAsync());
+  return applyFeatureOverrides(
+    planId,
+    await getBillingFeaturesAsync(),
+    options,
+  );
 }
 
 function applyFeatureOverrides(
   planId: DriveelyPlanId,
   feats: DriveelyFeatures,
+  options?: EntitlementUnlockOptions,
 ): PlanEntitlements {
+  // Env trusted beta (staging/dev) → Elite pour tous dans cet environnement.
   if (feats.allPremiumUnlocked || !feats.freemiumLimits) {
+    return { ...ELITE, planId };
+  }
+  // Production : allowlist serveur uniquement.
+  if (options?.isBetaTester) {
     return { ...ELITE, planId };
   }
   return getCatalogEntitlementsForPlan(planId);

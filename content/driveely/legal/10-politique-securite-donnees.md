@@ -1,10 +1,10 @@
 # Politique de sécurité des données
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-Conformément à l'article 32 du RGPD, Driveely met en œuvre des mesures techniques et organisationnelles appropriées afin de garantir un niveau de sécurité adapté au risque, en tenant compte de l'état des connaissances, des coûts de mise en œuvre et de la nature des données traitées. La présente politique décrit ces mesures.
+Conformément à l'article 32 du RGPD, Driveely met en œuvre des mesures techniques et organisationnelles appropriées afin de garantir un niveau de sécurité adapté au risque, en tenant compte de l'état des connaissances, des coûts de mise en œuvre et de la nature des données traitées. La présente politique décrit ces mesures pour le Service (application iPhone Driveely et, le cas échéant, interface web).
 
 ## 2. Chiffrement et transport des données
 
@@ -31,14 +31,19 @@ Le modèle d'intelligence artificielle utilisé pour l'analyse des captures d'é
 
 ## 7. Sécurité des paiements
 
-Aucune donnée bancaire n'est collectée ni stockée par Driveely. Le traitement des paiements est intégralement délégué à **Stripe**, prestataire certifié conforme à la norme de sécurité **PCI-DSS**.
+Aucune donnée bancaire n'est collectée ni stockée par Driveely.
+
+- **Site web :** le traitement des paiements est intégralement délégué à **Stripe**, prestataire certifié conforme à la norme de sécurité **PCI-DSS**.
+- **Application iPhone :** les paiements et abonnements Premium sont traités par **Apple** via l'App Store (StoreKit) ; Driveely ne reçoit pas les données bancaires de l'Utilisateur.
 
 ## 8. Hébergement
 
-- Le frontend du Service est hébergé chez **Vercel**.
+- L'interface web du Service est hébergée chez **Vercel**.
+- L'application iPhone est distribuée via l'**App Store** d'Apple.
 - Le backend (authentification, base de données, stockage) est hébergé chez **Supabase**.
+- Un cache / limiteur de débit **Redis (Upstash)** peut être utilisé, lorsque configuré, pour la protection anti-abus et des besoins techniques (pas de stockage durable de contenu métier).
 
-Ces prestataires appliquent leurs propres mesures de sécurité physiques et logiques, dans le cadre des accords de sous-traitance conclus avec Driveely.
+Ces prestataires appliquent leurs propres mesures de sécurité physiques et logiques, dans le cadre des accords de sous-traitance conclus avec Driveely (ou, pour Apple, selon les conditions applicables à la distribution App Store).
 
 ## 9. Gestion des incidents de sécurité
 
@@ -54,4 +59,4 @@ Driveely s'engage à faire évoluer ses mesures de sécurité en fonction de l'�
 
 ## 11. Contact
 
-Pour signaler une faille de sécurité ou toute question relative à la sécurité des données : [contact@driveely.app](mailto:contact@driveely.app)
+Pour signaler une faille de sécurité ou toute question relative à la sécurité des données : [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

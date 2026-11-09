@@ -11,7 +11,7 @@ const password = "TestDriveely123!";
       console.log("POST", res.status(), res.url());
     }
   });
-  await page.goto("https://margeo.vercel.app/demos/driveely/login?mode=signup");
+  await page.goto("https://driveely.app/login?mode=signup");
   await page.getByLabel("Prénom").fill("Repro");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Mot de passe").fill(password);

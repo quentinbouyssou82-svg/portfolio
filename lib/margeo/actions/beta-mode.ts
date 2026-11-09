@@ -10,7 +10,6 @@ import {
 } from "@/lib/margeo/config";
 import { DRIVEELY_PATHS } from "@/lib/margeo/constants";
 import { logBetaEvent } from "@/lib/margeo/services/beta-events";
-import { markBetaTester } from "@/lib/margeo/services/beta-user";
 import { createMargeoServerClient } from "@/lib/margeo/supabase/server";
 
 export type BetaModeResult =
@@ -26,8 +25,8 @@ async function setModeCookie(mode: DriveelyAppMode) {
 }
 
 /**
- * Active le mode Bêta (cookie). Optionnellement marque le profil connecté.
- * Appelé depuis « Rejoindre la bêta » — avant ou après auth.
+ * Active le mode Bêta UI (cookie uniquement).
+ * N’écrit PAS `is_beta_tester` — l’allowlist Elite est serveur / admin SQL.
  */
 export async function joinBetaAction(input?: {
   redirectToLogin?: boolean;
@@ -41,11 +40,10 @@ export async function joinBetaAction(input?: {
     } = await supabase.auth.getUser();
 
     if (user) {
-      await markBetaTester(user.id, { force: true });
       await logBetaEvent({
         userId: user.id,
         eventType: "beta_joined",
-        metadata: { source: "join_beta_action" },
+        metadata: { source: "join_beta_action", entitlements: "cookie_ui_only" },
       });
       return {
         ok: true,

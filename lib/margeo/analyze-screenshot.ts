@@ -1,29 +1,45 @@
 import type { Platform, RideOffer } from "./types";
-import { validateCompleteOffer } from "./vision/validate-offer";
+import { validateCompleteOffer, validateExtractedOffer } from "./vision/validate-offer";
 import type { ExtractionQuality } from "./vision/extraction-types";
 import { hashImage } from "./vision/image-encoding";
 import { normalizeVisionExtraction } from "./vision/normalize-vision-result";
 import type { PreparedImage } from "./vision/prepare-image";
+import { parseOnDeviceOcrPayload } from "./vision/parse-on-device-payload";
 import {
   getVisionProvider,
+  isMockVisionAllowed,
+  isVisionProviderConfigured,
   resolveVisionProviderId,
+  VISION_FAILOVER_ORDER,
 } from "./vision/providers/resolve";
 import type { VisionProviderId } from "./vision/providers/types";
-import { getVisionCache, setVisionCache } from "./vision/vision-cache";
+import {
+  getVisionCacheAsync,
+  setVisionCacheAsync,
+} from "./vision/vision-cache";
+import {
+  acquireVisionSlot,
+  releaseVisionSlot,
+} from "./queue/vision-concurrency";
 
-export type ScreenshotAnalysisSource = "mock" | "vision";
+export type ScreenshotAnalysisSource = "mock" | "vision" | "on_device_ocr";
 
 export interface ScreenshotAnalysisResult {
   offer: RideOffer;
+  fields: import("./vision/extraction-types").StructuredVisionFields;
   source: ScreenshotAnalysisSource;
   confidence: number;
   warnings: string[];
   missingFields: string[];
   extractionQuality: ExtractionQuality;
+  reliability: import("./vision/extraction-types").ReliabilitySummary;
   visionDurationMs?: number;
+  parseMs?: number;
   visionProvider?: VisionProviderId;
-  /** true si servi depuis le cache mémoire */
+  visionRetries?: number;
+  /** true si servi depuis le cache (Redis ou RAM) */
   fromCache?: boolean;
+  clientOcrConfidence?: number;
   /** @deprecated */
   geminiDurationMs?: number;
 }
@@ -35,29 +51,75 @@ export interface AnalyzeScreenshotOptions {
   contentHash?: string;
 }
 
+/** Analyse depuis payload OCR iOS — saute l'appel Mistral. */
+export async function analyzeFromOnDeviceOcr(
+  payloadJson: string,
+): Promise<ScreenshotAnalysisResult> {
+  const parseStarted = Date.now();
+  const { parsed, clientConfidence } = parseOnDeviceOcrPayload(payloadJson);
+  const validated = validateExtractedOffer(parsed, undefined, {
+    extractionSource: "on_device_ocr",
+  });
+  const parseMs = Date.now() - parseStarted;
+
+  return {
+    offer: validated.offer,
+    fields: validated.fields,
+    source: "on_device_ocr",
+    confidence: validated.confidence,
+    warnings: [
+      ...validated.warnings,
+      "Extraction locale (OCR iPhone) — fiabilité légèrement réduite.",
+    ],
+    missingFields: validated.missingFields,
+    extractionQuality: validated.extractionQuality,
+    reliability: validated.reliability,
+    visionDurationMs: 0,
+    parseMs,
+    visionProvider: undefined,
+    visionRetries: 0,
+    clientOcrConfidence: clientConfidence,
+  };
+}
+
 export async function analyzeScreenshot(
   image: File | Blob | ArrayBuffer | PreparedImage,
   options: AnalyzeScreenshotOptions = {},
 ): Promise<ScreenshotAnalysisResult> {
-  const mode =
+  const requestedMode =
     options.provider ??
     (process.env.DRIVEELY_VISION_PROVIDER === "mock" ? "mock" : "auto");
+  // Le mock ne doit jamais répondre en production (voir isMockVisionAllowed).
+  const mode = requestedMode === "mock" && !isMockVisionAllowed() ? "auto" : requestedMode;
 
   if (mode === "mock") {
     return analyzeWithMock(image, options.seed);
   }
 
   if (options.contentHash) {
-    const cached = getVisionCache(options.contentHash);
+    const cached = await getVisionCacheAsync(options.contentHash);
     if (cached) {
-      return { ...cached, fromCache: true, visionDurationMs: 0 };
+      return {
+        ...cached,
+        fromCache: true,
+        visionDurationMs: 0,
+        parseMs: 0,
+        visionRetries: 0,
+      };
     }
+  }
+
+  const slot = await acquireVisionSlot();
+  if (!slot.acquired) {
+    throw new Error(
+      "Analyse IA saturée temporairement. Réessaie dans quelques secondes.",
+    );
   }
 
   try {
     const result = await analyzeWithVisionProvider(image);
     if (options.contentHash && result.extractionQuality !== "failed") {
-      setVisionCache(options.contentHash, result);
+      await setVisionCacheAsync(options.contentHash, result);
     }
     return result;
   } catch (e) {
@@ -70,36 +132,88 @@ export async function analyzeScreenshot(
     throw new Error(
       message.includes("Mistral") ? message : `Analyse IA : ${message}`,
     );
+  } finally {
+    await releaseVisionSlot();
   }
+}
+
+function isTransientVisionError(message: string): boolean {
+  return (
+    /429|rate[_ ]?limit/i.test(message) ||
+    /timeout|abort|délai dépassé/i.test(message) ||
+    /5\d\d/.test(message) ||
+    /404|model_not_found|does not exist|do not have access/i.test(message) ||
+    /ECONNRESET|ETIMEDOUT|fetch failed/i.test(message) ||
+    /saturat/i.test(message)
+  );
+}
+
+function visionProviderChain(primary: VisionProviderId): VisionProviderId[] {
+  const ordered = [
+    primary,
+    ...VISION_FAILOVER_ORDER.filter((id) => id !== primary),
+  ];
+  return ordered.filter((id) => isVisionProviderConfigured(id));
 }
 
 async function analyzeWithVisionProvider(
   image: File | Blob | ArrayBuffer | PreparedImage,
 ): Promise<ScreenshotAnalysisResult> {
-  const providerId = resolveVisionProviderId("auto");
-  const provider = getVisionProvider(providerId);
-
-  if (!provider) {
-    throw new Error(`Provider Vision inconnu : ${providerId}`);
+  const primary = resolveVisionProviderId("auto");
+  const chain = visionProviderChain(primary);
+  if (chain.length === 0) {
+    throw new Error(
+      "Analyse IA non configurée. Définis MISTRAL_API_KEY, DRIVEELY_GROQ_API_KEY ou DRIVEELY_GEMINI_API_KEY.",
+    );
   }
 
-  const result = await provider.analyzeImage(image);
-  const normalized = normalizeVisionExtraction(result.rawJson, {
-    durationMs: result.durationMs,
-    provider: result.provider,
-  });
+  let lastError: Error | null = null;
+  let attempts = 0;
 
-  return {
-    offer: normalized.offer,
-    source: "vision",
-    confidence: normalized.confidence,
-    warnings: normalized.warnings,
-    missingFields: normalized.missingFields,
-    extractionQuality: normalized.extractionQuality,
-    visionDurationMs: normalized.visionDurationMs,
-    visionProvider: normalized.visionProvider,
-    geminiDurationMs: normalized.visionDurationMs,
-  };
+  for (const providerId of chain) {
+    const provider = getVisionProvider(providerId);
+    if (!provider) continue;
+    attempts += 1;
+    try {
+      const result = await provider.analyzeImage(image);
+      const parseStarted = Date.now();
+      const normalized = normalizeVisionExtraction(result.rawJson, {
+        durationMs: result.durationMs,
+        provider: result.provider,
+      });
+      const parseMs = Date.now() - parseStarted;
+
+      return {
+        offer: normalized.offer,
+        fields: normalized.fields,
+        source: "vision",
+        confidence: normalized.confidence,
+        warnings: normalized.warnings,
+        missingFields: normalized.missingFields,
+        extractionQuality: normalized.extractionQuality,
+        reliability: normalized.reliability,
+        visionDurationMs: normalized.visionDurationMs,
+        parseMs,
+        visionProvider: normalized.visionProvider,
+        visionRetries: Math.max(0, attempts - 1),
+        geminiDurationMs: normalized.visionDurationMs,
+      };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      lastError = e instanceof Error ? e : new Error(message);
+      const canFailover =
+        providerId !== chain[chain.length - 1] &&
+        isTransientVisionError(message);
+      console.warn("[driveely] Vision provider failed", {
+        providerId,
+        canFailover,
+        message: message.slice(0, 200),
+      });
+      if (!canFailover) break;
+    }
+  }
+
+  throw lastError ?? new Error("Analyse IA indisponible.");
 }
 
 async function analyzeWithMock(
@@ -150,10 +264,12 @@ async function analyzeWithMock(
   });
   return {
     offer: validated.offer,
+    fields: validated.fields,
     source: "mock",
     confidence: Math.min(validated.confidence, 0.85),
     warnings: validated.warnings,
     missingFields: validated.missingFields,
     extractionQuality: validated.extractionQuality,
+    reliability: validated.reliability,
   };
 }

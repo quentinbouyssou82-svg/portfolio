@@ -166,6 +166,7 @@ export function getAnalysisErrorMessage(
 
   if (
     lower.includes("mistral") ||
+    lower.includes("groq") ||
     lower.includes("vision") ||
     lower.includes("api key") ||
     lower.includes("openai")

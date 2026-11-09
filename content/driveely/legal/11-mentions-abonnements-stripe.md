@@ -1,12 +1,26 @@
 # Mentions relatives aux abonnements Stripe
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
+
+## Application iOS
+
+Sur l'**application iPhone Driveely**, les abonnements Premium ne sont **pas** traités par Stripe. Ils sont achetés via l'**Apple App Store** au moyen de **StoreKit**, sous forme d'abonnements à renouvellement automatique (auto-renewable subscriptions).
+
+- Le paiement est facturé au **compte Apple ID** de l'Utilisateur.
+- Driveely ne collecte ni ne stocke aucune donnée bancaire dans ce cadre.
+- Le renouvellement automatique, le moyen de paiement et la **résiliation** se gèrent dans les réglages d'abonnement du compte Apple ID (Réglages iOS > identifiant Apple > Abonnements, ou chemin équivalent indiqué par Apple).
+- Les conditions d'Apple relatives aux achats intégrés et aux abonnements s'appliquent en complément des [Conditions Générales de Vente](./04-cgv.md).
+- Pour toute question de facturation App Store, l'Utilisateur peut contacter [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com) et, le cas échéant, le support Apple.
+
+Le reste de la présente page décrit le traitement des paiements **via Stripe sur le site web**.
+
+---
 
 ## 1. Objet
 
-La présente page précise les modalités de traitement des paiements relatifs à l'abonnement Premium du Service Driveely, effectués par l'intermédiaire de la plateforme **Stripe**. Elle complète les [Conditions Générales de Vente](./04-cgv.md) et la [Politique de confidentialité](./02-politique-confidentialite.md).
+La présente page précise les modalités de traitement des paiements relatifs à l'abonnement Premium du Service Driveely, effectués par l'intermédiaire de la plateforme **Stripe** (site web). Elle complète les [Conditions Générales de Vente](./04-cgv.md) et la [Politique de confidentialité](./02-politique-confidentialite.md).
 
-**Statut actuel : les paiements ne sont pas encore activés.** Cette page s'appliquera à compter de l'activation effective des abonnements payants.
+Sur iPhone, les paiements Premium sont activés via l'Apple App Store. La section Stripe ci-dessous ne concerne que le site web, lorsqu'un paiement web est proposé.
 
 ## 2. Rôle de Stripe
 
@@ -29,7 +43,7 @@ Stripe est certifié conforme à la norme **PCI-DSS (Payment Card Industry Data 
 
 ## 5. Renouvellement automatique et prélèvements
 
-L'abonnement Premium est mensuel et se renouvelle automatiquement. Le prélèvement correspondant est effectué automatiquement par Stripe à chaque échéance, sur le moyen de paiement enregistré par l'Utilisateur, jusqu'à résiliation de l'abonnement dans les conditions prévues à l'article 7 des [Conditions Générales de Vente](./04-cgv.md).
+L'abonnement Premium est mensuel ou annuel selon l'offre choisie et se renouvelle automatiquement. Le prélèvement correspondant est effectué automatiquement par Stripe à chaque échéance, sur le moyen de paiement enregistré par l'Utilisateur, jusqu'à résiliation de l'abonnement dans les conditions prévues à l'article 7 des [Conditions Générales de Vente](./04-cgv.md).
 
 ## 6. Modification du moyen de paiement
 
@@ -45,4 +59,4 @@ Le traitement des données de paiement par Stripe est également régi par la po
 
 ## 9. Contact
 
-Pour toute question relative à la facturation : [contact@driveely.app](mailto:contact@driveely.app)
+Pour toute question relative à la facturation : [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

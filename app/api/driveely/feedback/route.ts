@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { jsonError, ApiError } from "@/lib/margeo/api/errors";
 import { requireAuthUser } from "@/lib/margeo/api/auth";
-import { checkRateLimit } from "@/lib/margeo/api/rate-limit";
+import { checkRateLimitDistributed } from "@/lib/margeo/api/rate-limit-redis";
 import { DRIVEELY_LIMITS } from "@/lib/margeo/constants/limits";
 import { saveFeedback } from "@/lib/margeo/services/feedback";
 import { getAnalysisById } from "@/lib/margeo/services/analyses";
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   try {
     const user = await requireAuthUser();
 
-    const limit = checkRateLimit(
+    const limit = await checkRateLimitDistributed(
       `feedback:${user.id}`,
       DRIVEELY_LIMITS.feedbackRequestsPerMinute,
       60_000,
@@ -120,7 +120,18 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ feedback });
+    return NextResponse.json({
+      feedback: {
+        id: feedback.id,
+        analysisId: feedback.analysis_id,
+        accepted: feedback.accepted,
+        actualDurationMin: feedback.actual_duration_min,
+        actualGain: feedback.actual_gain,
+        actualDistanceKm: feedback.actual_distance_km,
+        createdAt: feedback.created_at,
+        updatedAt: feedback.updated_at,
+      },
+    });
   } catch (error) {
     return jsonError(error);
   }

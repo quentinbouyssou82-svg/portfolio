@@ -7,6 +7,13 @@ import type {
 import type { RideAnalysis, RideOffer, UserProfile } from "../types";
 import { createMargeoServerClient } from "../supabase/server";
 import { getHistoryCutoffIsoForUser } from "./quota";
+import {
+  buildRideInsertFallback,
+  buildRideInsertPayload,
+  finiteMoney,
+  finiteScore,
+  type PersistRideOpts,
+} from "./persist-analysis";
 
 function rowToRideOffer(ride: MargeoRideRow): RideOffer {
   return {
@@ -106,15 +113,7 @@ export async function saveAnalysis(
   userId: string,
   offer: RideOffer,
   profile: UserProfile,
-  opts?: {
-    imagePath?: string | null;
-    courierLat?: number;
-    courierLng?: number;
-    visionSource?: "mock" | "vision";
-    visionConfidence?: number;
-    missingFields?: string[];
-    extractionQuality?: "complete" | "partial" | "failed";
-  },
+  opts?: PersistRideOpts,
 ): Promise<RideAnalysis | null> {
   const result = analyzeOffer(offer, profile);
   // Service role : inserts plus rapides (pas de RLS cookie)
@@ -128,50 +127,44 @@ export async function saveAnalysis(
   const rideId = crypto.randomUUID();
   const analysisId = crypto.randomUUID();
 
-  const ridePayload = {
-    id: rideId,
-    user_id: userId,
-    platform: offer.platform,
-    pickup: offer.pickup,
-    dropoff: offer.dropoff,
-    payout: offer.payout,
-    distance_km: offer.distanceKm ?? null,
-    duration_min: offer.durationMin ?? null,
-    empty_return_km: offer.emptyReturnKm,
-    pickup_distance_km: offer.pickupDistanceKm ?? null,
-    courier_lat: opts?.courierLat ?? profile.lastLat ?? null,
-    courier_lng: opts?.courierLng ?? profile.lastLng ?? null,
-    image_path: opts?.imagePath ?? null,
-    vision_source: opts?.visionSource ?? null,
-    vision_confidence: opts?.visionConfidence ?? null,
-    missing_fields: opts?.missingFields ?? [],
-    extraction_quality: opts?.extractionQuality ?? "complete",
-  };
+  const ridePayload = buildRideInsertPayload(rideId, userId, offer, profile, opts);
 
   const analysisPayload = {
     id: analysisId,
     user_id: userId,
     ride_id: rideId,
-    gross_gain: result.grossGain,
-    estimated_cost: result.estimatedCost,
-    net_gain: result.netGain,
-    hourly_rate: result.hourlyRate,
-    score: result.score,
+    gross_gain: finiteMoney(result.grossGain),
+    estimated_cost: finiteMoney(result.estimatedCost),
+    net_gain: finiteMoney(result.netGain),
+    hourly_rate: finiteMoney(result.hourlyRate),
+    score: finiteScore(result.score),
     verdict: result.verdict,
-    explanation: result.explanation,
-    insights: result.insights,
-    score_breakdown: result.scoreBreakdown,
+    explanation: result.explanation ?? "",
+    insights: Array.isArray(result.insights) ? result.insights : [],
+    score_breakdown: Array.isArray(result.scoreBreakdown)
+      ? result.scoreBreakdown
+      : [],
     analyzed_at: result.analyzedAt,
   };
 
-  // Ride d'abord (FK), puis analysis — selects minimaux
-  const { error: rideError } = await supabase
+  // Ride d'abord (FK). Si le CHECK / schéma prod refuse, retry colonnes socle.
+  let { error: rideError } = await supabase
     .from("margeo_rides")
     .insert(ridePayload);
 
   if (rideError) {
-    console.error("[driveely/analyses] ride insert:", rideError.message);
-    return null;
+    console.error("[driveely/analyses] ride insert:", rideError.message, rideError.code);
+    const fallback = buildRideInsertFallback(ridePayload);
+    const retry = await supabase.from("margeo_rides").insert(fallback);
+    rideError = retry.error;
+    if (rideError) {
+      console.error(
+        "[driveely/analyses] ride insert fallback:",
+        rideError.message,
+        rideError.code,
+      );
+      return null;
+    }
   }
 
   const { error: analysisError } = await supabase
@@ -179,7 +172,12 @@ export async function saveAnalysis(
     .insert(analysisPayload);
 
   if (analysisError) {
-    console.error("[driveely/analyses] analysis insert:", analysisError.message);
+    console.error(
+      "[driveely/analyses] analysis insert:",
+      analysisError.message,
+      analysisError.code,
+    );
+    await supabase.from("margeo_rides").delete().eq("id", rideId).eq("user_id", userId);
     return null;
   }
 

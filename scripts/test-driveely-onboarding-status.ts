@@ -53,6 +53,15 @@ assert(
 );
 
 assert(
+  "false flag + vehicle/target defaults → complete",
+  resolveOnboardingStatus({
+    onboarding_completed: false,
+    vehicle: "scooter",
+    target_hourly: 16,
+  }) === "complete",
+);
+
+assert(
   "false flag + signals → complete",
   resolveOnboardingStatus({
     onboarding_completed: false,

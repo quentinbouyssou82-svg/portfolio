@@ -4,7 +4,7 @@
 
 - Domain: **https://driveely.app**
 - Repo: `quentinbouyssou82-svg/portfolio` @ `main`
-- Vercel project: **`margeo`** (`.vercel/project.json`) — powers driveely.app
+- Vercel: projet **Driveely** (domaine `driveely.app`). `margeo.vercel.app` n’est plus un hôte produit.
 
 ## Prod symptoms (before fix)
 

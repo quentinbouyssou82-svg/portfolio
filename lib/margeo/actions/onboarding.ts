@@ -4,7 +4,7 @@ import {
   DEFAULT_VEHICLE_COSTS,
   DRIVEELY_PATHS,
 } from "@/lib/margeo/constants";
-import { getAppFeaturesAsync } from "@/lib/margeo/config";
+import { getAppFeaturesAsync, getTrustedAppMode } from "@/lib/margeo/config";
 import type { MargeoActionResult } from "@/lib/margeo/auth/actions";
 import { updateProfile } from "@/lib/margeo/services/profile";
 import type { OnboardingInput } from "@/lib/margeo/supabase/schema";
@@ -93,7 +93,9 @@ export async function completeOnboardingAction(
   );
   await persistOnboardingCompletedMetadata(user.id);
 
-  await markBetaTester(user.id);
+  if (getTrustedAppMode() === "beta") {
+    await markBetaTester(user.id);
+  }
   await logBetaEvent({
     userId: user.id,
     eventType: "onboarding_completed",

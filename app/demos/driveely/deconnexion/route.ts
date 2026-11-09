@@ -5,8 +5,8 @@ import { createMargeoRouteHandlerClient } from "@/lib/margeo/supabase/route-hand
 
 /** Déconnexion Supabase — route GET. Cookies nettoyés via la response. */
 export async function GET(request: NextRequest) {
-  // Stay on the host the user is visiting (driveely.app). Never trust a stale
-  // NEXT_PUBLIC_APP_URL pointing at margeo.vercel.app (DEPLOYMENT_NOT_FOUND).
+  // Stay on the host the user is visiting (driveely.app). Never follow a stale
+  // NEXT_PUBLIC_APP_URL pointing at a non-Driveely deployment.
   const origin = resolveDriveelyRequestOrigin(request);
   const loginUrl = new URL(DRIVEELY_PATHS.login, origin);
   loginUrl.searchParams.set("loggedOut", "1");

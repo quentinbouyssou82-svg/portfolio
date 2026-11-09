@@ -1,0 +1,16 @@
+Base: http://localhost:3000
+Run 1: wall=3928ms apiTotal=2626ms upload=92ms ia=1332ms save=210ms verdict=accept payout=7.8
+Run 2: wall=550ms apiTotal=516ms upload=33ms ia=0ms save=301ms verdict=accept payout=7.8
+Run 3: wall=592ms apiTotal=567ms upload=30ms ia=0ms save=329ms verdict=accept payout=7.8
+
+=== MOYENNE (3 runs) ===
+Upload (prépare image): 52 ms
+IA (Mistral):           444 ms
+Parsing:                0 ms
+Sauvegarde:             280 ms
+Total API:              1236 ms
+npm notice
+npm notice New major version of npm available! 10.9.2 -> 12.0.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+npm notice To update run: npm install -g npm@12.0.2
+npm notice

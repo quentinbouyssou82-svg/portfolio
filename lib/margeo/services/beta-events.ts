@@ -8,6 +8,7 @@ export type BetaEventType =
   | "analysis_success"
   | "analysis_failed"
   | "vision_low_confidence"
+  | "ocr_resolution"
   | "feedback_submitted"
   | "feedback_correction"
   | "paywall_view"
@@ -23,7 +24,7 @@ export interface BetaEventInput {
   eventType: BetaEventType;
   analysisId?: string;
   durationMs?: number;
-  visionSource?: "mock" | "vision";
+  visionSource?: "mock" | "vision" | "on_device_ocr";
   visionConfidence?: number;
   errorCode?: string;
   metadata?: Record<string, unknown>;

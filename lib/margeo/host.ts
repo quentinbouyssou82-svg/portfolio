@@ -10,7 +10,6 @@ const STATIC_DRIVEELY_HOSTS = new Set([
   "driveely.app",
   "www.driveely.app",
   "beta.driveely.app",
-  "margeo.vercel.app",
 ]);
 
 /** Legacy / dead aliases that must never win over the live request host. */
@@ -23,8 +22,6 @@ export function isDriveelyProductHost(hostname: string): boolean {
   const host = hostname.toLowerCase().split(":")[0] ?? "";
   if (!host) return false;
   if (STATIC_DRIVEELY_HOSTS.has(host)) return true;
-  // Previews / aliases du projet Vercel « margeo »
-  if (host.startsWith("margeo-") && host.endsWith(".vercel.app")) return true;
 
   const extra = process.env.DRIVEELY_PRODUCT_HOSTS?.split(",") ?? [];
   return extra.some((h) => h.trim().toLowerCase() === host);
@@ -33,8 +30,7 @@ export function isDriveelyProductHost(hostname: string): boolean {
 /**
  * Origin for auth redirects (logout, etc.).
  * Prefer the live request host on product domains so a stale
- * NEXT_PUBLIC_APP_URL=https://margeo.vercel.app cannot bounce users
- * off https://driveely.app onto a dead deployment.
+ * NEXT_PUBLIC_APP_URL cannot bounce users off https://driveely.app.
  */
 export function resolveDriveelyRequestOrigin(request: NextRequest): string {
   const requestOrigin = request.nextUrl.origin;

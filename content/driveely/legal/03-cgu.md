@@ -1,16 +1,16 @@
 # Conditions Générales d'Utilisation (CGU)
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-Les présentes Conditions Générales d'Utilisation (les « CGU ») ont pour objet de définir les modalités et conditions dans lesquelles Driveely, micro-entreprise [SIREN — EN COURS D'IMMATRICULATION] (« Driveely », « nous »), met à disposition des utilisateurs (« vous », l'« Utilisateur ») l'application Driveely (le « Service »), ainsi que les droits et obligations respectifs des parties.
+Les présentes Conditions Générales d'Utilisation (les « CGU ») ont pour objet de définir les modalités et conditions dans lesquelles Driveely, édité sous la responsabilité de Quentin Bouyssou (« Driveely », « nous »), met à disposition des utilisateurs (« vous », l'« Utilisateur ») l'application Driveely (le « Service »), ainsi que les droits et obligations respectifs des parties.
 
 Toute inscription ou utilisation du Service implique l'acceptation pleine et entière des présentes CGU. Si vous êtes actuellement inscrit dans le cadre de la bêta privée, les [Conditions de participation à la bêta privée](./06-conditions-beta-privee.md) s'appliquent en complément des présentes CGU.
 
 ## 2. Description du Service
 
-Driveely est une application web destinée aux livreurs indépendants (auto-entrepreneurs, étudiants, travailleurs indépendants). Elle permet à l'Utilisateur d'importer une capture d'écran d'une proposition de course émise par une plateforme de livraison tierce (Uber Eats, Deliveroo, Stuart, ou toute autre plateforme). Cette capture est analysée par une intelligence artificielle qui restitue :
+Driveely est une application destinée aux livreurs indépendants (auto-entrepreneurs, étudiants, travailleurs indépendants), disponible notamment sur iPhone (application native) et via une interface web. Elle permet à l'Utilisateur d'importer une capture d'écran d'une proposition de course émise par une plateforme de livraison tierce (Uber Eats, Deliveroo, Stuart, ou toute autre plateforme). Cette capture d'écran est analysée par une intelligence artificielle qui restitue :
 
 - un score de rentabilité indicatif ;
 - une recommandation (accepter / refuser) ;
@@ -35,7 +35,7 @@ L'Utilisateur s'engage à fournir des informations exactes lors de son inscripti
 
 ### 3.4 Sécurité du compte
 
-L'Utilisateur est responsable de la confidentialité de ses identifiants de connexion et de toute activité réalisée depuis son compte. Il s'engage à informer sans délai Driveely de toute utilisation non autorisée de son compte à l'adresse [contact@driveely.app](mailto:contact@driveely.app).
+L'Utilisateur est responsable de la confidentialité de ses identifiants de connexion et de toute activité réalisée depuis son compte. Il s'engage à informer sans délai Driveely de toute utilisation non autorisée de son compte à l'adresse [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com).
 
 ## 4. Fonctionnement du Service et limites de l'analyse par IA
 
@@ -60,10 +60,12 @@ Driveely ne garantit à aucun moment un revenu, un bénéfice ou une rentabilit�
 
 Le Service propose plusieurs formules, décrites dans les [Conditions Générales de Vente](./04-cgv.md) :
 
-- une offre gratuite (plan Découverte), avec un nombre limité d'analyses ;
-- des offres Premium (plans Pro et Elite), à analyses illimitées (sous réserve des conditions affichées dans le Service).
+- une offre gratuite (**Free**), avec notamment : 2 analyses par jour, analyse via partage de captures d'écran, historique limité, sans accès aux déclencheurs système Back Tap ni Centre de contrôle ;
+- une offre **Premium**, avec notamment : analyses illimitées, partage, déclencheurs Back Tap et Centre de contrôle, historique complet (sous réserve des conditions affichées dans le Service).
 
 Les limites exactes de l'offre gratuite peuvent évoluer et seront communiquées au sein du Service.
+
+Sur iPhone, la souscription aux offres Premium s'effectue via l'Apple App Store (StoreKit), dans les conditions précisées dans les CGV et les [Mentions relatives aux abonnements](./11-mentions-abonnements-stripe.md).
 
 ## 6. Historique et gestion des données par l'Utilisateur
 
@@ -90,15 +92,15 @@ L'Utilisateur est seul responsable des décisions qu'il prend, notamment celle d
 
 ### 9.2 Responsabilité d'Driveely
 
-Driveely s'efforce d'assurer la disponibilité et le bon fonctionnement du Service, sans toutefois garantir une disponibilité continue ou une absence totale d'erreurs, en particulier dans le cadre de la bêta privée (cf. [Conditions de participation à la bêta privée](./06-conditions-beta-privee.md)). Driveely ne pourra être tenu responsable :
+Driveely s'efforce d'assurer la disponibilité et le bon fonctionnement du Service, sans toutefois garantir une disponibilité continue ou une absence totale d'erreurs. Les testeurs TestFlight restent également soumis aux [Conditions de participation à la bêta](./06-conditions-beta-privee.md). Driveely ne pourra être tenu responsable :
 
 - des conséquences directes ou indirectes résultant de l'utilisation des résultats fournis par le Service ;
 - d'un manque à gagner, d'une perte de revenu ou de tout préjudice financier lié à l'acceptation ou au refus d'une course ;
-- d'une indisponibilité temporaire du Service liée à des opérations de maintenance, à un cas de force majeure ou au fait d'un tiers (notamment des prestataires d'hébergement Vercel et Supabase).
+- d'une indisponibilité temporaire du Service liée à des opérations de maintenance, à un cas de force majeure ou au fait d'un tiers (notamment des prestataires d'hébergement Vercel et Supabase, ou d'Apple pour la distribution de l'application iPhone).
 
 ## 10. Disponibilité et évolution du Service
 
-Driveely se réserve le droit de faire évoluer, modifier ou interrompre tout ou partie du Service, notamment durant la phase de bêta privée, sans que cela n'engage sa responsabilité, sous réserve d'en informer les Utilisateurs dans un délai raisonnable lorsque cela est possible.
+Driveely se réserve le droit de faire évoluer, modifier ou interrompre tout ou partie du Service, sans que cela n'engage sa responsabilité, sous réserve d'en informer les Utilisateurs dans un délai raisonnable lorsque cela est possible.
 
 ## 11. Suspension et résiliation du compte
 
@@ -112,8 +114,8 @@ Driveely se réserve le droit de modifier les présentes CGU à tout moment, not
 
 ## 13. Droit applicable et litiges
 
-Les présentes CGU sont soumises au droit français. En cas de litige, l'Utilisateur est invité à contacter Driveely à l'adresse [contact@driveely.app](mailto:contact@driveely.app) afin de rechercher une solution amiable. À défaut de résolution amiable, les tribunaux français compétents seront seuls saisis, sous réserve des dispositions d'ordre public applicables aux consommateurs.
+Les présentes CGU sont soumises au droit français. En cas de litige, l'Utilisateur est invité à contacter Driveely à l'adresse [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com) afin de rechercher une solution amiable. À défaut de résolution amiable, les tribunaux français compétents seront seuls saisis, sous réserve des dispositions d'ordre public applicables aux consommateurs.
 
 ## 14. Contact
 
-[contact@driveely.app](mailto:contact@driveely.app)
+[contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

@@ -1,10 +1,10 @@
 # Politique de gestion des demandes RGPD
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-La présente politique décrit la procédure interne mise en œuvre par Driveely pour traiter les demandes des personnes concernées souhaitant exercer leurs droits sur leurs données personnelles, conformément au RGPD et à la Loi Informatique et Libertés. Elle complète la [Politique de confidentialité](./02-politique-confidentialite.md).
+La présente politique décrit la procédure interne mise en œuvre par Driveely pour traiter les demandes des personnes concernées souhaitant exercer leurs droits sur leurs données personnelles, conformément au RGPD et à la Loi Informatique et Libertés. Elle complète la [Politique de confidentialité](./02-politique-confidentialite.md) et s'applique aux utilisateurs du Service (application iPhone Driveely et, le cas échéant, interface web).
 
 ## 2. Droits concernés
 
@@ -21,7 +21,7 @@ Cette procédure s'applique à l'ensemble des droits suivants :
 
 ## 3. Comment adresser une demande
 
-Toute demande doit être adressée par e-mail à [contact@driveely.app](mailto:contact@driveely.app), en indiquant :
+Toute demande doit être adressée par e-mail à [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com), en indiquant :
 
 - le droit que vous souhaitez exercer ;
 - votre adresse e-mail associée au compte Driveely ;
@@ -67,4 +67,4 @@ Driveely tient un registre interne des demandes reçues et des suites données, 
 
 ## 11. Contact
 
-[contact@driveely.app](mailto:contact@driveely.app)
+[contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

@@ -1,10 +1,10 @@
 # Politique de suppression des données
 
-**Dernière mise à jour : [DATE À COMPLÉTER]**
+**Dernière mise à jour : 21 octobre 2026**
 
 ## 1. Objet
 
-La présente politique décrit les modalités et délais de suppression des données personnelles traitées par Driveely, en complément de la [Politique de confidentialité](./02-politique-confidentialite.md) et de la [Politique de gestion des demandes RGPD](./08-gestion-demandes-rgpd.md).
+La présente politique décrit les modalités et délais de suppression des données personnelles traitées par Driveely dans le cadre du Service (application iPhone et, le cas échéant, interface web), en complément de la [Politique de confidentialité](./02-politique-confidentialite.md) et de la [Politique de gestion des demandes RGPD](./08-gestion-demandes-rgpd.md).
 
 ## 2. Suppression automatique des captures d'écran
 
@@ -18,7 +18,7 @@ Chaque Utilisateur peut, à tout moment et de sa propre initiative, supprimer un
 
 ### 4.1 Modalités de la demande
 
-L'Utilisateur souhaitant supprimer l'intégralité de son compte peut en faire la demande par e-mail à [contact@driveely.app](mailto:contact@driveely.app), en précisant l'adresse e-mail associée au compte concerné.
+L'Utilisateur peut supprimer son compte depuis l'application iPhone (Profil → Données personnelles). Il peut aussi en faire la demande par e-mail à [contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com), en précisant l'adresse e-mail associée au compte. La suppression in-app est immédiate après confirmation. Un abonnement Apple en cours n'est pas annulé par cette action : il doit l'être depuis le compte Apple ID.
 
 ### 4.2 Vérification préalable
 
@@ -44,7 +44,7 @@ Ces données résiduelles sont conservées de manière isolée et ne sont plus u
 
 ## 5. Délai de traitement
 
-Driveely s'engage à traiter toute demande de suppression de compte dans un délai maximal d'**un mois** à compter de la vérification de l'identité du demandeur, conformément à l'article 12 du RGPD.
+La suppression in-app est traitée immédiatement. Une demande par e-mail est traitée dans un délai maximal d'**un mois** à compter de la vérification de l'identité du demandeur, conformément à l'article 12 du RGPD.
 
 ## 6. Suppression en cas de résiliation ou d'inactivité prolongée
 
@@ -52,8 +52,8 @@ Driveely se réserve le droit de définir, à l'avenir, une politique de suppres
 
 ## 7. Conséquences de la suppression sur l'accès au Service
 
-La suppression du compte entraîne la perte définitive et immédiate de l'accès au Service, de l'historique des analyses et de tout abonnement Premium éventuellement en cours, sans remboursement au prorata sauf application de la [Politique de remboursement](./07-politique-remboursement.md).
+La suppression du compte entraîne la perte définitive et immédiate de l'accès au Service, de l'historique des analyses et de tout abonnement Premium éventuellement en cours côté Driveely, sans remboursement au prorata sauf application de la [Politique de remboursement](./07-politique-remboursement.md). Pour un abonnement Premium souscrit via l'App Store, l'Utilisateur doit également gérer ou annuler l'abonnement depuis les réglages de son compte Apple ID afin d'éviter de nouveaux prélèvements Apple.
 
 ## 8. Contact
 
-[contact@driveely.app](mailto:contact@driveely.app)
+[contactdriveelyai@gmail.com](mailto:contactdriveelyai@gmail.com)

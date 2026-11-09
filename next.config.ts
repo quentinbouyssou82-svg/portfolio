@@ -1,8 +1,33 @@
 import type { NextConfig } from "next";
 import path from "path";
+import { withBotId } from "botid/next/config";
+import { assertProductionSafeConfig } from "./lib/margeo/config/assert-production-safe";
+
+assertProductionSafeConfig();
 
 /** Force Turbopack root to this app (avoids parent ~/package-lock.json hijacking). */
 const appRoot = path.resolve(__dirname);
+
+const isProd =
+  process.env.NODE_ENV === "production" || process.env.VERCEL === "1";
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data: https:",
+  "style-src 'self' 'unsafe-inline' https:",
+  // Next.js / analytics / Supabase realtime
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel.app https://vercel.live https://*.posthog.com https://eu.i.posthog.com",
+  "connect-src 'self' https: wss:",
+  "frame-src 'self' https://vercel.live",
+  "worker-src 'self' blob:",
+  // Safari upgrades CSS/JS to https://127.0.0.1 → unstyled page in local HTTP.
+  ...(isProd ? ["upgrade-insecure-requests"] : []),
+].join("; ");
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -14,26 +39,29 @@ const securityHeaders = [
   },
   {
     key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "base-uri 'self'",
-      "object-src 'none'",
-      "frame-ancestors 'none'",
-      "form-action 'self'",
-      "img-src 'self' data: blob: https:",
-      "font-src 'self' data: https:",
-      "style-src 'self' 'unsafe-inline' https:",
-      // Next.js / analytics / Supabase realtime
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel.app https://vercel.live https://*.posthog.com https://eu.i.posthog.com",
-      "connect-src 'self' https: wss:",
-      "frame-src 'self' https://vercel.live",
-      "worker-src 'self' blob:",
-      "upgrade-insecure-requests",
-    ].join("; "),
+    value: contentSecurityPolicy,
   },
 ];
 
 const nextConfig: NextConfig = {
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  // sharp = native libvips — must stay external; Turbopack hashing otherwise
+  // breaks linux-x64 .so resolution on Vercel (HTML 500 on /api/driveely/analyze).
+  serverExternalPackages: ["sharp"],
+  outputFileTracingIncludes: {
+    "/api/driveely/analyze": [
+      "./node_modules/sharp/**/*",
+      "./node_modules/@img/sharp-linux-x64/**/*",
+      "./node_modules/@img/sharp-libvips-linux-x64/**/*",
+    ],
+    "/api/driveely/*": [
+      "./node_modules/sharp/**/*",
+      "./node_modules/@img/sharp-linux-x64/**/*",
+      "./node_modules/@img/sharp-libvips-linux-x64/**/*",
+    ],
+  },
   // Autorise les assets dev (CSS/JS) quand le site est consulté via ngrok.
   allowedDevOrigins: [
     "127.0.0.1",
@@ -76,6 +104,17 @@ const nextConfig: NextConfig = {
         destination: "/api/driveely/:path*",
         statusCode: 301,
       },
+      // App Store Connect requires /privacy and /terms URLs
+      {
+        source: "/privacy",
+        destination: "/demos/driveely/confidentialite",
+        statusCode: 301,
+      },
+      {
+        source: "/terms",
+        destination: "/demos/driveely/cgu",
+        statusCode: 301,
+      },
     ];
   },
   async headers() {
@@ -88,4 +127,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBotId(nextConfig);

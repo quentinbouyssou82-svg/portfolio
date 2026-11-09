@@ -2,7 +2,7 @@
  * QA Driveely — parcours bêta-testeur réel (prod ou local).
  * Usage :
  *   set -a && source .env.local && set +a
- *   NEXT_PUBLIC_APP_URL=https://margeo.vercel.app npx tsx scripts/qa-driveely-beta.ts
+ *   NEXT_PUBLIC_APP_URL=https://driveely.app npx tsx scripts/qa-driveely-beta.ts
  */
 
 import fs from "fs";
@@ -25,7 +25,7 @@ for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const PUB = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 const SECRET = process.env.SUPABASE_SECRET_KEY!;
-const BASE = process.env.NEXT_PUBLIC_APP_URL || "https://margeo.vercel.app";
+const BASE = process.env.NEXT_PUBLIC_APP_URL || "https://driveely.app";
 const CAPTURES = path.join(__dirname, "fixtures/captures");
 
 type Check = { id: string; ok: boolean; detail?: string; ms?: number };

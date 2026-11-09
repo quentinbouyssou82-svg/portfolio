@@ -1,13 +1,13 @@
 import type { UserProfile } from "../types";
 import { isPaidPlan } from "@/lib/margeo/billing/entitlements";
 import {
-  getAppFeatures,
-  getAppFeaturesAsync,
-  getAppMode,
-  getAppModeAsync,
+  getBillingFeatures,
+  getBillingFeaturesAsync,
+  getTrustedAppMode,
   type DriveelyFeatures,
 } from "@/lib/margeo/config";
 import { getCurrentSubscription } from "@/lib/margeo/services/subscription";
+import { isBetaTester } from "@/lib/margeo/services/beta-user";
 
 export type PremiumSource = "manual" | "beta" | "stripe" | "trial" | "app_mode";
 
@@ -15,8 +15,8 @@ export interface PremiumStatus {
   /** Abonnement / flag DB réellement payant. */
   isPremium: boolean;
   /**
-   * Accès effectif aux capacités premium (abonnement OU mode app bêta).
-   * En APP_MODE=beta → true pour tous, sans écrire premium en base.
+   * Accès effectif aux capacités premium (abonnement OU unlock trusted).
+   * Unlock : env APP_MODE=beta OU is_beta_tester — jamais cookie/header.
    */
   effectivePremium: boolean;
   /** D'où vient le déblocage effectif. */
@@ -27,17 +27,21 @@ export interface PremiumStatus {
   appMode: "production" | "beta";
   billingEnabled: boolean;
   freemiumLimits: boolean;
+  trialEndsAt: string | null;
+  recoveryOfferEligible: boolean;
 }
 
 function resolveWithFeatures(
   profile: Pick<
     UserProfile,
-    "premium" | "premiumUntil" | "premiumSource" | "planId"
+    "premium" | "premiumUntil" | "premiumSource" | "planId" | "isBetaTester"
   >,
   feats: DriveelyFeatures,
   appMode: "production" | "beta",
 ): PremiumStatus {
   const planId = profile.planId ?? (profile.premium ? "pro" : "discovery");
+  const unlocked =
+    feats.allPremiumUnlocked || Boolean(profile.isBetaTester);
 
   const base: PremiumStatus = {
     isPremium: false,
@@ -48,32 +52,37 @@ function resolveWithFeatures(
     planId: "discovery",
     appMode,
     billingEnabled: feats.billing,
-    freemiumLimits: feats.freemiumLimits,
+    freemiumLimits: unlocked ? false : feats.freemiumLimits,
+    trialEndsAt: null,
+    recoveryOfferEligible: false,
   };
 
   if (!profile.premium && !isPaidPlan(planId)) {
-    if (feats.allPremiumUnlocked) {
+    if (unlocked) {
       return {
         ...base,
         effectivePremium: true,
-        unlockSource: "app_mode",
+        unlockSource: profile.isBetaTester ? "beta" : "app_mode",
         planId,
+        recoveryOfferEligible: false,
       };
     }
-    return { ...base, planId: "discovery" };
+    return { ...base, planId: "discovery", recoveryOfferEligible: false };
   }
 
   if (profile.premiumUntil) {
     const expires = new Date(profile.premiumUntil);
     if (expires.getTime() < Date.now()) {
-      if (feats.allPremiumUnlocked) {
+      if (unlocked) {
         return {
           ...base,
           source: profile.premiumSource ?? null,
           expiresAt: profile.premiumUntil,
           effectivePremium: true,
-          unlockSource: "app_mode",
+          unlockSource: profile.isBetaTester ? "beta" : "app_mode",
           planId,
+          trialEndsAt: profile.premiumUntil ?? null,
+          recoveryOfferEligible: false,
         };
       }
       return {
@@ -81,6 +90,8 @@ function resolveWithFeatures(
         source: profile.premiumSource ?? null,
         expiresAt: profile.premiumUntil,
         planId: "discovery",
+        trialEndsAt: profile.premiumUntil ?? null,
+        recoveryOfferEligible: true,
       };
     }
   }
@@ -89,32 +100,40 @@ function resolveWithFeatures(
   return {
     ...base,
     isPremium: paid,
-    effectivePremium: paid || feats.allPremiumUnlocked,
+    effectivePremium: paid || unlocked,
     unlockSource: paid
       ? (profile.premiumSource ?? "manual")
-      : feats.allPremiumUnlocked
-        ? "app_mode"
+      : unlocked
+        ? profile.isBetaTester
+          ? "beta"
+          : "app_mode"
         : null,
     source: profile.premiumSource ?? "manual",
     expiresAt: profile.premiumUntil ?? null,
     planId: isPaidPlan(planId) ? planId : profile.premium ? "pro" : "discovery",
+    trialEndsAt: profile.premiumSource === "trial" ? profile.premiumUntil ?? null : null,
+    recoveryOfferEligible: false,
   };
 }
 
-/** Compat legacy + abonnement. Sync = client cookie / env default. */
+/** Compat legacy + abonnement. Sync = env trusted (pas de cookie spoof). */
 export function resolvePremiumStatus(
   profile: Pick<
     UserProfile,
-    "premium" | "premiumUntil" | "premiumSource" | "planId"
+    "premium" | "premiumUntil" | "premiumSource" | "planId" | "isBetaTester"
   >,
 ): PremiumStatus {
-  return resolveWithFeatures(profile, getAppFeatures(), getAppMode());
+  return resolveWithFeatures(
+    profile,
+    getBillingFeatures(),
+    getTrustedAppMode(),
+  );
 }
 
 export function isUserPremium(
   profile: Pick<
     UserProfile,
-    "premium" | "premiumUntil" | "premiumSource" | "planId"
+    "premium" | "premiumUntil" | "premiumSource" | "planId" | "isBetaTester"
   >,
 ): boolean {
   return resolvePremiumStatus(profile).effectivePremium;
@@ -123,25 +142,35 @@ export function isUserPremium(
 export async function resolvePremiumStatusForUser(
   userId: string,
 ): Promise<PremiumStatus> {
-  const feats = await getAppFeaturesAsync();
-  const appMode = await getAppModeAsync();
+  const feats = await getBillingFeaturesAsync();
+  const appMode = getTrustedAppMode();
   const sub = await getCurrentSubscription(userId);
+  const betaTester = await isBetaTester(userId);
   const paid = isPaidPlan(sub.planId);
+  const unlocked = feats.allPremiumUnlocked || betaTester;
   const source: PremiumSource | null = paid
-    ? sub.provider === "stripe"
+    ? sub.provider === "stripe" || sub.provider === "app_store"
       ? "stripe"
       : "trial"
     : null;
 
   return {
     isPremium: paid,
-    effectivePremium: paid || feats.allPremiumUnlocked,
-    unlockSource: paid ? source : feats.allPremiumUnlocked ? "app_mode" : null,
+    effectivePremium: paid || unlocked,
+    unlockSource: paid
+      ? source
+      : unlocked
+        ? betaTester
+          ? "beta"
+          : "app_mode"
+        : null,
     source,
     expiresAt: sub.currentPeriodEnd,
     planId: sub.planId,
     appMode,
     billingEnabled: feats.billing,
-    freemiumLimits: feats.freemiumLimits,
+    freemiumLimits: unlocked ? false : feats.freemiumLimits,
+    trialEndsAt: null,
+    recoveryOfferEligible: false,
   };
 }

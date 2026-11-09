@@ -24,16 +24,30 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-/** Landing / login / signup / forgot / beta — toujours sombre. */
+/** Public marketing / legal — dark site so the light iPhone hero pops. */
 export function isDriveelyMarketingPath(pathname: string | null): boolean {
   if (!pathname) return true;
   const base = DRIVEELY_BASE.replace(/\/$/, "");
   if (pathname === base || pathname === `${base}/`) return true;
-  if (pathname.startsWith(`${base}/login`)) return true;
-  if (pathname.startsWith(`${base}/signup`)) return true;
-  if (pathname.startsWith(`${base}/forgot-password`)) return true;
-  if (pathname.startsWith(`${base}/beta`)) return true;
-  return false;
+  if (pathname === "/" || pathname === "") return true;
+  const relative = pathname.startsWith(base)
+    ? pathname.slice(base.length) || "/"
+    : pathname;
+  const shellPrefixes = [
+    "/dashboard",
+    "/analyse",
+    "/historique",
+    "/profil",
+    "/premium",
+    "/subscription",
+    "/retour",
+    "/questionnaire",
+    "/onboarding",
+  ];
+  if (shellPrefixes.some((p) => relative === p || relative.startsWith(`${p}/`))) {
+    return false;
+  }
+  return true;
 }
 
 function applyTheme(theme: DriveelyTheme) {
